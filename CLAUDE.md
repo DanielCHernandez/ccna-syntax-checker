@@ -90,6 +90,22 @@ in one session, not change randomly each time.
 - Check `git log` / `git diff` to understand recent history before
   assuming you need to re-derive context from scratch — a lot of the
   "why" for existing code is in commit messages and code comments.
+- **Each version's shipped files live in their own folder named
+  `Syn-Checker v<version>`** (e.g. `Syn-Checker v1.36.0/terminal-
+  v1.36.0.html`, `.../ios-engine-v1.36.0.js`, `.../CHANGELOG-v1.36.0.md`)
+  rather than flat in the repo root — per direction (2026-09-13), so
+  it's obvious at a glance which folder is current vs. old, and the
+  folder name alone (not just the files inside it) identifies the
+  version. Filenames inside the folder keep their version suffix too
+  (redundant with the folder name, but harmless, and avoids ambiguity
+  in any text — like changelog entries — that references a specific
+  filename). Note the folder name has a space in it (`Syn-Checker
+  v1.36.0`, not `Syn-Checker-v1.36.0`) — quote it or tab-complete it in
+  any shell command. 1.35.0's files were retroactively moved into
+  `Syn-Checker v1.35.0/` at the same time this convention started, so
+  the whole root is consistent; versions before that (1.0.0–1.34.1)
+  only exist as narrative history in the changelog, not as files in
+  this repo, so there was nothing to move for those.
 
 ## Known recurring bug patterns (learn from these, don't repeat them)
 
