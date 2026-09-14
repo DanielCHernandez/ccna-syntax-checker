@@ -51,6 +51,13 @@ Before building any new command or `show` output:
    (with its module number, e.g. "5.4.12 Packet Tracer – Configure
    Extended IPv4 ACLs") is the closest real match, and a link to it
    on ITExamAnswers.net if you can find one via search.
+5. **Always give a direct link to the specific ITExamAnswers.net page**
+   whenever describing/summarizing a Packet Tracer lab's content —
+   per direction (2026-09-13) — not just when asking for a capture.
+   The person wants to be able to open it themselves and check, since
+   a scraped/summarized page (or a scraped topology image, which can
+   be a low-res thumbnail or even mismatched to the wrong lab) is
+   never as reliable as them looking at the real page directly.
 5. Real captures should be pasted as plain text (the person uses a
    Notepad/TextEdit relay from Packet Tracer to preserve exact
    spacing — copying directly into rich-text apps has repeatedly
@@ -157,6 +164,16 @@ in one session, not change randomly each time.
   diagrams are built from first-party verified data (addressing
   tables, connection lists) and rendered as original, simple diagrams
   instead.
+- **When porting a real Packet Tracer lab into a Home Lab, any step
+  that's physical-layer/cabling/GUI-simulation work (not something
+  typed at a CLI, or a PC's own IP settings) is skipped entirely** —
+  per direction (2026-09-13, re: 10.1.4's console-cable step). This
+  tool never simulates cabling at all; every lab starts the student
+  already "connected" at a live CLI prompt, so a real lab's own
+  cabling/connection instructions just don't have an equivalent here.
+  If a lab has a step that doesn't clearly fall into "skip" (physical)
+  or "keep" (CLI command / PC IP config), flag it and ask rather than
+  guessing which bucket it belongs in.
 
 ## Communication style expectations
 
