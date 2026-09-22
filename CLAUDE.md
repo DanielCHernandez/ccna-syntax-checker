@@ -24,6 +24,12 @@ implications for how to work with them:
   commands with what to type and exactly what to look for in the
   output. Don't assume a fix works just because it looks right — they
   will genuinely run it and report back.
+- **Put the test-commands list directly in the chat reply, not only
+  in the shipped CHANGELOG file** — per direction (2026-09-13), since
+  the changelog has grown large enough that finding a specific
+  version's test list in it is now its own chore. The changelog can
+  still carry the same list for the permanent record, but the person
+  should never have to go dig for it there just to start testing.
 - **Never assume they'll catch a subtle bug on their own.** If
   something has any risk of being wrong, say so explicitly and tell
   them what to check.
@@ -57,7 +63,11 @@ Before building any new command or `show` output:
    The person wants to be able to open it themselves and check, since
    a scraped/summarized page (or a scraped topology image, which can
    be a low-res thumbnail or even mismatched to the wrong lab) is
-   never as reliable as them looking at the real page directly.
+   never as reliable as them looking at the real page directly. This
+   still applies when labs are presented as a short list of choices
+   (e.g. multiple-choice options for "which lab next?"), not just in a
+   narrative write-up — confirmed missed once (2026-09-13) when a set
+   of choice options named 4 labs with no links attached.
 5. Real captures should be pasted as plain text (the person uses a
    Notepad/TextEdit relay from Packet Tracer to preserve exact
    spacing — copying directly into rich-text apps has repeatedly
@@ -174,6 +184,18 @@ in one session, not change randomly each time.
   If a lab has a step that doesn't clearly fall into "skip" (physical)
   or "keep" (CLI command / PC IP config), flag it and ask rather than
   guessing which bucket it belongs in.
+- **A PC in Home Labs mode is a plain `{ ip, mask, gateway }` object,
+  not a `Device`** — introduced in v1.39.0 (lab 2.7) via a small IP
+  Configuration panel (modeled on Packet Tracer's own Desktop → IP
+  Configuration screen) that replaces the terminal/input-row when the
+  active device is a PC. `renderPtTasks()` needed no change for this —
+  it already calls `task.check(device)` generically, so a PC task's
+  check just receives this plain object. **Backlog, explicitly
+  deferred (2026-09-13):** a simulated `ping`/`ipconfig` from the PC's
+  own side — the person wants this in a FUTURE update, not dropped;
+  don't rebuild this differently without checking first, since a
+  future ping/ipconfig feature will want to build on this same object
+  shape.
 
 ## Communication style expectations
 
