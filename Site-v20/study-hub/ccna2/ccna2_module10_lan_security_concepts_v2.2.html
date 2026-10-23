@@ -1,0 +1,1027 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=2.0">
+<title>CCNA 2 Module 10: LAN Security Concepts v2.2</title>
+<style>
+:root{
+  --blue:#1ba0d7;--dark:#005073;--green:#6cc24a;
+  --red:#dc3545;--orange:#e07b00;
+  --bg:#f4f6f8;--card:#fff;--text:#1a1a2e;--muted:#5a6a7a;
+  --cbg:#0d1117;--ctxt:#c9d1d9;--r:12px;--sh:0 2px 12px rgba(0,0,0,.08);
+  --base-fs:16px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);font-size:var(--base-fs);line-height:1.7}
+
+/* ── Font size toggle ── */
+.fs-bar{position:sticky;top:0;z-index:200;background:#1a1a2e;display:flex;align-items:center;justify-content:flex-end;padding:6px 14px;gap:6px;box-shadow:0 2px 8px rgba(0,0,0,.3)}
+.fs-label{color:#8b949e;font-size:.72em;font-weight:700;letter-spacing:.5px;text-transform:uppercase;margin-right:4px}
+.fs-btn{background:#30363d;color:#c9d1d9;border:2px solid transparent;border-radius:6px;padding:4px 12px;font-size:.75em;font-weight:700;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:all .2s;line-height:1.4}
+.fs-btn:active,.fs-btn.active{background:var(--blue);color:#fff;border-color:var(--blue)}
+
+/* ── Header ── */
+.hdr{background:linear-gradient(135deg,#3d0010,var(--red));color:#fff;padding:32px 20px 24px;text-align:center}
+.hdr .badge{display:inline-block;background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.4);border-radius:20px;padding:4px 14px;font-size:.81em;margin-bottom:12px}
+.hdr h1{font-size:1.625em;font-weight:700;margin-bottom:6px}
+.hdr p{font-size:.94em;opacity:.85}
+.hdr .obj{display:inline-block;background:rgba(255,255,255,.15);border-radius:8px;padding:7px 16px;margin-top:12px;font-size:.875em;font-style:italic}
+
+/* ── Progress bar ── */
+.pb{background:var(--card);padding:14px 16px;margin:16px 16px 0;border-radius:var(--r);box-shadow:var(--sh)}
+.pbl{font-size:.81em;color:var(--muted);margin-bottom:6px;font-weight:600}
+.pbt{background:#e0e7ef;border-radius:10px;height:8px;overflow:hidden}
+.pbf{background:linear-gradient(90deg,var(--red),var(--orange));height:100%;border-radius:10px;width:0;transition:width 1s ease}
+
+/* ── TOC ── */
+.toc{background:var(--card);margin:16px;border-radius:var(--r);box-shadow:var(--sh);overflow:hidden}
+.toch{background:#3d0010;color:#fff;padding:14px 18px;font-weight:700;font-size:.94em;display:flex;justify-content:space-between;align-items:center;cursor:pointer;user-select:none}
+.toch .arr{transition:transform .3s}
+.toch.open .arr{transform:rotate(180deg)}
+.tocb{display:none;padding:10px 0}
+.tocb.open{display:block}
+.tocg{font-size:.69em;font-weight:800;letter-spacing:.8px;color:#3d0010;text-transform:uppercase;padding:8px 20px 2px}
+.tocb a{display:block;padding:9px 20px 9px 28px;color:var(--text);text-decoration:none;font-size:.875em;border-left:3px solid transparent;transition:all .2s}
+.tocb a:hover,.tocb a:active{background:#f8d7da;border-left-color:var(--red)}
+.tocb a .n{display:inline-block;background:var(--red);color:#fff;border-radius:5px;padding:1px 8px;font-size:.75em;font-weight:700;margin-right:8px}
+
+/* ── Main wrap ── */
+.wrap{padding:0 16px 100px}
+
+/* ── Section cards ── */
+.sec{background:var(--card);border-radius:var(--r);box-shadow:var(--sh);margin-bottom:16px;overflow:hidden}
+.sh{background:linear-gradient(90deg,#3d0010,var(--red));color:#fff;padding:16px 18px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;user-select:none;-webkit-tap-highlight-color:transparent}
+.sh .ttl{font-weight:700;font-size:1em}
+.sh .nb{background:rgba(255,255,255,.25);border-radius:6px;padding:3px 10px;font-size:.81em;font-weight:700;margin-right:10px;white-space:nowrap}
+.sh .ch{font-size:1.125em;transition:transform .3s}
+.sh.open .ch{transform:rotate(180deg)}
+.sb{display:none;padding:18px}
+.sb.open{display:block}
+
+/* ── Subsections ── */
+.sub{margin-bottom:24px}
+.sub:last-child{margin-bottom:0}
+.sub h3{font-size:.94em;font-weight:700;color:#3d0010;margin-bottom:10px;padding-bottom:6px;border-bottom:2px solid #f8d7da;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.sub h3 .sn{background:var(--red);color:#fff;border-radius:5px;padding:2px 8px;font-size:.75em;white-space:nowrap}
+.sub h4{font-size:.875em;font-weight:700;color:#3d0010;margin:14px 0 6px}
+.sub p{margin-bottom:10px;font-size:.94em}
+.sub ul,.sub ol{padding-left:20px;margin:8px 0;font-size:.94em}
+.sub li{margin-bottom:5px}
+
+/* ── Code blocks ── */
+.cw{background:var(--cbg);border-radius:10px;margin:12px 0;overflow:hidden}
+.cl{background:#21262d;color:#c9d1d9;font-size:.78em;font-weight:700;padding:6px 14px;letter-spacing:.5px;text-transform:uppercase;display:flex;justify-content:space-between;align-items:center}
+.cpb{background:#30363d;color:#c9d1d9;border:none;border-radius:5px;padding:3px 10px;font-size:.69em;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.cpb:active{background:var(--red);color:#fff}
+pre{margin:0;padding:14px;overflow-x:auto;-webkit-overflow-scrolling:touch}
+code{font-family:'Courier New',monospace;font-size:.81em;color:var(--ctxt);line-height:1.6}
+p code,li code,td code,h3 code,h4 code,.ca code{background:#f8d7da;color:#3d0010;border-radius:4px;padding:1px 5px;font-size:.81em;font-family:'Courier New',monospace;font-weight:600}
+
+/* ── Callout boxes ── */
+.ca{border-radius:8px;padding:12px 14px;margin:12px 0;font-size:.875em;line-height:1.6;display:flex;gap:10px;align-items:flex-start}
+.ca .ic{font-size:1.125em;flex-shrink:0;margin-top:1px}
+.ca.warn  {background:#fff3cd;border-left:4px solid #b38600;color:#3d2c00}
+.ca.tip   {background:#d4edda;border-left:4px solid #28a745;color:#0d3318}
+.ca.danger{background:#f8d7da;border-left:4px solid var(--red);color:#3d0010}
+.ca.info  {background:#d0e8f5;border-left:4px solid var(--blue);color:#002d44}
+
+/* ── Exam tip dark box ── */
+.et{background:linear-gradient(135deg,#1a1a2e,#3d0010);color:#fff;border-radius:10px;padding:14px 16px;margin:14px 0;font-size:.875em;line-height:1.6}
+.et .lbl{font-size:.69em;font-weight:800;letter-spacing:1px;color:#f8d7da;margin-bottom:6px}
+.et ol,.et ul{padding-left:18px;margin-top:6px}
+.et li{margin-bottom:5px}
+
+/* ── Tables ── */
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:12px 0;border-radius:8px}
+table{width:100%;border-collapse:collapse;font-size:.875em}
+th{background:#3d0010;color:#fff;padding:10px 12px;text-align:left;font-weight:700;font-size:.81em}
+td{padding:9px 12px;border-bottom:1px solid #e8ecf0;vertical-align:top;color:#1a1a2e}
+tr:nth-child(even) td{background:#f8d7da;color:#3d0010}
+tr:last-child td{border-bottom:none}
+
+/* ── Numbered steps ── */
+.steps{counter-reset:step;list-style:none;padding:0;margin:12px 0}
+.steps li{counter-increment:step;display:flex;gap:12px;align-items:flex-start;padding:10px 0;border-bottom:1px solid #eef0f3;font-size:.875em;line-height:1.6}
+.steps li:last-child{border-bottom:none}
+.steps li::before{content:counter(step);background:var(--red);color:#fff;border-radius:50%;min-width:26px;height:26px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.81em;flex-shrink:0;margin-top:2px}
+
+/* ── Diagram box ── */
+.dg{background:#0d1117;border-radius:10px;padding:14px;margin:12px 0;overflow-x:auto;-webkit-overflow-scrolling:touch}
+.dg pre{color:#58a6ff;font-family:'Courier New',monospace;font-size:.75em;line-height:1.6}
+
+/* ── Scenario box ── */
+.sc{background:#1a1a2e;color:#c9d1d9;border-radius:8px;padding:14px;margin:12px 0;font-size:.875em;line-height:1.6}
+.sc .scl{font-size:.69em;font-weight:800;letter-spacing:.8px;color:#f8d7da;margin-bottom:8px}
+
+/* ── Attack cards ── */
+.attack-grid{display:grid;gap:10px;margin:12px 0}
+.attack-card{border-radius:10px;padding:14px;border-left:5px solid}
+.attack-card.mac{border-left-color:var(--red);background:#fff5f5}
+.attack-card.vlan{border-left-color:var(--orange);background:#fff8f0}
+.attack-card.dhcp{border-left-color:#9b59b6;background:#f8f0ff}
+.attack-card.arp{border-left-color:#2980b9;background:#f0f7ff}
+.attack-card.stp{border-left-color:#27ae60;background:#f0fff4}
+.attack-card.cdp{border-left-color:#7f8c8d;background:#f8f9fa}
+.attack-card .ac-title{font-size:.875em;font-weight:800;margin-bottom:4px}
+.attack-card.mac .ac-title{color:#c0392b}
+.attack-card.vlan .ac-title{color:#c45200}
+.attack-card.dhcp .ac-title{color:#7d3c98}
+.attack-card.arp .ac-title{color:#1a5276}
+.attack-card.stp .ac-title{color:#1e8449}
+.attack-card.cdp .ac-title{color:#5d6d7e}
+.attack-card .ac-mit{font-size:.75em;font-weight:700;padding:2px 8px;border-radius:4px;display:inline-block;margin-bottom:6px;color:#fff}
+.attack-card.mac .ac-mit{background:var(--red)}
+.attack-card.vlan .ac-mit{background:var(--orange)}
+.attack-card.dhcp .ac-mit{background:#9b59b6}
+.attack-card.arp .ac-mit{background:#2980b9}
+.attack-card.stp .ac-mit{background:#27ae60}
+.attack-card.cdp .ac-mit{background:#7f8c8d}
+.attack-card p{font-size:.81em;color:#1a1a2e;line-height:1.6}
+
+/* ── DHCP comparison cards ── */
+.dhcp-compare{display:grid;gap:10px;margin:12px 0}
+.dhcp-card{border-radius:10px;padding:14px;border:2px solid}
+.dhcp-card.starv{border-color:#dc3545;background:#fff5f5}
+.dhcp-card.spoof{border-color:#9b59b6;background:#f8f0ff}
+.dhcp-card .dc-title{font-size:.875em;font-weight:800;margin-bottom:8px}
+.dhcp-card.starv .dc-title{color:#c0392b}
+.dhcp-card.spoof .dc-title{color:#7d3c98}
+.dhcp-card ul{padding-left:18px;font-size:.81em;color:#1a1a2e;line-height:1.8}
+
+/* ── RADIUS vs TACACS+ cards ── */
+.aaa-compare{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:12px 0}
+@media(max-width:520px){.aaa-compare{grid-template-columns:1fr}}
+.aaa-card{border-radius:10px;overflow:hidden}
+.aaa-card .ac-hdr{padding:10px 12px;font-size:.81em;font-weight:800;color:#fff;text-align:center}
+.aaa-card.radius .ac-hdr{background:var(--blue)}
+.aaa-card.tacacs .ac-hdr{background:#3d0010}
+.aaa-card .ac-body{padding:12px;font-size:.81em;line-height:1.7;background:#f8f9fa;color:#1a1a2e}
+.aaa-card .ac-body strong{color:var(--dark)}
+
+/* ── Double-tag diagram ── */
+.dtag-flow{background:#0d1117;border:2px solid var(--orange);border-radius:10px;padding:16px;margin:14px 0}
+.dtag-flow .df-title{font-size:.75em;font-weight:800;letter-spacing:.8px;color:var(--orange);text-transform:uppercase;margin-bottom:10px}
+.dtag-step{display:flex;gap:12px;align-items:flex-start;padding:8px 0;border-bottom:1px solid #21262d;font-size:.81em;color:#c9d1d9;line-height:1.6}
+.dtag-step:last-child{border-bottom:none}
+.dtag-step .dn{background:var(--orange);color:#fff;border-radius:50%;min-width:22px;height:22px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.75em;flex-shrink:0;margin-top:2px}
+
+/* ── 802.1X role cards ── */
+.dot1x-grid{display:grid;gap:10px;margin:12px 0}
+.dot1x-card{border-radius:10px;padding:14px;border-left:5px solid}
+.dot1x-card.supplicant{border-left-color:var(--blue);background:#e8f4fb}
+.dot1x-card.authenticator{border-left-color:var(--orange);background:#fff8f0}
+.dot1x-card.authserver{border-left-color:#28a745;background:#d4edda}
+.dot1x-card .dx-role{font-size:.69em;font-weight:800;letter-spacing:.8px;text-transform:uppercase;margin-bottom:2px}
+.dot1x-card.supplicant .dx-role{color:var(--dark)}
+.dot1x-card.authenticator .dx-role{color:#c45200}
+.dot1x-card.authserver .dx-role{color:#0d3318}
+.dot1x-card .dx-title{font-weight:700;font-size:.94em;margin-bottom:4px;color:#1a1a2e}
+.dot1x-card .dx-body{font-size:.875em;color:#1a1a2e}
+
+/* ── Master mitigation table highlight ── */
+.master-table th{background:#3d0010}
+.master-table tr:nth-child(even) td{background:#f8d7da;color:#3d0010}
+
+
+/* ── Module navigation bar ── */
+.mod-nav{position:fixed;bottom:0;left:0;right:0;z-index:300;background:#1a1a2e;border-top:1px solid #30363d;display:flex;align-items:center;height:52px;padding:0 8px;gap:6px}
+.mn-hub{background:#1ba0d7;color:#fff;border:none;border-radius:8px;padding:6px 12px;font-size:.75em;font-weight:700;cursor:pointer;text-decoration:none;display:flex;align-items:center;gap:4px;white-space:nowrap;-webkit-tap-highlight-color:transparent;flex-shrink:0}
+.mn-hub:active{opacity:.8}
+.mn-divider{width:1px;height:28px;background:#30363d;flex-shrink:0}
+.mn-label{flex:1;text-align:center;font-size:.69em;color:#8b949e;font-weight:600;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding:0 4px}
+.mn-prev,.mn-next{background:#30363d;color:#c9d1d9;border:none;border-radius:8px;padding:6px 10px;font-size:.875em;font-weight:700;cursor:pointer;text-decoration:none;display:flex;align-items:center;-webkit-tap-highlight-color:transparent;flex-shrink:0}
+.mn-prev:active,.mn-next:active{background:#1ba0d7;color:#fff}
+.mn-prev.disabled,.mn-next.disabled{opacity:.3;pointer-events:none}
+
+/* ── Scroll to top ── */
+.tb{position:fixed;bottom:80px;right:16px;background:var(--red);color:#fff;border:none;border-radius:50%;width:44px;height:44px;font-size:1.25em;box-shadow:0 4px 14px rgba(0,0,0,.25);cursor:pointer;display:none;align-items:center;justify-content:center;z-index:100}
+.tb.show{display:flex}
+.ft{text-align:center;padding:24px 16px;color:var(--muted);font-size:.81em}
+/* Study progress panel */
+.sp-wrap{background:var(--card);margin:16px 16px 0;border-radius:var(--r);box-shadow:var(--sh);overflow:hidden}
+.sp-hdr{background:var(--nt);color:#fff;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;user-select:none;-webkit-tap-highlight-color:transparent;gap:10px}
+.sp-hdr .sp-title{font-weight:700;font-size:.875em;flex-shrink:0}
+.sp-hdr .sp-arr{transition:transform .3s;flex-shrink:0}
+.sp-hdr.open .sp-arr{transform:rotate(180deg)}
+.sp-body{display:none;padding:12px 14px}
+.sp-body.open{display:block}
+.sp-row{display:flex;align-items:center;gap:10px;padding:6px 4px;border-bottom:1px solid #f0f4f8;font-size:.81em}
+.sp-row:last-child{border-bottom:none}
+.sp-row .sr-status{font-size:1em;flex-shrink:0;width:20px;text-align:center}
+.sp-row .sr-nb{font-weight:800;color:var(--nt);min-width:36px;flex-shrink:0;font-size:.875em}
+.sp-row .sr-ttl{color:var(--text);flex:1}
+.sp-row.done .sr-ttl{color:var(--muted);text-decoration:line-through}
+.sc-pills{display:flex;align-items:center;gap:4px;overflow-x:auto;-webkit-overflow-scrolling:touch;flex:1;padding:0 4px}
+.sc-pill{background:#30363d;color:#8b949e;border:2px solid transparent;border-radius:6px;padding:3px 8px;font-size:.72em;font-weight:700;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:all .15s;white-space:nowrap;flex-shrink:0;line-height:1.4;display:flex;align-items:center;gap:3px}
+.sc-pill.checked{background:var(--nt);color:#fff;border-color:var(--ntd)}
+.sc-pill .pill-check{font-size:.875em}
+
+/* v2.1 — In-section check button */
+.sh{position:relative}
+.sec-check{position:absolute;right:40px;top:50%;transform:translateY(-50%);background:rgba(255,255,255,.15);border:2px solid rgba(255,255,255,.4);border-radius:6px;padding:2px 10px;font-size:.72em;font-weight:800;color:#fff;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:all .2s;white-space:nowrap;z-index:10;line-height:1.5}
+.sec-check.checked{background:var(--ntd);border-color:var(--ntd);color:#052e1e}
+.sec-check:active{opacity:.75}
+/* Sections panel + tick colours (these pages never defined --nt/--ntd, so the panel header was invisible) */
+:root{--nt:#3d0010;--ntd:#4ade80}
+</style>
+<style>.bc{background:#0d1117;padding:8px 16px;display:flex;align-items:center;flex-wrap:wrap;gap:4px;font-size:.75em;overflow-x:auto;white-space:nowrap;-webkit-overflow-scrolling:touch;border-bottom:1px solid #21262d}.bc a{color:#8b949e;text-decoration:none;font-weight:600;flex-shrink:0}.bc a:active{color:#c9d1d9}.bc .sep{color:#6e7681;flex-shrink:0}.bc .cur{color:#1ba0d7;font-weight:700;flex-shrink:0}</style>
+</head>
+<body>
+<nav class="bc"><a href="../../index.html">🏠 Home</a><span class="sep">›</span><a href="index.html">CCNA 2 — SRWE</a><span class="sep">›</span><span class="cur">M10: LAN Security</span></nav>
+
+<!-- FONT SIZE TOGGLE -->
+<div class="fs-bar">
+  <div class="sc-pills" id="sc-pills">
+  <button class="sc-pill" id="pill-s1" onclick="toggleSection('s1',this)"><span class="pill-check">○</span>10.1</button>
+  <button class="sc-pill" id="pill-s2" onclick="toggleSection('s2',this)"><span class="pill-check">○</span>10.2</button>
+  <button class="sc-pill" id="pill-s3" onclick="toggleSection('s3',this)"><span class="pill-check">○</span>10.3</button>
+  <button class="sc-pill" id="pill-s4" onclick="toggleSection('s4',this)"><span class="pill-check">○</span>10.4</button>
+  <button class="sc-pill" id="pill-s5" onclick="toggleSection('s5',this)"><span class="pill-check">○</span>10.5</button>
+  <button class="sc-pill" id="pill-s6" onclick="toggleSection('s6',this)"><span class="pill-check">○</span>MAP</button>
+  <button class="sc-pill" id="pill-s7" onclick="toggleSection('s7',this)"><span class="pill-check">○</span>🎯</button>
+  </div>
+  <span class="fs-label" style="flex-shrink:0;margin-left:6px">Size</span>
+  <button class="fs-btn" onclick="setFs('14px',this)">S</button>
+  <button class="fs-btn active" onclick="setFs('16px',this)">M</button>
+  <button class="fs-btn" onclick="setFs('18px',this)">L</button>
+  <button class="fs-btn" onclick="setFs('20px',this)">XL</button>
+</div>
+
+<!-- HEADER -->
+<div class="hdr">
+  <div class="badge">CCNA 2 — SRWE v7.02</div>
+  <h1>🔒 Module 10: LAN Security Concepts</h1>
+  <p>Switching, Routing &amp; Wireless Essentials · NetAcad Study Guide</p>
+  <div class="obj">Module Objective: Explain how vulnerabilities compromise LAN security</div>
+</div>
+
+<div class="sp-wrap">
+  <div class="sp-hdr" id="sp-hdr" onclick="toggleStudyPanel()">
+    <span class="sp-title">📚 Sections</span>
+    <span class="sp-arr" id="sp-arr">▼</span>
+  </div>
+  <div class="sp-body" id="sp-body">
+    <div class="sp-row" id="row-s1"><span class="sr-status" id="st-s1">○</span><span class="sr-nb">10.1</span><span class="sr-ttl">Endpoint Security</span></div>
+    <div class="sp-row" id="row-s2"><span class="sr-status" id="st-s2">○</span><span class="sr-nb">10.2</span><span class="sr-ttl">Access Control</span></div>
+    <div class="sp-row" id="row-s3"><span class="sr-status" id="st-s3">○</span><span class="sr-nb">10.3</span><span class="sr-ttl">Layer 2 Security Threats</span></div>
+    <div class="sp-row" id="row-s4"><span class="sr-status" id="st-s4">○</span><span class="sr-nb">10.4</span><span class="sr-ttl">MAC Address Table Attack</span></div>
+    <div class="sp-row" id="row-s5"><span class="sr-status" id="st-s5">○</span><span class="sr-nb">10.5</span><span class="sr-ttl">LAN Attacks</span></div>
+    <div class="sp-row" id="row-s6"><span class="sr-status" id="st-s6">○</span><span class="sr-nb">MAP</span><span class="sr-ttl">Attack-to-Mitigation Master Table</span></div>
+    <div class="sp-row" id="row-s7"><span class="sr-status" id="st-s7">○</span><span class="sr-nb">🎯</span><span class="sr-ttl">Common Exam Traps — Module 10</span></div>
+  </div>
+</div>
+
+<!-- TABLE OF CONTENTS -->
+<div class="toc">
+  <div class="toch open" onclick="this.classList.toggle('open');document.getElementById('tocb').classList.toggle('open')">
+    📋 Table of Contents — Tap to expand <span class="arr">▼</span>
+  </div>
+  <div class="tocb open" id="tocb">
+    <div class="tocg">10.1 — Endpoint Security</div>
+    <a href="javascript:void(0)" onclick="goTo('s1')"><span class="n">10.1.1</span> Network Attacks Today</a>
+    <a href="javascript:void(0)" onclick="goTo('s1')"><span class="n">10.1.2</span> Network Security Devices</a>
+    <a href="javascript:void(0)" onclick="goTo('s1')"><span class="n">10.1.3</span> Endpoint Protection</a>
+    <a href="javascript:void(0)" onclick="goTo('s1')"><span class="n">10.1.4</span> Cisco Email Security Appliance (ESA)</a>
+    <a href="javascript:void(0)" onclick="goTo('s1')"><span class="n">10.1.5</span> Cisco Web Security Appliance (WSA)</a>
+    <div class="tocg">10.2 — Access Control</div>
+    <a href="javascript:void(0)" onclick="goTo('s2')"><span class="n">10.2.1</span> Authentication with a Local Password</a>
+    <a href="javascript:void(0)" onclick="goTo('s2')"><span class="n">10.2.2</span> AAA Components</a>
+    <a href="javascript:void(0)" onclick="goTo('s2')"><span class="n">10.2.3</span> Authentication — Local vs Server-Based</a>
+    <a href="javascript:void(0)" onclick="goTo('s2')"><span class="n">10.2.4</span> Authorization</a>
+    <a href="javascript:void(0)" onclick="goTo('s2')"><span class="n">10.2.5</span> Accounting</a>
+    <a href="javascript:void(0)" onclick="goTo('s2')"><span class="n">10.2.6</span> IEEE 802.1X</a>
+    <div class="tocg">10.3 — Layer 2 Security Threats</div>
+    <a href="javascript:void(0)" onclick="goTo('s3')"><span class="n">10.3.1</span> Layer 2 Vulnerabilities</a>
+    <a href="javascript:void(0)" onclick="goTo('s3')"><span class="n">10.3.2</span> Switch Attack Categories</a>
+    <a href="javascript:void(0)" onclick="goTo('s3')"><span class="n">10.3.3</span> Switch Attack Mitigation Techniques</a>
+    <div class="tocg">10.4 — MAC Address Table Attack</div>
+    <a href="javascript:void(0)" onclick="goTo('s4')"><span class="n">10.4.2</span> MAC Address Table Flooding</a>
+    <a href="javascript:void(0)" onclick="goTo('s4')"><span class="n">10.4.3</span> MAC Attack Mitigation</a>
+    <div class="tocg">10.5 — LAN Attacks</div>
+    <a href="javascript:void(0)" onclick="goTo('s5')"><span class="n">10.5.2</span> VLAN Hopping Attacks</a>
+    <a href="javascript:void(0)" onclick="goTo('s5')"><span class="n">10.5.3</span> VLAN Double-Tagging Attack</a>
+    <a href="javascript:void(0)" onclick="goTo('s5')"><span class="n">10.5.5</span> DHCP Attacks</a>
+    <a href="javascript:void(0)" onclick="goTo('s5')"><span class="n">10.5.7</span> ARP Attacks</a>
+    <a href="javascript:void(0)" onclick="goTo('s5')"><span class="n">10.5.8</span> Address Spoofing Attack</a>
+    <a href="javascript:void(0)" onclick="goTo('s5')"><span class="n">10.5.9</span> STP Attack</a>
+    <a href="javascript:void(0)" onclick="goTo('s5')"><span class="n">10.5.10</span> CDP Reconnaissance</a>
+    <div class="tocg">Reference</div>
+    <a href="javascript:void(0)" onclick="goTo('s6')"><span class="n">MAP</span> Attack-to-Mitigation Master Table</a>
+    <a href="javascript:void(0)" onclick="goTo('s7')"><span class="n">🎯</span> Common Exam Traps</a>
+  </div>
+</div>
+
+<div class="wrap">
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- SECTION 10.1 — ENDPOINT SECURITY -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div class="sec" id="s1">
+<div class="sh open" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">10.1</span><span class="ttl">Endpoint Security</span></span><button class="sec-check" id="sch-s1" onclick="event.stopPropagation();toggleSection('s1',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb open">
+
+  <div class="sub">
+  <h3><span class="sn">10.1.1</span> Network Attacks Today</h3>
+  <div class="tw"><table>
+    <tr><th>Attack Type</th><th>Description</th></tr>
+    <tr><td><strong>DDoS</strong></td><td>Coordinated attack from many compromised devices (zombies) that degrades or halts public access to an organization's website and resources</td></tr>
+    <tr><td><strong>Data Breach</strong></td><td>Attack where servers or hosts are compromised to steal confidential information</td></tr>
+    <tr><td><strong>Malware</strong></td><td>Hosts infected with malicious software. Example: ransomware like WannaCry encrypts data and demands payment before restoring access</td></tr>
+  </table></div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">10.1.2</span> Network Security Devices</h3>
+  <div class="attack-grid">
+    <div class="attack-card mac">
+      <div class="ac-title">VPN-Enabled Router</div>
+      <p>Provides a secure encrypted connection to remote users across a public network. VPN services can be integrated into the firewall. Ensures remote workers securely access the enterprise network.</p>
+    </div>
+    <div class="attack-card arp">
+      <div class="ac-title">NGFW — Next-Generation Firewall</div>
+      <p>Provides: stateful packet inspection, application visibility and control, next-generation IPS (NGIPS), advanced malware protection (AMP), and URL filtering.</p>
+    </div>
+    <div class="attack-card stp">
+      <div class="ac-title">NAC — Network Access Control</div>
+      <p>Includes AAA services — authentication, authorization, and accounting. Manages access policies across all user and device types. <strong>Cisco ISE (Identity Services Engine)</strong> is an example of a NAC device.</p>
+    </div>
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">10.1.3</span> Endpoint Protection</h3>
+  <p>Endpoints — laptops, desktops, servers, IP phones, and BYODs — are particularly susceptible to malware via email or web browsing. Traditional protection (antivirus, host firewalls, HIPS) is no longer sufficient alone.</p>
+  <p><strong>Modern best practice combines four technologies:</strong></p>
+  <ul>
+    <li><strong>NAC</strong> — controls which devices can connect to the network</li>
+    <li><strong>Host-based AMP</strong> — detects and blocks malware on the endpoint (e.g., Cisco AMP for Endpoints)</li>
+    <li><strong>ESA</strong> — filters malicious email before it reaches the user</li>
+    <li><strong>WSA</strong> — filters malicious web traffic before it reaches the user</li>
+  </ul>
+  <div class="ca danger">
+    <span class="ic">🚨</span>
+    <div>Many attacks originate <strong>inside</strong> the network. A compromised internal host can become a launching point for attacks on servers and sensitive data — bypassing perimeter defenses entirely.</div>
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">10.1.4</span> Cisco Email Security Appliance (ESA)</h3>
+  <p>The Cisco ESA monitors <strong>SMTP</strong> and filters email threats. Updated by real-time feeds from <strong>Cisco Talos</strong> — threat intelligence data is pulled every <strong>3 to 5 minutes</strong>.</p>
+  <div class="tw"><table>
+    <tr><th>ESA Function</th><th>Detail</th></tr>
+    <tr><td>Block known threats</td><td>Uses Cisco Talos threat intelligence updated every 3–5 minutes</td></tr>
+    <tr><td>Remediate stealth malware</td><td>Catches malware that evaded initial detection</td></tr>
+    <tr><td>Discard emails with bad links</td><td>URL reputation checking against known malicious sites</td></tr>
+    <tr><td>Block access to newly infected sites</td><td>Real-time URL analysis</td></tr>
+    <tr><td>Encrypt outgoing email</td><td>Prevents data loss via email exfiltration</td></tr>
+  </table></div>
+  <div class="ca warn">
+    <span class="ic">⚠️</span>
+    <div><strong>Spear phishing is the #1 threat vector:</strong> According to the SANS Institute, <strong>95% of all attacks on enterprise networks</strong> result from a successful spear phishing attack. The ESA is the primary technical defense.</div>
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">10.1.5</span> Cisco Web Security Appliance (WSA)</h3>
+  <p>The Cisco WSA controls and secures web-based traffic between users and the internet:</p>
+  <ul>
+    <li>Blacklisting of URLs and URL categorization</li>
+    <li>Malware scanning of web content</li>
+    <li>Web application filtering</li>
+    <li>Encryption and decryption of HTTPS web traffic</li>
+    <li>Acceptable use policy enforcement — restrict chat, video, audio by time or category</li>
+    <li>Reporting and visibility into all web activity</li>
+  </ul>
+  <div class="ca info">
+    <span class="ic">💡</span>
+    <div><strong>ESA vs WSA:</strong> ESA monitors and filters <strong>email (SMTP)</strong>. WSA monitors and filters <strong>web traffic (HTTP/HTTPS)</strong>. These are two separate appliances serving different purposes — both integrate with Cisco Talos threat intelligence.</div>
+  </div>
+  </div>
+
+</div></div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- SECTION 10.2 — ACCESS CONTROL -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div class="sec" id="s2">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">10.2</span><span class="ttl">Access Control</span></span><button class="sec-check" id="sch-s2" onclick="event.stopPropagation();toggleSection('s2',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb">
+
+  <div class="sub">
+  <h3><span class="sn">10.2.1</span> Authentication with a Local Password</h3>
+  <p>The simplest remote access method — but also the weakest:</p>
+  <ul>
+    <li>No accountability — no username is recorded in logs</li>
+    <li>Password sent in plaintext — anyone who intercepts the connection sees it</li>
+    <li>Anyone with the password gains full access</li>
+  </ul>
+  <div class="cw"><div class="cl">Weak: vty password (avoid in production) <button class="cpb" onclick="copyCode(this)">Copy</button></div>
+  <pre><code>R1(config)# line vty 0 4
+R1(config-line)# password ci5c0
+R1(config-line)# login</code></pre></div>
+  <div class="cw"><div class="cl">Better: SSH with local database <button class="cpb" onclick="copyCode(this)">Copy</button></div>
+  <pre><code>R1(config)# ip domain-name example.com
+R1(config)# crypto key generate rsa general-keys modulus 2048
+R1(config)# username Admin secret Str0ng3rPa55w0rd
+R1(config)# ssh version 2
+R1(config)# line vty 0 4
+R1(config-line)# transport input ssh
+R1(config-line)# login local</code></pre></div>
+  <div class="ca info">
+    <span class="ic">💡</span>
+    <div><strong>Limitations of local database authentication:</strong> Accounts must be configured individually on every device. No fallback if the admin forgets credentials. In large networks, a central AAA server solves both problems — one set of credentials applies to all devices.</div>
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">10.2.2</span> AAA Components</h3>
+  <p><strong>AAA = Authentication, Authorization, and Accounting</strong> — the primary framework for controlling access to network devices.</p>
+  <div class="tw"><table>
+    <tr><th>Component</th><th>Question It Answers</th><th>Credit Card Analogy</th></tr>
+    <tr><td><strong>Authentication</strong></td><td>Who are you? — verify identity</td><td>The card identifies who can use it</td></tr>
+    <tr><td><strong>Authorization</strong></td><td>What can you do? — governs allowed actions</td><td>How much the card allows to be spent</td></tr>
+    <tr><td><strong>Accounting</strong></td><td>What did you do? — logs all actions</td><td>The statement of what was purchased</td></tr>
+  </table></div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">10.2.3</span> Authentication — Local vs Server-Based + RADIUS vs TACACS+</h3>
+  <div class="tw"><table>
+    <tr><th></th><th>Local AAA</th><th>Server-Based AAA</th></tr>
+    <tr><td><strong>Where credentials stored</strong></td><td>On the router/switch itself</td><td>Central AAA server</td></tr>
+    <tr><td><strong>Best for</strong></td><td>Small networks — few devices</td><td>Large networks — multiple routers/switches</td></tr>
+    <tr><td><strong>Scalability</strong></td><td>Poor — must update every device</td><td>Excellent — change once, applies everywhere</td></tr>
+    <tr><td><strong>Protocol used</strong></td><td>Local database lookup</td><td>RADIUS or TACACS+</td></tr>
+  </table></div>
+
+  <h4>RADIUS vs TACACS+ — Expanded Comparison</h4>
+  <div class="aaa-compare">
+    <div class="aaa-card radius">
+      <div class="ac-hdr">RADIUS — Open Standard</div>
+      <div class="ac-body">
+        <strong>Standard:</strong> Open (RFC 2865) — works across vendors<br>
+        <strong>Transport:</strong> UDP (ports 1812/1813)<br>
+        <strong>Encryption:</strong> Encrypts <em>password only</em> — rest of packet is plaintext<br>
+        <strong>AAA handling:</strong> Combines Authentication + Authorization into one process<br>
+        <strong>Best for:</strong> Network access control — VPN, wireless, ISP dial-in<br>
+        <strong>Accounting:</strong> Full accounting support (port 1813)
+      </div>
+    </div>
+    <div class="aaa-card tacacs">
+      <div class="ac-hdr">TACACS+ — Cisco Proprietary</div>
+      <div class="ac-body">
+        <strong>Standard:</strong> Cisco proprietary — Cisco devices only<br>
+        <strong>Transport:</strong> TCP (port 49) — more reliable delivery<br>
+        <strong>Encryption:</strong> Encrypts <em>entire payload</em> — more secure<br>
+        <strong>AAA handling:</strong> Separates Authentication, Authorization, and Accounting independently<br>
+        <strong>Best for:</strong> Device administration — managing Cisco routers/switches<br>
+        <strong>Granularity:</strong> Command-level authorization (can permit/deny specific IOS commands)
+      </div>
+    </div>
+  </div>
+  <div class="et">
+    <div class="lbl">🎯 EXAM TIP — RADIUS vs TACACS+</div>
+    <strong>RADIUS</strong> = open standard, UDP, encrypts password only, combines Auth+Authz → best for <strong>network access</strong> (VPN, wireless users).<br><br>
+    <strong>TACACS+</strong> = Cisco proprietary, TCP, encrypts entire packet, separates AAA → best for <strong>device administration</strong> (managing Cisco routers and switches).<br><br>
+    Memory aid: <strong>T</strong>ACACS+ = <strong>T</strong>CP. <strong>R</strong>ADIUS = <strong>R</strong>FC (open standard).
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">10.2.4</span> Authorization</h3>
+  <p>After authentication, authorization determines <strong>what the user can and cannot do</strong>. It is automatic — the user performs no additional steps after logging in.</p>
+  <ul>
+    <li>The AAA server stores a set of attributes (permissions) per user</li>
+    <li>Router sends an authorization request to the AAA server</li>
+    <li>Server evaluates the request against the user's profile and returns PASS or FAIL</li>
+    <li>Example: a user may be allowed <code>show</code> commands but denied <code>configure terminal</code></li>
+  </ul>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">10.2.5</span> Accounting</h3>
+  <p>AAA accounting collects and logs all usage data for <strong>auditing, billing, and forensics</strong>. The AAA server maintains a detailed log including:</p>
+  <ul>
+    <li>Username and date/time of every login and logout</li>
+    <li>Every EXEC and configuration command executed</li>
+    <li>Connection start and stop times</li>
+    <li>Number of packets and bytes transferred</li>
+  </ul>
+  <div class="ca tip">
+    <span class="ic">✅</span>
+    <div>Accounting provides evidence when users perform malicious acts — it creates an audit trail of exactly what every authenticated user did on every device, timestamped and associated with a specific username.</div>
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">10.2.6</span> IEEE 802.1X</h3>
+  <p><strong>802.1X</strong> is a <strong>port-based access control and authentication protocol</strong>. The switch port remains in an unauthorized state — blocking all traffic except 802.1X authentication traffic — until the connected device successfully authenticates.</p>
+
+  <div class="dot1x-grid">
+    <div class="dot1x-card supplicant">
+      <div class="dx-role">Role 1 — Client</div>
+      <div class="dx-title">Supplicant</div>
+      <div class="dx-body">The end device requesting network access — PC, laptop, IP phone, or any device with 802.1X-compliant client software. Sends credentials when challenged by the authenticator.</div>
+    </div>
+    <div class="dot1x-card authenticator">
+      <div class="dx-role">Role 2 — Switch or Wireless AP</div>
+      <div class="dx-title">Authenticator</div>
+      <div class="dx-body">The intermediary between client and authentication server. Requests credentials from the client, forwards them to the RADIUS server, and enforces the server's access decision (open or block the port). The switch does NOT make the authentication decision itself.</div>
+    </div>
+    <div class="dot1x-card authserver">
+      <div class="dx-role">Role 3 — RADIUS Server</div>
+      <div class="dx-title">Authentication Server</div>
+      <div class="dx-body">Validates the client's identity and notifies the switch whether to grant or deny access. Example: Cisco Identity Services Engine (ISE). The server makes all access decisions — the switch simply enforces them.</div>
+    </div>
+  </div>
+
+  <div class="dg"><pre>
+  802.1X Process:
+  Client plugs into switch port
+    ↓
+  Switch port starts in UNAUTHORIZED state
+  (only 802.1X traffic allowed — all other traffic blocked)
+    ↓
+  Switch sends EAP-Request for client identity
+    ↓
+  Client sends EAP-Response with credentials
+    ↓
+  Switch forwards credentials to RADIUS authentication server
+    ↓
+  RADIUS server authenticates → returns Accept or Reject
+    ↓
+  Accept: switch opens the port (AUTHORIZED state)
+  Reject: switch keeps the port blocked</pre></div>
+  </div>
+
+</div></div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- SECTION 10.3 — LAYER 2 SECURITY THREATS -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div class="sec" id="s3">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">10.3</span><span class="ttl">Layer 2 Security Threats</span></span><button class="sec-check" id="sch-s3" onclick="event.stopPropagation();toggleSection('s3',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb">
+
+  <div class="sub">
+  <h3><span class="sn">10.3.1</span> Layer 2 Vulnerabilities</h3>
+  <p>Security is only as strong as the weakest link. <strong>Layer 2 is that weak link</strong> in the OSI model.</p>
+  <div class="ca danger">
+    <span class="ic">🚨</span>
+    <div><strong>If Layer 2 is compromised, ALL upper layers (3–7) are also compromised</strong> — regardless of what VPNs, firewalls, or IPS systems are implemented at those layers. A threat actor capturing Layer 2 frames bypasses all upper-layer security completely.</div>
+  </div>
+  <p>LANs were originally designed as trusted environments under a single organization's administrative control. BYOD and insider threats have changed this. Today, Layer 2 security must be actively implemented — it no longer can be assumed.</p>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">10.3.2</span> Switch Attack Categories</h3>
+  <div class="tw"><table>
+    <tr><th>Category</th><th>Examples</th></tr>
+    <tr><td><strong>MAC Table Attacks</strong></td><td>MAC address flooding (macof tool)</td></tr>
+    <tr><td><strong>VLAN Attacks</strong></td><td>VLAN hopping, VLAN double-tagging</td></tr>
+    <tr><td><strong>DHCP Attacks</strong></td><td>DHCP starvation (Gobbler), DHCP spoofing (rogue DHCP server)</td></tr>
+    <tr><td><strong>ARP Attacks</strong></td><td>ARP spoofing, ARP poisoning (man-in-the-middle)</td></tr>
+    <tr><td><strong>Address Spoofing Attacks</strong></td><td>MAC address spoofing, IP address spoofing</td></tr>
+    <tr><td><strong>STP Attacks</strong></td><td>STP manipulation — force attacker as root bridge</td></tr>
+  </table></div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">10.3.3</span> Switch Attack Mitigation Techniques</h3>
+  <div class="tw"><table>
+    <tr><th>Solution</th><th>Mitigates</th></tr>
+    <tr><td><strong>Port Security</strong></td><td>MAC address flooding attacks, DHCP starvation attacks</td></tr>
+    <tr><td><strong>DHCP Snooping</strong></td><td>DHCP starvation attacks, DHCP spoofing attacks</td></tr>
+    <tr><td><strong>Dynamic ARP Inspection (DAI)</strong></td><td>ARP spoofing attacks, ARP poisoning attacks</td></tr>
+    <tr><td><strong>IP Source Guard (IPSG)</strong></td><td>MAC address spoofing, IP address spoofing</td></tr>
+  </table></div>
+  <div class="ca warn">
+    <span class="ic">⚠️</span>
+    <div><strong>Layer 2 solutions only work if management protocols are also secured.</strong> Telnet, FTP, TFTP, SNMP, and Syslog are all insecure — use SSH, SCP, SFTP, and SSL/TLS instead. Also use a dedicated management VLAN and ACLs to restrict management access.</div>
+  </div>
+  </div>
+
+</div></div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- SECTION 10.4 — MAC ADDRESS TABLE ATTACK -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div class="sec" id="s4">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">10.4</span><span class="ttl">MAC Address Table Attack</span></span><button class="sec-check" id="sch-s4" onclick="event.stopPropagation();toggleSection('s4',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb">
+
+  <div class="sub">
+  <h3><span class="sn">10.4.2</span> MAC Address Table Flooding</h3>
+  <p>A switch's MAC address table has a <strong>fixed size</strong>. The MAC flooding attack exploits this by filling the table with fake entries until no space remains.</p>
+
+  <ol class="steps">
+    <li>Threat actor runs <strong>macof</strong> — a tool that generates up to <strong>8,000 fake random source MAC address frames per second</strong></li>
+    <li>The MAC address table fills completely — the switch runs out of memory for new entries</li>
+    <li>The switch can no longer look up destination MACs — treats all frames as unknown unicast</li>
+    <li>Switch begins <strong>flooding all frames out all ports</strong> on the same VLAN — behaves like a hub</li>
+    <li>Threat actor runs a packet sniffer — captures all traffic from every device on the VLAN</li>
+  </ol>
+
+  <div class="cw"><div class="cl">show mac address-table dynamic — normal table before attack <button class="cpb" onclick="copyCode(this)">Copy</button></div>
+  <pre><code>S1# show mac address-table dynamic
+          Mac Address Table
+-------------------------------------------
+Vlan    Mac Address       Type        Ports
+----    -----------       --------    -----
+   1    0001.9717.22e0    DYNAMIC     Fa0/4
+   1    000a.f38e.74b3    DYNAMIC     Fa0/1
+   1    0090.0c23.ceca    DYNAMIC     Fa0/3
+   1    00d0.ba07.8499    DYNAMIC     Fa0/2
+! After macof attack: table is full of fake entries
+! Switch floods ALL subsequent frames out every port on VLAN 1</code></pre></div>
+
+  <div class="ca warn">
+    <span class="ic">⚠️</span>
+    <div><strong>Attack scope is limited to the local VLAN.</strong> The threat actor can only capture traffic on the VLAN they are connected to. Traffic on other VLANs is not exposed. A Catalyst 6500 holds 132,000 MAC entries — <code>macof</code> can overflow it in seconds.</div>
+  </div>
+  <div class="ca info">
+    <span class="ic">💡</span>
+    <div><strong>If macof stops running</strong>, the switch ages out the fake entries (default 5 minutes) and resumes normal forwarding. The attack must run continuously to maintain the flooded state.</div>
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">10.4.3</span> MAC Address Table Attack Mitigation</h3>
+  <p><strong>Port Security</strong> limits the number of source MAC addresses learned on a port. If the limit is exceeded, additional MACs trigger a violation action — the frame is dropped or the port shuts down. This cuts the attack off at the source because the threat actor cannot fill the table from one port.</p>
+  <div class="ca tip">
+    <span class="ic">✅</span>
+    <div>Port Security configuration is covered in detail in Module 11. The key concept here: Port Security directly prevents MAC table flooding by limiting how many MAC addresses can be associated with any single switch port.</div>
+  </div>
+  </div>
+
+</div></div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- SECTION 10.5 — LAN ATTACKS -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div class="sec" id="s5">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">10.5</span><span class="ttl">LAN Attacks</span></span><button class="sec-check" id="sch-s5" onclick="event.stopPropagation();toggleSection('s5',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb">
+
+  <div class="sub">
+  <h3><span class="sn">10.5.2</span> VLAN Hopping Attacks</h3>
+  <p><strong>Goal:</strong> Send traffic to another VLAN without going through a router — by tricking the switch into forming a trunk link with the attacker's device.</p>
+  <div class="dg"><pre>
+  Default behavior (DTP auto-trunking enabled):
+  Threat actor's host ──── Switch port (DTP: auto)
+  
+  Attack:
+  Threat actor spoofs 802.1Q + DTP signaling
+    ↓
+  Switch negotiates trunk link with attacker's host
+    ↓
+  Attacker now has access to ALL VLANs on the switch
+    ↓
+  Can send and receive traffic on any VLAN without routing</pre></div>
+  <p><strong>Mitigation:</strong></p>
+  <ul>
+    <li>Disable trunking on all access ports: <code>switchport mode access</code></li>
+    <li>Disable DTP (auto-trunking): <code>switchport nonegotiate</code></li>
+    <li>Manually configure trunk ports: <code>switchport mode trunk</code></li>
+    <li>Ensure native VLAN is only used for trunk links</li>
+  </ul>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">10.5.3</span> VLAN Double-Tagging Attack</h3>
+  <p><strong>Goal:</strong> Deliver a frame to a target VLAN that the attacker is not a member of, by embedding a hidden inner 802.1Q tag inside an outer tag.</p>
+  <p><strong>Requirement:</strong> Attacker must be connected to a port in the <strong>same VLAN as the native VLAN of the trunk port</strong>.</p>
+
+  <div class="dtag-flow">
+    <div class="df-title">📦 Double-Tagging Attack — Step by Step</div>
+    <div class="dtag-step"><div class="dn">1</div><div>Threat actor (on native VLAN 10) sends a frame with <strong>two 802.1Q tags</strong>: outer tag = VLAN 10 (native), inner tag = VLAN 20 (target victim VLAN)</div></div>
+    <div class="dtag-step"><div class="dn">2</div><div><strong>First switch</strong> sees outer tag = VLAN 10 (native VLAN). Native VLAN frames are <em>not re-tagged</em> when forwarded — switch strips the outer VLAN 10 tag and forwards the frame. The inner VLAN 20 tag is still intact and has not been inspected.</div></div>
+    <div class="dtag-step"><div class="dn">3</div><div><strong>Second switch</strong> receives the frame. It has no knowledge of the original outer tag. It sees only the inner VLAN 20 tag — the attacker's planted tag. Switch forwards the frame to VLAN 20 hosts.</div></div>
+    <div class="dtag-step"><div class="dn">4</div><div>Target host on VLAN 20 receives the attacker's frame. The attack succeeds — traffic crossed from VLAN 10 to VLAN 20 without routing.</div></div>
+  </div>
+
+  <div class="ca danger">
+    <span class="ic">🚨</span>
+    <div><strong>Critical limitation — this attack is UNIDIRECTIONAL.</strong> The attacker can send TO VLAN 20 but CANNOT receive traffic back. Return traffic is addressed normally within VLAN 20 and never crosses back to the attacker's native VLAN. The attacker can deliver payloads but cannot establish a true two-way session through this mechanism alone.</div>
+  </div>
+
+  <div class="dg"><pre>
+  WHY it's unidirectional:
+  
+  Attacker frame (double-tagged) → Victim VLAN 20 ✅
+  
+  Victim reply → Victim's default gateway → routing table → VLAN 10
+  But reply is sent normally (single tag VLAN 20 or via router)
+  The reply NEVER reaches the attacker's VLAN 10 port via this mechanism ❌
+  
+  The path only works in one direction because:
+  - Only the attacker controls the double-tagging
+  - Return traffic from VLAN 20 uses normal single-tag routing
+  - No mechanism sends VLAN 20 traffic back into native VLAN 10</pre></div>
+
+  <p><strong>Mitigation (same as VLAN hopping):</strong></p>
+  <ul>
+    <li>Change the native VLAN to an unused VLAN — never use the default native VLAN (VLAN 1) on trunk ports</li>
+    <li>Disable trunking on all access ports</li>
+    <li>Manually configure all trunk ports — disable DTP</li>
+  </ul>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">10.5.5</span> DHCP Attacks — Starvation vs Spoofing</h3>
+
+  <div class="dhcp-compare">
+    <div class="dhcp-card starv">
+      <div class="dc-title">🔴 DHCP Starvation Attack — Denial of Service</div>
+      <ul>
+        <li><strong>Tool used:</strong> Gobbler</li>
+        <li><strong>Method:</strong> Sends thousands of DHCP DISCOVER messages with <em>fake/random MAC addresses</em></li>
+        <li><strong>Effect:</strong> Legitimate DHCP server leases IPs to all fake requests — <strong>IP address pool exhausted</strong></li>
+        <li><strong>Result:</strong> Legitimate clients broadcast DHCP DISCOVER but receive no response — no IP address assigned</li>
+        <li><strong>This is a DoS attack</strong> — not a man-in-the-middle</li>
+        <li><strong>Mitigation:</strong> DHCP Snooping (rate-limits DHCP messages per port) + Port Security (limits MACs per port)</li>
+      </ul>
+    </div>
+    <div class="dhcp-card spoof">
+      <div class="dc-title">🟣 DHCP Spoofing Attack — Man-in-the-Middle</div>
+      <ul>
+        <li><strong>Tool:</strong> Rogue DHCP server connected to network</li>
+        <li><strong>Method:</strong> Rogue server races the legitimate server to respond first to DHCP DISCOVER</li>
+        <li><strong>If rogue server wins:</strong> Client accepts rogue configuration containing:</li>
+        <li style="margin-left:16px"><strong>Wrong default gateway</strong> → all client traffic flows through attacker (MitM)</li>
+        <li style="margin-left:16px"><strong>Wrong DNS server</strong> → redirects users to malicious websites</li>
+        <li style="margin-left:16px"><strong>Wrong IP address</strong> → DoS for the affected client</li>
+        <li><strong>Mitigation:</strong> DHCP Snooping — marks ports as trusted (server-facing) or untrusted (client-facing); drops DHCP responses on untrusted ports</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="et">
+    <div class="lbl">🎯 STARVATION vs SPOOFING — KEY DISTINCTION</div>
+    <strong>Starvation</strong> = exhaust the DHCP address pool → <strong>Denial of Service</strong> (clients get no IP)<br>
+    <strong>Spoofing</strong> = provide false configuration → <strong>Man-in-the-Middle</strong> (clients get wrong gateway/DNS)<br><br>
+    Both are mitigated by DHCP Snooping — but they are completely different attacks with different goals. Starvation uses fake <em>client</em> MACs. Spoofing uses a fake <em>server</em>.
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">10.5.7</span> ARP Attacks — Spoofing and Poisoning</h3>
+  <p>ARP has <strong>no authentication mechanism</strong>. Any host can send an unsolicited ARP Reply (called a <strong>gratuitous ARP</strong>) claiming any IP-to-MAC mapping, and all hosts that receive it will update their ARP cache without question.</p>
+
+  <ol class="steps">
+    <li><strong>Normal state:</strong> All hosts have correct ARP caches — PC1 knows router R1's real MAC, R1 knows PC1's real MAC</li>
+    <li><strong>Threat actor sends gratuitous ARP — spoofing:</strong> Sends two unsolicited ARP Replies: "MAC address for 10.0.0.1 (R1/gateway) = CC:CC:CC (attacker's MAC)" and "MAC address for 10.0.0.11 (PC1) = CC:CC:CC (attacker's MAC)"</li>
+    <li><strong>ARP cache poisoning:</strong> All hosts update their ARP caches with the false mappings — R1 and PC1 now think the attacker's MAC belongs to each other</li>
+    <li><strong>Man-in-the-middle established:</strong> All traffic between PC1 and R1 now flows through the attacker, who can capture, read, and modify it before forwarding</li>
+  </ol>
+
+  <div class="dg"><pre>
+  Before attack:
+  PC1 ARP cache:  10.0.0.1 → AA:AA:AA (R1's real MAC) ✅
+  R1 ARP cache:   10.0.0.11 → BB:BB:BB (PC1's real MAC) ✅
+
+  After ARP poisoning:
+  PC1 ARP cache:  10.0.0.1 → CC:CC:CC (attacker's MAC) ❌
+  R1 ARP cache:   10.0.0.11 → CC:CC:CC (attacker's MAC) ❌
+
+  Result:
+  PC1 sends traffic to "gateway" → actually goes to attacker
+  R1 sends traffic to "PC1" → actually goes to attacker
+  Attacker reads/modifies all traffic and forwards it → neither side notices</pre></div>
+
+  <div class="ca tip">
+    <span class="ic">✅</span>
+    <div><strong>ARP spoofing vs ARP poisoning:</strong> These are two stages of the same attack. <strong>Spoofing</strong> = sending the fake gratuitous ARP. <strong>Poisoning</strong> = the resulting state — the victim's ARP cache now has incorrect entries. <strong>Mitigation: Dynamic ARP Inspection (DAI)</strong> — validates ARP packets against a DHCP snooping binding table before updating the ARP cache.</div>
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">10.5.8</span> Address Spoofing Attack</h3>
+  <h4>IP Address Spoofing</h4>
+  <p>Threat actor hijacks a valid IP address belonging to another device on the subnet, or uses a random IP from the same subnet. Difficult to detect because the forged IP appears to belong to a legitimate host. Mitigation: <strong>IPSG (IP Source Guard)</strong>.</p>
+
+  <h4>MAC Address Spoofing</h4>
+  <p>Threat actor changes their NIC's MAC address to match a known target device's MAC address. The switch receives frames with the spoofed MAC and updates its MAC table — mapping that MAC to the attacker's port. All traffic destined for the legitimate device is now forwarded to the attacker.</p>
+  <div class="ca danger">
+    <span class="ic">🚨</span>
+    <div><strong>Layer 2 has no mechanism to verify the source of MAC addresses.</strong> The switch blindly trusts whatever MAC address appears in the source field of a frame. This is an inherent architectural vulnerability — no switch feature can detect MAC spoofing at the hardware level alone. IPSG is required to mitigate this.</div>
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">10.5.9</span> STP Attack</h3>
+  <p><strong>Goal:</strong> Force the attacker's host to become the STP root bridge — capturing all traffic in the switched domain.</p>
+
+  <ol class="steps">
+    <li>Threat actor sends crafted BPDUs advertising a very low (or zero) bridge priority — lower than any legitimate switch in the network</li>
+    <li>STP election process sees this lower priority and elects the attacker's host as the new root bridge</li>
+    <li>STP recalculates the entire topology with the attacker's host as the central reference point</li>
+    <li>All traffic in the switched domain now flows through the attacker's host — enabling capture, modification, or redirection of all frames</li>
+  </ol>
+
+  <div class="dg"><pre>
+  Before STP attack:
+  S1 (priority 4096) = root bridge — legitimate
+  S2, S3 calculate paths toward S1
+
+  During STP attack:
+  Attacker sends BPDUs with priority 0
+  STP election: 0 &lt; 4096 → attacker wins!
+  New topology: all switches recalculate paths toward attacker's host
+  All traffic now passes through the attacker</pre></div>
+
+  <div class="ca tip">
+    <span class="ic">✅</span>
+    <div><strong>Mitigation: BPDU Guard on all access ports.</strong> Access ports connected to end devices should never receive BPDUs — only switches send BPDUs. BPDU Guard immediately err-disables any port that receives a BPDU, preventing the attacker's host from participating in STP elections.</div>
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">10.5.10</span> CDP Reconnaissance</h3>
+  <p><strong>CDP (Cisco Discovery Protocol)</strong> is enabled by default on all Cisco devices. It sends periodic, <strong>unencrypted, unauthenticated broadcasts</strong> containing:</p>
+  <ul>
+    <li>Device IP address</li>
+    <li><strong>Exact IOS software version</strong> (including minor release number)</li>
+    <li>Device model and platform</li>
+    <li>Device capabilities (router, switch, etc.)</li>
+    <li>Native VLAN</li>
+  </ul>
+  <div class="ca danger">
+    <span class="ic">🚨</span>
+    <div><strong>The IOS version is the most dangerous disclosure.</strong> An attacker connected to a Cisco device receives CDP broadcasts automatically. The exact IOS version number allows the attacker to look up every known vulnerability for that specific version — without needing any credentials.</div>
+  </div>
+
+  <div class="cw"><div class="cl">CDP and LLDP mitigation commands <button class="cpb" onclick="copyCode(this)">Copy</button></div>
+  <pre><code>! Disable CDP globally (all ports stop sending/receiving CDP):
+Switch(config)# no cdp run
+
+! Re-enable CDP globally:
+Switch(config)# cdp run
+
+! Disable CDP on a specific interface (untrusted edge ports):
+Switch(config)# interface fa0/1
+Switch(config-if)# no cdp enable
+
+! Re-enable CDP on a specific interface:
+Switch(config-if)# cdp enable
+
+! LLDP (Link Layer Discovery Protocol — vendor-neutral equivalent of CDP)
+! is ALSO vulnerable to reconnaissance attacks:
+Switch(config)# no lldp run               ! Disable LLDP globally
+Switch(config-if)# no lldp transmit       ! Disable LLDP transmit on this port
+Switch(config-if)# no lldp receive        ! Disable LLDP receive on this port</code></pre></div>
+
+  <div class="ca info">
+    <span class="ic">💡</span>
+    <div><strong>Best practice:</strong> Disable CDP on all edge ports connecting to untrusted devices or users. Keep CDP enabled on internal network ports where it is used for legitimate network management and troubleshooting. LLDP should also be disabled on untrusted ports.</div>
+  </div>
+  </div>
+
+</div></div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- SECTION 10.6 — ATTACK-TO-MITIGATION MASTER TABLE -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div class="sec" id="s6">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">MAP</span><span class="ttl">Attack-to-Mitigation Master Table</span></span><button class="sec-check" id="sch-s6" onclick="event.stopPropagation();toggleSection('s6',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb">
+
+  <div class="tw master-table"><table>
+    <tr><th>Attack</th><th>Tool / Method</th><th>Result</th><th>Mitigation</th></tr>
+    <tr><td><strong>MAC flooding</strong></td><td>macof (8,000 fake MACs/sec)</td><td>Switch floods all frames — traffic exposed</td><td>Port Security</td></tr>
+    <tr><td><strong>DHCP starvation</strong></td><td>Gobbler (fake DISCOVER with random MACs)</td><td>DHCP pool exhausted — DoS for legitimate clients</td><td>DHCP Snooping + Port Security</td></tr>
+    <tr><td><strong>DHCP spoofing</strong></td><td>Rogue DHCP server</td><td>Wrong gateway/DNS → MitM or DoS</td><td>DHCP Snooping (trusted/untrusted ports)</td></tr>
+    <tr><td><strong>ARP spoofing / poisoning</strong></td><td>Gratuitous ARP (dsniff, ettercap)</td><td>ARP cache poisoned → MitM attack</td><td>Dynamic ARP Inspection (DAI)</td></tr>
+    <tr><td><strong>MAC address spoofing</strong></td><td>NIC MAC changed to target's MAC</td><td>Switch forwards target's traffic to attacker</td><td>IP Source Guard (IPSG)</td></tr>
+    <tr><td><strong>IP address spoofing</strong></td><td>Forge source IP in packets</td><td>Traffic sent from hijacked IP identity</td><td>IP Source Guard (IPSG)</td></tr>
+    <tr><td><strong>STP manipulation</strong></td><td>Crafted BPDUs with low priority</td><td>Attacker becomes root bridge — captures all traffic</td><td>BPDU Guard (err-disables port on BPDU receipt)</td></tr>
+    <tr><td><strong>VLAN hopping</strong></td><td>DTP spoofing — form trunk with switch</td><td>Access to all VLANs on switch</td><td>Disable DTP (switchport nonegotiate), force access mode</td></tr>
+    <tr><td><strong>VLAN double-tagging</strong></td><td>Double 802.1Q tags on frame</td><td>Frame delivered to target VLAN (unidirectional)</td><td>Change native VLAN, disable DTP, manual trunk config</td></tr>
+    <tr><td><strong>CDP reconnaissance</strong></td><td>Passive CDP listening / crafted CDP frames</td><td>IOS version, IP, topology exposed</td><td>no cdp enable on untrusted ports</td></tr>
+  </table></div>
+
+  <p style="font-weight:700;color:#3d0010;margin:16px 0 8px;">Security Solution Summary</p>
+  <div class="tw"><table>
+    <tr><th>Solution</th><th>What It Prevents</th></tr>
+    <tr><td><strong>Port Security</strong></td><td>MAC flooding, DHCP starvation (by limiting MACs per port)</td></tr>
+    <tr><td><strong>DHCP Snooping</strong></td><td>DHCP starvation, DHCP spoofing (trusted/untrusted port model)</td></tr>
+    <tr><td><strong>DAI (Dynamic ARP Inspection)</strong></td><td>ARP spoofing, ARP poisoning, man-in-the-middle via ARP</td></tr>
+    <tr><td><strong>IPSG (IP Source Guard)</strong></td><td>IP address spoofing, MAC address spoofing</td></tr>
+    <tr><td><strong>BPDU Guard</strong></td><td>STP attacks — rogue root bridge via crafted BPDUs</td></tr>
+    <tr><td><strong>802.1X</strong></td><td>Unauthorized device access to switch ports</td></tr>
+  </table></div>
+
+</div></div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- SECTION 10.7 — EXAM TRAPS -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div class="sec" id="s7">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">🎯</span><span class="ttl">Common Exam Traps — Module 10</span></span><button class="sec-check" id="sch-s7" onclick="event.stopPropagation();toggleSection('s7',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb">
+
+  <div class="ca danger"><span class="ic">❌</span><div><strong>Trap 1: Layer 2 compromise bypasses ALL upper-layer security.</strong><br>If a threat actor captures Layer 2 frames, VPNs, firewalls, and IPS systems at Layer 3–7 are useless. Layer 2 security is foundational — not optional.</div></div>
+
+  <div class="ca danger"><span class="ic">❌</span><div><strong>Trap 2: MAC flooding makes the switch behave like a hub — it does NOT go offline.</strong><br>The switch keeps running but floods all frames because it can't look up destination MACs. Flooding is limited to the local VLAN. The attacker captures all traffic on that VLAN with a packet sniffer.</div></div>
+
+  <div class="ca danger"><span class="ic">❌</span><div><strong>Trap 3: DHCP starvation and DHCP spoofing are different attacks.</strong><br>Starvation = exhaust the IP pool → DoS (clients get no IP). Spoofing = rogue DHCP server → clients get wrong gateway/DNS → MitM or DoS. Both mitigated by DHCP Snooping but they are completely different in mechanism and goal.</div></div>
+
+  <div class="ca danger"><span class="ic">❌</span><div><strong>Trap 4: VLAN double-tagging is UNIDIRECTIONAL.</strong><br>The attacker can send TO the target VLAN but cannot receive traffic back through this mechanism. Return traffic from the victim VLAN uses normal routing and never crosses back to the attacker's native VLAN. This is a critical limitation the exam tests directly.</div></div>
+
+  <div class="ca danger"><span class="ic">❌</span><div><strong>Trap 5: Gratuitous ARPs are legitimate — but attackers abuse them.</strong><br>Gratuitous ARPs are unsolicited ARP Replies that hosts use legitimately (e.g., to announce a new IP after reconfiguration). The problem: there is NO verification mechanism. Any host can claim any IP-to-MAC mapping and all devices on the subnet will update their ARP caches.</div></div>
+
+  <div class="ca danger"><span class="ic">❌</span><div><strong>Trap 6: ARP spoofing and ARP poisoning are two stages — not two separate attacks.</strong><br>Spoofing = sending the fake gratuitous ARP (the action). Poisoning = the resulting corrupted ARP cache (the outcome). The exam uses both terms — know that they refer to the same attack at different stages. Both mitigated by DAI.</div></div>
+
+  <div class="ca danger"><span class="ic">❌</span><div><strong>Trap 7: STP attack uses low bridge priority — not high.</strong><br>In STP, lower priority wins the root bridge election. The attacker sends BPDUs with priority 0 (lowest possible) to guarantee election as root bridge. Once elected, all traffic passes through the attacker's host.</div></div>
+
+  <div class="ca danger"><span class="ic">❌</span><div><strong>Trap 8: CDP is enabled by default on ALL Cisco devices.</strong><br>CDP broadcasts are sent on every Cisco interface by default — unencrypted and unauthenticated. The exact IOS version is included, allowing attackers to identify known vulnerabilities without any credentials. Disable with <code>no cdp enable</code> on untrusted ports.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 9: RADIUS vs TACACS+.</strong><br>RADIUS = open standard, UDP, encrypts password only → network access (VPN, wireless). TACACS+ = Cisco proprietary, TCP, encrypts entire packet, separates AAA → device administration (Cisco routers/switches). Wrong answer on this distinction is very common.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 10: 802.1X — the switch does NOT make the authentication decision.</strong><br>The switch is the <em>authenticator</em> (intermediary) — it passes credentials to the RADIUS server and enforces the server's decision. The RADIUS/authentication server makes all access decisions. Three roles: Supplicant (client), Authenticator (switch/AP), Authentication Server (RADIUS).</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 11: ESA monitors SMTP (email). WSA monitors HTTP/HTTPS (web).</strong><br>Two separate appliances with different functions. ESA = email filtering and security. WSA = web traffic filtering and security. Both integrate with Cisco Talos threat intelligence updated every 3–5 minutes.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 12: Cisco Talos updates ESA every 3–5 minutes.</strong><br>The specific time interval (3–5 minutes) is a direct exam question. This rapid update cycle is what makes the ESA effective against new and evolving threats.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 13: MAC flooding scope is limited to the local VLAN.</strong><br>VLAN segmentation still provides protection even during a flooding attack. The attacker can only see traffic within the VLAN they are connected to — not traffic on other VLANs.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 14: VLAN double-tagging requires the attacker to be on the native VLAN.</strong><br>The attack only works when the attacker's port is in the same VLAN as the native VLAN of the trunk port. Changing the native VLAN to an unused VLAN prevents this attack entirely.</div></div>
+
+  <div class="ca tip"><span class="ic">✅</span><div><strong>Quick attack-to-mitigation memory map:</strong><br><br>
+  MAC flooding → <strong>Port Security</strong><br>
+  DHCP attacks (both) → <strong>DHCP Snooping</strong><br>
+  ARP attacks → <strong>DAI (Dynamic ARP Inspection)</strong><br>
+  IP/MAC spoofing → <strong>IPSG (IP Source Guard)</strong><br>
+  STP attacks → <strong>BPDU Guard</strong><br>
+  VLAN hopping/double-tagging → <strong>Disable DTP, change native VLAN</strong><br>
+  CDP reconnaissance → <strong>no cdp enable on untrusted ports</strong><br>
+  Unauthorized device access → <strong>802.1X</strong></div></div>
+
+</div></div>
+
+</div><!-- end .wrap -->
+
+<div class="ft">
+  CCNA 2 SRWE v7.02 — Module 10: LAN Security Concepts v1.4<br>
+  Based on Cisco NetAcad curriculum · Study guide for personal use
+</div>
+
+<button class="tb" id="topb" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+
+<script>
+var MOD_KEY="ccna2-module10-lan-security-concepts";
+var SECS=["s1","s2","s3","s4","s5","s6","s7"];
+var checked={};
+function loadState(){
+  try{var s=localStorage.getItem(MOD_KEY);if(s)checked=JSON.parse(s);}catch(e){}
+  SECS.forEach(function(id){
+    var pill=document.getElementById('pill-'+id);
+    var row=document.getElementById('row-'+id);
+    var st=document.getElementById('st-'+id);
+    var sch=document.getElementById('sch-'+id);
+    if(checked[id]){
+      if(pill){pill.classList.add('checked');pill.querySelector('.pill-check').textContent='✓';}
+      if(row)row.classList.add('done');
+      if(st)st.textContent='✓';
+      if(sch){sch.classList.add('checked');sch.textContent='✓ Done';}
+    } else {
+      if(pill){pill.classList.remove('checked');pill.querySelector('.pill-check').textContent='○';}
+      if(row)row.classList.remove('done');
+      if(st)st.textContent='○';
+      if(sch){sch.classList.remove('checked');sch.textContent='○ Mark done';}
+    }
+  });
+}
+function toggleSection(id,btn){checked[id]=!checked[id];try{localStorage.setItem(MOD_KEY,JSON.stringify(checked));}catch(e){}loadState();}
+function toggleStudyPanel(){
+  var hdr=document.getElementById('sp-hdr');
+  var body=document.getElementById('sp-body');
+  var arr=document.getElementById('sp-arr');
+  hdr.classList.toggle('open');body.classList.toggle('open');
+  if(arr)arr.textContent=body.classList.contains('open')?'▲':'▼';
+}
+function goTo(id){var el=document.getElementById(id);if(!el)return;var h=el.querySelector('.sh,.section-header'),b=el.querySelector('.sb,.section-body');if(h&&b&&!b.classList.contains('open')){h.classList.add('open');b.classList.add('open');}setTimeout(function(){window.scrollTo({top:el.getBoundingClientRect().top+window.pageYOffset-60,behavior:'smooth'});},50);}
+function setFs(size,btn){document.documentElement.style.setProperty('--base-fs',size);document.querySelectorAll('.fs-btn').forEach(function(b){b.classList.remove('active');});btn.classList.add('active');try{localStorage.setItem('ccna-fs',size);}catch(e){}}
+(function(){try{var s=localStorage.getItem('ccna-fs');if(s){document.documentElement.style.setProperty('--base-fs',s);document.querySelectorAll('.fs-btn').forEach(function(b){b.classList.remove('active');if((b.textContent==='S'&&s==='14px')||(b.textContent==='M'&&s==='16px')||(b.textContent==='L'&&s==='18px')||(b.textContent==='XL'&&s==='20px'))b.classList.add('active');});}}catch(e){}loadState();})();
+function copyCode(b){var t=b.closest('.cw').querySelector('pre').innerText;if(navigator.clipboard){navigator.clipboard.writeText(t).then(function(){b.textContent='Copied!';setTimeout(function(){b.textContent='Copy';},1500);}).catch(function(){fb(t,b);});}else{fb(t,b);}}
+function fb(t,b){var a=document.createElement('textarea');a.value=t;a.style.position='fixed';a.style.opacity='0';document.body.appendChild(a);a.focus();a.select();document.execCommand('copy');document.body.removeChild(a);b.textContent='Copied!';setTimeout(function(){b.textContent='Copy';},1500);}
+</script>
+<script src="../../site-config.js"></script>
+</body>
+</html>

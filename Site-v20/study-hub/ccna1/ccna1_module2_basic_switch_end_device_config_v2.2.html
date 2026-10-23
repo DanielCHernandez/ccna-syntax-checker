@@ -1,0 +1,966 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=2.0">
+<title>CCNA 1 Module 2: Basic Switch and End Device Configuration v2.2</title>
+<style>
+:root{
+  --nt:#0a6e4e;--ntd:#4ade80;--nt2:#052e1e;--nt3:#021710;
+  --bg:#f4f6f8;--card:#fff;--text:#1a1a2e;--muted:#5a6a7a;
+  --cbg:#0d1117;--ctxt:#c9d1d9;--r:12px;--sh:0 2px 12px rgba(0,0,0,.08);
+  --base-fs:20px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);font-size:var(--base-fs);line-height:1.7}
+.bc{background:#0d1117;padding:8px 16px;display:flex;align-items:center;flex-wrap:wrap;gap:4px;font-size:.75em;overflow-x:auto;white-space:nowrap;-webkit-overflow-scrolling:touch;border-bottom:1px solid #21262d}
+.bc a{color:#8b949e;text-decoration:none;font-weight:600;flex-shrink:0}
+.bc .sep{color:#6e7681;flex-shrink:0}
+.bc .cur{color:var(--ntd);font-weight:700;flex-shrink:0}
+.fs-bar{position:sticky;top:0;z-index:200;background:#1a1a2e;display:flex;align-items:center;justify-content:flex-end;padding:6px 14px;gap:6px;box-shadow:0 2px 8px rgba(0,0,0,.3)}
+.fs-label{color:#8b949e;font-size:.72em;font-weight:700;letter-spacing:.5px;text-transform:uppercase;margin-right:4px}
+.fs-btn{background:#30363d;color:#c9d1d9;border:2px solid transparent;border-radius:6px;padding:4px 12px;font-size:.75em;font-weight:700;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:all .2s;line-height:1.4}
+.fs-btn:active,.fs-btn.active{background:var(--nt);color:#fff;border-color:var(--ntd)}
+.hdr{background:linear-gradient(135deg,var(--nt3),var(--nt2),var(--nt));color:#fff;padding:32px 20px 24px;text-align:center}
+.hdr .badge{display:inline-block;background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.4);border-radius:20px;padding:4px 14px;font-size:.81em;margin-bottom:12px}
+.hdr h1{font-size:1.5em;font-weight:700;margin-bottom:6px}
+.hdr p{font-size:.94em;opacity:.85}
+.hdr .obj{display:inline-block;background:rgba(255,255,255,.15);border-radius:8px;padding:7px 16px;margin-top:12px;font-size:.875em;font-style:italic}
+/* Study progress panel */
+.sp-wrap{background:var(--card);margin:16px 16px 0;border-radius:var(--r);box-shadow:var(--sh);overflow:hidden}
+.sp-hdr{background:var(--nt);color:#fff;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;user-select:none;-webkit-tap-highlight-color:transparent;gap:10px}
+.sp-hdr .sp-title{font-weight:700;font-size:.875em;flex-shrink:0}
+.sp-hdr .sp-arr{transition:transform .3s;flex-shrink:0}
+.sp-hdr.open .sp-arr{transform:rotate(180deg)}
+.sp-body{display:none;padding:12px 14px}
+.sp-body.open{display:block}
+.sp-row{display:flex;align-items:center;gap:10px;padding:6px 4px;border-bottom:1px solid #f0f4f8;font-size:.81em}
+.sp-row:last-child{border-bottom:none}
+.sp-row .sr-status{font-size:1em;flex-shrink:0;width:20px;text-align:center}
+.sp-row .sr-nb{font-weight:800;color:var(--nt);min-width:36px;flex-shrink:0;font-size:.875em}
+.sp-row .sr-ttl{color:var(--text);flex:1}
+.sp-row.done .sr-ttl{color:var(--muted);text-decoration:line-through}
+/* Section check pills in fs-bar */
+.sc-pills{display:flex;align-items:center;gap:4px;overflow-x:auto;-webkit-overflow-scrolling:touch;flex:1;padding:0 4px}
+.sc-pill{background:#30363d;color:#8b949e;border:2px solid transparent;border-radius:6px;padding:3px 8px;font-size:.72em;font-weight:700;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:all .15s;white-space:nowrap;flex-shrink:0;line-height:1.4;display:flex;align-items:center;gap:3px}
+.sc-pill.checked{background:var(--nt);color:#fff;border-color:var(--ntd)}
+.sc-pill .pill-check{font-size:.875em}
+.toc{background:var(--card);margin:16px;border-radius:var(--r);box-shadow:var(--sh);overflow:hidden}
+.toch{background:var(--nt);color:#fff;padding:14px 18px;font-weight:700;font-size:.94em;display:flex;justify-content:space-between;align-items:center;cursor:pointer;user-select:none}
+.toch .arr{transition:transform .3s}
+.toch.open .arr{transform:rotate(180deg)}
+.tocb{display:none;padding:10px 0}
+.tocb.open{display:block}
+.tocg{font-size:.69em;font-weight:800;letter-spacing:.8px;color:var(--nt);text-transform:uppercase;padding:8px 20px 2px}
+.tocb a{display:block;padding:9px 20px 9px 28px;color:var(--text);text-decoration:none;font-size:.875em;border-left:3px solid transparent;transition:all .2s}
+.tocb a:active{background:#f0fdf4;border-left-color:var(--ntd)}
+.tocb a .n{display:inline-block;background:var(--nt);color:#fff;border-radius:5px;padding:1px 8px;font-size:.75em;font-weight:700;margin-right:8px}
+.wrap{padding:0 16px 100px}
+.sec{background:var(--card);border-radius:var(--r);box-shadow:var(--sh);margin-bottom:16px;overflow:hidden}
+.sh{background:linear-gradient(90deg,var(--nt3),var(--nt));color:#fff;padding:16px 18px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;user-select:none;-webkit-tap-highlight-color:transparent}
+.sh .ttl{font-weight:700;font-size:1em}
+.sh .nb{background:rgba(255,255,255,.25);border-radius:6px;padding:3px 10px;font-size:.81em;font-weight:700;margin-right:10px;white-space:nowrap}
+.sh .ch{font-size:1.125em;transition:transform .3s}
+.sh.open .ch{transform:rotate(180deg)}
+.sb{display:none;padding:18px}
+.sb.open{display:block}
+.sub{margin-bottom:24px}
+.sub:last-child{margin-bottom:0}
+.sub h3{font-size:.94em;font-weight:700;color:var(--nt);margin-bottom:10px;padding-bottom:6px;border-bottom:2px solid #f0fdf4;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.sub h3 .sn{background:var(--nt);color:#fff;border-radius:5px;padding:2px 8px;font-size:.75em;white-space:nowrap}
+.sub h4{font-size:.875em;font-weight:700;color:var(--nt);margin:14px 0 6px}
+.sub p{margin-bottom:10px;font-size:.94em}
+.sub ul,.sub ol{padding-left:20px;margin:8px 0;font-size:.94em}
+.sub li{margin-bottom:5px}
+.cw{background:var(--cbg);border-radius:10px;margin:12px 0;overflow:hidden}
+.cl{background:#21262d;color:#c9d1d9;font-size:.78em;font-weight:700;padding:6px 14px;letter-spacing:.5px;text-transform:uppercase;display:flex;justify-content:space-between;align-items:center}
+.cpb{background:#30363d;color:#c9d1d9;border:none;border-radius:5px;padding:3px 10px;font-size:.69em;cursor:pointer}
+.cpb:active{background:var(--nt);color:#fff}
+pre{margin:0;padding:14px;overflow-x:auto;-webkit-overflow-scrolling:touch}
+code{font-family:'Courier New',monospace;font-size:.81em;color:var(--ctxt);line-height:1.6}
+p code,li code,td code,.ca code,.hk-desc code{background:#f0fdf4;color:#052e1e;border-radius:4px;padding:1px 5px;font-size:.81em;font-family:'Courier New',monospace;font-weight:600}
+.ca{border-radius:8px;padding:12px 14px;margin:12px 0;font-size:.875em;line-height:1.6;display:flex;gap:10px;align-items:flex-start}
+.ca .ic{font-size:1.125em;flex-shrink:0;margin-top:1px}
+.ca.warn  {background:#fff3cd;border-left:4px solid #b38600;color:#3d2c00}
+.ca.tip   {background:#d4edda;border-left:4px solid #28a745;color:#0d3318}
+.ca.danger{background:#f8d7da;border-left:4px solid #dc3545;color:#3d0010}
+.ca.info  {background:#f0fdf4;border-left:4px solid var(--nt);color:#052e1e}
+.ca code{color:inherit!important;background:rgba(0,0,0,.1)!important;border:1px solid rgba(0,0,0,.15)}
+.et{background:linear-gradient(135deg,#1a1a2e,var(--nt3));color:#fff;border-radius:10px;padding:14px 16px;margin:14px 0;font-size:.875em;line-height:1.6}
+.et .lbl{font-size:.69em;font-weight:800;letter-spacing:1px;color:var(--ntd);margin-bottom:6px}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:12px 0;border-radius:8px}
+table{width:100%;border-collapse:collapse;font-size:.875em}
+th{background:var(--nt);color:#fff;padding:10px 12px;text-align:left;font-weight:700;font-size:.81em}
+td{padding:9px 12px;border-bottom:1px solid #e8ecf0;vertical-align:top;color:#1a1a2e}
+tr:nth-child(even) td{background:#f0fdf4;color:#052e1e}
+tr:last-child td{border-bottom:none}
+
+/* OS layer diagram */
+.os-stack{display:grid;gap:4px;margin:12px 0}
+.os-layer{border-radius:8px;padding:10px 16px;text-align:center;font-size:.81em;font-weight:700}
+.os-layer.shell{background:linear-gradient(90deg,#1a3a5c,#2563eb);color:#fff}
+.os-layer.kernel{background:linear-gradient(90deg,var(--nt2),var(--nt));color:#fff}
+.os-layer.hw{background:linear-gradient(90deg,#3d2c00,#b38600);color:#fff}
+.os-layer .ol-sub{font-weight:400;font-size:.875em;opacity:.9;margin-top:3px}
+
+/* Access method cards */
+.access-grid{display:grid;gap:8px;margin:12px 0}
+.access-card{border-radius:8px;padding:11px 14px;font-size:.81em;line-height:1.6;border-left:5px solid}
+.access-card.console{border-left-color:#1a3a5c;background:#e0f2fe}
+.access-card.ssh    {border-left-color:var(--nt);background:#f0fdf4}
+.access-card.telnet {border-left-color:#dc3545;background:#fff5f5}
+.access-card .ac-name{font-weight:800;margin-bottom:3px}
+.access-card.console .ac-name{color:#1a3a5c}
+.access-card.ssh     .ac-name{color:var(--nt)}
+.access-card.telnet  .ac-name{color:#dc3545}
+
+/* Mode cards */
+.mode-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:12px 0}
+@media(max-width:480px){.mode-grid{grid-template-columns:1fr}}
+.mode-card{border-radius:10px;padding:13px 14px;font-size:.81em;line-height:1.6}
+.mode-card.user{background:#e0f2fe;border:2px solid #1a3a5c}
+.mode-card.priv{background:#f0fdf4;border:2px solid var(--nt)}
+.mode-card .mc-prompt{font-family:'Courier New',monospace;font-size:1.125em;font-weight:900;padding:5px 10px;border-radius:6px;display:inline-block;margin-bottom:6px}
+.mode-card.user .mc-prompt{background:#1a3a5c;color:#38bdf8}
+.mode-card.priv .mc-prompt{background:var(--nt);color:var(--ntd)}
+.mode-card .mc-title{font-weight:800;margin-bottom:4px}
+.mode-card.user .mc-title{color:#1a3a5c}
+.mode-card.priv .mc-title{color:var(--nt)}
+
+/* Mode navigation flow */
+.nav-flow{background:#0d1117;border:1px solid #30363d;border-radius:10px;padding:16px;margin:12px 0}
+.nav-flow .nf-title{font-size:.72em;font-weight:800;letter-spacing:.8px;color:var(--ntd);text-transform:uppercase;margin-bottom:12px}
+.nav-row{display:flex;align-items:center;gap:8px;margin-bottom:8px;font-family:'Courier New',monospace;font-size:.88em;flex-wrap:wrap}
+.nav-row .prompt{color:#4ade80;font-weight:700;flex-shrink:0}
+.nav-row .cmd{color:#fbbf24;font-weight:700;flex-shrink:0}
+.nav-row .arr{color:#c9d1d9;font-size:1.1em;flex-shrink:0}
+.nav-row .result{color:#7dd3fc;flex-shrink:0}
+
+/* Hotkeys table */
+.hk-grid{display:grid;gap:4px;margin:12px 0}
+.hk-row{display:flex;gap:8px;align-items:flex-start;padding:6px 10px;border-radius:6px;font-size:.81em;background:#f9fafb;border-left:3px solid var(--nt)}
+.hk-row .hk-key{font-family:'Courier New',monospace;font-weight:800;min-width:130px;flex-shrink:0;color:var(--nt);font-size:.875em}
+.hk-row .hk-desc{color:#374151;line-height:1.5}
+
+/* Config files comparison */
+.cfg-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:12px 0}
+@media(max-width:480px){.cfg-grid{grid-template-columns:1fr}}
+.cfg-card{border-radius:10px;padding:12px 14px;font-size:.81em;line-height:1.7}
+.cfg-card.run{background:#fff3cd;border:2px solid #b38600}
+.cfg-card.start{background:#f0fdf4;border:2px solid var(--nt)}
+.cfg-card .cc-title{font-weight:800;margin-bottom:6px;display:flex;align-items:center;gap:6px}
+.cfg-card.run   .cc-title{color:#b38600}
+.cfg-card.start .cc-title{color:var(--nt)}
+.cfg-card ul{padding-left:16px}
+.cfg-card li{margin-bottom:3px}
+
+.tb-btn{position:fixed;bottom:80px;right:16px;background:var(--nt);color:#fff;border:none;border-radius:50%;width:44px;height:44px;font-size:1.25em;box-shadow:0 4px 14px rgba(0,0,0,.25);cursor:pointer;display:none;align-items:center;justify-content:center;z-index:100}
+.tb-btn.show{display:flex}
+.ft{text-align:center;padding:24px 16px;color:var(--muted);font-size:.81em}
+.mod-nav{position:fixed;bottom:0;left:0;right:0;z-index:300;background:#1a1a2e;border-top:1px solid #30363d;display:flex;align-items:center;height:52px;padding:0 8px;gap:6px}
+.mn-hub{background:#1ba0d7;color:#fff;border:none;border-radius:8px;padding:6px 12px;font-size:.75em;font-weight:700;cursor:pointer;text-decoration:none;display:flex;align-items:center;gap:4px;white-space:nowrap;-webkit-tap-highlight-color:transparent;flex-shrink:0}
+.mn-hub:active{opacity:.8}
+.mn-divider{width:1px;height:28px;background:#30363d;flex-shrink:0}
+.mn-label{flex:1;text-align:center;font-size:.69em;color:#8b949e;font-weight:600;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding:0 4px}
+.mn-prev,.mn-next{background:#30363d;color:#c9d1d9;border:none;border-radius:8px;padding:6px 10px;font-size:.875em;font-weight:700;cursor:pointer;text-decoration:none;display:flex;align-items:center;-webkit-tap-highlight-color:transparent;flex-shrink:0}
+.mn-prev:active,.mn-next:active{background:var(--nt);color:#fff}
+
+/* v2.1 — In-section check button */
+.sh{position:relative}
+.sec-check{position:absolute;right:40px;top:50%;transform:translateY(-50%);background:rgba(255,255,255,.15);border:2px solid rgba(255,255,255,.4);border-radius:6px;padding:2px 10px;font-size:.72em;font-weight:800;color:#fff;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:all .2s;white-space:nowrap;z-index:10;line-height:1.5}
+.sec-check.checked{background:var(--ntd);border-color:var(--ntd);color:#052e1e}
+.sec-check:active{opacity:.75}
+</style>
+</head>
+<body>
+<nav class="bc">
+  <a href="../../index.html">🏠 Home</a><span class="sep">›</span>
+  <a href="index.html">CCNA 1 — ITN</a><span class="sep">›</span>
+  <span class="cur">M2: Basic Switch and End Device Config</span>
+</nav>
+<div class="fs-bar">
+  <div class="sc-pills" id="sc-pills">
+  <button class="sc-pill" id="pill-s1" onclick="toggleSection('s1',this)"><span class="pill-check">○</span>2.1</button>
+  <button class="sc-pill" id="pill-s2" onclick="toggleSection('s2',this)"><span class="pill-check">○</span>2.2</button>
+  <button class="sc-pill" id="pill-s3" onclick="toggleSection('s3',this)"><span class="pill-check">○</span>2.3</button>
+  <button class="sc-pill" id="pill-s4" onclick="toggleSection('s4',this)"><span class="pill-check">○</span>2.4</button>
+  <button class="sc-pill" id="pill-s5" onclick="toggleSection('s5',this)"><span class="pill-check">○</span>2.5</button>
+  <button class="sc-pill" id="pill-s6" onclick="toggleSection('s6',this)"><span class="pill-check">○</span>2.6</button>
+  <button class="sc-pill" id="pill-s7" onclick="toggleSection('s7',this)"><span class="pill-check">○</span>2.7</button>
+  <button class="sc-pill" id="pill-s8" onclick="toggleSection('s8',this)"><span class="pill-check">○</span>2.8</button>
+  <button class="sc-pill" id="pill-s-pt-2-9" onclick="toggleSection('s-pt-2-9',this)"><span class="pill-check">○</span>PT 2.9</button>
+  <button class="sc-pill" id="pill-s9" onclick="toggleSection('s9',this)"><span class="pill-check">○</span>🔧</button>
+  <button class="sc-pill" id="pill-s10" onclick="toggleSection('s10',this)"><span class="pill-check">○</span>🎯</button>
+  </div>
+  <span class="fs-label" style="flex-shrink:0;margin-left:6px">Size</span>
+  <button class="fs-btn" onclick="setFs('14px',this)">S</button>
+  <button class="fs-btn" onclick="setFs('16px',this)">M</button>
+  <button class="fs-btn" onclick="setFs('18px',this)">L</button>
+  <button class="fs-btn active" onclick="setFs('20px',this)">XL</button>
+</div>
+<div class="hdr">
+  <div class="badge">CCNA 1 — ITN v7.02 · Module 2</div>
+  <h1>⚙️ Basic Switch and End Device Configuration</h1>
+  <p>Introduction to Networks · NetAcad Study Guide</p>
+  <div class="obj">Module Objective: Implement initial settings including passwords, IP addressing, and default gateway parameters on a network switch and end devices</div>
+</div>
+<div class="sp-wrap">
+  <div class="sp-hdr" id="sp-hdr" onclick="toggleStudyPanel()">
+    <span class="sp-title">📚 Sections</span>
+    <span class="sp-arr" id="sp-arr">▼</span>
+  </div>
+  <div class="sp-body" id="sp-body">
+    <div class="sp-row" id="row-s1"><span class="sr-status" id="st-s1">○</span><span class="sr-nb">2.1</span><span class="sr-ttl">Cisco IOS Access</span></div>
+    <div class="sp-row" id="row-s2"><span class="sr-status" id="st-s2">○</span><span class="sr-nb">2.2</span><span class="sr-ttl">IOS Navigation</span></div>
+    <div class="sp-row" id="row-s3"><span class="sr-status" id="st-s3">○</span><span class="sr-nb">2.3</span><span class="sr-ttl">The Command Structure</span></div>
+    <div class="sp-row" id="row-s4"><span class="sr-status" id="st-s4">○</span><span class="sr-nb">2.4</span><span class="sr-ttl">Basic Device Configuration</span></div>
+    <div class="sp-row" id="row-s5"><span class="sr-status" id="st-s5">○</span><span class="sr-nb">2.5</span><span class="sr-ttl">Save Configurations</span></div>
+    <div class="sp-row" id="row-s6"><span class="sr-status" id="st-s6">○</span><span class="sr-nb">2.6</span><span class="sr-ttl">Ports and Addresses</span></div>
+    <div class="sp-row" id="row-s7"><span class="sr-status" id="st-s7">○</span><span class="sr-nb">2.7</span><span class="sr-ttl">Configure IP Addressing</span></div>
+    <div class="sp-row" id="row-s8"><span class="sr-status" id="st-s8">○</span><span class="sr-nb">2.8</span><span class="sr-ttl">Verify Connectivity</span></div>
+    <div class="sp-row" id="row-s-pt-2-9"><span class="sr-status" id="st-s-pt-2-9">○</span><span class="sr-nb">PT 2.9</span><span class="sr-ttl">Packet Tracer — Basic Switch and End Device Configuration</span></div>
+    <div class="sp-row" id="row-s9"><span class="sr-status" id="st-s9">○</span><span class="sr-nb">🔧</span><span class="sr-ttl">Full Switch Configuration Example</span></div>
+    <div class="sp-row" id="row-s10"><span class="sr-status" id="st-s10">○</span><span class="sr-nb">🎯</span><span class="sr-ttl">Common Exam Traps — Module 2</span></div>
+  </div>
+</div>
+
+<div class="toc">
+  <div class="toch open" onclick="this.classList.toggle('open');document.getElementById('tocb').classList.toggle('open')">
+    📋 Table of Contents — Tap to expand <span class="arr">▼</span>
+  </div>
+  <div class="tocb open" id="tocb">
+    <div class="tocg">2.1 — Cisco IOS Access</div>
+    <a href="javascript:void(0)" onclick="goTo('s1')"><span class="n">2.1.1</span> OS Structure — Shell, Kernel, Hardware</a>
+    <a href="javascript:void(0)" onclick="goTo('s1')"><span class="n">2.1.1</span> CLI vs GUI · Cisco IOS Family</a>
+    <a href="javascript:void(0)" onclick="goTo('s1')"><span class="n">2.1.4</span> Three Access Methods — Console, SSH, Telnet</a>
+    <a href="javascript:void(0)" onclick="goTo('s1')"><span class="n">2.1.5</span> Terminal Emulation Programs</a>
+    <div class="tocg">2.2 — IOS Navigation</div>
+    <a href="javascript:void(0)" onclick="goTo('s2')"><span class="n">2.2.1</span> Two Primary Command Modes — User EXEC and Privileged EXEC</a>
+    <a href="javascript:void(0)" onclick="goTo('s2')"><span class="n">2.2.2</span> Global Config and Subconfiguration Modes</a>
+    <a href="javascript:void(0)" onclick="goTo('s2')"><span class="n">2.2.4</span> Navigating Between IOS Modes</a>
+    <div class="tocg">2.3 — The Command Structure</div>
+    <a href="javascript:void(0)" onclick="goTo('s3')"><span class="n">2.3.1</span> Command Syntax — Keywords and Arguments</a>
+    <a href="javascript:void(0)" onclick="goTo('s3')"><span class="n">2.3.2</span> Syntax Conventions Table</a>
+    <a href="javascript:void(0)" onclick="goTo('s3')"><span class="n">2.3.3</span> Context-Sensitive Help and Syntax Check</a>
+    <a href="javascript:void(0)" onclick="goTo('s3')"><span class="n">2.3.5</span> Hot Keys and Shortcuts</a>
+    <div class="tocg">2.4 — Basic Device Configuration</div>
+    <a href="javascript:void(0)" onclick="goTo('s4')"><span class="n">2.4.1</span> Device Names — Hostname Rules</a>
+    <a href="javascript:void(0)" onclick="goTo('s4')"><span class="n">2.4.2</span> Password Guidelines</a>
+    <a href="javascript:void(0)" onclick="goTo('s4')"><span class="n">2.4.3</span> Configure Console, Privileged EXEC, and VTY Passwords</a>
+    <a href="javascript:void(0)" onclick="goTo('s4')"><span class="n">2.4.4</span> Encrypt Passwords — service password-encryption</a>
+    <a href="javascript:void(0)" onclick="goTo('s4')"><span class="n">2.4.5</span> Banner Messages — MOTD</a>
+    <div class="tocg">2.5 — Save Configurations</div>
+    <a href="javascript:void(0)" onclick="goTo('s5')"><span class="n">2.5.1</span> running-config vs startup-config</a>
+    <a href="javascript:void(0)" onclick="goTo('s5')"><span class="n">2.5.2</span> Alter, Discard, or Erase Configuration</a>
+    <a href="javascript:void(0)" onclick="goTo('s5')"><span class="n">2.5.4</span> Capture Config to a Text File</a>
+    <div class="tocg">2.6 — Ports and Addresses</div>
+    <a href="javascript:void(0)" onclick="goTo('s6')"><span class="n">2.6.1</span> IPv4 Address, Subnet Mask, Default Gateway</a>
+    <a href="javascript:void(0)" onclick="goTo('s6')"><span class="n">2.6.2</span> Switch Virtual Interface (SVI)</a>
+    <div class="tocg">2.7 — Configure IP Addressing</div>
+    <a href="javascript:void(0)" onclick="goTo('s7')"><span class="n">2.7.1</span> Manual IPv4 Config on Windows End Devices</a>
+    <a href="javascript:void(0)" onclick="goTo('s7')"><span class="n">2.7.2</span> Automatic Config — DHCP and SLAAC</a>
+    <a href="javascript:void(0)" onclick="goTo('s7')"><span class="n">2.7.4</span> Configure the Switch Virtual Interface</a>
+    <div class="tocg">2.8 — Verify Connectivity</div>
+    <a href="javascript:void(0)" onclick="goTo('s8')"><span class="n">2.8</span> show ip interface brief · ipconfig · ping</a>
+    <div class="tocg">Reference</div>
+    <a href="javascript:void(0)" onclick="goTo('s9')"><span class="n">🔧</span> Full Switch Configuration Example</a>
+    <a href="javascript:void(0)" onclick="goTo('s10')"><span class="n">🎯</span> Common Exam Traps</a>
+  </div>
+</div>
+
+<div class="wrap">
+
+<!-- 2.1 CISCO IOS ACCESS -->
+<div class="sec" id="s1">
+<div class="sh open" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">2.1</span><span class="ttl">Cisco IOS Access</span></span><button class="sec-check" id="sch-s1" onclick="event.stopPropagation();toggleSection('s1',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb open">
+
+  <div class="sub">
+  <h3><span class="sn">2.1.1</span> OS Structure — Shell, Kernel, Hardware</h3>
+  <div class="os-stack">
+    <div class="os-layer shell">Shell — User Interface<div class="ol-sub">User interacts via CLI or GUI · Requests tasks from the computer</div></div>
+    <div class="os-layer kernel">Kernel — Hardware-Software Bridge<div class="ol-sub">Communicates between hardware and software · Manages how hardware resources meet software requirements</div></div>
+    <div class="os-layer hw">Hardware — Physical Layer<div class="ol-sub">Physical components · Underlying electronics of the device</div></div>
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">2.1.1–2.1.2</span> CLI vs GUI · Cisco IOS</h3>
+  <div class="tw"><table>
+    <tr><th>Feature</th><th>CLI</th><th>GUI</th></tr>
+    <tr><td><strong>Interface</strong></td><td>Text-based, command prompt</td><td>Graphical icons, menus, windows</td></tr>
+    <tr><td><strong>Knowledge required</strong></td><td>Must know command structure</td><td>Less knowledge needed</td></tr>
+    <tr><td><strong>Overhead</strong></td><td>Very low — more stable</td><td>Higher resource use; can crash</td></tr>
+    <tr><td><strong>Feature access</strong></td><td>Full access to all features</td><td>May not expose all features</td></tr>
+    <tr><td><strong>Network device use</strong></td><td>✅ Standard for Cisco devices</td><td>❌ Not used for Cisco IOS management</td></tr>
+  </table></div>
+  <p><strong>Cisco IOS</strong> = Cisco Internetwork Operating System. Used on many Cisco routers and switches regardless of type or size. Each device type uses a different version. Other Cisco OS families: <strong>IOS XE, IOS XR, NX-OS</strong>.</p>
+  <div class="ca info"><span class="ic">💡</span><div>Home routers use <strong>firmware</strong> configured via a web browser GUI — not Cisco IOS. Cisco IOS is used on enterprise-class routers and switches.</div></div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">2.1.4</span> Three Access Methods</h3>
+  <div class="access-grid">
+    <div class="access-card console">
+      <div class="ac-name">🔌 Console — Out-of-Band</div>
+      Physical management port. Provides access even when <strong>no networking services are configured</strong> (e.g., initial setup, recovery). Requires console cable + terminal emulation software (PuTTY, Tera Term). Out-of-band = uses a dedicated management channel separate from the data network.
+    </div>
+    <div class="access-card ssh">
+      <div class="ac-name">🔐 SSH — Recommended Remote Access</div>
+      In-band remote access. <strong>Encrypted and secure</strong>. Establishes CLI session through a virtual interface over a network. Requires active networking services and a configured IP address on the device. Most IOS versions include SSH server and client. <strong>Always prefer SSH over Telnet.</strong>
+    </div>
+    <div class="access-card telnet">
+      <div class="ac-name">⚠️ Telnet — INSECURE (Lab Only)</div>
+      In-band remote access. Sends ALL data — including usernames and passwords — in <strong>plaintext</strong> over the network. Never use in production. Use only in lab environments. IOS includes both a Telnet server and client.
+    </div>
+  </div>
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>AUX port (legacy):</strong> Out-of-band access via telephone using a modem — does not require networking services. Rarely used today but still appears on older routers.</div></div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">2.1.5</span> Terminal Emulation Programs</h3>
+  <p>Used to connect to a device via console (serial) or SSH/Telnet. Common programs: <strong>PuTTY</strong>, <strong>Tera Term</strong>, <strong>SecureCRT</strong>. Features include adjustable window sizes, font sizes, and color schemes to enhance productivity.</p>
+  </div>
+
+</div></div>
+
+<!-- 2.2 IOS NAVIGATION -->
+<div class="sec" id="s2">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">2.2</span><span class="ttl">IOS Navigation</span></span><button class="sec-check" id="sch-s2" onclick="event.stopPropagation();toggleSection('s2',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb">
+
+  <div class="sub">
+  <h3><span class="sn">2.2.1</span> Two Primary Command Modes</h3>
+  <div class="mode-grid">
+    <div class="mode-card user">
+      <div class="mc-prompt">Switch&gt;</div>
+      <div class="mc-title">User EXEC Mode</div>
+      Limited access — basic monitoring commands only. Cannot execute any commands that change device configuration. Often called "view-only" mode. Prompt ends with <strong>&gt;</strong>
+    </div>
+    <div class="mode-card priv">
+      <div class="mc-prompt">Switch#</div>
+      <div class="mc-title">Privileged EXEC Mode</div>
+      Full access — all commands, monitoring, configuration, and management. Higher modes (global config) can only be reached from here. Prompt ends with <strong>#</strong>. Also called "enable mode."
+    </div>
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">2.2.2</span> Global Config and Subconfiguration Modes</h3>
+  <div class="tw"><table>
+    <tr><th>Mode</th><th>Prompt</th><th>Purpose</th></tr>
+    <tr><td><strong>Global Configuration</strong></td><td><code>Switch(config)#</code></td><td>Changes that affect the entire device. Must enter before any other config mode.</td></tr>
+    <tr><td><strong>Line Configuration</strong></td><td><code>Switch(config-line)#</code></td><td>Configure console, SSH, Telnet, or AUX access</td></tr>
+    <tr><td><strong>Interface Configuration</strong></td><td><code>Switch(config-if)#</code></td><td>Configure a switch port or router network interface</td></tr>
+  </table></div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">2.2.4</span> Navigating Between IOS Modes</h3>
+  <div class="nav-flow">
+    <div class="nf-title">🗺️ IOS Mode Navigation Flow</div>
+    <div class="nav-row"><span class="prompt">Switch&gt;</span><span class="cmd">enable</span><span class="arr">→</span><span class="result">Switch#</span></div>
+    <div class="nav-row"><span class="prompt">Switch#</span><span class="cmd">disable</span><span class="arr">→</span><span class="result">Switch&gt;</span></div>
+    <div class="nav-row"><span class="prompt">Switch#</span><span class="cmd">configure terminal</span><span class="arr">→</span><span class="result">Switch(config)#</span></div>
+    <div class="nav-row"><span class="prompt">Switch(config)#</span><span class="cmd">line console 0</span><span class="arr">→</span><span class="result">Switch(config-line)#</span></div>
+    <div class="nav-row"><span class="prompt">Switch(config)#</span><span class="cmd">interface vlan 1</span><span class="arr">→</span><span class="result">Switch(config-if)#</span></div>
+    <div class="nav-row"><span class="prompt">Switch(config-line)#</span><span class="cmd">exit</span><span class="arr">→</span><span class="result">Switch(config)#  ← one level up</span></div>
+    <div class="nav-row"><span class="prompt">Switch(config-line)#</span><span class="cmd">end</span><span class="arr">→</span><span class="result">Switch#  ← jumps to privileged EXEC</span></div>
+    <div class="nav-row"><span class="prompt">Switch(config-line)#</span><span class="cmd">Ctrl+Z</span><span class="arr">→</span><span class="result">Switch#  ← same as end</span></div>
+  </div>
+  <div class="ca info"><span class="ic">💡</span><div>You can move <strong>directly between subconfiguration modes</strong> without using <code>exit</code>. For example, from <code>(config-line)#</code> you can type <code>interface FastEthernet 0/1</code> and jump straight to <code>(config-if)#</code>.</div></div>
+  </div>
+
+  <!-- SYNTAX CHECKER: 2.2.7 -->
+  <div style="margin:20px 0 6px;padding:16px;background:#0d1117;border:1px solid #30363d;border-left:3px solid #bc8cff;border-radius:8px">
+    <div style="font-size:.7em;font-weight:800;text-transform:uppercase;letter-spacing:.8px;color:#bc8cff;margin-bottom:6px">&#x1F5A5; Syntax Checker &mdash; 2.2.7</div>
+    <div style="font-size:.92em;font-weight:600;color:#e6edf3;margin-bottom:12px">Navigate Between IOS Modes</div>
+    <div style="font-size:.82em;color:#8b949e;margin-bottom:14px">Type each command exactly as shown. Press Enter to submit. The checker validates your syntax step by step.</div>
+    <div class="tool-links" style="display:flex;flex-wrap:wrap;gap:14px">
+      <div style="flex:1 1 220px;min-width:0">
+        <a href="../../syntax-checker-simple/ccna1_syntax_checker.html?lab=2.2.7" target="_blank" rel="noopener" title="Quick, guided drill: type the exact commands for this NetAcad lab, step by step. Opens straight to lab 2.2.7." style="display:inline-flex;align-items:center;gap:8px;color:#fff;text-decoration:none;padding:8px 18px;border-radius:6px;font-size:.85em;font-weight:700;background:#238636;border:1px solid #2ea043">&#x25B6; Open Syntax Checker</a>
+        <div style="font-size:.75em;color:#8b949e;margin-top:6px">Quick, guided drill: type the exact commands for this NetAcad lab, step by step. Opens straight to lab 2.2.7.</div>
+      </div>
+      <div style="flex:1 1 220px;min-width:0">
+        <a class="cli-engine-link" href="../../cli-engine/ccna-cli-engine.html" target="_blank" rel="noopener" title="Full simulated Cisco IOS terminal: Tab completion, device state, Free Practice, Home Labs and Subnetting. In its exercise menu, pick “Course 1 · 2.2 — Navigate Between IOS Modes”." style="display:inline-flex;align-items:center;gap:8px;color:#fff;text-decoration:none;padding:8px 18px;border-radius:6px;font-size:.85em;font-weight:700;background:#1f6feb;border:1px solid #388bfd">&#x1F4BB; Open CLI Engine</a>
+        <div style="font-size:.75em;color:#8b949e;margin-top:6px">Full simulated Cisco IOS terminal: Tab completion, device state, Free Practice, Home Labs and Subnetting. In its exercise menu, pick “Course 1 · 2.2 — Navigate Between IOS Modes”.</div>
+      </div>
+    </div>
+    <div style="margin-top:12px;font-size:.75em"><a href="../../index.html" style="color:#58a6ff;text-decoration:none">&#x1F3E0; All study tools (home)</a></div>
+  </div>
+
+</div></div>
+
+<!-- 2.3 COMMAND STRUCTURE -->
+<div class="sec" id="s3">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">2.3</span><span class="ttl">The Command Structure</span></span><button class="sec-check" id="sch-s3" onclick="event.stopPropagation();toggleSection('s3',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb">
+
+  <div class="sub">
+  <h3><span class="sn">2.3.1</span> Command Syntax — Keywords and Arguments</h3>
+  <p>Every IOS command follows the format: <strong>command [keyword] [argument]</strong></p>
+  <ul>
+    <li><strong>Keyword</strong> — specific parameter defined in the operating system (e.g., <code>ip</code>, <code>protocols</code>)</li>
+    <li><strong>Argument</strong> — NOT predefined; user-supplied value (e.g., <code>192.168.10.5</code>, <code>GigabitEthernet0/1</code>)</li>
+  </ul>
+  <p>Press <strong>Enter</strong> after every complete command to submit it to the command interpreter.</p>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">2.3.2</span> Syntax Conventions</h3>
+  <div class="tw"><table>
+    <tr><th>Convention</th><th>Meaning</th><th>Example</th></tr>
+    <tr><td><strong>boldface</strong></td><td>Enter exactly as shown — commands and keywords</td><td><code>ping</code>, <code>enable secret</code></td></tr>
+    <tr><td><em>italics</em></td><td>User-supplied argument — you provide the value</td><td><em>ip-address</em>, <em>password</em></td></tr>
+    <tr><td><code>[x]</code></td><td>Optional element — may be omitted</td><td><code>[brief]</code> in <code>show ip interface [brief]</code></td></tr>
+    <tr><td><code>{x}</code></td><td>Required element — must be included</td><td><code>{static | time | type}</code></td></tr>
+    <tr><td><code>[x {y | z}]</code></td><td>Required choice within optional element</td><td>Complex commands</td></tr>
+  </table></div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">2.3.3</span> IOS Help Features</h3>
+  <p><strong>Two forms of help:</strong></p>
+  <ul>
+    <li><strong>Context-sensitive help (<code>?</code>)</strong> — type <code>?</code> at any prompt to see available commands, commands starting with specific letters, or arguments for a command</li>
+    <li><strong>Command syntax check</strong> — IOS evaluates each command left to right; provides error feedback if a command is wrong (e.g., <code>% Invalid input detected at '^' marker</code>)</li>
+  </ul>
+  <div class="cw"><div class="cl">Using context-sensitive help</div>
+  <pre><code>Switch# ?                   ← lists all commands in current mode
+Switch# s?                  ← lists commands starting with 's'
+Switch# show ?              ← lists all options for 'show'
+Switch# show ip ?           ← lists options after 'show ip'</code></pre></div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">2.3.5</span> Hot Keys and Shortcuts</h3>
+  <p><strong>Command abbreviation:</strong> Shorten commands to the minimum unique characters. <code>configure</code> → <code>conf</code> ✅ · <code>con</code> ❌ (ambiguous). Press <strong>Tab</strong> to auto-complete.</p>
+  <div class="hk-grid">
+    <div class="hk-row"><div class="hk-key">Tab</div><div class="hk-desc">Auto-complete a partial command entry</div></div>
+    <div class="hk-row"><div class="hk-key">Ctrl+A</div><div class="hk-desc">Move cursor to the beginning of the line</div></div>
+    <div class="hk-row"><div class="hk-key">Ctrl+E</div><div class="hk-desc">Move cursor to the end of the command line</div></div>
+    <div class="hk-row"><div class="hk-key">Up Arrow / Ctrl+P</div><div class="hk-desc">Recall previous command from history buffer</div></div>
+    <div class="hk-row"><div class="hk-key">Ctrl+Z</div><div class="hk-desc">Return to privileged EXEC from any config mode (same as <code>end</code>)</div></div>
+    <div class="hk-row"><div class="hk-key">Ctrl+C</div><div class="hk-desc">Abort config mode; return to privileged EXEC. In setup mode: abort back to command prompt.</div></div>
+    <div class="hk-row"><div class="hk-key">Ctrl+Shift+6</div><div class="hk-desc">Break sequence — abort DNS lookups, traceroutes, pings in progress</div></div>
+    <div class="hk-row"><div class="hk-key">Backspace</div><div class="hk-desc">Erase the character to the left of the cursor</div></div>
+    <div class="hk-row"><div class="hk-key">Ctrl+U / Ctrl+X</div><div class="hk-desc">Erase the entire command line</div></div>
+    <div class="hk-row"><div class="hk-key">Ctrl+K</div><div class="hk-desc">Erase from cursor to end of line</div></div>
+    <div class="hk-row"><div class="hk-key">Ctrl+W</div><div class="hk-desc">Erase the word to the left of the cursor</div></div>
+  </div>
+  <p style="margin-top:10px"><strong>--More-- prompt (paged output):</strong> <code>Enter</code> = next line · <code>Space</code> = next screen · Any other key = exit back to prompt</p>
+  </div>
+
+  <!-- PT INLINE -->
+  <div style="margin:20px 0 6px;padding:14px 16px;background:#0d1117;border:1px solid #30363d;border-left:3px solid #1f6feb;border-radius:6px">
+    <div style="font-size:.72em;font-weight:800;text-transform:uppercase;letter-spacing:.8px;color:#1f6feb;margin-bottom:10px">&#x1F4E6; Packet Tracer Activities</div>
+  <div style="display:flex;align-items:baseline;gap:10px;padding:6px 0;border-bottom:1px solid #21262d"><span style="font-family:monospace;font-size:.85em;color:#79c0ff;white-space:nowrap;flex-shrink:0;min-width:52px">2.3.7</span><span style="font-size:.88em;color:#c9d1d9">Navigate the IOS</span></div>
+  <div style="display:flex;align-items:baseline;gap:10px;padding:6px 0;border-bottom:1px solid #21262d"><span style="font-family:monospace;font-size:.85em;color:#79c0ff;white-space:nowrap;flex-shrink:0;min-width:52px">2.3.8</span><span style="font-size:.88em;color:#c9d1d9">Navigate the IOS Using a Terminal Client (Physical Mode)</span></div>
+    <div style="margin-top:10px;font-size:.78em;color:#6e7681">Full list: <a href="https://itexamanswers.net/ccna-1-v7-exam-answers-introduction-to-networks-v7-0-itn.html" target="_blank" rel="noopener" style="color:#58a6ff;word-break:break-all">itexamanswers.net/ccna-1-v7-exam-answers-introduction-to-networks-v7-0-itn.html</a></div>
+  </div>
+
+</div></div>
+
+<!-- 2.4 BASIC DEVICE CONFIGURATION -->
+<div class="sec" id="s4">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">2.4</span><span class="ttl">Basic Device Configuration</span></span><button class="sec-check" id="sch-s4" onclick="event.stopPropagation();toggleSection('s4',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb">
+
+  <div class="sub">
+  <h3><span class="sn">2.4.1</span> Device Names — Hostname Rules</h3>
+  <p>The <strong>first configuration command</strong> on any device should be assigning it a unique hostname. Default name for all Cisco switches = <code>Switch</code>.</p>
+  <p><strong>Hostname naming rules:</strong></p>
+  <ul>
+    <li>Must <strong>start with a letter</strong></li>
+    <li>Must <strong>end with a letter or digit</strong></li>
+    <li><strong>No spaces</strong></li>
+    <li>Use only <strong>letters, digits, and dashes</strong></li>
+    <li><strong>Less than 64 characters</strong> in length</li>
+    <li>IOS preserves capitalization exactly as typed</li>
+  </ul>
+  <div class="cw"><div class="cl">Configure hostname <button class="cpb" onclick="copyCode(this)">Copy</button></div>
+  <pre><code>Switch# configure terminal
+Switch(config)# hostname Sw-Floor-1
+Sw-Floor-1(config)#
+
+! To remove the hostname and return to default:
+Sw-Floor-1(config)# no hostname
+Switch(config)#</code></pre></div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">2.4.2</span> Password Guidelines</h3>
+  <ul>
+    <li>More than <strong>8 characters</strong> in length</li>
+    <li>Mix of <strong>uppercase, lowercase, numbers, and special characters</strong></li>
+    <li><strong>Different password for each device</strong></li>
+    <li>Avoid common words or dictionary words</li>
+    <li>Lab environments use simple passwords (cisco, class) for convenience only — never in production</li>
+  </ul>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">2.4.3</span> Configure Passwords — Three Areas</h3>
+  <h4>1. Console Line — Secures Physical Access (User EXEC)</h4>
+  <div class="cw"><div class="cl">Console password <button class="cpb" onclick="copyCode(this)">Copy</button></div>
+  <pre><code>Sw-Floor-1# configure terminal
+Sw-Floor-1(config)# line console 0
+Sw-Floor-1(config-line)# password cisco
+Sw-Floor-1(config-line)# login
+Sw-Floor-1(config-line)# end</code></pre></div>
+  <div class="ca info"><span class="ic">💡</span><div><code>login</code> is required — it tells IOS to prompt for the password when someone connects. Without <code>login</code>, the password is set but never asked for.</div></div>
+
+  <h4>2. Privileged EXEC — Secures Administrative Access</h4>
+  <div class="cw"><div class="cl">Enable secret <button class="cpb" onclick="copyCode(this)">Copy</button></div>
+  <pre><code>Sw-Floor-1(config)# enable secret class
+
+! enable secret = stores password as MD5 hash (strong)
+! enable password = stores as plaintext (avoid this)</code></pre></div>
+
+  <h4>3. VTY Lines — Secures Remote Access (Telnet/SSH)</h4>
+  <p>Cisco switches support up to <strong>16 VTY lines</strong> numbered 0–15.</p>
+  <div class="cw"><div class="cl">VTY password <button class="cpb" onclick="copyCode(this)">Copy</button></div>
+  <pre><code>Sw-Floor-1(config)# line vty 0 15
+Sw-Floor-1(config-line)# password cisco
+Sw-Floor-1(config-line)# login
+Sw-Floor-1(config-line)# end</code></pre></div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">2.4.4</span> Encrypt Passwords — service password-encryption</h3>
+  <p>By default, <code>running-config</code> and <code>startup-config</code> display most passwords in <strong>plaintext</strong> — a serious security risk.</p>
+  <div class="cw"><div class="cl">Encrypt all plaintext passwords <button class="cpb" onclick="copyCode(this)">Copy</button></div>
+  <pre><code>Sw-Floor-1(config)# service password-encryption
+
+! Verify encryption was applied:
+Sw-Floor-1# show running-config
+line con 0
+ password 7 094F471A1A0A    ← "7" = Type 7 (weak) encryption
+ login</code></pre></div>
+  <div class="ca warn"><span class="ic">⚠️</span><div><code>service password-encryption</code> applies <strong>weak Type 7 encryption</strong> only — prevents casual shoulder-surfing but can be reversed with free tools. It does NOT protect passwords in transit over the network. <code>enable secret</code> uses stronger MD5 (Type 5) automatically and is not affected by this command.</div></div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">2.4.5</span> Banner Messages — MOTD</h3>
+  <p>Banners legally establish that only authorized users should access the device. Required in some jurisdictions before prosecution of unauthorized access is possible.</p>
+  <div class="cw"><div class="cl">Configure MOTD banner <button class="cpb" onclick="copyCode(this)">Copy</button></div>
+  <pre><code>Sw-Floor-1(config)# banner motd #Authorized Access Only#
+
+! '#' is the delimiting character — can be any character
+! not present in the message body
+! Banner displays on ALL access attempts until removed</code></pre></div>
+  </div>
+
+  <!-- SYNTAX CHECKER: 2.4.7 -->
+  <div style="margin:20px 0 6px;padding:16px;background:#0d1117;border:1px solid #30363d;border-left:3px solid #bc8cff;border-radius:8px">
+    <div style="font-size:.7em;font-weight:800;text-transform:uppercase;letter-spacing:.8px;color:#bc8cff;margin-bottom:6px">&#x1F5A5; Syntax Checker &mdash; 2.4.7</div>
+    <div style="font-size:.92em;font-weight:600;color:#e6edf3;margin-bottom:12px">Basic Device Configuration</div>
+    <div style="font-size:.82em;color:#8b949e;margin-bottom:14px">Type each command exactly as shown. Press Enter to submit. The checker validates your syntax step by step.</div>
+    <div class="tool-links" style="display:flex;flex-wrap:wrap;gap:14px">
+      <div style="flex:1 1 220px;min-width:0">
+        <a href="../../syntax-checker-simple/ccna1_syntax_checker.html?lab=2.4.7" target="_blank" rel="noopener" title="Quick, guided drill: type the exact commands for this NetAcad lab, step by step. Opens straight to lab 2.4.7." style="display:inline-flex;align-items:center;gap:8px;color:#fff;text-decoration:none;padding:8px 18px;border-radius:6px;font-size:.85em;font-weight:700;background:#238636;border:1px solid #2ea043">&#x25B6; Open Syntax Checker</a>
+        <div style="font-size:.75em;color:#8b949e;margin-top:6px">Quick, guided drill: type the exact commands for this NetAcad lab, step by step. Opens straight to lab 2.4.7.</div>
+      </div>
+      <div style="flex:1 1 220px;min-width:0">
+        <a class="cli-engine-link" href="../../cli-engine/ccna-cli-engine.html" target="_blank" rel="noopener" title="Full simulated Cisco IOS terminal: Tab completion, device state, Free Practice, Home Labs and Subnetting. In its exercise menu, pick “Course 1 · 2.4 — Basic Device Configuration”." style="display:inline-flex;align-items:center;gap:8px;color:#fff;text-decoration:none;padding:8px 18px;border-radius:6px;font-size:.85em;font-weight:700;background:#1f6feb;border:1px solid #388bfd">&#x1F4BB; Open CLI Engine</a>
+        <div style="font-size:.75em;color:#8b949e;margin-top:6px">Full simulated Cisco IOS terminal: Tab completion, device state, Free Practice, Home Labs and Subnetting. In its exercise menu, pick “Course 1 · 2.4 — Basic Device Configuration”.</div>
+      </div>
+    </div>
+    <div style="margin-top:12px;font-size:.75em"><a href="../../index.html" style="color:#58a6ff;text-decoration:none">&#x1F3E0; All study tools (home)</a></div>
+  </div>
+
+</div></div>
+
+<!-- 2.5 SAVE CONFIGURATIONS -->
+<div class="sec" id="s5">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">2.5</span><span class="ttl">Save Configurations</span></span><button class="sec-check" id="sch-s5" onclick="event.stopPropagation();toggleSection('s5',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb">
+
+  <div class="sub">
+  <h3><span class="sn">2.5.1</span> Two Configuration Files</h3>
+  <div class="cfg-grid">
+    <div class="cfg-card run">
+      <div class="cc-title">⚡ running-config</div>
+      <ul>
+        <li>Stored in <strong>RAM</strong> (volatile)</li>
+        <li><strong>Lost on power-off or reload</strong></li>
+        <li>Changes take effect <strong>immediately</strong></li>
+        <li>Viewed with: <code>show running-config</code></li>
+      </ul>
+    </div>
+    <div class="cfg-card start">
+      <div class="cc-title">💾 startup-config</div>
+      <ul>
+        <li>Stored in <strong>NVRAM</strong> (non-volatile)</li>
+        <li><strong>Survives power-off and reload</strong></li>
+        <li>Loaded on startup/reboot</li>
+        <li>Viewed with: <code>show startup-config</code></li>
+      </ul>
+    </div>
+  </div>
+  <div class="cw"><div class="cl">Save running config to startup config <button class="cpb" onclick="copyCode(this)">Copy</button></div>
+  <pre><code>Sw-Floor-1# copy running-config startup-config
+Destination filename [startup-config]? 
+Building configuration...
+[OK]</code></pre></div>
+  <div class="et"><div class="lbl">🎯 KEY RULE — ALWAYS SAVE AFTER CONFIG</div>
+  Any change made to running-config is <strong>immediately active</strong> but will be <strong>lost on reboot</strong> unless saved. Always run <code>copy running-config startup-config</code> (or abbreviated <code>copy run start</code>) after completing a configuration session.
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">2.5.2</span> Alter, Discard, or Erase Configuration</h3>
+  <div class="tw"><table>
+    <tr><th>Scenario</th><th>Solution</th></tr>
+    <tr><td>Unsaved changes need to be discarded</td><td><code>reload</code> — reloads from startup-config. IOS asks "Save changed config?" → enter <code>n</code>. Brief downtime.</td></tr>
+    <tr><td>Bad changes were already saved to startup-config</td><td>1. <code>erase startup-config</code> (confirm with Enter)<br>2. <code>reload</code> — loads factory defaults</td></tr>
+    <tr><td>Remove a single command</td><td>Precede with <code>no</code>: <code>no hostname</code>, <code>no ip address</code>, <code>no shutdown</code></td></tr>
+  </table></div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">2.5.4</span> Capture Configuration to a Text File</h3>
+  <p>Using terminal software (PuTTY, Tera Term):</p>
+  <ol>
+    <li>Enable session logging → specify filename and location</li>
+    <li>Run <code>show running-config</code> → all output is captured to the file</li>
+    <li>Disable logging when complete</li>
+  </ol>
+  <p>To restore from text file: enter global config mode → paste file content into terminal window → commands apply as running config. Edit first if needed (remove any non-command lines).</p>
+  </div>
+
+  <!-- PT INLINE -->
+  <div style="margin:20px 0 6px;padding:14px 16px;background:#0d1117;border:1px solid #30363d;border-left:3px solid #1f6feb;border-radius:6px">
+    <div style="font-size:.72em;font-weight:800;text-transform:uppercase;letter-spacing:.8px;color:#1f6feb;margin-bottom:10px">&#x1F4E6; Packet Tracer Activities</div>
+  <div style="display:flex;align-items:baseline;gap:10px;padding:6px 0;border-bottom:1px solid #21262d"><span style="font-family:monospace;font-size:.85em;color:#79c0ff;white-space:nowrap;flex-shrink:0;min-width:52px">2.5.5</span><span style="font-size:.88em;color:#c9d1d9">Configure Initial Switch Settings</span></div>
+    <div style="margin-top:10px;font-size:.78em;color:#6e7681">Full list: <a href="https://itexamanswers.net/ccna-1-v7-exam-answers-introduction-to-networks-v7-0-itn.html" target="_blank" rel="noopener" style="color:#58a6ff;word-break:break-all">itexamanswers.net/ccna-1-v7-exam-answers-introduction-to-networks-v7-0-itn.html</a></div>
+  </div>
+
+</div></div>
+
+<!-- 2.6 PORTS AND ADDRESSES -->
+<div class="sec" id="s6">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">2.6</span><span class="ttl">Ports and Addresses</span></span><button class="sec-check" id="sch-s6" onclick="event.stopPropagation();toggleSection('s6',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb">
+
+  <div class="sub">
+  <h3><span class="sn">2.6.1</span> IP Addresses — IPv4 and IPv6</h3>
+  <p>Every end device on a network must be configured with an IP address to communicate.</p>
+  <div class="tw"><table>
+    <tr><th>Field</th><th>Description</th><th>Example</th></tr>
+    <tr><td><strong>IPv4 Address</strong></td><td>Dotted decimal notation — four decimal numbers 0–255</td><td><code>192.168.1.10</code></td></tr>
+    <tr><td><strong>Subnet Mask</strong></td><td>32-bit value differentiating network portion from host portion</td><td><code>255.255.255.0</code></td></tr>
+    <tr><td><strong>Default Gateway</strong></td><td>IP address of the router used to reach remote networks and the internet</td><td><code>192.168.1.1</code></td></tr>
+  </table></div>
+  <p><strong>IPv6:</strong> 128-bit address — 32 hexadecimal digits separated by colons (<code>:</code>). Every 4 bits = one hex digit. Not case-sensitive. Can be written in lowercase or uppercase.</p>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">2.6.2</span> Switch Virtual Interface (SVI)</h3>
+  <p>Layer 2 switches do NOT support IP addresses on physical ports. Instead they use a <strong>Switch Virtual Interface (SVI)</strong>:</p>
+  <ul>
+    <li>SVI is a <strong>virtual interface</strong> — no physical hardware; created entirely in software</li>
+    <li>Default SVI = <strong>interface VLAN 1</strong></li>
+    <li>IP address assigned to SVI is used for <strong>remote management only</strong> (SSH, Telnet)</li>
+    <li>The SVI IP address is <strong>NOT required</strong> for the switch to forward Ethernet frames — the switch works at Layer 2 regardless</li>
+  </ul>
+  <div class="ca info"><span class="ic">💡</span><div>Think of the SVI as a "management window" into the switch. It lets administrators reach the switch remotely without needing physical console access. The switch's actual forwarding function uses MAC addresses, not IP addresses.</div></div>
+  </div>
+
+</div></div>
+
+<!-- 2.7 CONFIGURE IP ADDRESSING -->
+<div class="sec" id="s7">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">2.7</span><span class="ttl">Configure IP Addressing</span></span><button class="sec-check" id="sch-s7" onclick="event.stopPropagation();toggleSection('s7',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb">
+
+  <div class="sub">
+  <h3><span class="sn">2.7.1</span> Manual IPv4 Configuration on Windows</h3>
+  <p>Windows path: <strong>Control Panel → Network Sharing Center → Change adapter settings</strong> → right-click adapter → Properties → Internet Protocol Version 4 (TCP/IPv4) → Properties → enter IP address, subnet mask, default gateway, and DNS server addresses.</p>
+  <div class="ca info"><span class="ic">💡</span><div>DNS server addresses are the IPs of servers that translate domain names (e.g., <code>www.cisco.com</code>) to IP addresses. Without DNS, you'd have to type IP addresses to reach every website.</div></div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">2.7.2</span> Automatic IP Configuration — DHCP and SLAAC</h3>
+  <p><strong>DHCP (Dynamic Host Configuration Protocol)</strong> — automatically assigns IP address, subnet mask, default gateway, and DNS server to every end device. Eliminates manual configuration and prevents duplicate IP address assignments.</p>
+  <p>Windows: Select <strong>"Obtain an IP address automatically"</strong> and <strong>"Obtain DNS server address automatically."</strong></p>
+  <div class="tw"><table>
+    <tr><th>Protocol</th><th>IP Version</th><th>Description</th></tr>
+    <tr><td><strong>DHCP</strong></td><td>IPv4</td><td>Server assigns IPv4 address, subnet mask, gateway, DNS</td></tr>
+    <tr><td><strong>DHCPv6</strong></td><td>IPv6</td><td>Server assigns IPv6 global unicast address and other info</td></tr>
+    <tr><td><strong>SLAAC</strong></td><td>IPv6</td><td>Stateless Address Autoconfiguration — device generates its own IPv6 address from router prefix</td></tr>
+  </table></div>
+  <div class="cw"><div class="cl">Verify Windows PC IP configuration</div>
+  <pre><code>C:\> ipconfig
+
+Windows IP Configuration
+
+Ethernet adapter Local Area Connection:
+   IPv4 Address. . . . . : 192.168.1.10
+   Subnet Mask . . . . . : 255.255.255.0
+   Default Gateway . . . : 192.168.1.1</code></pre></div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">2.7.4</span> Configure the Switch Virtual Interface (SVI)</h3>
+  <div class="cw"><div class="cl">Configure SVI for remote management <button class="cpb" onclick="copyCode(this)">Copy</button></div>
+  <pre><code>Switch# configure terminal
+Switch(config)# interface vlan 1
+Switch(config-if)# ip address 192.168.1.20 255.255.255.0
+Switch(config-if)# no shutdown
+Switch(config-if)# end
+Switch#
+
+! no shutdown is REQUIRED to bring the interface up
+! Without it the interface stays administratively down</code></pre></div>
+  <div class="ca danger"><span class="ic">🚨</span><div><strong>Most common student error:</strong> Forgetting <code>no shutdown</code> after assigning the IP address to the SVI. Without it, the interface remains administratively down and cannot be used for remote management — even though the IP address is configured.</div></div>
+  </div>
+
+  <!-- SYNTAX CHECKER: 2.7.5 -->
+  <div style="margin:20px 0 6px;padding:16px;background:#0d1117;border:1px solid #30363d;border-left:3px solid #bc8cff;border-radius:8px">
+    <div style="font-size:.7em;font-weight:800;text-transform:uppercase;letter-spacing:.8px;color:#bc8cff;margin-bottom:6px">&#x1F5A5; Syntax Checker &mdash; 2.7.5</div>
+    <div style="font-size:.92em;font-weight:600;color:#e6edf3;margin-bottom:12px">Configure a Switch Virtual Interface</div>
+    <div style="font-size:.82em;color:#8b949e;margin-bottom:14px">Type each command exactly as shown. Press Enter to submit. The checker validates your syntax step by step.</div>
+    <div class="tool-links" style="display:flex;flex-wrap:wrap;gap:14px">
+      <div style="flex:1 1 220px;min-width:0">
+        <a href="../../syntax-checker-simple/ccna1_syntax_checker.html?lab=2.7.5" target="_blank" rel="noopener" title="Quick, guided drill: type the exact commands for this NetAcad lab, step by step. Opens straight to lab 2.7.5." style="display:inline-flex;align-items:center;gap:8px;color:#fff;text-decoration:none;padding:8px 18px;border-radius:6px;font-size:.85em;font-weight:700;background:#238636;border:1px solid #2ea043">&#x25B6; Open Syntax Checker</a>
+        <div style="font-size:.75em;color:#8b949e;margin-top:6px">Quick, guided drill: type the exact commands for this NetAcad lab, step by step. Opens straight to lab 2.7.5.</div>
+      </div>
+      <div style="flex:1 1 220px;min-width:0">
+        <a class="cli-engine-link" href="../../cli-engine/ccna-cli-engine.html" target="_blank" rel="noopener" title="Full simulated Cisco IOS terminal: Tab completion, device state, Free Practice, Home Labs and Subnetting. In its exercise menu, pick “Course 1 · 2.7 — Configure a Switch Virtual Interface”." style="display:inline-flex;align-items:center;gap:8px;color:#fff;text-decoration:none;padding:8px 18px;border-radius:6px;font-size:.85em;font-weight:700;background:#1f6feb;border:1px solid #388bfd">&#x1F4BB; Open CLI Engine</a>
+        <div style="font-size:.75em;color:#8b949e;margin-top:6px">Full simulated Cisco IOS terminal: Tab completion, device state, Free Practice, Home Labs and Subnetting. In its exercise menu, pick “Course 1 · 2.7 — Configure a Switch Virtual Interface”.</div>
+      </div>
+    </div>
+    <div style="margin-top:12px;font-size:.75em"><a href="../../index.html" style="color:#58a6ff;text-decoration:none">&#x1F3E0; All study tools (home)</a></div>
+  </div>
+
+  <!-- PT INLINE -->
+  <div style="margin:20px 0 6px;padding:14px 16px;background:#0d1117;border:1px solid #30363d;border-left:3px solid #1f6feb;border-radius:6px">
+    <div style="font-size:.72em;font-weight:800;text-transform:uppercase;letter-spacing:.8px;color:#1f6feb;margin-bottom:10px">&#x1F4E6; Packet Tracer Activities</div>
+  <div style="display:flex;align-items:baseline;gap:10px;padding:6px 0;border-bottom:1px solid #21262d"><span style="font-family:monospace;font-size:.85em;color:#79c0ff;white-space:nowrap;flex-shrink:0;min-width:52px">2.7.6</span><span style="font-size:.88em;color:#c9d1d9">Implement Basic Connectivity</span></div>
+    <div style="margin-top:10px;font-size:.78em;color:#6e7681">Full list: <a href="https://itexamanswers.net/ccna-1-v7-exam-answers-introduction-to-networks-v7-0-itn.html" target="_blank" rel="noopener" style="color:#58a6ff;word-break:break-all">itexamanswers.net/ccna-1-v7-exam-answers-introduction-to-networks-v7-0-itn.html</a></div>
+  </div>
+
+</div></div>
+
+<!-- 2.8 VERIFY CONNECTIVITY -->
+<div class="sec" id="s8">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">2.8</span><span class="ttl">Verify Connectivity</span></span><button class="sec-check" id="sch-s8" onclick="event.stopPropagation();toggleSection('s8',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb">
+  <div class="sub">
+  <h3><span class="sn">2.8</span> Key Verification Commands</h3>
+  <div class="tw"><table>
+    <tr><th>Command</th><th>Platform</th><th>Purpose</th></tr>
+    <tr><td><code>show ip interface brief</code></td><td>Cisco IOS</td><td>Summary of all interfaces — IP address, OK?, method, and Status/Protocol columns. Quickly verifies interface state.</td></tr>
+    <tr><td><code>show running-config</code></td><td>Cisco IOS</td><td>Full current configuration in RAM — verifies all settings including passwords (encrypted), banners, SVI IP</td></tr>
+    <tr><td><code>ipconfig</code></td><td>Windows</td><td>Displays IPv4 address, subnet mask, and default gateway on a Windows PC</td></tr>
+    <tr><td><code>ping</code> <em>ip-address</em></td><td>IOS + Windows</td><td>Tests end-to-end Layer 3 connectivity using ICMP Echo Request/Reply</td></tr>
+  </table></div>
+  <div class="cw"><div class="cl">show ip interface brief output example</div>
+  <pre><code>Switch# show ip interface brief
+Interface         IP-Address    OK? Method Status           Protocol
+Vlan1             192.168.1.20  YES manual up               up
+FastEthernet0/1   unassigned    YES unset  up               up
+FastEthernet0/2   unassigned    YES unset  down             down
+
+! Status = up/down (physical layer)
+! Protocol = up/down (data link layer)
+! Both must be "up" for the interface to work</code></pre></div>
+  </div>
+</div></div>
+
+<!-- 2.9 FULL CONFIG EXAMPLE -->
+
+<div class="sec" id="s-pt-2-9">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">2.9</span><span class="ttl">Packet Tracer — Basic Switch and End Device Configuration</span></span><button class="sec-check" id="sch-s-pt-2-9" onclick="event.stopPropagation();toggleSection('s-pt-2-9',this)">○ Mark done</button>
+</div>
+<div class="sb">
+  <div style="padding:14px 16px;background:#0d1117;border:1px solid #30363d;border-left:3px solid #1f6feb;border-radius:6px">
+    <div style="font-size:.72em;font-weight:800;text-transform:uppercase;letter-spacing:.8px;color:#1f6feb;margin-bottom:10px">&#x1F4E6; Packet Tracer Activities</div>
+    <div style="font-size:.82em;color:#6e7681;margin-bottom:10px">Open in Cisco Packet Tracer via your NetAcad course.</div>
+      <div style="display:flex;align-items:baseline;gap:10px;padding:6px 0;border-bottom:1px solid #21262d"><span style="font-family:monospace;font-size:.85em;color:#79c0ff;white-space:nowrap;flex-shrink:0;min-width:52px">2.9.1</span><span style="font-size:.88em;color:#c9d1d9">Basic Switch and End Device Configuration</span></div>
+      <div style="display:flex;align-items:baseline;gap:10px;padding:6px 0;border-bottom:1px solid #21262d"><span style="font-family:monospace;font-size:.85em;color:#79c0ff;white-space:nowrap;flex-shrink:0;min-width:52px">2.9.2</span><span style="font-size:.88em;color:#c9d1d9">Basic Switch and End Device Configuration (Physical Mode)</span></div>
+    <div style="margin-top:12px;font-size:.78em;color:#6e7681">Full list: <a href="https://itexamanswers.net/ccna-1-v7-exam-answers-introduction-to-networks-v7-0-itn.html" target="_blank" rel="noopener" style="color:#58a6ff;word-break:break-all">itexamanswers.net/ccna-1-v7-exam-answers-introduction-to-networks-v7-0-itn.html</a></div>
+  </div>
+</div>
+</div>
+<div class="sec" id="s9">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">🔧</span><span class="ttl">Full Switch Configuration Example</span></span><button class="sec-check" id="sch-s9" onclick="event.stopPropagation();toggleSection('s9',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb">
+  <div class="sub">
+  <h3><span class="sn">Complete</span> Switch Initial Configuration — All Steps</h3>
+  <div class="cw"><div class="cl">Full switch setup from scratch <button class="cpb" onclick="copyCode(this)">Copy</button></div>
+  <pre><code>Switch# configure terminal
+
+! Step 1: Set hostname
+Switch(config)# hostname Sw-Floor-1
+
+! Step 2: Secure console access
+Sw-Floor-1(config)# line console 0
+Sw-Floor-1(config-line)# password cisco
+Sw-Floor-1(config-line)# login
+Sw-Floor-1(config-line)# exit
+
+! Step 3: Secure privileged EXEC access
+Sw-Floor-1(config)# enable secret class
+
+! Step 4: Secure all VTY lines (remote access)
+Sw-Floor-1(config)# line vty 0 15
+Sw-Floor-1(config-line)# password cisco
+Sw-Floor-1(config-line)# login
+Sw-Floor-1(config-line)# exit
+
+! Step 5: Encrypt all plaintext passwords
+Sw-Floor-1(config)# service password-encryption
+
+! Step 6: Create login banner
+Sw-Floor-1(config)# banner motd #Authorized Access Only!#
+
+! Step 7: Configure SVI for remote management
+Sw-Floor-1(config)# interface vlan 1
+Sw-Floor-1(config-if)# ip address 192.168.1.20 255.255.255.0
+Sw-Floor-1(config-if)# no shutdown
+Sw-Floor-1(config-if)# end
+
+! Step 8: Save configuration to NVRAM
+Sw-Floor-1# copy running-config startup-config</code></pre></div>
+  </div>
+</div></div>
+
+<!-- 2.10 EXAM TRAPS -->
+
+
+  <!-- PT MASTER LINK -->
+  <div style="margin:18px 0 6px;padding:12px 14px;background:#0d1117;border:1px solid #30363d;border-left:3px solid #1f6feb;border-radius:6px">
+    <div style="font-size:.7em;font-weight:800;text-transform:uppercase;letter-spacing:.8px;color:#1f6feb;margin-bottom:6px">&#x1F4E6; All Packet Tracer Activities — CCNA 1</div>
+    <div style="font-size:.84em;color:#c9d1d9;margin-bottom:4px">Complete list of all CCNA 1 Packet Tracer activities with instructions:</div>
+    <a href="https://itexamanswers.net/ccna-1-v7-exam-answers-introduction-to-networks-v7-0-itn.html" target="_blank" rel="noopener" style="font-size:.78em;color:#58a6ff;word-break:break-all">https://itexamanswers.net/ccna-1-v7-exam-answers-introduction-to-networks-v7-0-itn.html</a>
+  </div>
+
+<div class="sec" id="s10">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">🎯</span><span class="ttl">Common Exam Traps — Module 2</span></span><button class="sec-check" id="sch-s10" onclick="event.stopPropagation();toggleSection('s10',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb">
+
+  <div class="ca danger"><span class="ic">❌</span><div><strong>Trap 1: Console = out-of-band (no network needed). SSH = in-band encrypted. Telnet = in-band INSECURE.</strong><br>Console works with zero network configuration — essential for initial setup and recovery. Telnet sends everything including passwords in plaintext. Always use SSH in production. These three are frequently tested as matching questions.</div></div>
+
+  <div class="ca danger"><span class="ic">❌</span><div><strong>Trap 2: User EXEC = &gt; (view only, cannot configure). Privileged EXEC = # (full access).</strong><br>User EXEC has limited monitoring commands only. Privileged EXEC allows all commands and is required to enter global configuration mode. A very common exam question shows a prompt and asks which mode it represents.</div></div>
+
+  <div class="ca danger"><span class="ic">❌</span><div><strong>Trap 3: <code>exit</code> goes up ONE level. <code>end</code> and Ctrl+Z jump directly to privileged EXEC (#).</strong><br>From (config-line)#, <code>exit</code> → (config)#. From (config)#, <code>exit</code> → #. From any subconfig, <code>end</code> → always # regardless of how deep you are.</div></div>
+
+  <div class="ca danger"><span class="ic">❌</span><div><strong>Trap 4: Both <code>password</code> AND <code>login</code> are required for console and VTY lines.</strong><br>Setting <code>password cisco</code> without <code>login</code> = the password exists but is never asked for (no authentication). Setting <code>login</code> without <code>password</code> = error, line blocks access. Both must be present together.</div></div>
+
+  <div class="ca danger"><span class="ic">❌</span><div><strong>Trap 5: <code>enable secret</code> stores as MD5 hash (strong). <code>enable password</code> stores as plaintext (avoid).</strong><br>If both are configured, <code>enable secret</code> always takes precedence. <code>service password-encryption</code> does NOT affect <code>enable secret</code> — it's already encrypted with MD5. Never use <code>enable password</code> alone in production.</div></div>
+
+  <div class="ca danger"><span class="ic">❌</span><div><strong>Trap 6: <code>service password-encryption</code> is WEAK — prevents reading, but not cracking.</strong><br>Type 7 encryption applied by this command can be reversed with free online tools. Its purpose is only to prevent casual over-the-shoulder reading of config files. It does NOT encrypt passwords sent over the network.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 7: <code>running-config</code> = RAM (lost on reload). <code>startup-config</code> = NVRAM (survives power-off).</strong><br>Changes to running-config are immediate but temporary. You MUST run <code>copy running-config startup-config</code> to make them permanent. Forgetting this is the #1 student mistake in labs — all config is lost on the next reload.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 8: <code>no shutdown</code> is required after assigning an IP to the SVI.</strong><br>By default, all interfaces are administratively shut down. After <code>ip address</code>, you MUST type <code>no shutdown</code> or the interface remains down and cannot be used for remote management. This is one of the most common errors in labs.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 9: SVI IP address is for management only — not required for the switch to forward frames.</strong><br>Layer 2 switches forward based on MAC addresses, not IP addresses. The SVI (VLAN 1) IP only allows remote management (SSH/Telnet) access to the switch. The switch forwards Ethernet frames perfectly well with no IP address configured at all.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 10: DHCP automatically provides IP address, subnet mask, default gateway, AND DNS server.</strong><br>All four pieces of configuration are provided by DHCP. Without DHCP, an admin must manually configure all four on every device. IPv6 equivalents are DHCPv6 (stateful) and SLAAC (stateless).</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 11: VTY lines 0–15 = 16 simultaneous remote sessions. Configure all with <code>line vty 0 15</code>.</strong><br>If you only configure <code>line vty 0 4</code>, lines 5–15 may have no password — leaving a security hole. Best practice is always <code>line vty 0 15</code> to secure all 16 lines at once.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 12: Hostname rules — starts with a letter, ends with letter or digit, no spaces, max 64 characters.</strong><br>IOS will reject hostnames starting with numbers or containing spaces. IOS preserves capitalization exactly as entered. Common exam question shows several options and asks which one is a valid hostname.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 13: <code>banner motd</code> requires a delimiting character before AND after the message.</strong><br>The delimiter can be any character not in the message body (# is common). The banner displays on all access attempts (console, SSH, Telnet) until removed. Legal purpose: establishes unauthorized access notice required for prosecution in some jurisdictions.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 14: <code>Ctrl+Shift+6</code> breaks an active operation; <code>Ctrl+C</code> aborts config mode.</strong><br>When a ping or DNS lookup hangs, <code>Ctrl+Shift+6</code> terminates it and returns to the prompt. <code>Ctrl+C</code> exits config mode back to privileged EXEC. These do different things and appear in keyboard shortcut questions.</div></div>
+
+  <div class="ca tip"><span class="ic">✅</span><div><strong>Module 2 quick-reference summary:</strong><br><br>
+  <strong>OS layers:</strong> Shell (user interface) → Kernel (HW/SW bridge) → Hardware (physical)<br>
+  <strong>CLI vs GUI:</strong> CLI = low overhead, stable, full features; GUI = user-friendly, may miss features, can crash<br>
+  <strong>Cisco IOS:</strong> Used on enterprise routers/switches · IOS XE, IOS XR, NX-OS also exist<br>
+  <strong>Access methods:</strong> Console (out-of-band, no network needed) · SSH (in-band, encrypted ✅) · Telnet (in-band, plaintext ❌)<br>
+  <strong>Terminal emulators:</strong> PuTTY · Tera Term · SecureCRT<br>
+  <strong>Modes:</strong> User EXEC (>) = view only · Privileged EXEC (#) = full access<br>
+  <strong>Global config:</strong> (config)# · Line config: (config-line)# · Interface config: (config-if)#<br>
+  <strong>Navigation:</strong> enable/disable · configure terminal · exit (one level) · end/Ctrl+Z (→ #)<br>
+  <strong>Help:</strong> ? = context help · Tab = autocomplete · Up arrow = command history<br>
+  <strong>Shortcuts:</strong> Ctrl+A (start of line) · Ctrl+E (end) · Ctrl+Shift+6 (break) · Ctrl+Z (→ priv EXEC)<br>
+  <strong>Hostname:</strong> Starts/ends with letter or digit · No spaces · Letters/digits/dashes only · &lt;64 chars<br>
+  <strong>Passwords:</strong> Console: line console 0 + password + login · Priv EXEC: enable secret · VTY: line vty 0 15 + password + login<br>
+  <strong>enable secret</strong> = MD5 (strong) · <strong>enable password</strong> = plaintext (avoid) · <strong>service password-encryption</strong> = weak Type 7<br>
+  <strong>Banner:</strong> banner motd #message# · delimiter can be any char not in message<br>
+  <strong>Config files:</strong> running-config (RAM, volatile, immediate) · startup-config (NVRAM, persistent)<br>
+  <strong>Save:</strong> copy running-config startup-config · <strong>Discard:</strong> reload · <strong>Wipe:</strong> erase startup-config + reload<br>
+  <strong>IPv4 needs:</strong> IP address + subnet mask + default gateway (+ DNS for hostnames)<br>
+  <strong>SVI:</strong> interface vlan 1 · ip address x.x.x.x m.m.m.m · no shutdown (REQUIRED)<br>
+  <strong>Verify:</strong> show ip interface brief (IOS) · ipconfig (Windows) · ping (both)</div></div>
+
+</div></div>
+
+
+</div>
+<div class="ft">CCNA 1 ITN v7.02 — Module 2: Basic Switch and End Device Configuration v2.2<br>Based on Cisco NetAcad curriculum · Study guide for personal use</div>
+<button class="tb-btn" id="topb" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+<div class="mod-nav">
+  <a class="mn-hub" href="index.html">🏠 Hub</a>
+  <div class="mn-divider"></div>
+  <a class="mn-prev" href="ccna1_module1_networking_today_v2.2.html">‹</a>
+  <span class="mn-label">M2 of 17</span>
+  <a class="mn-next" href="ccna1_module3_protocols_and_models_v2.2.html">›</a>
+</div>
+<script>
+var MOD_KEY="ccna1-module2-basic-switch-end-device-config";
+var SECS=["s1","s2","s3","s4","s5","s6","s7","s8","s-pt-2-9","s9","s10"];
+var checked={};
+function loadState(){
+  try{var s=localStorage.getItem(MOD_KEY);if(s)checked=JSON.parse(s);}catch(e){}
+  SECS.forEach(function(id){
+    var pill=document.getElementById('pill-'+id);
+    var row=document.getElementById('row-'+id);
+    var st=document.getElementById('st-'+id);
+    var sch=document.getElementById('sch-'+id);
+    if(checked[id]){
+      if(pill){pill.classList.add('checked');pill.querySelector('.pill-check').textContent='✓';}
+      if(row)row.classList.add('done');
+      if(st)st.textContent='✓';
+      if(sch){sch.classList.add('checked');sch.textContent='✓ Done';}
+    } else {
+      if(pill){pill.classList.remove('checked');pill.querySelector('.pill-check').textContent='○';}
+      if(row)row.classList.remove('done');
+      if(st)st.textContent='○';
+      if(sch){sch.classList.remove('checked');sch.textContent='○ Mark done';}
+    }
+  });
+}
+function toggleSection(id,btn){checked[id]=!checked[id];try{localStorage.setItem(MOD_KEY,JSON.stringify(checked));}catch(e){}loadState();}
+function toggleStudyPanel(){
+  var hdr=document.getElementById('sp-hdr');
+  var body=document.getElementById('sp-body');
+  var arr=document.getElementById('sp-arr');
+  hdr.classList.toggle('open');body.classList.toggle('open');
+  if(arr)arr.textContent=body.classList.contains('open')?'▲':'▼';
+}
+function goTo(id){var el=document.getElementById(id);if(!el)return;var h=el.querySelector('.sh'),b=el.querySelector('.sb');if(h&&b&&!b.classList.contains('open')){h.classList.add('open');b.classList.add('open');}setTimeout(function(){window.scrollTo({top:el.getBoundingClientRect().top+window.pageYOffset-60,behavior:'smooth'});},50);}
+function setFs(size,btn){document.documentElement.style.setProperty('--base-fs',size);document.querySelectorAll('.fs-btn').forEach(function(b){b.classList.remove('active');});btn.classList.add('active');try{localStorage.setItem('ccna-fs',size);}catch(e){}}
+(function(){try{var s=localStorage.getItem('ccna-fs');if(s){document.documentElement.style.setProperty('--base-fs',s);document.querySelectorAll('.fs-btn').forEach(function(b){b.classList.remove('active');if((b.textContent==='S'&&s==='14px')||(b.textContent==='M'&&s==='16px')||(b.textContent==='L'&&s==='18px')||(b.textContent==='XL'&&s==='20px'))b.classList.add('active');});}}catch(e){}loadState();})();
+function copyCode(btn){var pre=btn.closest('.cw').querySelector('pre');navigator.clipboard.writeText(pre.innerText||pre.textContent).then(function(){btn.textContent='Copied!';setTimeout(function(){btn.textContent='Copy';},1500);});}
+</script>
+<script src="../../site-config.js"></script>
+</body>
+</html>

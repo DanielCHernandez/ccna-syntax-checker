@@ -1,0 +1,688 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=2.0">
+<title>CCNA 1 Module 9: Address Resolution v2.2</title>
+<style>
+:root{
+  --nt:#0a6e4e;--ntd:#4ade80;--nt2:#052e1e;--nt3:#021710;
+  --bg:#f4f6f8;--card:#fff;--text:#1a1a2e;--muted:#5a6a7a;
+  --cbg:#0d1117;--ctxt:#c9d1d9;--r:12px;--sh:0 2px 12px rgba(0,0,0,.08);
+  --base-fs:20px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);font-size:var(--base-fs);line-height:1.7}
+.bc{background:#0d1117;padding:8px 16px;display:flex;align-items:center;flex-wrap:wrap;gap:4px;font-size:.75em;overflow-x:auto;white-space:nowrap;-webkit-overflow-scrolling:touch;border-bottom:1px solid #21262d}
+.bc a{color:#8b949e;text-decoration:none;font-weight:600;flex-shrink:0}
+.bc .sep{color:#6e7681;flex-shrink:0}
+.bc .cur{color:var(--ntd);font-weight:700;flex-shrink:0}
+.fs-bar{position:sticky;top:0;z-index:200;background:#1a1a2e;display:flex;align-items:center;justify-content:flex-end;padding:6px 14px;gap:6px;box-shadow:0 2px 8px rgba(0,0,0,.3)}
+.fs-label{color:#8b949e;font-size:.72em;font-weight:700;letter-spacing:.5px;text-transform:uppercase;margin-right:4px}
+.fs-btn{background:#30363d;color:#c9d1d9;border:2px solid transparent;border-radius:6px;padding:4px 12px;font-size:.75em;font-weight:700;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:all .2s;line-height:1.4}
+.fs-btn:active,.fs-btn.active{background:var(--nt);color:#fff;border-color:var(--ntd)}
+.hdr{background:linear-gradient(135deg,var(--nt3),var(--nt2),var(--nt));color:#fff;padding:32px 20px 24px;text-align:center}
+.hdr .badge{display:inline-block;background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.4);border-radius:20px;padding:4px 14px;font-size:.81em;margin-bottom:12px}
+.hdr h1{font-size:1.5em;font-weight:700;margin-bottom:6px}
+.hdr p{font-size:.94em;opacity:.85}
+.hdr .obj{display:inline-block;background:rgba(255,255,255,.15);border-radius:8px;padding:7px 16px;margin-top:12px;font-size:.875em;font-style:italic}
+/* Study progress panel */
+.sp-wrap{background:var(--card);margin:16px 16px 0;border-radius:var(--r);box-shadow:var(--sh);overflow:hidden}
+.sp-hdr{background:var(--nt);color:#fff;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;user-select:none;-webkit-tap-highlight-color:transparent;gap:10px}
+.sp-hdr .sp-title{font-weight:700;font-size:.875em;flex-shrink:0}
+.sp-hdr .sp-arr{transition:transform .3s;flex-shrink:0}
+.sp-hdr.open .sp-arr{transform:rotate(180deg)}
+.sp-body{display:none;padding:12px 14px}
+.sp-body.open{display:block}
+.sp-row{display:flex;align-items:center;gap:10px;padding:6px 4px;border-bottom:1px solid #f0f4f8;font-size:.81em}
+.sp-row:last-child{border-bottom:none}
+.sp-row .sr-status{font-size:1em;flex-shrink:0;width:20px;text-align:center}
+.sp-row .sr-nb{font-weight:800;color:var(--nt);min-width:36px;flex-shrink:0;font-size:.875em}
+.sp-row .sr-ttl{color:var(--text);flex:1}
+.sp-row.done .sr-ttl{color:var(--muted);text-decoration:line-through}
+/* Section check pills in fs-bar */
+.sc-pills{display:flex;align-items:center;gap:4px;overflow-x:auto;-webkit-overflow-scrolling:touch;flex:1;padding:0 4px}
+.sc-pill{background:#30363d;color:#8b949e;border:2px solid transparent;border-radius:6px;padding:3px 8px;font-size:.72em;font-weight:700;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:all .15s;white-space:nowrap;flex-shrink:0;line-height:1.4;display:flex;align-items:center;gap:3px}
+.sc-pill.checked{background:var(--nt);color:#fff;border-color:var(--ntd)}
+.sc-pill .pill-check{font-size:.875em}
+.toc{background:var(--card);margin:16px;border-radius:var(--r);box-shadow:var(--sh);overflow:hidden}
+.toch{background:var(--nt);color:#fff;padding:14px 18px;font-weight:700;font-size:.94em;display:flex;justify-content:space-between;align-items:center;cursor:pointer;user-select:none}
+.toch .arr{transition:transform .3s}
+.toch.open .arr{transform:rotate(180deg)}
+.tocb{display:none;padding:10px 0}
+.tocb.open{display:block}
+.tocg{font-size:.69em;font-weight:800;letter-spacing:.8px;color:var(--nt);text-transform:uppercase;padding:8px 20px 2px}
+.tocb a{display:block;padding:9px 20px 9px 28px;color:var(--text);text-decoration:none;font-size:.875em;border-left:3px solid transparent;transition:all .2s}
+.tocb a:active{background:#f0fdf4;border-left-color:var(--ntd)}
+.tocb a .n{display:inline-block;background:var(--nt);color:#fff;border-radius:5px;padding:1px 8px;font-size:.75em;font-weight:700;margin-right:8px}
+.wrap{padding:0 16px 100px}
+.sec{background:var(--card);border-radius:var(--r);box-shadow:var(--sh);margin-bottom:16px;overflow:hidden}
+.sh{background:linear-gradient(90deg,var(--nt3),var(--nt));color:#fff;padding:16px 18px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;user-select:none;-webkit-tap-highlight-color:transparent}
+.sh .ttl{font-weight:700;font-size:1em}
+.sh .nb{background:rgba(255,255,255,.25);border-radius:6px;padding:3px 10px;font-size:.81em;font-weight:700;margin-right:10px;white-space:nowrap}
+.sh .ch{font-size:1.125em;transition:transform .3s}
+.sh.open .ch{transform:rotate(180deg)}
+.sb{display:none;padding:18px}
+.sb.open{display:block}
+.sub{margin-bottom:24px}
+.sub:last-child{margin-bottom:0}
+.sub h3{font-size:.94em;font-weight:700;color:var(--nt);margin-bottom:10px;padding-bottom:6px;border-bottom:2px solid #f0fdf4;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.sub h3 .sn{background:var(--nt);color:#fff;border-radius:5px;padding:2px 8px;font-size:.75em;white-space:nowrap}
+.sub h4{font-size:.875em;font-weight:700;color:var(--nt);margin:14px 0 6px}
+.sub p{margin-bottom:10px;font-size:.94em}
+.sub ul,.sub ol{padding-left:20px;margin:8px 0;font-size:.94em}
+.sub li{margin-bottom:5px}
+.cw{background:var(--cbg);border-radius:10px;margin:12px 0;overflow:hidden}
+.cl{background:#21262d;color:#c9d1d9;font-size:.78em;font-weight:700;padding:6px 14px;letter-spacing:.5px;text-transform:uppercase}
+pre{margin:0;padding:14px;overflow-x:auto;-webkit-overflow-scrolling:touch}
+code{font-family:'Courier New',monospace;font-size:.81em;color:var(--ctxt);line-height:1.6}
+.ca{border-radius:8px;padding:12px 14px;margin:12px 0;font-size:.875em;line-height:1.6;display:flex;gap:10px;align-items:flex-start}
+.ca .ic{font-size:1.125em;flex-shrink:0;margin-top:1px}
+.ca.warn  {background:#fff3cd;border-left:4px solid #b38600;color:#3d2c00}
+.ca.tip   {background:#d4edda;border-left:4px solid #28a745;color:#0d3318}
+.ca.danger{background:#f8d7da;border-left:4px solid #dc3545;color:#3d0010}
+.ca.info  {background:#f0fdf4;border-left:4px solid var(--nt);color:#052e1e}
+.ca code{color:inherit!important;background:rgba(0,0,0,.1)!important;border:1px solid rgba(0,0,0,.15)}
+.et{background:linear-gradient(135deg,#1a1a2e,var(--nt3));color:#fff;border-radius:10px;padding:14px 16px;margin:14px 0;font-size:.875em;line-height:1.6}
+.et .lbl{font-size:.69em;font-weight:800;letter-spacing:1px;color:var(--ntd);margin-bottom:6px}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:12px 0;border-radius:8px}
+table{width:100%;border-collapse:collapse;font-size:.875em}
+th{background:var(--nt);color:#fff;padding:10px 12px;text-align:left;font-weight:700;font-size:.81em}
+td{padding:9px 12px;border-bottom:1px solid #e8ecf0;vertical-align:top;color:#1a1a2e}
+tr:nth-child(even) td{background:#f0fdf4;color:#052e1e}
+tr:last-child td{border-bottom:none}
+p code,li code,td code,.ca code,.arp-step code{background:#f0fdf4;color:#052e1e;border-radius:4px;padding:1px 5px;font-size:.81em;font-family:'Courier New',monospace;font-weight:600}
+
+/* Address type cards */
+.addr-type-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:12px 0}
+@media(max-width:480px){.addr-type-grid{grid-template-columns:1fr}}
+.addr-type{border-radius:10px;padding:12px 14px;font-size:.81em;line-height:1.7}
+.addr-type.mac{background:#fffbeb;border:2px solid #b38600}
+.addr-type.ip {background:#e0f2fe;border:2px solid #1a3a5c}
+.addr-type .at-title{font-weight:800;margin-bottom:5px;font-size:.875em}
+.addr-type.mac .at-title{color:#b38600}
+.addr-type.ip  .at-title{color:#1a3a5c}
+
+/* Frame hop diagram */
+.hop-flow{background:#0d1117;border-radius:10px;padding:14px;margin:12px 0}
+.hop-flow .hf-title{color:var(--ntd);font-size:.69em;font-weight:800;letter-spacing:.8px;text-transform:uppercase;margin-bottom:10px}
+.hop-row{margin-bottom:10px;padding:8px 12px;border-radius:8px;background:#161b22;font-size:.75em;line-height:1.6}
+.hop-row .hr-hop{color:#8b949e;font-size:.875em;margin-bottom:4px;font-weight:700}
+.hop-row .hr-l2{color:#fbbf24;font-family:'Courier New',monospace}
+.hop-row .hr-l3{color:#4ade80;font-family:'Courier New',monospace}
+
+/* ARP process steps */
+.arp-steps{display:grid;gap:6px;margin:12px 0}
+.arp-step{display:flex;gap:10px;align-items:flex-start;padding:9px 12px;border-radius:8px;font-size:.81em;line-height:1.6}
+.arp-step.req{background:#fff3cd;border-left:4px solid #b38600}
+.arp-step.rep{background:#f0fdf4;border-left:4px solid var(--nt)}
+.arp-step.act{background:#e0f2fe;border-left:4px solid #1a3a5c}
+.arp-step .as-num{font-weight:900;font-size:1em;flex-shrink:0;min-width:20px}
+.arp-step.req .as-num{color:#b38600}
+.arp-step.rep .as-num{color:var(--nt)}
+.arp-step.act .as-num{color:#1a3a5c}
+
+/* ARP request/reply comparison */
+.arp-compare{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:12px 0}
+@media(max-width:480px){.arp-compare{grid-template-columns:1fr}}
+.arp-card{border-radius:10px;padding:12px 14px;font-size:.81em;line-height:1.7}
+.arp-card.req{background:#fff3cd;border:2px solid #b38600}
+.arp-card.rep{background:#f0fdf4;border:2px solid var(--nt)}
+.arp-card .ac-title{font-weight:800;margin-bottom:6px;font-size:.875em}
+.arp-card.req .ac-title{color:#b38600}
+.arp-card.rep .ac-title{color:var(--nt)}
+.arp-card ul{padding-left:16px}
+.arp-card li{margin-bottom:3px}
+
+/* ARP table visual */
+.arp-table-box{background:#161b22;border-radius:8px;overflow:hidden;margin:12px 0}
+.atb-hdr{background:#21262d;color:#8b949e;display:grid;grid-template-columns:1fr 1fr 1fr;font-size:.69em;font-weight:800;letter-spacing:.5px;text-transform:uppercase;padding:6px 12px}
+.atb-row{display:grid;grid-template-columns:1fr 1fr 1fr;padding:7px 12px;border-top:1px solid #21262d;font-family:'Courier New',monospace;font-size:.75em}
+.atb-row .atb-ip{color:#4ade80;font-weight:700}
+.atb-row .atb-mac{color:#fbbf24;font-weight:700}
+.atb-row .atb-type{color:#8b949e}
+.atb-row .atb-type.dyn{color:#38bdf8}
+.atb-row .atb-type.sta{color:#f87171}
+
+/* ARP spoofing diagram */
+.spoof-box{background:#fff5f5;border:2px solid #dc3545;border-radius:10px;padding:14px;margin:12px 0;font-size:.81em;line-height:1.6}
+.spoof-box .sb-title{color:#7c1e1e;font-weight:800;margin-bottom:8px;font-size:.875em}
+.spoof-step{display:flex;gap:8px;align-items:flex-start;margin-bottom:6px}
+.spoof-step .ss-num{background:#dc3545;color:#fff;border-radius:50%;width:20px;height:20px;display:flex;align-items:center;justify-content:center;font-weight:800;flex-shrink:0;font-size:.75em}
+
+/* ND messages table */
+.nd-grid{display:grid;gap:6px;margin:12px 0}
+.nd-row{display:flex;gap:8px;align-items:flex-start;padding:9px 12px;border-radius:8px;font-size:.81em;border-left:4px solid;line-height:1.6}
+.nd-row.ns{border-left-color:var(--nt);background:#f0fdf4}
+.nd-row.na{border-left-color:#1a4731;background:#ecfdf5}
+.nd-row.rs{border-left-color:#1a3a5c;background:#e0f2fe}
+.nd-row.ra{border-left-color:#1e4d85;background:#dbeafe}
+.nd-row.rd{border-left-color:#374151;background:#f9fafb}
+.nd-row .nr-abbr{font-family:'Courier New',monospace;font-weight:900;min-width:30px;flex-shrink:0}
+.nd-row.ns .nr-abbr{color:var(--nt)}
+.nd-row.na .nr-abbr{color:#1a4731}
+.nd-row.rs .nr-abbr{color:#1a3a5c}
+.nd-row.ra .nr-abbr{color:#1e4d85}
+.nd-row.rd .nr-abbr{color:#374151}
+.nd-row .nr-name{font-weight:700;min-width:130px;flex-shrink:0}
+.nd-row .nr-equiv{font-size:.75em;color:#5a6a7a;margin-left:6px}
+
+/* ARP vs ND comparison */
+.arp-nd-compare{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:12px 0}
+@media(max-width:480px){.arp-nd-compare{grid-template-columns:1fr}}
+.anc-card{border-radius:10px;padding:12px 14px;font-size:.81em;line-height:1.7}
+.anc-card.arp{background:#fff3cd;border:2px solid #b38600}
+.anc-card.nd {background:#e0f2fe;border:2px solid #1a3a5c}
+.anc-card .ancc-title{font-weight:800;margin-bottom:5px;font-size:.875em}
+.anc-card.arp .ancc-title{color:#b38600}
+.anc-card.nd  .ancc-title{color:#1a3a5c}
+.anc-card ul{padding-left:16px}
+.anc-card li{margin-bottom:3px}
+
+.tb-btn{position:fixed;bottom:80px;right:16px;background:var(--nt);color:#fff;border:none;border-radius:50%;width:44px;height:44px;font-size:1.25em;box-shadow:0 4px 14px rgba(0,0,0,.25);cursor:pointer;display:none;align-items:center;justify-content:center;z-index:100}
+.tb-btn.show{display:flex}
+.ft{text-align:center;padding:24px 16px;color:var(--muted);font-size:.81em}
+.mod-nav{position:fixed;bottom:0;left:0;right:0;z-index:300;background:#1a1a2e;border-top:1px solid #30363d;display:flex;align-items:center;height:52px;padding:0 8px;gap:6px}
+.mn-hub{background:#1ba0d7;color:#fff;border:none;border-radius:8px;padding:6px 12px;font-size:.75em;font-weight:700;cursor:pointer;text-decoration:none;display:flex;align-items:center;gap:4px;white-space:nowrap;-webkit-tap-highlight-color:transparent;flex-shrink:0}
+.mn-hub:active{opacity:.8}
+.mn-divider{width:1px;height:28px;background:#30363d;flex-shrink:0}
+.mn-label{flex:1;text-align:center;font-size:.69em;color:#8b949e;font-weight:600;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding:0 4px}
+.mn-prev,.mn-next{background:#30363d;color:#c9d1d9;border:none;border-radius:8px;padding:6px 10px;font-size:.875em;font-weight:700;cursor:pointer;text-decoration:none;display:flex;align-items:center;-webkit-tap-highlight-color:transparent;flex-shrink:0}
+.mn-prev:active,.mn-next:active{background:var(--nt);color:#fff}
+
+/* v2.1 — In-section check button */
+.sh{position:relative}
+.sec-check{position:absolute;right:40px;top:50%;transform:translateY(-50%);background:rgba(255,255,255,.15);border:2px solid rgba(255,255,255,.4);border-radius:6px;padding:2px 10px;font-size:.72em;font-weight:800;color:#fff;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:all .2s;white-space:nowrap;z-index:10;line-height:1.5}
+.sec-check.checked{background:var(--ntd);border-color:var(--ntd);color:#052e1e}
+.sec-check:active{opacity:.75}
+</style>
+</head>
+<body>
+<nav class="bc">
+  <a href="../../index.html">🏠 Home</a><span class="sep">›</span>
+  <a href="index.html">CCNA 1 — ITN</a><span class="sep">›</span>
+  <span class="cur">M9: Address Resolution</span>
+</nav>
+<div class="fs-bar">
+  <div class="sc-pills" id="sc-pills">
+  <button class="sc-pill" id="pill-s1" onclick="toggleSection('s1',this)"><span class="pill-check">○</span>9.1</button>
+  <button class="sc-pill" id="pill-s2" onclick="toggleSection('s2',this)"><span class="pill-check">○</span>9.2</button>
+  <button class="sc-pill" id="pill-s3" onclick="toggleSection('s3',this)"><span class="pill-check">○</span>9.3</button>
+  <button class="sc-pill" id="pill-s4" onclick="toggleSection('s4',this)"><span class="pill-check">○</span>🎯</button>
+  </div>
+  <span class="fs-label" style="flex-shrink:0;margin-left:6px">Size</span>
+  <button class="fs-btn" onclick="setFs('14px',this)">S</button>
+  <button class="fs-btn" onclick="setFs('16px',this)">M</button>
+  <button class="fs-btn" onclick="setFs('18px',this)">L</button>
+  <button class="fs-btn active" onclick="setFs('20px',this)">XL</button>
+</div>
+<div class="hdr">
+  <div class="badge">CCNA 1 — ITN v7.02 · Module 9</div>
+  <h1>🔍 Address Resolution</h1>
+  <p>Introduction to Networks · NetAcad Study Guide</p>
+  <div class="obj">Module Objective: Explain how ARP and ND enable communication on a network</div>
+</div>
+<div class="sp-wrap">
+  <div class="sp-hdr" id="sp-hdr" onclick="toggleStudyPanel()">
+    <span class="sp-title">📚 Sections</span>
+    <span class="sp-arr" id="sp-arr">▼</span>
+  </div>
+  <div class="sp-body" id="sp-body">
+    <div class="sp-row" id="row-s1"><span class="sr-status" id="st-s1">○</span><span class="sr-nb">9.1</span><span class="sr-ttl">MAC and IP</span></div>
+    <div class="sp-row" id="row-s2"><span class="sr-status" id="st-s2">○</span><span class="sr-nb">9.2</span><span class="sr-ttl">ARP — Address Resolution Protocol (IPv4)</span></div>
+    <div class="sp-row" id="row-s3"><span class="sr-status" id="st-s3">○</span><span class="sr-nb">9.3</span><span class="sr-ttl">IPv6 Neighbor Discovery (ND)</span></div>
+    <div class="sp-row" id="row-s4"><span class="sr-status" id="st-s4">○</span><span class="sr-nb">🎯</span><span class="sr-ttl">Common Exam Traps — Module 9</span></div>
+  </div>
+</div>
+
+<div class="toc">
+  <div class="toch open" onclick="this.classList.toggle('open');document.getElementById('tocb').classList.toggle('open')">
+    📋 Table of Contents — Tap to expand <span class="arr">▼</span>
+  </div>
+  <div class="tocb open" id="tocb">
+    <div class="tocg">9.1 — MAC and IP</div>
+    <a href="javascript:void(0)" onclick="goTo('s1')"><span class="n">9.1.1</span> Same Network — Destination MAC = Device MAC</a>
+    <a href="javascript:void(0)" onclick="goTo('s1')"><span class="n">9.1.2</span> Remote Network — Destination MAC = Default Gateway MAC</a>
+    <div class="tocg">9.2 — ARP (IPv4)</div>
+    <a href="javascript:void(0)" onclick="goTo('s2')"><span class="n">9.2.1</span> ARP Overview — Two Functions</a>
+    <a href="javascript:void(0)" onclick="goTo('s2')"><span class="n">9.2.2</span> ARP Table Lookup — Found vs Not Found</a>
+    <a href="javascript:void(0)" onclick="goTo('s2')"><span class="n">9.2.3</span> ARP Request — Broadcast · EtherType 0x0806</a>
+    <a href="javascript:void(0)" onclick="goTo('s2')"><span class="n">9.2.4</span> ARP Reply — Unicast · Updates ARP Table</a>
+    <a href="javascript:void(0)" onclick="goTo('s2')"><span class="n">9.2.5</span> ARP for Remote Communications — Default Gateway</a>
+    <a href="javascript:void(0)" onclick="goTo('s2')"><span class="n">9.2.6</span> ARP Table Aging — Dynamic vs Static Entries</a>
+    <a href="javascript:void(0)" onclick="goTo('s2')"><span class="n">9.2.7</span> show ip arp · arp -a Commands</a>
+    <a href="javascript:void(0)" onclick="goTo('s2')"><span class="n">9.2.8</span> ARP Issues — Broadcasts and ARP Spoofing</a>
+    <div class="tocg">9.3 — IPv6 Neighbor Discovery (ND)</div>
+    <a href="javascript:void(0)" onclick="goTo('s3')"><span class="n">9.3.2</span> Five ICMPv6 ND Message Types</a>
+    <a href="javascript:void(0)" onclick="goTo('s3')"><span class="n">9.3.3</span> ND Address Resolution — NS and NA Messages</a>
+    <a href="javascript:void(0)" onclick="goTo('s3')"><span class="n">9.3.3</span> ARP vs Neighbor Discovery Comparison</a>
+    <div class="tocg">Reference</div>
+    <a href="javascript:void(0)" onclick="goTo('s4')"><span class="n">🎯</span> Common Exam Traps</a>
+  </div>
+</div>
+
+<div class="wrap">
+
+<!-- 9.1 MAC AND IP -->
+<div class="sec" id="s1">
+<div class="sh open" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">9.1</span><span class="ttl">MAC and IP</span></span><button class="sec-check" id="sch-s1" onclick="event.stopPropagation();toggleSection('s1',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb open">
+
+  <div class="sub">
+  <h3><span class="sn">9.1.1–9.1.2</span> Two Addresses — Two Purposes</h3>
+  <div class="addr-type-grid">
+    <div class="addr-type mac">
+      <div class="at-title">🔌 Physical Address (MAC) — Layer 2</div>
+      Used for <strong>NIC-to-NIC communication on the same Ethernet network segment</strong>.<br><br>
+      Changes at <strong>every router hop</strong>. Only meaningful on the local segment. Provided by ARP (IPv4) or ND (IPv6).
+    </div>
+    <div class="addr-type ip">
+      <div class="at-title">🌐 Logical Address (IP) — Layer 3</div>
+      Used to send the packet from <strong>original source to final destination</strong> — same or remote network.<br><br>
+      Stays the <strong>same throughout the entire journey</strong> (except when translated by NAT).
+    </div>
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">9.1.1</span> Same Network — Direct Frame Delivery</h3>
+  <p>When destination IP is on the <strong>same network</strong> as the source:</p>
+  <ul>
+    <li>Destination MAC = <strong>MAC of the destination device itself</strong></li>
+    <li>Frame is delivered directly — no router involved</li>
+    <li>Source still needs to know destination MAC → uses <strong>ARP (IPv4)</strong> or <strong>ND (IPv6)</strong> to find it</li>
+  </ul>
+  <div class="hop-flow">
+    <div class="hf-title">✅ Same Network Example — PC1 → PC2 (192.168.10.x)</div>
+    <div class="hop-row">
+      <div class="hr-hop">PC1 → PC2 (direct, no router)</div>
+      <div class="hr-l2">L2 Frame: Src MAC = aa-aa-aa (PC1) · Dst MAC = 55-55-55 (PC2)</div>
+      <div class="hr-l3">L3 Packet: Src IP = 192.168.10.10 · Dst IP = 192.168.10.11</div>
+    </div>
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">9.1.2</span> Remote Network — Frame Goes to Default Gateway</h3>
+  <p>When destination IP is on a <strong>remote network</strong>:</p>
+  <ul>
+    <li>Destination MAC = <strong>MAC of the default gateway (router's local interface)</strong></li>
+    <li>The IP packet inside still has the <strong>final destination IP unchanged</strong></li>
+    <li>At each router hop: old frame removed → IP examined → new frame created with new MACs</li>
+    <li>This continues until the packet reaches the final destination</li>
+  </ul>
+  <div class="hop-flow">
+    <div class="hf-title">🌐 Remote Network Example — PC1 → Web Server across two routers</div>
+    <div class="hop-row">
+      <div class="hr-hop">Hop 1: PC1 → Router R1</div>
+      <div class="hr-l2">L2 Frame: Src MAC = PC1-MAC · Dst MAC = R1-G0/0-MAC (default gateway)</div>
+      <div class="hr-l3">L3 Packet: Src IP = 10.1.1.10 · Dst IP = 172.16.1.99 (unchanged)</div>
+    </div>
+    <div class="hop-row">
+      <div class="hr-hop">Hop 2: R1 → Router R2 (new frame, same packet)</div>
+      <div class="hr-l2">L2 Frame: Src MAC = R1-G0/1-MAC · Dst MAC = R2-G0/0-MAC</div>
+      <div class="hr-l3">L3 Packet: Src IP = 10.1.1.10 · Dst IP = 172.16.1.99 (still unchanged)</div>
+    </div>
+    <div class="hop-row">
+      <div class="hr-hop">Hop 3: R2 → Web Server (final hop)</div>
+      <div class="hr-l2">L2 Frame: Src MAC = R2-G0/1-MAC · Dst MAC = WebServer-MAC</div>
+      <div class="hr-l3">L3 Packet: Src IP = 10.1.1.10 · Dst IP = 172.16.1.99 (unchanged)</div>
+    </div>
+  </div>
+  <div class="et"><div class="lbl">🎯 KEY RULE</div>
+  <strong>IP addresses = end-to-end (never change)</strong><br>
+  <strong>MAC addresses = hop-by-hop (change at every router)</strong><br><br>
+  · <strong>IPv4:</strong> ARP maps IPv4 → MAC at each hop<br>
+  · <strong>IPv6:</strong> Neighbor Discovery (ND) maps IPv6 → MAC at each hop
+  </div>
+  </div>
+
+  <!-- PT INLINE -->
+  <div style="margin:20px 0 6px;padding:14px 16px;background:#0d1117;border:1px solid #30363d;border-left:3px solid #1f6feb;border-radius:6px">
+    <div style="font-size:.72em;font-weight:800;text-transform:uppercase;letter-spacing:.8px;color:#1f6feb;margin-bottom:10px">&#x1F4E6; Packet Tracer Activities</div>
+  <div style="display:flex;align-items:baseline;gap:10px;padding:6px 0;border-bottom:1px solid #21262d"><span style="font-family:monospace;font-size:.85em;color:#79c0ff;white-space:nowrap;flex-shrink:0;min-width:52px">9.1.3</span><span style="font-size:.88em;color:#c9d1d9">Identify MAC and IP Addresses</span></div>
+    <div style="margin-top:10px;font-size:.78em;color:#6e7681">Full list: <a href="https://itexamanswers.net/ccna-1-v7-exam-answers-introduction-to-networks-v7-0-itn.html" target="_blank" rel="noopener" style="color:#58a6ff;word-break:break-all">itexamanswers.net/ccna-1-v7-exam-answers-introduction-to-networks-v7-0-itn.html</a></div>
+  </div>
+
+</div></div>
+
+<!-- 9.2 ARP -->
+<div class="sec" id="s2">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">9.2</span><span class="ttl">ARP — Address Resolution Protocol (IPv4)</span></span><button class="sec-check" id="sch-s2" onclick="event.stopPropagation();toggleSection('s2',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb">
+
+  <div class="sub">
+  <h3><span class="sn">9.2.1</span> ARP Overview</h3>
+  <p><strong>ARP = Address Resolution Protocol.</strong> Used on IPv4 networks to discover the MAC address of a device when only its IPv4 address is known.</p>
+  <p><strong>ARP provides two basic functions:</strong></p>
+  <ol>
+    <li><strong>Resolving IPv4 addresses to MAC addresses</strong></li>
+    <li><strong>Maintaining a table of IPv4-to-MAC address mappings</strong> (ARP table / ARP cache)</li>
+  </ol>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">9.2.2</span> ARP Table Lookup Process</h3>
+  <p>When a device prepares to send an Ethernet frame:</p>
+  <div class="arp-steps">
+    <div class="arp-step act"><div class="as-num">1</div><div>Device checks its <strong>ARP table (ARP cache)</strong> stored in RAM — looks for the destination IPv4 address (or default gateway IP if destination is remote)</div></div>
+    <div class="arp-step rep"><div class="as-num">✅</div><div><strong>Found:</strong> Uses the corresponding MAC address → builds the Ethernet frame → sends normally</div></div>
+    <div class="arp-step req"><div class="as-num">❓</div><div><strong>Not found:</strong> Sends an <strong>ARP request</strong> broadcast to discover the MAC address</div></div>
+  </div>
+  <p><strong>ARP table entry types:</strong></p>
+  <div class="arp-table-box">
+    <div class="atb-hdr"><span>IPv4 Address</span><span>MAC Address</span><span>Type</span></div>
+    <div class="atb-row"><span class="atb-ip">192.168.1.1</span><span class="atb-mac">c8-d7-19-cc-a0-86</span><span class="atb-type dyn">dynamic</span></div>
+    <div class="atb-row"><span class="atb-ip">192.168.1.101</span><span class="atb-mac">08-3e-0c-f5-f7-77</span><span class="atb-type dyn">dynamic</span></div>
+    <div class="atb-row"><span class="atb-ip">192.168.1.255</span><span class="atb-mac">ff-ff-ff-ff-ff-ff</span><span class="atb-type sta">static</span></div>
+    <div class="atb-row"><span class="atb-ip">255.255.255.255</span><span class="atb-mac">ff-ff-ff-ff-ff-ff</span><span class="atb-type sta">static</span></div>
+  </div>
+  <div class="ca info"><span class="ic">💡</span><div><strong>Dynamic entries</strong> — learned via ARP process; time-stamped; automatically expire.<br><strong>Static entries</strong> — manually configured; do NOT expire; must be manually removed.</div></div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">9.2.3–9.2.4</span> ARP Request and ARP Reply</h3>
+  <div class="arp-compare">
+    <div class="arp-card req">
+      <div class="ac-title">📢 ARP Request — Broadcast</div>
+      <ul>
+        <li>Sent when target MAC is NOT in ARP table</li>
+        <li><strong>No IPv4 header</strong> — encapsulated directly in Ethernet frame</li>
+        <li>Dst MAC = <strong>FF-FF-FF-FF-FF-FF (broadcast)</strong></li>
+        <li>Src MAC = sending device's MAC</li>
+        <li>EtherType = <strong>0x0806</strong> (ARP)</li>
+        <li>Contains target IPv4 address (MAC unknown)</li>
+        <li>Switch <strong>floods out ALL ports</strong> except incoming</li>
+        <li>Router does <strong>NOT forward</strong> broadcasts</li>
+        <li>All devices process · Only target replies</li>
+      </ul>
+    </div>
+    <div class="arp-card rep">
+      <div class="ac-title">📩 ARP Reply — Unicast</div>
+      <ul>
+        <li>Sent only by the device whose IP matches the target</li>
+        <li>Dst MAC = <strong>MAC of original requester</strong> (unicast)</li>
+        <li>Src MAC = MAC of replying device</li>
+        <li>EtherType = <strong>0x0806</strong> (ARP)</li>
+        <li>Contains the <strong>MAC-to-IP mapping</strong></li>
+        <li>Only the original requester receives the reply</li>
+        <li>Requester <strong>adds entry to ARP table</strong></li>
+        <li>If <strong>no reply</strong> → packet is <strong>dropped</strong></li>
+      </ul>
+    </div>
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">9.2.5</span> ARP for Remote Communications</h3>
+  <p>When destination IP is on a <strong>remote network</strong>, the host cannot send the frame directly. It must find the MAC of the <strong>default gateway (router)</strong>:</p>
+  <div class="arp-steps">
+    <div class="arp-step act"><div class="as-num">1</div><div>Host compares destination IP to own subnet → determines destination is <strong>remote</strong></div></div>
+    <div class="arp-step act"><div class="as-num">2</div><div>Host checks ARP table for the <strong>default gateway's IP address</strong></div></div>
+    <div class="arp-step rep"><div class="as-num">✅</div><div><strong>Gateway MAC found in ARP table</strong> → sends frame directly to gateway</div></div>
+    <div class="arp-step req"><div class="as-num">❓</div><div><strong>Gateway MAC not in ARP table</strong> → sends ARP request for <strong>default gateway's IP</strong></div></div>
+    <div class="arp-step rep"><div class="as-num">✅</div><div>Receives ARP reply → caches gateway MAC → builds frame with <strong>gateway MAC as destination</strong> → sends packet</div></div>
+  </div>
+  <div class="ca danger"><span class="ic">🚨</span><div><strong>Critical distinction:</strong> When reaching a remote host, the destination <strong>IP address</strong> in the packet = final destination. But the destination <strong>MAC address</strong> in the frame = the router's MAC. Students frequently confuse these. The host ARPs for the <em>router</em>, not the final destination.</div></div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">9.2.6</span> ARP Table Aging</h3>
+  <ul>
+    <li><strong>ARP cache timer</strong> automatically removes entries not used for a specified period</li>
+    <li><strong>Windows:</strong> dynamic entries expire between <strong>15 and 45 seconds</strong></li>
+    <li><strong>Cisco routers:</strong> ARP entries displayed with age in minutes in <code>show ip arp</code></li>
+    <li>After expiry: ARP request/reply process repeats before next frame can be sent</li>
+    <li><strong>Manual removal:</strong> commands can clear specific or all ARP entries</li>
+    <li><strong>Static entries:</strong> do NOT expire — must be manually removed</li>
+  </ul>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">9.2.7</span> ARP Table Commands</h3>
+  <div class="tw"><table>
+    <tr><th>Device</th><th>Command</th><th>Output Shows</th></tr>
+    <tr><td><strong>Cisco Router (IOS)</strong></td><td><code>show ip arp</code></td><td>Protocol · Address · Age (min) · Hardware Addr · Type · Interface<br>Age = dash (–) means the router's own interface IP</td></tr>
+    <tr><td><strong>Windows PC</strong></td><td><code>arp -a</code></td><td>Internet Address · Physical Address · Type (dynamic/static)</td></tr>
+  </table></div>
+  <div class="cw"><div class="cl">Cisco Router — show ip arp</div>
+  <pre><code>R1# show ip arp
+Protocol  Address          Age (min)  Hardware Addr   Type   Interface
+Internet  192.168.10.1           -   a0e0.af0d.e140  ARPA   GigabitEthernet0/0/0
+Internet  209.165.200.225        -   a0e0.af0d.e141  ARPA   GigabitEthernet0/0/1
+Internet  209.165.200.226        1   a03d.6fe1.9d91  ARPA   GigabitEthernet0/0/1
+! Age = dash means this is the router's own interface IP address
+! Age = 1 min means it was learned 1 minute ago via ARP</code></pre></div>
+  <div class="cw"><div class="cl">Windows PC — arp -a</div>
+  <pre><code>C:\> arp -a
+Interface: 192.168.1.124
+  Internet Address      Physical Address      Type
+  192.168.1.1           c8-d7-19-cc-a0-86    dynamic   ← default gateway
+  192.168.1.101         08-3e-0c-f5-f7-77    dynamic
+  192.168.1.255         ff-ff-ff-ff-ff-ff    static    ← subnet broadcast
+  224.0.0.22            01-00-5e-00-00-16    static    ← multicast
+  255.255.255.255       ff-ff-ff-ff-ff-ff    static    ← limited broadcast</code></pre></div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">9.2.8</span> ARP Issues — Broadcasts and ARP Spoofing</h3>
+  <h4>ARP Broadcast Impact</h4>
+  <p>ARP requests are broadcasts — received and processed by <strong>every device on the local network</strong>. On most networks, this has minimal impact. However, if many devices power on simultaneously and all send ARP requests, brief performance degradation can occur. After initial ARP exchanges, impact is minimized.</p>
+
+  <h4>ARP Spoofing (ARP Poisoning Attack)</h4>
+  <div class="spoof-box">
+    <div class="sb-title">🔴 ARP Spoofing Attack — How It Works</div>
+    <div class="spoof-step"><div class="ss-num">1</div><div>PC-A sends an ARP request for the default gateway IP address</div></div>
+    <div class="spoof-step"><div class="ss-num">2</div><div><strong>Threat actor</strong> sends a fake ARP reply — mapping the gateway's IP to <strong>the attacker's own MAC</strong></div></div>
+    <div class="spoof-step"><div class="ss-num">3</div><div>PC-A adds the wrong mapping to its ARP table: gateway IP → attacker's MAC</div></div>
+    <div class="spoof-step"><div class="ss-num">4</div><div>PC-A now sends all internet-bound traffic <strong>to the attacker</strong> instead of the real gateway</div></div>
+    <div class="spoof-step"><div class="ss-num">5</div><div>Attacker intercepts, reads, and may modify traffic → <strong>man-in-the-middle attack</strong></div></div>
+  </div>
+  <div class="ca info"><span class="ic">💡</span><div><strong>Mitigation:</strong> Enterprise switches use <strong>Dynamic ARP Inspection (DAI)</strong> — validates ARP packets against a trusted DHCP snooping binding table before allowing them. DAI is beyond the scope of this course but is covered in CCNA 2.</div></div>
+  </div>
+
+  <!-- PT INLINE -->
+  <div style="margin:20px 0 6px;padding:14px 16px;background:#0d1117;border:1px solid #30363d;border-left:3px solid #1f6feb;border-radius:6px">
+    <div style="font-size:.72em;font-weight:800;text-transform:uppercase;letter-spacing:.8px;color:#1f6feb;margin-bottom:10px">&#x1F4E6; Packet Tracer Activities</div>
+  <div style="display:flex;align-items:baseline;gap:10px;padding:6px 0;border-bottom:1px solid #21262d"><span style="font-family:monospace;font-size:.85em;color:#79c0ff;white-space:nowrap;flex-shrink:0;min-width:52px">9.2.9</span><span style="font-size:.88em;color:#c9d1d9">Examine the ARP Table</span></div>
+    <div style="margin-top:10px;font-size:.78em;color:#6e7681">Full list: <a href="https://itexamanswers.net/ccna-1-v7-exam-answers-introduction-to-networks-v7-0-itn.html" target="_blank" rel="noopener" style="color:#58a6ff;word-break:break-all">itexamanswers.net/ccna-1-v7-exam-answers-introduction-to-networks-v7-0-itn.html</a></div>
+  </div>
+
+</div></div>
+
+<!-- 9.3 IPv6 NEIGHBOR DISCOVERY -->
+<div class="sec" id="s3">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">9.3</span><span class="ttl">IPv6 Neighbor Discovery (ND)</span></span><button class="sec-check" id="sch-s3" onclick="event.stopPropagation();toggleSection('s3',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb">
+
+  <div class="sub">
+  <h3><span class="sn">9.3.1</span> IPv6 Uses ND — NOT ARP</h3>
+  <p>IPv6 does <strong>NOT use ARP</strong>. Instead it uses <strong>ND (Neighbor Discovery Protocol)</strong> — also called NDP — defined in <strong>IETF RFC 4861</strong>.</p>
+  <p>ND provides <strong>three services</strong> for IPv6 using <strong>ICMPv6 messages</strong>:</p>
+  <ol>
+    <li><strong>Address resolution</strong> — discovers the MAC address for a known IPv6 address (replaces ARP)</li>
+    <li><strong>Router discovery</strong> — finds routers on the local network (used for SLAAC)</li>
+    <li><strong>Redirection</strong> — better next-hop path selection</li>
+  </ol>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">9.3.2</span> Five ICMPv6 ND Messages</h3>
+  <div class="nd-grid">
+    <div class="nd-row ns"><span class="nr-abbr">NS</span><span class="nr-name">Neighbor Solicitation</span><div>Address resolution — "What MAC address has this IPv6 address?" Sent to solicited-node multicast address. <span class="nr-equiv">≈ ARP Request</span></div></div>
+    <div class="nd-row na"><span class="nr-abbr">NA</span><span class="nr-name">Neighbor Advertisement</span><div>Address resolution reply — "Here is my MAC address." Unicast back to requester. <span class="nr-equiv">≈ ARP Reply</span></div></div>
+    <div class="nd-row rs"><span class="nr-abbr">RS</span><span class="nr-name">Router Solicitation</span><div>Device asks: "Are there any routers on this network?" Used for router discovery and SLAAC.</div></div>
+    <div class="nd-row ra"><span class="nr-abbr">RA</span><span class="nr-name">Router Advertisement</span><div>Router announces: "I am a router; here is my prefix, gateway info, and other configuration." Used for SLAAC and DHCPv6.</div></div>
+    <div class="nd-row rd"><span class="nr-abbr">Redirect</span><span class="nr-name">Redirect Message</span><div>Sent by router to inform a host of a better next-hop for a specific destination. Beyond scope of this course.</div></div>
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">9.3.3</span> IPv6 Address Resolution — NS and NA</h3>
+  <p>To find the MAC address for a known IPv6 address, IPv6 uses <strong>Neighbor Solicitation (NS)</strong> and <strong>Neighbor Advertisement (NA)</strong>:</p>
+  <div class="arp-steps">
+    <div class="arp-step act"><div class="as-num">1</div><div>PC1 wants to ping PC2 at <code>2001:db8:acad::11</code> but doesn't know PC2's MAC</div></div>
+    <div class="arp-step req"><div class="as-num">2</div><div>PC1 sends an <strong>ICMPv6 Neighbor Solicitation (NS)</strong> to the <strong>solicited-node multicast address</strong> derived from PC2's IPv6 address (not a broadcast)</div></div>
+    <div class="arp-step rep"><div class="as-num">3</div><div>PC2 receives the NS, recognizes its own address, sends an <strong>ICMPv6 Neighbor Advertisement (NA)</strong> reply containing its MAC address — <strong>unicast</strong> back to PC1</div></div>
+    <div class="arp-step act"><div class="as-num">4</div><div>PC1 adds the IPv6-to-MAC mapping to its <strong>Neighbor Cache</strong> (IPv6 equivalent of the ARP table)</div></div>
+  </div>
+  <div class="ca tip"><span class="ic">✅</span><div><strong>Key efficiency advantage of IPv6 ND over ARP:</strong><br>ARP request = <strong>broadcast</strong> → ALL devices on the network must receive and process it (CPU overhead for every device).<br>NS = <strong>solicited-node multicast</strong> → only the targeted device (and others sharing that multicast address) must process it. Far more efficient on large networks.</div></div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">9.3</span> ARP vs Neighbor Discovery — Side by Side</h3>
+  <div class="arp-nd-compare">
+    <div class="anc-card arp">
+      <div class="ancc-title">ARP — IPv4</div>
+      <ul>
+        <li>Protocol: ARP (EtherType 0x0806)</li>
+        <li>Request type: <strong>Broadcast</strong> (FF-FF-FF-FF-FF-FF)</li>
+        <li>Reply type: Unicast</li>
+        <li>Table: <strong>ARP table / ARP cache</strong></li>
+        <li>Commands: <code>show ip arp</code> (IOS) · <code>arp -a</code> (Windows)</li>
+        <li>All devices must process request</li>
+        <li>Stopped by routers</li>
+      </ul>
+    </div>
+    <div class="anc-card nd">
+      <div class="ancc-title">Neighbor Discovery — IPv6</div>
+      <ul>
+        <li>Protocol: ICMPv6 (RFC 4861)</li>
+        <li>NS type: <strong>Solicited-node Multicast</strong></li>
+        <li>NA type: Unicast</li>
+        <li>Table: <strong>Neighbor Cache</strong></li>
+        <li>5 message types: NS · NA · RS · RA · Redirect</li>
+        <li>Only targeted device processes NS</li>
+        <li>More efficient than ARP</li>
+      </ul>
+    </div>
+  </div>
+  </div>
+
+  <!-- PT INLINE -->
+  <div style="margin:20px 0 6px;padding:14px 16px;background:#0d1117;border:1px solid #30363d;border-left:3px solid #1f6feb;border-radius:6px">
+    <div style="font-size:.72em;font-weight:800;text-transform:uppercase;letter-spacing:.8px;color:#1f6feb;margin-bottom:10px">&#x1F4E6; Packet Tracer Activities</div>
+  <div style="display:flex;align-items:baseline;gap:10px;padding:6px 0;border-bottom:1px solid #21262d"><span style="font-family:monospace;font-size:.85em;color:#79c0ff;white-space:nowrap;flex-shrink:0;min-width:52px">9.3.4</span><span style="font-size:.88em;color:#c9d1d9">IPv6 Neighbor Discovery</span></div>
+    <div style="margin-top:10px;font-size:.78em;color:#6e7681">Full list: <a href="https://itexamanswers.net/ccna-1-v7-exam-answers-introduction-to-networks-v7-0-itn.html" target="_blank" rel="noopener" style="color:#58a6ff;word-break:break-all">itexamanswers.net/ccna-1-v7-exam-answers-introduction-to-networks-v7-0-itn.html</a></div>
+  </div>
+
+</div></div>
+
+<!-- EXAM TRAPS -->
+
+
+  <!-- PT MASTER LINK -->
+  <div style="margin:18px 0 6px;padding:12px 14px;background:#0d1117;border:1px solid #30363d;border-left:3px solid #1f6feb;border-radius:6px">
+    <div style="font-size:.7em;font-weight:800;text-transform:uppercase;letter-spacing:.8px;color:#1f6feb;margin-bottom:6px">&#x1F4E6; All Packet Tracer Activities — CCNA 1</div>
+    <div style="font-size:.84em;color:#c9d1d9;margin-bottom:4px">Complete list of all CCNA 1 Packet Tracer activities with instructions:</div>
+    <a href="https://itexamanswers.net/ccna-1-v7-exam-answers-introduction-to-networks-v7-0-itn.html" target="_blank" rel="noopener" style="font-size:.78em;color:#58a6ff;word-break:break-all">https://itexamanswers.net/ccna-1-v7-exam-answers-introduction-to-networks-v7-0-itn.html</a>
+  </div>
+
+<div class="sec" id="s4">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">🎯</span><span class="ttl">Common Exam Traps — Module 9</span></span><button class="sec-check" id="sch-s4" onclick="event.stopPropagation();toggleSection('s4',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb">
+
+  <div class="ca danger"><span class="ic">❌</span><div><strong>Trap 1: Same network → Dst MAC = destination device. Remote network → Dst MAC = default gateway (router).</strong><br>This is the most fundamental rule of address resolution. When the destination is remote, the host never puts the final destination's MAC in the frame — it puts the router's MAC. The IP packet inside still has the final destination IP.</div></div>
+
+  <div class="ca danger"><span class="ic">❌</span><div><strong>Trap 2: ARP = IPv4 only. ND = IPv6 only. They are separate protocols.</strong><br>ARP is NOT used for IPv6. ND is NOT used for IPv4. If the question involves IPv4, the answer involves ARP. If IPv6, the answer involves ND. Both protocols resolve IP addresses to MAC addresses but are completely different.</div></div>
+
+  <div class="ca danger"><span class="ic">❌</span><div><strong>Trap 3: ARP request = BROADCAST (FF-FF-FF-FF-FF-FF). ARP reply = UNICAST.</strong><br>The request must go to all devices because nobody knows which device has the target IP. Only the matching device replies, and it replies directly (unicast) to the requester. Both request and reply use EtherType 0x0806.</div></div>
+
+  <div class="ca danger"><span class="ic">❌</span><div><strong>Trap 4: ARP frames have NO IPv4 header. ARP is encapsulated directly in an Ethernet frame.</strong><br>EtherType 0x0806 (not 0x0800 which is IPv4). ARP bridges Layer 2 and Layer 3 — it operates below IP. This is why ARP can discover MAC addresses even when IP isn't yet fully functional on the sending device.</div></div>
+
+  <div class="ca danger"><span class="ic">❌</span><div><strong>Trap 5: Routers do NOT forward ARP broadcasts. ARP is local network only.</strong><br>ARP broadcasts are stopped at the router interface. This means ARP only works on the local network segment. For remote hosts, the host ARPs for the default gateway (router) MAC — not the final destination's MAC.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 6: When reaching a remote host, the host ARPs for the DEFAULT GATEWAY IP — not the final destination IP.</strong><br>The host knows the final destination's IP but can't reach it directly. It needs to send the frame to the router. To send to the router, it needs the router's MAC. So it ARPs for the router's local interface IP.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 7: ARP spoofing = attacker sends fake ARP reply mapping their MAC to a legitimate IP (like the gateway). Victim updates ARP table incorrectly → man-in-the-middle attack.</strong><br>ARP has no authentication — any device can send any ARP reply. The victim simply trusts the most recent ARP reply it receives. Enterprise mitigation = Dynamic ARP Inspection (DAI).</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 8: IPv6 NS uses solicited-node MULTICAST — NOT broadcast like ARP request.</strong><br>This makes ND more efficient than ARP. Only the specific target device (and those sharing the solicited-node multicast address) processes the NS. ARP forces EVERY device on the network to process the request — wasted CPU cycles on large networks.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 9: Five ND message types — NS, NA, RS, RA, Redirect. NS≈ARP Request. NA≈ARP Reply.</strong><br>Students commonly only remember NS and NA. RS and RA are for router discovery and are used by SLAAC for automatic IPv6 address configuration. The Redirect message handles better path selection. All five appear in matching questions.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 10: show ip arp (Cisco IOS router) vs arp -a (Windows PC). Age dash = router's own interface IP.</strong><br>In show ip arp output, a dash (–) in the Age column means that entry is the router's own IP address on that interface (not learned from ARP, just the router's own address). A number means minutes since last ARP update.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 11: IPv6 uses Neighbor Cache (not ARP table). Populated by NS/NA exchange.</strong><br>The Neighbor Cache is the IPv6 equivalent of the ARP table. It stores IPv6-to-MAC address mappings per interface. It's populated when a host receives a Neighbor Advertisement.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 12: If no device replies to an ARP request → the packet is dropped.</strong><br>Without a MAC address, the Ethernet frame cannot be built. No frame = packet can't be sent = packet is dropped. ARP failure is a common cause of connectivity problems even when IP configuration is correct.</div></div>
+
+  <div class="ca tip"><span class="ic">✅</span><div><strong>Module 9 quick-reference summary:</strong><br><br>
+  <strong>Two address types:</strong> MAC (L2, NIC-to-NIC, local, changes per hop) · IP (L3, end-to-end, stays same)<br>
+  <strong>Same network:</strong> Dst MAC = destination device's MAC<br>
+  <strong>Remote network:</strong> Dst MAC = default gateway (router) MAC<br>
+  <strong>IPv4 address resolution:</strong> ARP · <strong>IPv6 address resolution:</strong> ND (ICMPv6)<br>
+  <strong>ARP functions:</strong> 1) Resolve IPv4→MAC · 2) Maintain ARP table/cache<br>
+  <strong>ARP request:</strong> Broadcast (FF-FF-FF-FF-FF-FF) · No IPv4 header · EtherType 0x0806 · All devices process · Only target replies<br>
+  <strong>ARP reply:</strong> Unicast · Contains MAC-to-IP mapping · Requester adds to ARP table<br>
+  <strong>ARP for remote:</strong> Host ARPs for DEFAULT GATEWAY IP (not final destination IP)<br>
+  <strong>No ARP reply:</strong> Packet is dropped<br>
+  <strong>ARP entry types:</strong> Dynamic (expires 15–45 sec Windows) · Static (never expires, manual removal)<br>
+  <strong>Routers:</strong> Do NOT forward ARP broadcasts<br>
+  <strong>Commands:</strong> show ip arp (Cisco) · arp -a (Windows) · Age dash = router's own interface<br>
+  <strong>ARP spoofing:</strong> Attacker sends fake ARP reply → victim sends traffic to attacker → MitM attack · Mitigation: DAI<br>
+  <strong>ARP broadcasts:</strong> Can temporarily degrade performance when many devices boot simultaneously<br>
+  <strong>IPv6 ND (NDP):</strong> RFC 4861 · Uses ICMPv6 · Three services: address resolution + router discovery + redirection<br>
+  <strong>5 ND messages:</strong> NS (≈ARP req, multicast) · NA (≈ARP reply, unicast) · RS · RA · Redirect<br>
+  <strong>NS uses:</strong> Solicited-node multicast (NOT broadcast) → more efficient than ARP<br>
+  <strong>IPv6 table:</strong> Neighbor Cache (≈ARP table) · Populated by NS/NA exchange</div></div>
+
+</div></div>
+
+</div>
+<div class="ft">CCNA 1 ITN v7.02 — Module 9: Address Resolution v2.2<br>Based on Cisco NetAcad curriculum · Study guide for personal use</div>
+<button class="tb-btn" id="topb" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+<div class="mod-nav">
+  <a class="mn-hub" href="index.html">🏠 Hub</a>
+  <div class="mn-divider"></div>
+  <a class="mn-prev" href="ccna1_module8_network_layer_v2.2.html">‹</a>
+  <span class="mn-label">M9 of 17</span>
+  <a class="mn-next" href="ccna1_module10_basic_router_configuration_v2.2.html">›</a>
+</div>
+<script>
+var MOD_KEY="ccna1-module9-address-resolution";
+var SECS=["s1","s2","s3","s4"];
+var checked={};
+function loadState(){
+  try{var s=localStorage.getItem(MOD_KEY);if(s)checked=JSON.parse(s);}catch(e){}
+  SECS.forEach(function(id){
+    var pill=document.getElementById('pill-'+id);
+    var row=document.getElementById('row-'+id);
+    var st=document.getElementById('st-'+id);
+    var sch=document.getElementById('sch-'+id);
+    if(checked[id]){
+      if(pill){pill.classList.add('checked');pill.querySelector('.pill-check').textContent='✓';}
+      if(row)row.classList.add('done');
+      if(st)st.textContent='✓';
+      if(sch){sch.classList.add('checked');sch.textContent='✓ Done';}
+    } else {
+      if(pill){pill.classList.remove('checked');pill.querySelector('.pill-check').textContent='○';}
+      if(row)row.classList.remove('done');
+      if(st)st.textContent='○';
+      if(sch){sch.classList.remove('checked');sch.textContent='○ Mark done';}
+    }
+  });
+}
+function toggleSection(id,btn){checked[id]=!checked[id];try{localStorage.setItem(MOD_KEY,JSON.stringify(checked));}catch(e){}loadState();}
+function toggleStudyPanel(){
+  var hdr=document.getElementById('sp-hdr');
+  var body=document.getElementById('sp-body');
+  var arr=document.getElementById('sp-arr');
+  hdr.classList.toggle('open');body.classList.toggle('open');
+  if(arr)arr.textContent=body.classList.contains('open')?'▲':'▼';
+}
+function goTo(id){var el=document.getElementById(id);if(!el)return;var h=el.querySelector('.sh'),b=el.querySelector('.sb');if(h&&b&&!b.classList.contains('open')){h.classList.add('open');b.classList.add('open');}setTimeout(function(){window.scrollTo({top:el.getBoundingClientRect().top+window.pageYOffset-60,behavior:'smooth'});},50);}
+function setFs(size,btn){document.documentElement.style.setProperty('--base-fs',size);document.querySelectorAll('.fs-btn').forEach(function(b){b.classList.remove('active');});btn.classList.add('active');try{localStorage.setItem('ccna-fs',size);}catch(e){}}
+(function(){try{var s=localStorage.getItem('ccna-fs');if(s){document.documentElement.style.setProperty('--base-fs',s);document.querySelectorAll('.fs-btn').forEach(function(b){b.classList.remove('active');if((b.textContent==='S'&&s==='14px')||(b.textContent==='M'&&s==='16px')||(b.textContent==='L'&&s==='18px')||(b.textContent==='XL'&&s==='20px'))b.classList.add('active');});}}catch(e){}loadState();})();
+function copyCode(btn){var pre=btn.closest('.cw').querySelector('pre');navigator.clipboard.writeText(pre.innerText||pre.textContent).then(function(){btn.textContent='Copied!';setTimeout(function(){btn.textContent='Copy';},1500);});}
+</script>
+<script src="../../site-config.js"></script>
+</body>
+</html>

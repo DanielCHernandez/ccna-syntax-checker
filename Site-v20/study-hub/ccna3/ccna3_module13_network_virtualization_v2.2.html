@@ -1,0 +1,786 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=2.0">
+<title>CCNA 3 Module 13: Network Virtualization v2.2</title>
+<style>
+:root{
+  --blue:#1ba0d7;--dark:#005073;--green:#6cc24a;
+  --nv:#0e4b6e;--nvd:#38bdf8;--nv2:#082b42;--nv3:#041824;
+  --bg:#f4f6f8;--card:#fff;--text:#1a1a2e;--muted:#5a6a7a;
+  --cbg:#0d1117;--ctxt:#c9d1d9;--r:12px;--sh:0 2px 12px rgba(0,0,0,.08);
+  --base-fs:16px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);font-size:var(--base-fs);line-height:1.7}
+.bc{background:#0d1117;padding:8px 16px;display:flex;align-items:center;flex-wrap:wrap;gap:4px;font-size:.75em;overflow-x:auto;white-space:nowrap;-webkit-overflow-scrolling:touch;border-bottom:1px solid #21262d}
+.bc a{color:#8b949e;text-decoration:none;font-weight:600;flex-shrink:0}
+.bc .sep{color:#6e7681;flex-shrink:0}
+.bc .cur{color:var(--nvd);font-weight:700;flex-shrink:0}
+.fs-bar{position:sticky;top:0;z-index:200;background:#1a1a2e;display:flex;align-items:center;justify-content:flex-end;padding:6px 14px;gap:6px;box-shadow:0 2px 8px rgba(0,0,0,.3)}
+.fs-label{color:#8b949e;font-size:.72em;font-weight:700;letter-spacing:.5px;text-transform:uppercase;margin-right:4px}
+.fs-btn{background:#30363d;color:#c9d1d9;border:2px solid transparent;border-radius:6px;padding:4px 12px;font-size:.75em;font-weight:700;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:all .2s;line-height:1.4}
+.fs-btn:active,.fs-btn.active{background:var(--nv);color:#fff;border-color:var(--nvd)}
+.hdr{background:linear-gradient(135deg,var(--nv3),var(--nv2),var(--nv));color:#fff;padding:32px 20px 24px;text-align:center}
+.hdr .badge{display:inline-block;background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.4);border-radius:20px;padding:4px 14px;font-size:.81em;margin-bottom:12px}
+.hdr h1{font-size:1.625em;font-weight:700;margin-bottom:6px}
+.hdr p{font-size:.94em;opacity:.85}
+.hdr .obj{display:inline-block;background:rgba(255,255,255,.15);border-radius:8px;padding:7px 16px;margin-top:12px;font-size:.875em;font-style:italic}
+.pb-wrap{background:var(--card);padding:14px 16px;margin:16px 16px 0;border-radius:var(--r);box-shadow:var(--sh)}
+.pb-lbl{font-size:.81em;color:var(--muted);margin-bottom:6px;font-weight:600}
+.pb-track{background:#e0e7ef;border-radius:10px;height:8px;overflow:hidden}
+.pb-fill{background:linear-gradient(90deg,var(--nv),var(--nvd));height:100%;border-radius:10px;width:0;transition:width 1s ease}
+.toc{background:var(--card);margin:16px;border-radius:var(--r);box-shadow:var(--sh);overflow:hidden}
+.toch{background:var(--nv);color:#fff;padding:14px 18px;font-weight:700;font-size:.94em;display:flex;justify-content:space-between;align-items:center;cursor:pointer;user-select:none}
+.toch .arr{transition:transform .3s}
+.toch.open .arr{transform:rotate(180deg)}
+.tocb{display:none;padding:10px 0}
+.tocb.open{display:block}
+.tocg{font-size:.69em;font-weight:800;letter-spacing:.8px;color:var(--nv);text-transform:uppercase;padding:8px 20px 2px}
+.tocb a{display:block;padding:9px 20px 9px 28px;color:var(--text);text-decoration:none;font-size:.875em;border-left:3px solid transparent;transition:all .2s}
+.tocb a:active{background:#e0f2fe;border-left-color:var(--nvd)}
+.tocb a .n{display:inline-block;background:var(--nv);color:#fff;border-radius:5px;padding:1px 8px;font-size:.75em;font-weight:700;margin-right:8px}
+.wrap{padding:0 16px 100px}
+.sec{background:var(--card);border-radius:var(--r);box-shadow:var(--sh);margin-bottom:16px;overflow:hidden}
+.sh{background:linear-gradient(90deg,var(--nv3),var(--nv));color:#fff;padding:16px 18px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;user-select:none;-webkit-tap-highlight-color:transparent}
+.sh .ttl{font-weight:700;font-size:1em}
+.sh .nb{background:rgba(255,255,255,.25);border-radius:6px;padding:3px 10px;font-size:.81em;font-weight:700;margin-right:10px;white-space:nowrap}
+.sh .ch{font-size:1.125em;transition:transform .3s}
+.sh.open .ch{transform:rotate(180deg)}
+.sb{display:none;padding:18px}
+.sb.open{display:block}
+.sub{margin-bottom:24px}
+.sub:last-child{margin-bottom:0}
+.sub h3{font-size:.94em;font-weight:700;color:var(--nv);margin-bottom:10px;padding-bottom:6px;border-bottom:2px solid #e0f2fe;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.sub h3 .sn{background:var(--nv);color:#fff;border-radius:5px;padding:2px 8px;font-size:.75em;white-space:nowrap}
+.sub h4{font-size:.875em;font-weight:700;color:var(--nv);margin:14px 0 6px}
+.sub p{margin-bottom:10px;font-size:.94em}
+.sub ul,.sub ol{padding-left:20px;margin:8px 0;font-size:.94em}
+.sub li{margin-bottom:5px}
+.ca{border-radius:8px;padding:12px 14px;margin:12px 0;font-size:.875em;line-height:1.6;display:flex;gap:10px;align-items:flex-start}
+.ca .ic{font-size:1.125em;flex-shrink:0;margin-top:1px}
+.ca.warn  {background:#fff3cd;border-left:4px solid #b38600;color:#3d2c00}
+.ca.tip   {background:#d4edda;border-left:4px solid #28a745;color:#0d3318}
+.ca.danger{background:#f8d7da;border-left:4px solid #dc3545;color:#3d0010}
+.ca.info  {background:#e0f2fe;border-left:4px solid var(--nv);color:#082b42}
+.et{background:linear-gradient(135deg,#1a1a2e,var(--nv3));color:#fff;border-radius:10px;padding:14px 16px;margin:14px 0;font-size:.875em;line-height:1.6}
+.et .lbl{font-size:.69em;font-weight:800;letter-spacing:1px;color:var(--nvd);margin-bottom:6px}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:12px 0;border-radius:8px}
+table{width:100%;border-collapse:collapse;font-size:.875em}
+th{background:var(--nv);color:#fff;padding:10px 12px;text-align:left;font-weight:700;font-size:.81em}
+td{padding:9px 12px;border-bottom:1px solid #e8ecf0;vertical-align:top;color:#1a1a2e}
+tr:nth-child(even) td{background:#e0f2fe;color:#082b42}
+tr:last-child td{border-bottom:none}
+p code,li code,td code,.ca code{background:#e0f2fe;color:#082b42;border-radius:4px;padding:1px 5px;font-size:.81em;font-family:'Courier New',monospace;font-weight:600}
+
+/* Cloud service cards */
+.cloud-grid{display:grid;gap:10px;margin:12px 0}
+.cloud-card{border-radius:10px;overflow:hidden}
+.cloud-card .cc-hdr{padding:10px 14px;font-weight:800;font-size:.875em;color:#fff}
+.cloud-card.saas .cc-hdr{background:#1a4731}
+.cloud-card.paas .cc-hdr{background:#7b2d8b}
+.cloud-card.iaas .cc-hdr{background:var(--nv)}
+.cloud-card .cc-body{padding:12px 14px;font-size:.81em;line-height:1.7;background:#f9fafb}
+.cloud-card .cc-who{font-size:.75em;font-weight:700;padding:3px 8px;border-radius:5px;color:#fff;display:inline-block;margin-bottom:6px}
+.cloud-card.saas .cc-who{background:#1a4731}
+.cloud-card.paas .cc-who{background:#7b2d8b}
+.cloud-card.iaas .cc-who{background:var(--nv)}
+
+/* Cloud models */
+.model-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:12px 0}
+@media(max-width:480px){.model-grid{grid-template-columns:1fr}}
+.model-pill{border-radius:8px;padding:11px 13px;font-size:.81em;line-height:1.6;border-left:4px solid}
+.model-pill.pub {border-left-color:#1a3a5c;background:#e0f2fe}
+.model-pill.priv{border-left-color:#7c1e1e;background:#fff5f5}
+.model-pill.hyb {border-left-color:#5c3d00;background:#fffbeb}
+.model-pill.com {border-left-color:#1a4731;background:#f0fdf4}
+.model-pill .mp-name{font-weight:800;margin-bottom:3px}
+.model-pill.pub  .mp-name{color:#1a3a5c}
+.model-pill.priv .mp-name{color:#7c1e1e}
+.model-pill.hyb  .mp-name{color:#5c3d00}
+.model-pill.com  .mp-name{color:#1a4731}
+
+/* Hypervisor compare */
+.hyp-compare{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:12px 0}
+@media(max-width:480px){.hyp-compare{grid-template-columns:1fr}}
+.hyp-card{border-radius:10px;overflow:hidden}
+.hyp-card .hc-hdr{padding:10px 14px;font-weight:800;font-size:.875em;color:#fff;text-align:center}
+.hyp-card.t1 .hc-hdr{background:var(--nv)}
+.hyp-card.t2 .hc-hdr{background:#1a4731}
+.hyp-card .hc-body{padding:12px 14px;font-size:.81em;line-height:1.7;background:#f9fafb}
+.hyp-card .hc-body ul{padding-left:16px}
+.hyp-card .hc-body li{margin-bottom:3px}
+
+/* Planes */
+.planes-grid{display:grid;gap:8px;margin:12px 0}
+.plane-card{border-radius:8px;padding:11px 14px;font-size:.81em;border-left:5px solid;line-height:1.6}
+.plane-card.ctrl{border-left-color:var(--nv);background:#e0f2fe}
+.plane-card.data{border-left-color:#1a4731;background:#f0fdf4}
+.plane-card.mgmt{border-left-color:#7b2d8b;background:#f3e8ff}
+.plane-card .pc-name{font-weight:800;font-size:.875em;margin-bottom:4px}
+.plane-card.ctrl .pc-name{color:var(--nv)}
+.plane-card.data .pc-name{color:#1a4731}
+.plane-card.mgmt .pc-name{color:#7b2d8b}
+
+/* SDN types */
+.sdn-grid{display:grid;gap:8px;margin:12px 0}
+.sdn-card{border-radius:8px;padding:11px 14px;font-size:.81em;border-left:4px solid;line-height:1.6}
+.sdn-card.dev{border-left-color:#5c3d00;background:#fffbeb}
+.sdn-card.ctl{border-left-color:var(--nv);background:#e0f2fe}
+.sdn-card.pol{border-left-color:#1a4731;background:#f0fdf4}
+.sdn-card .sc-name{font-weight:800;margin-bottom:3px}
+.sdn-card.dev .sc-name{color:#5c3d00}
+.sdn-card.ctl .sc-name{color:var(--nv)}
+.sdn-card.pol .sc-name{color:#1a4731}
+
+/* ACI components */
+.aci-grid{display:grid;gap:8px;margin:12px 0}
+.aci-card{border-radius:8px;padding:11px 14px;font-size:.81em;border-left:4px solid;line-height:1.6}
+.aci-card.anp {border-left-color:#7b2d8b;background:#f3e8ff}
+.aci-card.apic{border-left-color:var(--nv);background:#e0f2fe}
+.aci-card.nex {border-left-color:#1a4731;background:#f0fdf4}
+.aci-card .ac-name{font-weight:800;margin-bottom:3px}
+.aci-card.anp  .ac-name{color:#7b2d8b}
+.aci-card.apic .ac-name{color:var(--nv)}
+.aci-card.nex  .ac-name{color:#1a4731}
+
+/* Flow tables */
+.flow-grid{display:grid;gap:6px;margin:12px 0}
+.flow-row{display:flex;gap:10px;align-items:flex-start;padding:9px 12px;border-radius:8px;font-size:.81em;line-height:1.6;border-left:4px solid}
+.flow-row.ft{border-left-color:var(--nv);background:#e0f2fe}
+.flow-row.gt{border-left-color:#7b2d8b;background:#f3e8ff}
+.flow-row.mt{border-left-color:#1a4731;background:#f0fdf4}
+.flow-row .fr-name{font-weight:800;min-width:90px;flex-shrink:0;color:#1a1a2e}
+
+/* Virt advantages */
+.adv-grid{display:grid;gap:6px;margin:12px 0}
+.adv-row{display:flex;gap:8px;align-items:flex-start;padding:8px 12px;border-radius:8px;font-size:.81em;line-height:1.6;background:#e0f2fe;border-left:3px solid var(--nv)}
+.adv-row .ar-icon{font-size:1.125em;flex-shrink:0}
+
+/* API diagram */
+.api-box{background:#0d1117;border:2px solid var(--nvd);border-radius:10px;padding:14px;margin:12px 0;font-size:.81em}
+.api-box .ab-title{font-size:.75em;font-weight:800;letter-spacing:.8px;color:var(--nvd);text-transform:uppercase;margin-bottom:10px}
+.api-row{display:flex;gap:10px;align-items:center;padding:7px 0;border-bottom:1px solid #21262d;color:#c9d1d9;line-height:1.6}
+.api-row:last-child{border-bottom:none}
+.api-layer{font-weight:800;min-width:120px;flex-shrink:0}
+.api-layer.app{color:#fbbf24}
+.api-layer.api{color:var(--nvd)}
+.api-layer.ctrl{color:#4ade80}
+.api-layer.sw{color:#f87171}
+
+.tb-btn{position:fixed;bottom:80px;right:16px;background:var(--nv);color:#fff;border:none;border-radius:50%;width:44px;height:44px;font-size:1.25em;box-shadow:0 4px 14px rgba(0,0,0,.25);cursor:pointer;display:none;align-items:center;justify-content:center;z-index:100}
+.tb-btn.show{display:flex}
+.ft{text-align:center;padding:24px 16px;color:var(--muted);font-size:.81em}
+.mod-nav{position:fixed;bottom:0;left:0;right:0;z-index:300;background:#1a1a2e;border-top:1px solid #30363d;display:flex;align-items:center;height:52px;padding:0 8px;gap:6px}
+.mn-hub{background:var(--blue);color:#fff;border:none;border-radius:8px;padding:6px 12px;font-size:.75em;font-weight:700;cursor:pointer;text-decoration:none;display:flex;align-items:center;gap:4px;white-space:nowrap;-webkit-tap-highlight-color:transparent;flex-shrink:0}
+.mn-hub:active{opacity:.8}
+.mn-divider{width:1px;height:28px;background:#30363d;flex-shrink:0}
+.mn-label{flex:1;text-align:center;font-size:.69em;color:#8b949e;font-weight:600;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding:0 4px}
+.mn-prev,.mn-next{background:#30363d;color:#c9d1d9;border:none;border-radius:8px;padding:6px 10px;font-size:.875em;font-weight:700;cursor:pointer;text-decoration:none;display:flex;align-items:center;-webkit-tap-highlight-color:transparent;flex-shrink:0}
+.mn-prev:active,.mn-next:active{background:var(--nv);color:#fff}
+/* Study progress panel */
+.sp-wrap{background:var(--card);margin:16px 16px 0;border-radius:var(--r);box-shadow:var(--sh);overflow:hidden}
+.sp-hdr{background:var(--nt);color:#fff;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;user-select:none;-webkit-tap-highlight-color:transparent;gap:10px}
+.sp-hdr .sp-title{font-weight:700;font-size:.875em;flex-shrink:0}
+.sp-hdr .sp-arr{transition:transform .3s;flex-shrink:0}
+.sp-hdr.open .sp-arr{transform:rotate(180deg)}
+.sp-body{display:none;padding:12px 14px}
+.sp-body.open{display:block}
+.sp-row{display:flex;align-items:center;gap:10px;padding:6px 4px;border-bottom:1px solid #f0f4f8;font-size:.81em}
+.sp-row:last-child{border-bottom:none}
+.sp-row .sr-status{font-size:1em;flex-shrink:0;width:20px;text-align:center}
+.sp-row .sr-nb{font-weight:800;color:var(--nt);min-width:36px;flex-shrink:0;font-size:.875em}
+.sp-row .sr-ttl{color:var(--text);flex:1}
+.sp-row.done .sr-ttl{color:var(--muted);text-decoration:line-through}
+.sc-pills{display:flex;align-items:center;gap:4px;overflow-x:auto;-webkit-overflow-scrolling:touch;flex:1;padding:0 4px}
+.sc-pill{background:#30363d;color:#8b949e;border:2px solid transparent;border-radius:6px;padding:3px 8px;font-size:.72em;font-weight:700;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:all .15s;white-space:nowrap;flex-shrink:0;line-height:1.4;display:flex;align-items:center;gap:3px}
+.sc-pill.checked{background:var(--nt);color:#fff;border-color:var(--ntd)}
+.sc-pill .pill-check{font-size:.875em}
+
+/* v2.1 — In-section check button */
+.sh{position:relative}
+.sec-check{position:absolute;right:40px;top:50%;transform:translateY(-50%);background:rgba(255,255,255,.15);border:2px solid rgba(255,255,255,.4);border-radius:6px;padding:2px 10px;font-size:.72em;font-weight:800;color:#fff;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:all .2s;white-space:nowrap;z-index:10;line-height:1.5}
+.sec-check.checked{background:var(--ntd);border-color:var(--ntd);color:#052e1e}
+.sec-check:active{opacity:.75}
+/* Sections panel + tick colours (these pages never defined --nt/--ntd, so the panel header was invisible) */
+:root{--nt:var(--nv);--ntd:#4ade80}
+</style>
+</head>
+<body>
+<nav class="bc">
+  <a href="../../index.html">🏠 Home</a><span class="sep">›</span>
+  <a href="index.html">CCNA 3 — ENSA</a><span class="sep">›</span>
+  <span class="cur">M13: Network Virtualization</span>
+</nav>
+<div class="fs-bar">
+  <div class="sc-pills" id="sc-pills">
+  <button class="sc-pill" id="pill-s1" onclick="toggleSection('s1',this)"><span class="pill-check">○</span>13.1</button>
+  <button class="sc-pill" id="pill-s2" onclick="toggleSection('s2',this)"><span class="pill-check">○</span>13.2</button>
+  <button class="sc-pill" id="pill-s3" onclick="toggleSection('s3',this)"><span class="pill-check">○</span>13.3</button>
+  <button class="sc-pill" id="pill-s4" onclick="toggleSection('s4',this)"><span class="pill-check">○</span>13.4</button>
+  <button class="sc-pill" id="pill-s5" onclick="toggleSection('s5',this)"><span class="pill-check">○</span>13.5</button>
+  <button class="sc-pill" id="pill-s6" onclick="toggleSection('s6',this)"><span class="pill-check">○</span>🎯</button>
+  </div>
+  <span class="fs-label" style="flex-shrink:0;margin-left:6px">Size</span>
+  <button class="fs-btn" onclick="setFs('14px',this)">S</button>
+  <button class="fs-btn active" onclick="setFs('16px',this)">M</button>
+  <button class="fs-btn" onclick="setFs('18px',this)">L</button>
+  <button class="fs-btn" onclick="setFs('20px',this)">XL</button>
+</div>
+<div class="hdr">
+  <div class="badge">CCNA 3 — ENSA v7.02</div>
+  <h1>☁️ Module 13: Network Virtualization</h1>
+  <p>Enterprise Networking, Security &amp; Automation · NetAcad Study Guide</p>
+  <div class="obj">Module Objective: Explain the purpose and characteristics of network virtualization</div>
+</div>
+<div class="sp-wrap">
+  <div class="sp-hdr" id="sp-hdr" onclick="toggleStudyPanel()">
+    <span class="sp-title">📚 Sections</span>
+    <span class="sp-arr" id="sp-arr">▼</span>
+  </div>
+  <div class="sp-body" id="sp-body">
+    <div class="sp-row" id="row-s1"><span class="sr-status" id="st-s1">○</span><span class="sr-nb">13.1</span><span class="sr-ttl">Cloud Computing</span></div>
+    <div class="sp-row" id="row-s2"><span class="sr-status" id="st-s2">○</span><span class="sr-nb">13.2</span><span class="sr-ttl">Virtualization</span></div>
+    <div class="sp-row" id="row-s3"><span class="sr-status" id="st-s3">○</span><span class="sr-nb">13.3</span><span class="sr-ttl">Virtual Network Infrastructure</span></div>
+    <div class="sp-row" id="row-s4"><span class="sr-status" id="st-s4">○</span><span class="sr-nb">13.4</span><span class="sr-ttl">Software-Defined Networking (SDN)</span></div>
+    <div class="sp-row" id="row-s5"><span class="sr-status" id="st-s5">○</span><span class="sr-nb">13.5</span><span class="sr-ttl">Controllers</span></div>
+    <div class="sp-row" id="row-s6"><span class="sr-status" id="st-s6">○</span><span class="sr-nb">🎯</span><span class="sr-ttl">Common Exam Traps — Module 13</span></div>
+  </div>
+</div>
+
+<div class="toc">
+  <div class="toch open" onclick="this.classList.toggle('open');document.getElementById('tocb').classList.toggle('open')">
+    📋 Table of Contents — Tap to expand <span class="arr">▼</span>
+  </div>
+  <div class="tocb open" id="tocb">
+    <div class="tocg">13.1 — Cloud Computing</div>
+    <a href="javascript:void(0)" onclick="goTo('s1')"><span class="n">13.1.2</span> Cloud Overview — Pay-as-you-go, CapEx → OpEx</a>
+    <a href="javascript:void(0)" onclick="goTo('s1')"><span class="n">13.1.3</span> Three Cloud Service Models — SaaS, PaaS, IaaS</a>
+    <a href="javascript:void(0)" onclick="goTo('s1')"><span class="n">13.1.4</span> Four Cloud Models — Public, Private, Hybrid, Community</a>
+    <a href="javascript:void(0)" onclick="goTo('s1')"><span class="n">13.1.5</span> Cloud Computing vs Data Center</a>
+    <div class="tocg">13.2 — Virtualization</div>
+    <a href="javascript:void(0)" onclick="goTo('s2')"><span class="n">13.2.1</span> Cloud vs Virtualization — Key Distinction</a>
+    <a href="javascript:void(0)" onclick="goTo('s2')"><span class="n">13.2.2</span> Dedicated Servers — Single Point of Failure / Server Sprawl</a>
+    <a href="javascript:void(0)" onclick="goTo('s2')"><span class="n">13.2.3</span> Server Virtualization and Hypervisors</a>
+    <a href="javascript:void(0)" onclick="goTo('s2')"><span class="n">13.2.4</span> Advantages of Virtualization</a>
+    <a href="javascript:void(0)" onclick="goTo('s2')"><span class="n">13.2.5</span> Abstraction Layers</a>
+    <a href="javascript:void(0)" onclick="goTo('s2')"><span class="n">13.2.6</span> Type 2 Hypervisors — Hosted</a>
+    <div class="tocg">13.3 — Virtual Network Infrastructure</div>
+    <a href="javascript:void(0)" onclick="goTo('s3')"><span class="n">13.3.1</span> Type 1 Hypervisors — Bare Metal</a>
+    <a href="javascript:void(0)" onclick="goTo('s3')"><span class="n">13.3.2</span> Management Console and Over-Allocation</a>
+    <a href="javascript:void(0)" onclick="goTo('s3')"><span class="n">13.3.3</span> East-West vs North-South Traffic · VRF</a>
+    <div class="tocg">13.4 — Software-Defined Networking</div>
+    <a href="javascript:void(0)" onclick="goTo('s4')"><span class="n">13.4.2</span> Control Plane, Data Plane, and Management Plane</a>
+    <a href="javascript:void(0)" onclick="goTo('s4')"><span class="n">13.4.2</span> Cisco Express Forwarding (CEF)</a>
+    <a href="javascript:void(0)" onclick="goTo('s4')"><span class="n">13.4.3</span> SDN and ACI — Two Major Architectures</a>
+    <a href="javascript:void(0)" onclick="goTo('s4')"><span class="n">13.4.4</span> Traditional vs SDN Architecture · APIs</a>
+    <div class="tocg">13.5 — Controllers</div>
+    <a href="javascript:void(0)" onclick="goTo('s5')"><span class="n">13.5.1</span> SDN Controller and Flow Tables</a>
+    <a href="javascript:void(0)" onclick="goTo('s5')"><span class="n">13.5.3</span> Cisco ACI — Three Core Components</a>
+    <a href="javascript:void(0)" onclick="goTo('s5')"><span class="n">13.5.4</span> Spine-Leaf Topology</a>
+    <a href="javascript:void(0)" onclick="goTo('s5')"><span class="n">13.5.5</span> Three SDN Types</a>
+    <a href="javascript:void(0)" onclick="goTo('s5')"><span class="n">13.5.6</span> APIC-EM Features and Path Trace</a>
+    <div class="tocg">Reference</div>
+    <a href="javascript:void(0)" onclick="goTo('s6')"><span class="n">🎯</span> Common Exam Traps</a>
+  </div>
+</div>
+
+<div class="wrap">
+
+<!-- 13.1 CLOUD COMPUTING -->
+<div class="sec" id="s1">
+<div class="sh open" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">13.1</span><span class="ttl">Cloud Computing</span></span><button class="sec-check" id="sch-s1" onclick="event.stopPropagation();toggleSection('s1',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb open">
+
+  <div class="sub">
+  <h3><span class="sn">13.1.2</span> Cloud Overview</h3>
+  <p>Cloud computing = large numbers of computers connected through a network, physically located anywhere. Organizations use cloud computing's <strong>"pay-as-you-go" model</strong> — treating compute and storage as a utility rather than a capital investment. This transforms <strong>CapEx (capital expenditures) into OpEx (operating expenditures)</strong>.</p>
+  <ul>
+    <li>Enables access to organizational data <strong>anywhere and at any time</strong></li>
+    <li>Streamlines IT operations — subscribe only to needed services</li>
+    <li>Eliminates or reduces onsite IT equipment, maintenance, and management</li>
+    <li>Reduces costs for equipment, energy, physical plant, and personnel training</li>
+    <li>Enables rapid response to increasing data volume requirements</li>
+  </ul>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">13.1.3</span> Three Cloud Service Models (NIST SP 800-145)</h3>
+  <div class="cloud-grid">
+    <div class="cloud-card saas">
+      <div class="cc-hdr">SaaS — Software as a Service</div>
+      <div class="cc-body">
+        <div class="cc-who">User provides: data only</div><br>
+        Cloud provider manages everything: applications, runtime, middleware, OS, virtualization, hardware. User accesses applications and services delivered over the internet. No management of any aspect of cloud services except limited user-specific settings.
+        <br><strong>Examples:</strong> Email, Office 365, communication apps, payroll systems
+      </div>
+    </div>
+    <div class="cloud-card paas">
+      <div class="cc-hdr">PaaS — Platform as a Service</div>
+      <div class="cc-body">
+        <div class="cc-who">Users: typically programmers</div><br>
+        Cloud provider manages platform and infrastructure. Users get access to development tools and services to build and deploy applications. Users may control configuration settings of the cloud hosting environment.
+        <br><strong>Examples:</strong> AWS Elastic Beanstalk, Google App Engine
+      </div>
+    </div>
+    <div class="cloud-card iaas">
+      <div class="cc-hdr">IaaS — Infrastructure as a Service</div>
+      <div class="cc-body">
+        <div class="cc-who">Users: IT managers</div><br>
+        Cloud provider manages physical hardware and networking. Users get access to network equipment, virtualized network services, and supporting network infrastructure. IT managers can deploy and run OS and applications.
+        <br><strong>Examples:</strong> AWS EC2, Azure VMs, Google Compute Engine
+      </div>
+    </div>
+  </div>
+  <div class="ca info"><span class="ic">💡</span><div><strong>ITaaS (IT as a Service):</strong> Extension where cloud providers also provide IT support for the cloud services. Extends network capability without new infrastructure investment, new personnel training, or new software licensing. Services available on demand, delivered economically to any device anywhere.</div></div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">13.1.4</span> Four Cloud Models</h3>
+  <div class="model-grid">
+    <div class="model-pill pub"><div class="mp-name">🌐 Public Cloud</div>Available to the general population. Free or pay-per-use. Uses the internet for access.</div>
+    <div class="model-pill priv"><div class="mp-name">🔒 Private Cloud</div>Intended for a specific organization (e.g., government). Can use org's private network or externally managed with strict access security. Expensive to build and maintain.</div>
+    <div class="model-pill hyb"><div class="mp-name">🔀 Hybrid Cloud</div>Two or more clouds (private + public) connected via a single architecture. Each part remains a separate object. Users have degrees of access based on rights.</div>
+    <div class="model-pill com"><div class="mp-name">🏥 Community Cloud</div>Exclusive use by a specific community with shared functional needs. Example: healthcare organizations requiring HIPAA compliance — special authentication and confidentiality.</div>
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">13.1.5</span> Cloud Computing vs Data Center</h3>
+  <div class="tw"><table>
+    <tr><th>Term</th><th>Definition</th></tr>
+    <tr><td><strong>Data Center</strong></td><td>Physical storage and processing facility run by in-house IT or leased offsite. Can occupy a room, floor, or entire building. Very expensive to build and maintain.</td></tr>
+    <tr><td><strong>Cloud Computing</strong></td><td>Off-premise service providing on-demand access to a shared pool of configurable computing resources. Rapidly provisioned and released with minimal management effort.</td></tr>
+  </table></div>
+  <div class="ca info"><span class="ic">💡</span><div>Data centers are the <strong>physical infrastructure</strong> that provides compute, network, and storage needs for cloud services. Large organizations build private data centers; smaller organizations lease server and storage services from larger data center organizations in the cloud.</div></div>
+  </div>
+
+</div></div>
+
+<!-- 13.2 VIRTUALIZATION -->
+<div class="sec" id="s2">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">13.2</span><span class="ttl">Virtualization</span></span><button class="sec-check" id="sch-s2" onclick="event.stopPropagation();toggleSection('s2',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb">
+
+  <div class="sub">
+  <h3><span class="sn">13.2.1</span> Cloud Computing vs Virtualization — Key Distinction</h3>
+  <div class="ca danger"><span class="ic">🚨</span><div><strong>"Cloud computing" and "virtualization" are NOT the same thing and are NOT interchangeable.</strong><br>
+  <strong>Virtualization</strong> = the foundation and underlying technology. Separates the OS from the hardware.<br>
+  <strong>Cloud computing</strong> = the delivery model and services built on top of virtualization.<br>
+  Without virtualization, cloud computing as widely implemented would not be possible.</div></div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">13.2.2</span> Dedicated Servers — Two Problems</h3>
+  <p>Traditional: one server OS on specific hardware, all RAM/CPU/disk dedicated to one service.</p>
+  <div class="tw"><table>
+    <tr><th>Problem</th><th>Description</th></tr>
+    <tr><td><strong>Single Point of Failure</strong></td><td>When a hardware component fails, the entire service it provides becomes unavailable. No redundancy means total outage.</td></tr>
+    <tr><td><strong>Server Sprawl</strong></td><td>Dedicated servers sit idle most of the time, waiting for demand. Wastes energy, rack space, and cooling — even when providing minimal service.</td></tr>
+  </table></div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">13.2.3</span> Server Virtualization and Hypervisors</h3>
+  <p>Virtualization consolidates many dedicated servers onto fewer physical servers using a <strong>hypervisor</strong>.</p>
+  <p>Example: 100 physical servers consolidated to 10 physical servers using hypervisors (10 VMs per physical server).</p>
+  <div class="ca info"><span class="ic">💡</span><div><strong>Hypervisor</strong> = program, firmware, or hardware that creates an abstraction layer on top of physical hardware. The abstraction layer allows VMs to access CPUs, memory, disk controllers, and NICs. Each VM runs a complete and separate OS.</div></div>
+  <p><strong>Redundancy options in virtualization:</strong></p>
+  <ul>
+    <li>If a hypervisor fails → VM can be <strong>restarted on another hypervisor</strong></li>
+    <li>Same VM can run on <strong>two hypervisors simultaneously</strong> — copying RAM and CPU state between them. If one fails → VM continues running on the other without interruption</li>
+    <li>Services running on VMs are virtual and can be dynamically installed or uninstalled as needed</li>
+  </ul>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">13.2.4</span> Advantages of Virtualization</h3>
+  <h4>Primary Advantage: Cost Reduction</h4>
+  <div class="adv-grid">
+    <div class="adv-row"><span class="ar-icon">💰</span><div><strong>Less equipment required</strong> — server consolidation means fewer physical servers, fewer networking devices, less supporting infrastructure, lower maintenance costs</div></div>
+    <div class="adv-row"><span class="ar-icon">⚡</span><div><strong>Less energy consumed</strong> — consolidating servers lowers monthly power and cooling costs; smaller carbon footprint</div></div>
+    <div class="adv-row"><span class="ar-icon">📐</span><div><strong>Less space required</strong> — fewer servers, network devices, and racks reduces data center floor space requirements</div></div>
+  </div>
+  <h4>Additional Benefits</h4>
+  <div class="adv-grid">
+    <div class="adv-row"><span class="ar-icon">🧪</span><div><strong>Easier prototyping</strong> — self-contained labs on isolated networks for testing; can revert to previous snapshot if mistake made; testing can run online but isolated from end users</div></div>
+    <div class="adv-row"><span class="ar-icon">🚀</span><div><strong>Faster server provisioning</strong> — creating a VM is far faster than provisioning physical hardware (minutes vs days)</div></div>
+    <div class="adv-row"><span class="ar-icon">⏰</span><div><strong>Increased server uptime</strong> — live migration, storage migration, high availability, and distributed resource scheduling</div></div>
+    <div class="adv-row"><span class="ar-icon">🔄</span><div><strong>Improved disaster recovery</strong> — hardware abstraction means recovery site doesn't need identical hardware; failover automation and testing before a disaster occurs</div></div>
+    <div class="adv-row"><span class="ar-icon">📦</span><div><strong>Legacy support</strong> — extends life of older OSs and applications, giving organizations more time to plan migration to newer solutions</div></div>
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">13.2.5</span> Abstraction Layers</h3>
+  <p>A computer system has four abstraction layers (bottom to top): <strong>Hardware → Firmware → OS → Services</strong></p>
+  <p>A hypervisor is inserted <strong>between the Firmware and OS layers</strong>. It intercepts OS calls to hardware and manages resource access, allowing multiple OS instances to share one physical machine.</p>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">13.2.6</span> Type 2 Hypervisors — Hosted</h3>
+  <div class="hyp-compare">
+    <div class="hyp-card t2">
+      <div class="hc-hdr">Type 2 — Hosted Hypervisor</div>
+      <div class="hc-body">
+        <ul>
+          <li>Installed <strong>on top of existing host OS</strong> (macOS, Windows, Linux)</li>
+          <li>Guest OS instances run on top of the hypervisor</li>
+          <li><strong>No management console required</strong> — managed through host OS</li>
+          <li>Popular with consumers and for testing/experimentation</li>
+          <li>Host machine must be powerful enough for host OS + all VMs</li>
+        </ul>
+        <strong>Examples:</strong> VMware Workstation, Oracle VM VirtualBox, VMware Fusion, Parallels (macOS), Virtual PC
+      </div>
+    </div>
+    <div class="hyp-card t1">
+      <div class="hc-hdr">Type 1 — Bare Metal Hypervisor</div>
+      <div class="hc-body">
+        <ul>
+          <li>Installed <strong>directly on hardware</strong> (no host OS)</li>
+          <li>OS instances run on top of the hypervisor</li>
+          <li><strong>Requires management console</strong> to configure and manage</li>
+          <li>Direct hardware access → more efficient</li>
+          <li>Better scalability, performance, and robustness</li>
+        </ul>
+        <strong>Used in:</strong> Enterprise servers, data center networking devices<br>
+        <strong>Example:</strong> Cisco UCS Manager (management console)
+      </div>
+    </div>
+  </div>
+  </div>
+
+</div></div>
+
+<!-- 13.3 VIRTUAL NETWORK INFRASTRUCTURE -->
+<div class="sec" id="s3">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">13.3</span><span class="ttl">Virtual Network Infrastructure</span></span><button class="sec-check" id="sch-s3" onclick="event.stopPropagation();toggleSection('s3',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb">
+
+  <div class="sub">
+  <h3><span class="sn">13.3.1</span> Type 1 Hypervisors — Bare Metal</h3>
+  <p>Type 1 = <strong>"bare metal"</strong> because the hypervisor is installed directly on the server hardware with no host OS underneath.</p>
+  <ul>
+    <li>Direct hardware access → more efficient than hosted (Type 2)</li>
+    <li>Improves scalability, performance, and robustness</li>
+    <li><strong>Requires a management console</strong> — cannot configure from the basic boot screen</li>
+    <li>Management software manages multiple servers using the same hypervisor</li>
+    <li>Can automatically consolidate servers and power them on/off as required</li>
+    <li>Provides recovery from hardware failure — automatically migrates VM to another server</li>
+  </ul>
+  <div class="ca info"><span class="ic">💡</span><div><strong>Over-allocation:</strong> A management console can allow more VM RAM to be allocated than the server physically has. Example: Server with 16GB RAM → 4 VMs × 10GB allocated = 40GB total allocated. Works because all VMs rarely need their full allocation simultaneously. This is a common and accepted practice.</div></div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">13.3.3</span> East-West vs North-South Traffic · VRF</h3>
+  <p>Server virtualization creates network challenges because traffic flows differ substantially from the traditional client-server model:</p>
+  <div class="tw"><table>
+    <tr><th>Traffic Type</th><th>Direction</th><th>Description</th></tr>
+    <tr><td><strong>East-West</strong></td><td>Within the data center</td><td>Traffic exchanged between virtual servers inside the data center. Can change in location and intensity over time. Requires flexible, dynamic network resource management.</td></tr>
+    <tr><td><strong>North-South</strong></td><td>Between distribution/core and offsite</td><td>Traffic between the data center and external destinations — other data centers, cloud providers, or the internet. More predictable flow.</td></tr>
+  </table></div>
+  <p><strong>Network function virtualization — VRF:</strong></p>
+  <ul>
+    <li><strong>VRF (Virtual Routing and Forwarding)</strong> = virtualized routing. Allows multiple independent routing table instances to coexist on a single router.</li>
+    <li>Other network functions that can be virtualized: subinterfaces, virtual interfaces, VLANs, routing tables</li>
+    <li>The key to understanding how the network is virtualized: networking devices operate using a <strong>control plane and a data plane</strong></li>
+  </ul>
+  </div>
+
+</div></div>
+
+<!-- 13.4 SDN -->
+<div class="sec" id="s4">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">13.4</span><span class="ttl">Software-Defined Networking (SDN)</span></span><button class="sec-check" id="sch-s4" onclick="event.stopPropagation();toggleSection('s4',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb">
+
+  <div class="sub">
+  <h3><span class="sn">13.4.2</span> Three Network Planes</h3>
+  <div class="planes-grid">
+    <div class="plane-card ctrl">
+      <div class="pc-name">🧠 Control Plane — "The Brains"</div>
+      Makes forwarding decisions. Contains Layer 2 and Layer 3 route forwarding mechanisms: routing protocol neighbor tables, topology tables, IPv4/IPv6 routing tables, STP, ARP table. Information processed by the <strong>CPU</strong>.
+    </div>
+    <div class="plane-card data">
+      <div class="pc-name">⚡ Data Plane — Forwarding Plane</div>
+      Also called the forwarding plane. Typically the switch fabric connecting network ports. Used to <strong>forward actual traffic flows</strong>. Uses information from the control plane to forward incoming traffic out the correct egress interface. Processed by a <strong>special data plane processor — NOT the CPU</strong>.
+    </div>
+    <div class="plane-card mgmt">
+      <div class="pc-name">🔧 Management Plane</div>
+      Manages device configuration via network connection. Network administrators access it using SSH, TFTP, SFTP, HTTPS. Also used by SNMP. This is how you've configured devices throughout your networking studies.
+    </div>
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">13.4.2</span> Cisco Express Forwarding (CEF)</h3>
+  <p>CEF = advanced Layer 3 IP switching technology that enables packet forwarding at the data plane <strong>without consulting the control plane CPU</strong>:</p>
+  <ul>
+    <li>Control plane's <strong>routing table</strong> pre-populates the <strong>FIB (Forwarding Information Base)</strong> in the data plane</li>
+    <li>Control plane's <strong>ARP table</strong> pre-populates the <strong>adjacency table</strong> in the data plane</li>
+    <li>Packets forwarded directly by the data plane using FIB + adjacency table — <strong>no CPU involvement</strong></li>
+    <li>Result: high-speed hardware-accelerated packet forwarding</li>
+  </ul>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">13.4.3</span> Two Major Network Virtualization Architectures</h3>
+  <div class="tw"><table>
+    <tr><th>Architecture</th><th>Type</th><th>Description</th></tr>
+    <tr><td><strong>SDN (Software-Defined Networking)</strong></td><td>Software/logical</td><td>Virtualizes the network; simplifies and streamlines administration and management; separates control and data planes</td></tr>
+    <tr><td><strong>Cisco ACI (Application Centric Infrastructure)</strong></td><td>Purpose-built hardware</td><td>Integrates cloud computing and data center management; policy element removed from the data plane</td></tr>
+  </table></div>
+  <h4>SDN Components</h4>
+  <ul>
+    <li><strong>OpenFlow</strong> — developed at Stanford University; manages traffic between routers, switches, APs, and a controller; <strong>foundational element of SDN</strong>; original and most widely implemented <strong>southbound API</strong></li>
+    <li><strong>OpenStack</strong> — virtualization and orchestration platform for scalable cloud environments; IaaS solution; often used with Cisco ACI</li>
+    <li><strong>Other:</strong> I2RS, TRILL, Cisco FabricPath (FP), IEEE 802.1aq Shortest Path Bridging (SPB)</li>
+  </ul>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">13.4.4</span> Traditional vs SDN Architecture · APIs</h3>
+  <div class="tw"><table>
+    <tr><th>Aspect</th><th>Traditional</th><th>SDN</th></tr>
+    <tr><td><strong>Control plane</strong></td><td>On each individual device</td><td>Centralized in the SDN controller</td></tr>
+    <tr><td><strong>Data plane</strong></td><td>On each individual device</td><td>Remains on individual devices</td></tr>
+    <tr><td><strong>Routing decisions</strong></td><td>Made by device OS</td><td>Made by SDN controller; pushed to devices</td></tr>
+    <tr><td><strong>Configuration</strong></td><td>Device-by-device</td><td>Centralized through controller and APIs</td></tr>
+  </table></div>
+
+  <p>The <strong>SDN controller</strong> = logical entity that enables network administrators to manage and dictate how the data plane of switches and routers handles traffic. It orchestrates, mediates, and facilitates communication between applications and network elements.</p>
+
+  <div class="api-box">
+    <div class="ab-title">🔌 SDN API Architecture — Northbound and Southbound</div>
+    <div class="api-row"><div class="api-layer app">Applications</div><div>(Traffic shaping, service deployment, business logic)</div></div>
+    <div class="api-row"><div class="api-layer api">Northbound APIs ↕</div><div>Between SDN controller and upstream applications. Help network admins shape traffic and deploy services.</div></div>
+    <div class="api-row"><div class="api-layer ctrl">SDN Controller</div><div>Central control plane — manages all network devices; computes paths; enforces policies</div></div>
+    <div class="api-row"><div class="api-layer api">Southbound APIs ↕</div><div>Between SDN controller and downstream switches/routers. <strong>OpenFlow</strong> = original, widely implemented southbound API.</div></div>
+    <div class="api-row"><div class="api-layer sw">Switches / Routers</div><div>(Data plane only — forward traffic based on controller instructions)</div></div>
+  </div>
+  </div>
+
+</div></div>
+
+<!-- 13.5 CONTROLLERS -->
+<div class="sec" id="s5">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">13.5</span><span class="ttl">Controllers</span></span><button class="sec-check" id="sch-s5" onclick="event.stopPropagation();toggleSection('s5',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb">
+
+  <div class="sub">
+  <h3><span class="sn">13.5.1</span> SDN Controller and OpenFlow Operations</h3>
+  <ul>
+    <li>Every flow must <strong>first get permission from the SDN controller</strong> — verifies communication is permissible per network policy</li>
+    <li>If allowed → controller <strong>computes a route</strong> and <strong>adds a flow entry to each switch along the path</strong></li>
+    <li><strong>Controller populates flow tables; switches manage the flow tables</strong></li>
+    <li>OpenFlow protocol + <strong>TLS (Transport Layer Security)</strong> secures control plane communications between controller and switches</li>
+  </ul>
+  <h4>Three Table Types in OpenFlow Switches</h4>
+  <div class="flow-grid">
+    <div class="flow-row ft"><div class="fr-name">Flow Table</div><div>Matches incoming packets to a particular flow; specifies functions to perform on those packets. Multiple flow tables can operate in a <strong>pipeline fashion</strong>.</div></div>
+    <div class="flow-row gt"><div class="fr-name">Group Table</div><div>A flow table may direct a flow here. Can trigger a variety of actions affecting <strong>one or more flows</strong> simultaneously.</div></div>
+    <div class="flow-row mt"><div class="fr-name">Meter Table</div><div>Triggers performance-related actions on a flow — including the ability to <strong>rate-limit traffic</strong>.</div></div>
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">13.5.3</span> Cisco ACI — Three Core Components</h3>
+  <p>Cisco ACI = purpose-built <strong>hardware</strong> solution for integrating cloud computing and data center management. Policy element removed from the data plane → simplifies data center network creation.</p>
+  <div class="aci-grid">
+    <div class="aci-card anp">
+      <div class="ac-name">ANP — Application Network Profile</div>
+      A collection of end-point groups (EPGs), their connections, and the policies that define those connections. EPGs can represent VLANs, web services, applications, and other network segments.
+    </div>
+    <div class="aci-card apic">
+      <div class="ac-name">APIC — Application Policy Infrastructure Controller ⭐ (The Brains)</div>
+      Centralized software controller managing and operating a scalable ACI clustered fabric. Designed for programmability and centralized management. <strong>Translates application policies into network programming.</strong><br>
+      <strong>Key distinction:</strong> APIC does NOT manipulate the data path directly. Instead, it centralizes policy definition and <strong>programs leaf switches</strong> to forward traffic based on defined policies.
+    </div>
+    <div class="aci-card nex">
+      <div class="ac-name">Cisco Nexus 9000 Series Switches</div>
+      Application-aware switching fabric. Work with APIC to manage both virtual and physical network infrastructure.
+    </div>
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">13.5.4</span> Spine-Leaf Topology</h3>
+  <p>Cisco ACI uses a <strong>two-tier spine-leaf topology</strong> composed of APIC and Cisco Nexus 9000 switches:</p>
+  <div class="tw"><table>
+    <tr><th>Device</th><th>Connection Rules</th></tr>
+    <tr><td><strong>Leaf switches</strong></td><td>Always attach to spine switches. <strong>NEVER attach to each other.</strong></td></tr>
+    <tr><td><strong>Spine switches</strong></td><td>Only attach to leaf and core switches. <strong>NEVER attach to each other.</strong></td></tr>
+  </table></div>
+  <div class="ca info"><span class="ic">💡</span><div><strong>Result:</strong> Everything is <strong>one hop from everything else</strong> in the two-tier topology. All end devices, servers, and APICs physically connect to <strong>leaf switches</strong>.</div></div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">13.5.5</span> Three SDN Types</h3>
+  <div class="sdn-grid">
+    <div class="sdn-card dev">
+      <div class="sc-name">1. Device-Based SDN</div>
+      Devices are programmable by applications running on the device itself or a server in the network. Requires programming skills (C, Java, Python). Least abstraction.<br>
+      <strong>Example:</strong> Cisco OnePK — enables programmers using C, Java, or Python to integrate with and interact with Cisco devices
+    </div>
+    <div class="sdn-card ctl">
+      <div class="sc-name">2. Controller-Based SDN</div>
+      Centralized controller has knowledge of all devices in the network. Applications interface with the controller to manage devices and manipulate traffic flows throughout the network. Requires programming to use controller APIs.<br>
+      <strong>Example:</strong> Cisco Open SDN Controller (commercial distribution of OpenDaylight)
+    </div>
+    <div class="sdn-card pol">
+      <div class="sc-name">3. Policy-Based SDN ⭐ Most Robust</div>
+      Similar to controller-based but adds a <strong>Policy Layer at higher level of abstraction</strong>. Built-in applications automate advanced configuration tasks via guided workflow and user-friendly GUI. <strong>No programming skills required.</strong><br>
+      <strong>Example:</strong> Cisco APIC-EM (Application Policy Infrastructure Controller – Enterprise Module)
+    </div>
+  </div>
+  <div class="et"><div class="lbl">🎯 SDN TYPE HIERARCHY — EXAM KEY</div>
+  Device-based → Controller-based → Policy-based<br>
+  Each level adds more abstraction and easier management.<br>
+  <strong>Policy-based = most robust</strong> — simple mechanism to control and manage policies across the entire network with no programming required.<br>
+  Cisco APIC-EM = Cisco's policy-based SDN for enterprise and campus deployments.
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">13.5.6–13.5.7</span> APIC-EM Features and Path Trace</h3>
+  <p><strong>Cisco APIC-EM</strong> provides a single interface for network management:</p>
+  <ul>
+    <li>Discover and access device and host inventories</li>
+    <li>View network topology</li>
+    <li>Trace a path between endpoints</li>
+    <li>Set policies across the network</li>
+  </ul>
+  <p><strong>APIC-EM Path Trace tool:</strong></p>
+  <ul>
+    <li>Visualizes traffic flows between two end nodes</li>
+    <li>Discovers <strong>conflicting, duplicate, or shadowed ACL entries</strong> along the entire path</li>
+    <li>Displays which ACLs permitted or denied traffic at each hop</li>
+    <li>Allows administrators to make targeted ACL adjustments across complex paths</li>
+    <li>Extremely useful for ACL troubleshooting in large enterprise networks</li>
+  </ul>
+  </div>
+
+</div></div>
+
+<!-- 13.6 EXAM TRAPS -->
+<div class="sec" id="s6">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">🎯</span><span class="ttl">Common Exam Traps — Module 13</span></span><button class="sec-check" id="sch-s6" onclick="event.stopPropagation();toggleSection('s6',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb">
+
+  <div class="ca danger"><span class="ic">❌</span><div><strong>Trap 1: Cloud computing ≠ virtualization. Virtualization is the FOUNDATION of cloud computing.</strong><br>They are NOT interchangeable terms. Virtualization separates the OS from the hardware. Cloud computing is the service delivery model and business model built on top of virtualization. Without virtualization, cloud computing as widely implemented would not be possible.</div></div>
+
+  <div class="ca danger"><span class="ic">❌</span><div><strong>Trap 2: Know what each user provides in SaaS vs PaaS vs IaaS.</strong><br>SaaS = user provides data only (Office 365, email, payroll). PaaS = user gets development tools (programmers). IaaS = user gets network equipment and infrastructure (IT managers). Each tier gives the customer more control but also more responsibility. A payroll system = SaaS, not IaaS.</div></div>
+
+  <div class="ca danger"><span class="ic">❌</span><div><strong>Trap 3: Four cloud models — know what each one is for.</strong><br>Public = anyone/general population. Private = one specific organization (government, enterprise). Hybrid = two or more clouds connected as one architecture. Community = specific community with shared compliance needs (HIPAA healthcare). Community cloud is NOT the same as public — it has customized functional requirements.</div></div>
+
+  <div class="ca danger"><span class="ic">❌</span><div><strong>Trap 4: Type 1 = bare metal (direct on hardware, management console required). Type 2 = hosted (on top of OS, no management console needed).</strong><br>Type 1 is used in enterprise/data centers — more efficient because it has direct hardware access. Type 2 is for consumer/experimental use — easier to manage but less efficient. Examples: VirtualBox, VMware Workstation, Parallels = all Type 2.</div></div>
+
+  <div class="ca danger"><span class="ic">❌</span><div><strong>Trap 5: Single point of failure = dedicated server hardware failure. Server sprawl = idle servers wasting resources.</strong><br>Both are problems solved by server virtualization. Virtualization provides redundancy (if one hypervisor fails, VM restarts on another) and consolidation (multiple servers on fewer physical hosts).</div></div>
+
+  <div class="ca danger"><span class="ic">❌</span><div><strong>Trap 6: Control plane = brains (CPU-processed). Data plane = forwarding (special processor, not CPU).</strong><br>SDN separates these: the control plane is centralized in the SDN controller; the data plane stays on individual switches and routers. CEF pre-populates FIB from routing table and adjacency table from ARP table — enabling hardware-speed forwarding without CPU involvement.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 7: Northbound APIs = controller to applications. Southbound APIs = controller to switches/routers.</strong><br>Northbound: SDN controller communicates upward to applications for traffic shaping and service deployment. Southbound: SDN controller communicates downward to define data plane behavior on switches/routers. OpenFlow = original and most widely used southbound API, developed at Stanford University.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 8: APIC ≠ SDN controller. APIC does NOT directly manipulate the data path.</strong><br>An SDN controller directly manipulates flow tables on switches. Cisco APIC (ACI) instead centralizes policy definition and programs leaf switches based on those policies — but does not directly alter forwarding paths. APIC translates application policies into network programming.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 9: Spine-Leaf topology rules — leaves NEVER connect to each other; spines NEVER connect to each other.</strong><br>In ACI spine-leaf: leaf switches connect only to spines. Spine switches connect only to leaves (and cores). Everything is one hop from everything else. All end devices and APICs physically connect to leaf switches. This ensures consistent low latency across the fabric.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 10: Three SDN types — Device-based (OnePK), Controller-based (OpenDaylight), Policy-based (APIC-EM).</strong><br>Policy-based is the most robust and requires no programming skills — uses GUI-driven workflows. APIC-EM is Cisco's policy-based SDN for enterprise/campus. Device-based requires programmers to write code that runs on the device itself. This order represents increasing levels of abstraction.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 11: APIC-EM Path Trace finds conflicting, duplicate, or shadowed ACL entries — not just path.</strong><br>The Path Trace tool does more than show the path — it examines every ACL along the path between two endpoints, showing which ones permitted or denied traffic at each hop. Essential for diagnosing complex ACL issues across enterprise networks.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 12: East-West traffic = within data center between virtual servers. North-South = to offsite destinations.</strong><br>East-West traffic is dynamic and variable — VM workloads move, so traffic patterns change. Traditional static network configurations can't handle this well. This is why flexible, dynamic network management (SDN, ACI) is needed in modern data centers.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 13: VRF = Virtual Routing and Forwarding = virtualized routing.</strong><br>VRF allows multiple independent routing table instances on a single router. This is network function virtualization applied to routing. A router running VRF appears as multiple routers to different traffic groups, providing isolation between them.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 14: OpenFlow uses TLS to secure communications between SDN controller and switches.</strong><br>OpenFlow is the southbound API protocol. TLS (Transport Layer Security) encrypts the control plane communications traveling over the network between the SDN controller and OpenFlow-compatible switches. Flows need controller permission before traversing the network.</div></div>
+
+  <div class="ca tip"><span class="ic">✅</span><div><strong>Module 13 quick-reference summary:</strong><br><br>
+  <strong>Cloud ≠ Virtualization:</strong> Virtualization is foundation of cloud computing (separates OS from hardware)<br>
+  <strong>Cloud services (NIST):</strong> SaaS (user provides data) · PaaS (dev tools for programmers) · IaaS (infrastructure for IT managers) · ITaaS (IT support extension)<br>
+  <strong>Cloud models:</strong> Public (anyone) · Private (one org) · Hybrid (2+ clouds connected) · Community (specific community with shared needs)<br>
+  <strong>Data center</strong> = physical facility; <strong>Cloud computing</strong> = off-premise on-demand service model<br>
+  <strong>Dedicated server problems:</strong> Single point of failure · Server sprawl (idle/wasted)<br>
+  <strong>Hypervisor:</strong> Creates abstraction layer; allows multiple OS instances on one physical server<br>
+  <strong>Type 1 (bare metal):</strong> Direct on hardware · Requires management console · Enterprise/DC · More efficient<br>
+  <strong>Type 2 (hosted):</strong> On top of host OS · No management console needed · Consumer/testing (VirtualBox, VMware Workstation, Parallels)<br>
+  <strong>Virtualization advantages:</strong> Less equipment/energy/space · Faster provisioning · Uptime · DR · Legacy support<br>
+  <strong>Over-allocation:</strong> VMs allocated more RAM than physically available — works because VMs rarely need full allocation simultaneously<br>
+  <strong>East-West traffic:</strong> Between virtual servers within DC (dynamic) · North-South: DC to offsite (predictable)<br>
+  <strong>VRF:</strong> Virtual Routing and Forwarding = multiple routing instances on one router<br>
+  <strong>Three planes:</strong> Control (CPU, brains, routing/STP/ARP) · Data (hardware processor, forwards traffic) · Management (SSH/SNMP config)<br>
+  <strong>CEF:</strong> Routing table → FIB; ARP table → adjacency table; forwards at data plane speed without CPU<br>
+  <strong>SDN:</strong> Separates control from data plane; centralizes control in SDN controller<br>
+  <strong>APIs:</strong> Northbound (controller→apps) · Southbound (controller→switches; OpenFlow = original)<br>
+  <strong>OpenFlow:</strong> Stanford University · Southbound API · Uses TLS · Manages flow tables on switches<br>
+  <strong>Cisco ACI components:</strong> ANP (policy profiles) · APIC (brains/controller, not data path) · Nexus 9000 (switching fabric)<br>
+  <strong>Spine-Leaf:</strong> Leaves→Spines only · Spines→Leaves only · Everything one hop away · All devices connect to leaves<br>
+  <strong>SDN types:</strong> Device-based (OnePK, code on device) · Controller-based (OpenDaylight) · Policy-based (APIC-EM, GUI, no coding, most robust)<br>
+  <strong>APIC-EM Path Trace:</strong> Finds conflicting/duplicate/shadowed ACLs along path between two endpoints</div></div>
+
+</div></div>
+
+</div>
+<div class="ft">CCNA 3 ENSA v7.02 — Module 13: Network Virtualization v2.2<br>Based on Cisco NetAcad curriculum · Study guide for personal use</div>
+<button class="tb-btn" id="topb" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+<div class="mod-nav">
+  <a class="mn-hub" href="index.html">🏠 Hub</a>
+  <div class="mn-divider"></div>
+  <a class="mn-prev" href="ccna3_module12_network_troubleshooting_v2.2.html">‹</a>
+  <span class="mn-label">M13 of 14</span>
+  <a class="mn-next" href="ccna3_module14_network_automation_v2.2.html">›</a>
+</div>
+<script>
+var MOD_KEY="ccna3-module13-network-virtualization";
+var SECS=["s1","s2","s3","s4","s5","s6"];
+var checked={};
+function loadState(){
+  try{var s=localStorage.getItem(MOD_KEY);if(s)checked=JSON.parse(s);}catch(e){}
+  SECS.forEach(function(id){
+    var pill=document.getElementById('pill-'+id);
+    var row=document.getElementById('row-'+id);
+    var st=document.getElementById('st-'+id);
+    var sch=document.getElementById('sch-'+id);
+    if(checked[id]){
+      if(pill){pill.classList.add('checked');pill.querySelector('.pill-check').textContent='✓';}
+      if(row)row.classList.add('done');
+      if(st)st.textContent='✓';
+      if(sch){sch.classList.add('checked');sch.textContent='✓ Done';}
+    } else {
+      if(pill){pill.classList.remove('checked');pill.querySelector('.pill-check').textContent='○';}
+      if(row)row.classList.remove('done');
+      if(st)st.textContent='○';
+      if(sch){sch.classList.remove('checked');sch.textContent='○ Mark done';}
+    }
+  });
+}
+function toggleSection(id,btn){checked[id]=!checked[id];try{localStorage.setItem(MOD_KEY,JSON.stringify(checked));}catch(e){}loadState();}
+function toggleStudyPanel(){
+  var hdr=document.getElementById('sp-hdr');
+  var body=document.getElementById('sp-body');
+  var arr=document.getElementById('sp-arr');
+  hdr.classList.toggle('open');body.classList.toggle('open');
+  if(arr)arr.textContent=body.classList.contains('open')?'▲':'▼';
+}
+function goTo(id){var el=document.getElementById(id);if(!el)return;var h=el.querySelector('.sh,.section-header'),b=el.querySelector('.sb,.section-body');if(h&&b&&!b.classList.contains('open')){h.classList.add('open');b.classList.add('open');}setTimeout(function(){window.scrollTo({top:el.getBoundingClientRect().top+window.pageYOffset-60,behavior:'smooth'});},50);}
+function setFs(size,btn){document.documentElement.style.setProperty('--base-fs',size);document.querySelectorAll('.fs-btn').forEach(function(b){b.classList.remove('active');});btn.classList.add('active');try{localStorage.setItem('ccna-fs',size);}catch(e){}}
+(function(){try{var s=localStorage.getItem('ccna-fs');if(s){document.documentElement.style.setProperty('--base-fs',s);document.querySelectorAll('.fs-btn').forEach(function(b){b.classList.remove('active');if((b.textContent==='S'&&s==='14px')||(b.textContent==='M'&&s==='16px')||(b.textContent==='L'&&s==='18px')||(b.textContent==='XL'&&s==='20px'))b.classList.add('active');});}}catch(e){}loadState();})();
+function copyCode(b){var t=b.closest('.cw').querySelector('pre').innerText;if(navigator.clipboard){navigator.clipboard.writeText(t).then(function(){b.textContent='Copied!';setTimeout(function(){b.textContent='Copy';},1500);}).catch(function(){fb(t,b);});}else{fb(t,b);}}
+function fb(t,b){var a=document.createElement('textarea');a.value=t;a.style.position='fixed';a.style.opacity='0';document.body.appendChild(a);a.focus();a.select();document.execCommand('copy');document.body.removeChild(a);b.textContent='Copied!';setTimeout(function(){b.textContent='Copy';},1500);}
+</script>
+<script src="../../site-config.js"></script>
+</body>
+</html>

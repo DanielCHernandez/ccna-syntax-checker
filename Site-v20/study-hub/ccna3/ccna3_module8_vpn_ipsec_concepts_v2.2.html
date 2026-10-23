@@ -1,0 +1,853 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=2.0">
+<title>CCNA 3 Module 8: VPN and IPsec Concepts v2.2</title>
+<style>
+:root{
+  --blue:#1ba0d7;--dark:#005073;--green:#6cc24a;
+  --vpn:#3b0764;--vpnd:#a78bfa;--vpn2:#1e003d;
+  --bg:#f4f6f8;--card:#fff;--text:#1a1a2e;--muted:#5a6a7a;
+  --cbg:#0d1117;--ctxt:#c9d1d9;--r:12px;--sh:0 2px 12px rgba(0,0,0,.08);
+  --base-fs:16px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);font-size:var(--base-fs);line-height:1.7}
+
+/* Breadcrumb */
+.bc{background:#0d1117;padding:8px 16px;display:flex;align-items:center;flex-wrap:wrap;gap:4px;font-size:.75em;overflow-x:auto;white-space:nowrap;-webkit-overflow-scrolling:touch;border-bottom:1px solid #21262d}
+.bc a{color:#8b949e;text-decoration:none;font-weight:600;flex-shrink:0}
+.bc a:active{color:#c9d1d9}
+.bc .sep{color:#6e7681;flex-shrink:0}
+.bc .cur{color:var(--vpnd);font-weight:700;flex-shrink:0;overflow:hidden;text-overflow:ellipsis;max-width:180px}
+
+.fs-bar{position:sticky;top:0;z-index:200;background:#1a1a2e;display:flex;align-items:center;justify-content:flex-end;padding:6px 14px;gap:6px;box-shadow:0 2px 8px rgba(0,0,0,.3)}
+.fs-label{color:#8b949e;font-size:.72em;font-weight:700;letter-spacing:.5px;text-transform:uppercase;margin-right:4px}
+.fs-btn{background:#30363d;color:#c9d1d9;border:2px solid transparent;border-radius:6px;padding:4px 12px;font-size:.75em;font-weight:700;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:all .2s;line-height:1.4}
+.fs-btn:active,.fs-btn.active{background:var(--vpn);color:#fff;border-color:var(--vpnd)}
+
+.hdr{background:linear-gradient(135deg,#0a0015,var(--vpn2),var(--vpn));color:#fff;padding:32px 20px 24px;text-align:center}
+.hdr .badge{display:inline-block;background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.4);border-radius:20px;padding:4px 14px;font-size:.81em;margin-bottom:12px}
+.hdr h1{font-size:1.625em;font-weight:700;margin-bottom:6px}
+.hdr p{font-size:.94em;opacity:.85}
+.hdr .obj{display:inline-block;background:rgba(255,255,255,.15);border-radius:8px;padding:7px 16px;margin-top:12px;font-size:.875em;font-style:italic}
+
+.pb-wrap{background:var(--card);padding:14px 16px;margin:16px 16px 0;border-radius:var(--r);box-shadow:var(--sh)}
+.pb-lbl{font-size:.81em;color:var(--muted);margin-bottom:6px;font-weight:600}
+.pb-track{background:#e0e7ef;border-radius:10px;height:8px;overflow:hidden}
+.pb-fill{background:linear-gradient(90deg,var(--vpn),var(--vpnd));height:100%;border-radius:10px;width:0;transition:width 1s ease}
+
+.toc{background:var(--card);margin:16px;border-radius:var(--r);box-shadow:var(--sh);overflow:hidden}
+.toch{background:var(--vpn);color:#fff;padding:14px 18px;font-weight:700;font-size:.94em;display:flex;justify-content:space-between;align-items:center;cursor:pointer;user-select:none}
+.toch .arr{transition:transform .3s}
+.toch.open .arr{transform:rotate(180deg)}
+.tocb{display:none;padding:10px 0}
+.tocb.open{display:block}
+.tocg{font-size:.69em;font-weight:800;letter-spacing:.8px;color:var(--vpn);text-transform:uppercase;padding:8px 20px 2px}
+.tocb a{display:block;padding:9px 20px 9px 28px;color:var(--text);text-decoration:none;font-size:.875em;border-left:3px solid transparent;transition:all .2s}
+.tocb a:hover,.tocb a:active{background:#f3e8ff;border-left-color:var(--vpnd)}
+.tocb a .n{display:inline-block;background:var(--vpn);color:#fff;border-radius:5px;padding:1px 8px;font-size:.75em;font-weight:700;margin-right:8px}
+
+.wrap{padding:0 16px 100px}
+
+.sec{background:var(--card);border-radius:var(--r);box-shadow:var(--sh);margin-bottom:16px;overflow:hidden}
+.sh{background:linear-gradient(90deg,#0a0015,var(--vpn));color:#fff;padding:16px 18px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;user-select:none;-webkit-tap-highlight-color:transparent}
+.sh .ttl{font-weight:700;font-size:1em}
+.sh .nb{background:rgba(255,255,255,.25);border-radius:6px;padding:3px 10px;font-size:.81em;font-weight:700;margin-right:10px;white-space:nowrap}
+.sh .ch{font-size:1.125em;transition:transform .3s}
+.sh.open .ch{transform:rotate(180deg)}
+.sb{display:none;padding:18px}
+.sb.open{display:block}
+
+.sub{margin-bottom:24px}
+.sub:last-child{margin-bottom:0}
+.sub h3{font-size:.94em;font-weight:700;color:var(--vpn);margin-bottom:10px;padding-bottom:6px;border-bottom:2px solid #f3e8ff;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.sub h3 .sn{background:var(--vpn);color:#fff;border-radius:5px;padding:2px 8px;font-size:.75em;white-space:nowrap}
+.sub h4{font-size:.875em;font-weight:700;color:var(--vpn);margin:14px 0 6px}
+.sub p{margin-bottom:10px;font-size:.94em}
+.sub ul,.sub ol{padding-left:20px;margin:8px 0;font-size:.94em}
+.sub li{margin-bottom:5px}
+
+.cw{background:var(--cbg);border-radius:10px;margin:12px 0;overflow:hidden}
+.cl{background:#21262d;color:#c9d1d9;font-size:.78em;font-weight:700;padding:6px 14px;letter-spacing:.5px;text-transform:uppercase}
+pre{margin:0;padding:14px;overflow-x:auto;-webkit-overflow-scrolling:touch}
+code{font-family:'Courier New',monospace;font-size:.81em;color:var(--ctxt);line-height:1.6}
+p code,li code,td code,.ca code{background:#f3e8ff;color:#3b0764;border-radius:4px;padding:1px 5px;font-size:.81em;font-family:'Courier New',monospace;font-weight:600}
+
+.ca{border-radius:8px;padding:12px 14px;margin:12px 0;font-size:.875em;line-height:1.6;display:flex;gap:10px;align-items:flex-start}
+.ca .ic{font-size:1.125em;flex-shrink:0;margin-top:1px}
+.ca.warn  {background:#fff3cd;border-left:4px solid #b38600;color:#3d2c00}
+.ca.tip   {background:#d4edda;border-left:4px solid #28a745;color:#0d3318}
+.ca.danger{background:#f8d7da;border-left:4px solid #dc3545;color:#3d0010}
+.ca.info  {background:#f3e8ff;border-left:4px solid var(--vpn);color:#1e003d}
+
+.et{background:linear-gradient(135deg,#1a1a2e,#0a0015);color:#fff;border-radius:10px;padding:14px 16px;margin:14px 0;font-size:.875em;line-height:1.6}
+.et .lbl{font-size:.69em;font-weight:800;letter-spacing:1px;color:var(--vpnd);margin-bottom:6px}
+.et ul{padding-left:18px;margin-top:6px}
+.et li{margin-bottom:4px}
+
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:12px 0;border-radius:8px}
+table{width:100%;border-collapse:collapse;font-size:.875em}
+th{background:var(--vpn);color:#fff;padding:10px 12px;text-align:left;font-weight:700;font-size:.81em}
+td{padding:9px 12px;border-bottom:1px solid #e8ecf0;vertical-align:top;color:#1a1a2e}
+tr:nth-child(even) td{background:#f3e8ff;color:#1e003d}
+tr:last-child td{border-bottom:none}
+
+/* VPN type cards */
+.vpn-type-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:12px 0}
+@media(max-width:480px){.vpn-type-grid{grid-template-columns:1fr}}
+.vpn-card{border-radius:10px;overflow:hidden}
+.vpn-card .vc-hdr{padding:10px 14px;font-size:.875em;font-weight:800;color:#fff;text-align:center}
+.vpn-card.s2s .vc-hdr{background:#1a3a5c}
+.vpn-card.ra  .vc-hdr{background:var(--vpn)}
+.vpn-card .vc-body{padding:12px 14px;font-size:.81em;color:#1a1a2e;line-height:1.7;background:#f9fafb}
+.vpn-card .vc-body ul{padding-left:16px}
+.vpn-card .vc-body li{margin-bottom:4px}
+.vpn-card .vc-tag{font-size:.69em;font-weight:700;padding:2px 8px;border-radius:4px;display:inline-block;margin-bottom:6px;color:#fff}
+.vpn-card.s2s .vc-tag{background:#1a3a5c}
+.vpn-card.ra  .vc-tag{background:var(--vpn)}
+
+/* IPsec framework blocks */
+.ipsec-fw{background:#0d1117;border:2px solid var(--vpnd);border-radius:10px;padding:14px;margin:12px 0}
+.ifw-title{font-size:.75em;font-weight:800;letter-spacing:.8px;color:var(--vpnd);text-transform:uppercase;margin-bottom:10px}
+.ifw-row{display:flex;gap:10px;align-items:flex-start;padding:7px 0;border-bottom:1px solid #21262d;font-size:.81em;color:#c9d1d9;line-height:1.6}
+.ifw-row:last-child{border-bottom:none}
+.ifw-fn{font-weight:800;color:var(--vpnd);min-width:120px;flex-shrink:0;font-size:.875em;line-height:1.4;margin-top:2px}
+.ifw-opts{flex:1;color:#c9d1d9}
+.ifw-opts strong{color:#fff}
+
+/* AH vs ESP comparison */
+.proto-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:12px 0}
+@media(max-width:480px){.proto-grid{grid-template-columns:1fr}}
+.proto-card{border-radius:10px;overflow:hidden}
+.proto-card .pc-hdr{padding:10px 14px;font-size:.875em;font-weight:800;color:#fff;text-align:center}
+.proto-card.ah  .pc-hdr{background:#1a3a5c}
+.proto-card.esp .pc-hdr{background:#1a4731}
+.proto-card .pc-body{padding:12px 14px;font-size:.81em;color:#1a1a2e;line-height:1.7;background:#f9fafb}
+.proto-card .pc-body ul{padding-left:16px}
+.proto-card .pc-body li{margin-bottom:4px}
+.proto-card .pc-tag{font-size:.69em;font-weight:700;padding:2px 8px;border-radius:4px;display:inline-block;margin-bottom:6px;color:#fff}
+.proto-card.ah  .pc-tag{background:#dc3545}
+.proto-card.esp .pc-tag{background:#27ae60}
+
+/* Encryption algorithm cards */
+.algo-grid{display:grid;gap:8px;margin:12px 0}
+.algo-row{display:flex;gap:10px;align-items:flex-start;padding:9px 12px;border-radius:8px;font-size:.81em;line-height:1.6;border-left:4px solid}
+.algo-row.weak   {background:#fff5f5;border-left-color:#dc3545}
+.algo-row.medium {background:#fff8f0;border-left-color:#e07b00}
+.algo-row.strong {background:#f0fdf4;border-left-color:#27ae60}
+.algo-row .ar-name{font-weight:800;min-width:60px;flex-shrink:0}
+.algo-row.weak   .ar-name{color:#dc3545}
+.algo-row.medium .ar-name{color:#c87800}
+.algo-row.strong .ar-name{color:#1a472a}
+.algo-row .ar-key{font-family:'Courier New',monospace;font-size:.875em;font-weight:700;color:var(--muted);min-width:80px;flex-shrink:0}
+.algo-row .ar-desc{color:#374151;flex:1}
+
+/* DH Groups */
+.dh-grid{display:grid;gap:8px;margin:12px 0}
+.dh-row{display:flex;gap:10px;align-items:flex-start;padding:9px 12px;border-radius:8px;font-size:.81em;border-left:4px solid}
+.dh-row.dep {background:#fff5f5;border-left-color:#dc3545}
+.dh-row.rec {background:#f0fdf4;border-left-color:#27ae60}
+.dh-row.pref{background:#f3e8ff;border-left-color:var(--vpn)}
+.dh-row .dh-grp{font-family:'Courier New',monospace;font-weight:800;min-width:80px;flex-shrink:0;font-size:.875em}
+.dh-row.dep  .dh-grp{color:#dc3545}
+.dh-row.rec  .dh-grp{color:#1a472a}
+.dh-row.pref .dh-grp{color:var(--vpn)}
+.dh-row .dh-badge{font-size:.69em;font-weight:700;padding:2px 7px;border-radius:4px;color:#fff;flex-shrink:0}
+.dh-row.dep  .dh-badge{background:#dc3545}
+.dh-row.rec  .dh-badge{background:#27ae60}
+.dh-row.pref .dh-badge{background:var(--vpn)}
+
+/* GRE encap layers */
+.gre-flow{background:#0d1117;border:2px solid #38bdf8;border-radius:10px;padding:14px;margin:12px 0}
+.gf-title{font-size:.75em;font-weight:800;letter-spacing:.8px;color:#38bdf8;text-transform:uppercase;margin-bottom:10px}
+.gf-row{display:flex;gap:10px;align-items:flex-start;padding:7px 0;border-bottom:1px solid #21262d;font-size:.81em;color:#c9d1d9;line-height:1.6}
+.gf-row:last-child{border-bottom:none}
+.gf-label{font-weight:800;min-width:110px;flex-shrink:0;color:#38bdf8;font-size:.875em}
+.gf-role{font-size:.69em;font-weight:700;padding:2px 7px;border-radius:4px;color:#fff;flex-shrink:0;background:#1a3a5c}
+
+/* VPN type badges */
+.vpn-badges{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0}
+.vpn-badge{border-radius:8px;padding:8px 12px;font-size:.81em;font-weight:700;color:#fff;display:flex;align-items:center;gap:6px}
+.vpn-badge.ent{background:#1a3a5c}
+.vpn-badge.sp {background:#5c3d00}
+.vpn-badge.ssl{background:#1a4731}
+.vpn-badge.gre{background:#7b2d8b}
+.vpn-badge.dmv{background:#7c1e1e}
+.vpn-badge.vti{background:var(--vpn)}
+.vpn-badge.mpls{background:#374151}
+
+/* IPsec vs SSL comparison */
+.cmp-grid{display:grid;gap:8px;margin:12px 0}
+.cmp-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;align-items:start}
+@media(max-width:480px){.cmp-row{grid-template-columns:1fr}}
+.cmp-feat{font-size:.75em;font-weight:700;color:var(--muted);padding:6px 10px;background:#f4f6f8;border-radius:6px;display:flex;align-items:center}
+.cmp-ipsec{font-size:.75em;padding:6px 10px;background:#e0f2fe;color:#0e2440;border-radius:6px;border-left:3px solid #1a3a5c}
+.cmp-ssl{font-size:.75em;padding:6px 10px;background:#f3e8ff;color:#1e003d;border-radius:6px;border-left:3px solid var(--vpn)}
+
+.tb-btn{position:fixed;bottom:80px;right:16px;background:var(--vpn);color:#fff;border:none;border-radius:50%;width:44px;height:44px;font-size:1.25em;box-shadow:0 4px 14px rgba(0,0,0,.25);cursor:pointer;display:none;align-items:center;justify-content:center;z-index:100}
+.tb-btn.show{display:flex}
+.ft{text-align:center;padding:24px 16px;color:var(--muted);font-size:.81em}
+
+.mod-nav{position:fixed;bottom:0;left:0;right:0;z-index:300;background:#1a1a2e;border-top:1px solid #30363d;display:flex;align-items:center;height:52px;padding:0 8px;gap:6px}
+.mn-hub{background:var(--blue);color:#fff;border:none;border-radius:8px;padding:6px 12px;font-size:.75em;font-weight:700;cursor:pointer;text-decoration:none;display:flex;align-items:center;gap:4px;white-space:nowrap;-webkit-tap-highlight-color:transparent;flex-shrink:0}
+.mn-hub:active{opacity:.8}
+.mn-divider{width:1px;height:28px;background:#30363d;flex-shrink:0}
+.mn-label{flex:1;text-align:center;font-size:.69em;color:#8b949e;font-weight:600;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding:0 4px}
+.mn-prev,.mn-next{background:#30363d;color:#c9d1d9;border:none;border-radius:8px;padding:6px 10px;font-size:.875em;font-weight:700;cursor:pointer;text-decoration:none;display:flex;align-items:center;-webkit-tap-highlight-color:transparent;flex-shrink:0}
+.mn-prev:active,.mn-next:active{background:var(--vpn);color:#fff}
+/* Study progress panel */
+.sp-wrap{background:var(--card);margin:16px 16px 0;border-radius:var(--r);box-shadow:var(--sh);overflow:hidden}
+.sp-hdr{background:var(--nt);color:#fff;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;user-select:none;-webkit-tap-highlight-color:transparent;gap:10px}
+.sp-hdr .sp-title{font-weight:700;font-size:.875em;flex-shrink:0}
+.sp-hdr .sp-arr{transition:transform .3s;flex-shrink:0}
+.sp-hdr.open .sp-arr{transform:rotate(180deg)}
+.sp-body{display:none;padding:12px 14px}
+.sp-body.open{display:block}
+.sp-row{display:flex;align-items:center;gap:10px;padding:6px 4px;border-bottom:1px solid #f0f4f8;font-size:.81em}
+.sp-row:last-child{border-bottom:none}
+.sp-row .sr-status{font-size:1em;flex-shrink:0;width:20px;text-align:center}
+.sp-row .sr-nb{font-weight:800;color:var(--nt);min-width:36px;flex-shrink:0;font-size:.875em}
+.sp-row .sr-ttl{color:var(--text);flex:1}
+.sp-row.done .sr-ttl{color:var(--muted);text-decoration:line-through}
+.sc-pills{display:flex;align-items:center;gap:4px;overflow-x:auto;-webkit-overflow-scrolling:touch;flex:1;padding:0 4px}
+.sc-pill{background:#30363d;color:#8b949e;border:2px solid transparent;border-radius:6px;padding:3px 8px;font-size:.72em;font-weight:700;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:all .15s;white-space:nowrap;flex-shrink:0;line-height:1.4;display:flex;align-items:center;gap:3px}
+.sc-pill.checked{background:var(--nt);color:#fff;border-color:var(--ntd)}
+.sc-pill .pill-check{font-size:.875em}
+
+/* v2.1 — In-section check button */
+.sh{position:relative}
+.sec-check{position:absolute;right:40px;top:50%;transform:translateY(-50%);background:rgba(255,255,255,.15);border:2px solid rgba(255,255,255,.4);border-radius:6px;padding:2px 10px;font-size:.72em;font-weight:800;color:#fff;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:all .2s;white-space:nowrap;z-index:10;line-height:1.5}
+.sec-check.checked{background:var(--ntd);border-color:var(--ntd);color:#052e1e}
+.sec-check:active{opacity:.75}
+/* Sections panel + tick colours (these pages never defined --nt/--ntd, so the panel header was invisible) */
+:root{--nt:var(--vpn);--ntd:#4ade80}
+</style>
+</head>
+<body>
+
+<nav class="bc">
+  <a href="../../index.html">🏠 Home</a>
+  <span class="sep">›</span>
+  <a href="index.html">CCNA 3 — ENSA</a>
+  <span class="sep">›</span>
+  <span class="cur">M8: VPN and IPsec</span>
+</nav>
+
+<div class="fs-bar">
+  <div class="sc-pills" id="sc-pills">
+  <button class="sc-pill" id="pill-s1" onclick="toggleSection('s1',this)"><span class="pill-check">○</span>8.1</button>
+  <button class="sc-pill" id="pill-s2" onclick="toggleSection('s2',this)"><span class="pill-check">○</span>8.2</button>
+  <button class="sc-pill" id="pill-s3" onclick="toggleSection('s3',this)"><span class="pill-check">○</span>8.3</button>
+  <button class="sc-pill" id="pill-s4" onclick="toggleSection('s4',this)"><span class="pill-check">○</span>🎯</button>
+  </div>
+  <span class="fs-label" style="flex-shrink:0;margin-left:6px">Size</span>
+  <button class="fs-btn" onclick="setFs('14px',this)">S</button>
+  <button class="fs-btn active" onclick="setFs('16px',this)">M</button>
+  <button class="fs-btn" onclick="setFs('18px',this)">L</button>
+  <button class="fs-btn" onclick="setFs('20px',this)">XL</button>
+</div>
+
+<div class="hdr">
+  <div class="badge">CCNA 3 — ENSA v7.02</div>
+  <h1>🔐 Module 8: VPN and IPsec Concepts</h1>
+  <p>Enterprise Networking, Security &amp; Automation · NetAcad Study Guide</p>
+  <div class="obj">Module Objective: Explain how VPNs and IPsec are used to secure site-to-site and remote access connectivity</div>
+</div>
+
+<div class="sp-wrap">
+  <div class="sp-hdr" id="sp-hdr" onclick="toggleStudyPanel()">
+    <span class="sp-title">📚 Sections</span>
+    <span class="sp-arr" id="sp-arr">▼</span>
+  </div>
+  <div class="sp-body" id="sp-body">
+    <div class="sp-row" id="row-s1"><span class="sr-status" id="st-s1">○</span><span class="sr-nb">8.1</span><span class="sr-ttl">VPN Technology</span></div>
+    <div class="sp-row" id="row-s2"><span class="sr-status" id="st-s2">○</span><span class="sr-nb">8.2</span><span class="sr-ttl">Types of VPNs</span></div>
+    <div class="sp-row" id="row-s3"><span class="sr-status" id="st-s3">○</span><span class="sr-nb">8.3</span><span class="sr-ttl">IPsec Framework</span></div>
+    <div class="sp-row" id="row-s4"><span class="sr-status" id="st-s4">○</span><span class="sr-nb">🎯</span><span class="sr-ttl">Common Exam Traps — Module 8</span></div>
+  </div>
+</div>
+
+<div class="toc">
+  <div class="toch open" onclick="this.classList.toggle('open');document.getElementById('tocb').classList.toggle('open')">
+    📋 Table of Contents — Tap to expand <span class="arr">▼</span>
+  </div>
+  <div class="tocb open" id="tocb">
+    <div class="tocg">8.1 — VPN Technology</div>
+    <a href="javascript:void(0)" onclick="goTo('s1')"><span class="n">8.1.1</span> What Is a VPN — GRE vs IPsec vs SSL</a>
+    <a href="javascript:void(0)" onclick="goTo('s1')"><span class="n">8.1.2</span> VPN Benefits</a>
+    <a href="javascript:void(0)" onclick="goTo('s1')"><span class="n">8.1.3</span> Site-to-Site vs Remote-Access VPNs</a>
+    <a href="javascript:void(0)" onclick="goTo('s1')"><span class="n">8.1.4</span> Enterprise vs Service Provider VPNs</a>
+    <div class="tocg">8.2 — Types of VPNs</div>
+    <a href="javascript:void(0)" onclick="goTo('s2')"><span class="n">8.2.1</span> Remote-Access — Clientless vs Client-Based</a>
+    <a href="javascript:void(0)" onclick="goTo('s2')"><span class="n">8.2.2</span> SSL VPNs — IPsec vs SSL Comparison</a>
+    <a href="javascript:void(0)" onclick="goTo('s2')"><span class="n">8.2.3</span> Site-to-Site IPsec VPNs</a>
+    <a href="javascript:void(0)" onclick="goTo('s2')"><span class="n">8.2.4</span> GRE over IPsec — Passenger/Carrier/Transport</a>
+    <a href="javascript:void(0)" onclick="goTo('s2')"><span class="n">8.2.5</span> DMVPN — Dynamic Multipoint VPN</a>
+    <a href="javascript:void(0)" onclick="goTo('s2')"><span class="n">8.2.6</span> IPsec VTI</a>
+    <a href="javascript:void(0)" onclick="goTo('s2')"><span class="n">8.2.7</span> Service Provider MPLS VPNs</a>
+    <div class="tocg">8.3 — IPsec Framework</div>
+    <a href="javascript:void(0)" onclick="goTo('s3')"><span class="n">8.3.2</span> IPsec Framework — Four Security Functions</a>
+    <a href="javascript:void(0)" onclick="goTo('s3')"><span class="n">8.3.3</span> AH vs ESP Protocol Encapsulation</a>
+    <a href="javascript:void(0)" onclick="goTo('s3')"><span class="n">8.3.4</span> Confidentiality — Encryption Algorithms</a>
+    <a href="javascript:void(0)" onclick="goTo('s3')"><span class="n">8.3.5</span> Integrity — HMAC Algorithms</a>
+    <a href="javascript:void(0)" onclick="goTo('s3')"><span class="n">8.3.6</span> Authentication — PSK vs RSA</a>
+    <a href="javascript:void(0)" onclick="goTo('s3')"><span class="n">8.3.7</span> Key Exchange — Diffie-Hellman Groups</a>
+    <div class="tocg">Reference</div>
+    <a href="javascript:void(0)" onclick="goTo('s4')"><span class="n">🎯</span> Common Exam Traps</a>
+  </div>
+</div>
+
+<div class="wrap">
+
+<!-- ══════════════════════════════════════════════════
+     SECTION 8.1 — VPN TECHNOLOGY
+══════════════════════════════════════════════════ -->
+<div class="sec" id="s1">
+<div class="sh open" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">8.1</span><span class="ttl">VPN Technology</span></span><button class="sec-check" id="sch-s1" onclick="event.stopPropagation();toggleSection('s1',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb open">
+
+  <div class="sub">
+  <h3><span class="sn">8.1.1</span> What Is a VPN?</h3>
+  <p>A VPN is:</p>
+  <ul>
+    <li><strong>Virtual</strong> — carries information as if on a private network, but transported over a public network (internet)</li>
+    <li><strong>Private</strong> — traffic is <strong>encrypted</strong> to keep data confidential while crossing the public network</li>
+  </ul>
+
+  <h4>VPN Evolution</h4>
+  <div class="tw"><table>
+    <tr><th>Technology</th><th>Encryption?</th><th>Description</th></tr>
+    <tr><td><strong>GRE</strong></td><td>❌ No</td><td>Early Cisco tunneling protocol. Encapsulates any Layer 3 protocol including multicast/broadcast. Creates virtual point-to-point link. No confidentiality.</td></tr>
+    <tr><td><strong>IPsec</strong></td><td>✅ Yes</td><td>IETF standard. Encrypts and authenticates IP packets. Most common VPN protocol today. Supports only unicast natively.</td></tr>
+    <tr><td><strong>SSL/TLS</strong></td><td>✅ Yes</td><td>Used for clientless (browser-based) and client-based remote access VPNs. Uses PKI and digital certificates.</td></tr>
+  </table></div>
+
+  <div class="ca danger">
+    <span class="ic">🚨</span>
+    <div><strong>GRE does NOT provide encryption.</strong> GRE is a tunneling protocol only — it creates a tunnel but does not secure it. To protect GRE traffic, it must be wrapped inside IPsec. GRE over IPsec = tunnel + security.</div>
+  </div>
+
+  <h4>Key VPN Devices</h4>
+  <ul>
+    <li><strong>Cisco ASA (Adaptive Security Appliance)</strong> — standalone security device combining firewall, VPN concentrator, and IPS</li>
+    <li><strong>VPN-enabled router</strong> — SOHO router providing VPN connectivity back to corporate</li>
+    <li><strong>Cisco AnyConnect</strong> — client software for remote workers to establish SSL/IPsec VPN connections</li>
+  </ul>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">8.1.2</span> VPN Benefits</h3>
+  <div class="tw"><table>
+    <tr><th>Benefit</th><th>Description</th></tr>
+    <tr><td><strong>Cost Savings</strong></td><td>Uses internet instead of expensive dedicated WAN links; increases remote connection bandwidth at lower cost</td></tr>
+    <tr><td><strong>Security</strong></td><td>Advanced encryption and authentication protect data from unauthorized access in transit</td></tr>
+    <tr><td><strong>Scalability</strong></td><td>Easy to add new remote users via internet — no significant infrastructure changes needed</td></tr>
+    <tr><td><strong>Compatibility</strong></td><td>Works across a wide variety of WAN and broadband technologies (DSL, cable, cellular, etc.)</td></tr>
+  </table></div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">8.1.3</span> Site-to-Site vs Remote-Access VPNs</h3>
+  <div class="vpn-type-grid">
+    <div class="vpn-card s2s">
+      <div class="vc-hdr">🏢 Site-to-Site VPN</div>
+      <div class="vc-body">
+        <div class="vc-tag">Gateway-to-Gateway · Permanent</div>
+        <ul>
+          <li>VPN gateways <strong>pre-configured</strong> at each site</li>
+          <li>Traffic encrypted only <strong>between gateways</strong></li>
+          <li>Internal hosts <strong>unaware</strong> VPN exists — transparent</li>
+          <li>Hosts send/receive normal TCP/IP</li>
+          <li>Gateway = router or firewall (e.g., Cisco ASA)</li>
+          <li>Used to connect branch offices to HQ</li>
+        </ul>
+      </div>
+    </div>
+    <div class="vpn-card ra">
+      <div class="vc-hdr">💻 Remote-Access VPN</div>
+      <div class="vc-body">
+        <div class="vc-tag">User-Initiated · On-Demand</div>
+        <ul>
+          <li><strong>Dynamically created</strong> when user needs it</li>
+          <li>Single client ↔ VPN gateway</li>
+          <li>User <strong>must initiate</strong> the connection</li>
+          <li>Can use <strong>IPsec or SSL</strong></li>
+          <li><strong>Clientless</strong>: browser + HTTPS only</li>
+          <li><strong>Client-based</strong>: AnyConnect software installed</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">8.1.4</span> Enterprise vs Service Provider VPNs</h3>
+  <div class="tw"><table>
+    <tr><th>Type</th><th>Who Manages</th><th>Technology</th></tr>
+    <tr><td><strong>Enterprise VPN</strong></td><td>Enterprise IT team</td><td>Site-to-site IPsec, GRE over IPsec, DMVPN, VTI, client-based IPsec, clientless SSL</td></tr>
+    <tr><td><strong>SP MPLS VPN</strong></td><td>Service provider</td><td>MPLS backbone — Layer 2 or Layer 3 VPN paths. Customer traffic segregated. Customer doesn't configure VPN.</td></tr>
+    <tr><td><strong>SP Legacy VPN</strong></td><td>Service provider</td><td>Frame Relay and ATM (now replaced by MPLS)</td></tr>
+  </table></div>
+  </div>
+
+</div></div>
+
+<!-- ══════════════════════════════════════════════════
+     SECTION 8.2 — TYPES OF VPNs
+══════════════════════════════════════════════════ -->
+<div class="sec" id="s2">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">8.2</span><span class="ttl">Types of VPNs</span></span><button class="sec-check" id="sch-s2" onclick="event.stopPropagation();toggleSection('s2',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb">
+
+  <div class="sub">
+  <h3><span class="sn">8.2.1</span> Remote-Access VPNs — Clientless vs Client-Based</h3>
+  <div class="tw"><table>
+    <tr><th>Type</th><th>How It Works</th><th>Requirements</th><th>Protocol</th></tr>
+    <tr><td><strong>Clientless VPN</strong></td><td>Web browser connects to VPN gateway via HTTPS/SSL</td><td>Just a browser — no special software</td><td>SSL/TLS</td></tr>
+    <tr><td><strong>Client-based VPN</strong></td><td>VPN client software (e.g., Cisco AnyConnect) installed on device</td><td>Software must be installed</td><td>IPsec or SSL</td></tr>
+  </table></div>
+  <div class="ca info">
+    <span class="ic">💡</span>
+    <div>Remote-access VPNs also allow <strong>contractors and partners</strong> to access specific enterprise servers with limited, role-based permissions — without requiring a full network-level connection.</div>
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">8.2.2</span> SSL VPNs — IPsec vs SSL Comparison</h3>
+  <p>When a client negotiates an SSL VPN, it actually uses <strong>TLS (Transport Layer Security)</strong> — the modern successor to SSL. The terms are used interchangeably. SSL uses <strong>PKI and digital certificates</strong> to authenticate peers.</p>
+
+  <div class="cmp-grid">
+    <div class="cmp-row" style="font-size:.75em;font-weight:800;color:var(--muted);padding:4px 0">
+      <div>Feature</div><div style="color:#1a3a5c">IPsec</div><div style="color:var(--vpn)">SSL / TLS</div>
+    </div>
+    <div class="cmp-row">
+      <div class="cmp-feat">Applications</div>
+      <div class="cmp-ipsec">Extensive — all IP-based apps</div>
+      <div class="cmp-ssl">Limited — web-based and file sharing only</div>
+    </div>
+    <div class="cmp-row">
+      <div class="cmp-feat">Auth strength</div>
+      <div class="cmp-ipsec">Strong — two-way (shared keys or certs)</div>
+      <div class="cmp-ssl">Moderate — one-way or two-way</div>
+    </div>
+    <div class="cmp-row">
+      <div class="cmp-feat">Encryption</div>
+      <div class="cmp-ipsec">Strong — 56 to 256 bits</div>
+      <div class="cmp-ssl">Moderate to strong — 40 to 256 bits</div>
+    </div>
+    <div class="cmp-row">
+      <div class="cmp-feat">Complexity</div>
+      <div class="cmp-ipsec">Medium — requires pre-installed VPN client</div>
+      <div class="cmp-ssl">Low — only requires a web browser</div>
+    </div>
+    <div class="cmp-row">
+      <div class="cmp-feat">Device support</div>
+      <div class="cmp-ipsec">Limited — specific devices with specific config</div>
+      <div class="cmp-ssl">Extensive — any device with a browser</div>
+    </div>
+  </div>
+  <div class="ca tip">
+    <span class="ic">✅</span>
+    <div><strong>IPsec and SSL are complementary, not mutually exclusive.</strong> Organizations deploy both depending on user needs — IPsec for security-sensitive connections and all apps; SSL for ease of access from any browser.</div>
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">8.2.3</span> Site-to-Site IPsec VPNs</h3>
+  <ul>
+    <li>Connects networks across an untrusted network (internet)</li>
+    <li>End hosts send/receive <strong>normal unencrypted TCP/IP</strong> — VPN gateway does all the work</li>
+    <li>Gateway <strong>encapsulates and encrypts</strong> outbound traffic → sends through VPN tunnel</li>
+    <li>Receiving gateway <strong>decrypts, strips headers</strong>, forwards to destination host on LAN</li>
+    <li>Secured using <strong>IPsec</strong>; gateway = router or firewall (e.g., Cisco ASA)</li>
+  </ul>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">8.2.4</span> GRE over IPsec</h3>
+  <p><strong>The problem:</strong> Standard IPsec supports <strong>unicast traffic only</strong>. Routing protocols (OSPF, EIGRP) use <strong>multicast</strong> — they cannot run over plain IPsec tunnels.</p>
+  <p><strong>The solution:</strong> GRE wraps the multicast routing packet (making it unicast), then IPsec encrypts the GRE packet.</p>
+
+  <div class="gre-flow">
+    <div class="gf-title">📦 Three-Layer GRE over IPsec Encapsulation</div>
+    <div class="gf-row">
+      <div class="gf-label">Passenger</div>
+      <div class="gf-role">Layer 1</div>
+      <div style="flex:1;color:#c9d1d9;font-size:.81em">The original data packet — e.g., an <strong>OSPF Hello</strong> (multicast routing update). This is what needs to get from site A to site B.</div>
+    </div>
+    <div class="gf-row">
+      <div class="gf-label">Carrier (GRE)</div>
+      <div class="gf-role">Layer 2</div>
+      <div style="flex:1;color:#c9d1d9;font-size:.81em">GRE encapsulates the OSPF packet and adds a GRE header. The multicast becomes wrapped in a <strong>unicast</strong> GRE packet — now IPsec can handle it.</div>
+    </div>
+    <div class="gf-row">
+      <div class="gf-label">Transport (IPsec)</div>
+      <div class="gf-role">Layer 3</div>
+      <div style="flex:1;color:#c9d1d9;font-size:.81em">IPsec encrypts the GRE packet and adds IPsec headers. The result is a <strong>fully encrypted, routable unicast</strong> packet traversing the internet.</div>
+    </div>
+  </div>
+
+  <div class="et">
+    <div class="lbl">🎯 GRE over IPsec FLOW</div>
+    OSPF packet (multicast) <strong>→ GRE wraps it (now unicast) → IPsec encrypts it → sent over internet</strong><br><br>
+    Without GRE: IPsec cannot carry OSPF/EIGRP multicast → routing protocols fail over the VPN<br>
+    With GRE over IPsec: routing protocols work normally across the encrypted tunnel
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">8.2.5</span> DMVPN — Dynamic Multipoint VPN</h3>
+  <ul>
+    <li><strong>Cisco proprietary</strong> — software solution for building scalable VPN meshes easily</li>
+    <li>Solves the problem of static site-to-site configs requiring manual configuration for every pair of sites</li>
+    <li>Uses <strong>hub-and-spoke base config</strong> that dynamically enables <strong>full mesh</strong> communication</li>
+    <li>Relies on <strong>IPsec</strong> for secure transport over public networks</li>
+    <li>Uses <strong>mGRE (Multipoint GRE)</strong> — a single GRE interface dynamically supports <strong>multiple IPsec tunnels</strong></li>
+    <li>Adding a new branch site: <strong>no reconfiguration needed on the hub router</strong></li>
+    <li>Spokes can establish <strong>direct spoke-to-spoke tunnels</strong> without traversing the hub</li>
+  </ul>
+  <div class="ca info">
+    <span class="ic">💡</span>
+    <div>DMVPN combines hub-and-spoke simplicity with full-mesh performance. Ideal for large enterprises with many branch offices where static IPsec site-to-site configs would be unmanageable.</div>
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">8.2.6</span> IPsec Virtual Tunnel Interface (VTI)</h3>
+  <ul>
+    <li>Simplifies IPsec configuration — applies IPsec to a <strong>virtual interface</strong> rather than static crypto maps on physical interfaces</li>
+    <li>Supports both <strong>unicast AND multicast</strong> encrypted traffic natively</li>
+    <li><strong>Routing protocols work directly</strong> — no need for GRE over IPsec</li>
+    <li>Can be configured between sites or in hub-and-spoke topology</li>
+  </ul>
+  <div class="ca tip">
+    <span class="ic">✅</span>
+    <div><strong>IPsec VTI vs GRE over IPsec:</strong> VTI natively supports multicast — so routing protocols (OSPF, EIGRP) work without needing GRE. GRE over IPsec is an older approach that adds GRE as a workaround for the same problem.</div>
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">8.2.7</span> Service Provider MPLS VPNs</h3>
+  <p>MPLS provides secure isolation of customer traffic through label switching — different customers cannot see each other's traffic even on shared infrastructure.</p>
+  <div class="tw"><table>
+    <tr><th>Type</th><th>SP Involvement</th><th>Mechanism</th></tr>
+    <tr><td><strong>Layer 3 MPLS VPN</strong></td><td>SP <strong>participates in routing</strong> — peers with CE routers, distributes customer routes across MPLS backbone</td><td>SP redistributes customer routes through MPLS core using MP-BGP</td></tr>
+    <tr><td><strong>Layer 2 MPLS VPN (VPLS)</strong></td><td>SP <strong>does NOT participate in routing</strong> — emulates a shared Ethernet LAN segment</td><td>Customer CE routers appear on same multiaccess network; customer handles all routing</td></tr>
+  </table></div>
+
+  <div class="vpn-badges">
+    <div class="vpn-badge ent">🏢 Enterprise IPsec</div>
+    <div class="vpn-badge ssl">🌐 Clientless SSL</div>
+    <div class="vpn-badge gre">📦 GRE over IPsec</div>
+    <div class="vpn-badge dmv">🔀 DMVPN</div>
+    <div class="vpn-badge vti">🔌 IPsec VTI</div>
+    <div class="vpn-badge mpls">☁️ MPLS VPN</div>
+  </div>
+  </div>
+
+</div></div>
+
+<!-- ══════════════════════════════════════════════════
+     SECTION 8.3 — IPsec FRAMEWORK
+══════════════════════════════════════════════════ -->
+<div class="sec" id="s3">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">8.3</span><span class="ttl">IPsec Framework</span></span><button class="sec-check" id="sch-s3" onclick="event.stopPropagation();toggleSection('s3',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb">
+
+  <div class="sub">
+  <h3><span class="sn">8.3.2</span> IPsec — Four Security Functions</h3>
+  <p>IPsec is an <strong>IETF standard framework</strong> (RFC 2401–2412) that protects and authenticates IP packets from Layer 4 through Layer 7. It is a <strong>framework</strong> — not bound to specific algorithms. Peers negotiate a <strong>Security Association (SA)</strong> to agree on which algorithms to use.</p>
+
+  <div class="ipsec-fw">
+    <div class="ifw-title">🔒 IPsec Framework — Four Building Blocks</div>
+    <div class="ifw-row">
+      <div class="ifw-fn">1 · Confidentiality</div>
+      <div class="ifw-opts"><strong>Encryption</strong> prevents reading packet contents if intercepted. Options: DES, 3DES, AES (recommended), SEAL</div>
+    </div>
+    <div class="ifw-row">
+      <div class="ifw-fn">2 · Integrity</div>
+      <div class="ifw-opts"><strong>Hashing (HMAC)</strong> ensures packets were not altered in transit. Options: MD5, SHA-1, SHA-256 (recommended minimum)</div>
+    </div>
+    <div class="ifw-row">
+      <div class="ifw-fn">3 · Authentication</div>
+      <div class="ifw-opts"><strong>IKE (Internet Key Exchange)</strong> authenticates VPN peers. Options: PSK (pre-shared key) or RSA (digital certificates)</div>
+    </div>
+    <div class="ifw-row">
+      <div class="ifw-fn">4 · Diffie-Hellman</div>
+      <div class="ifw-opts"><strong>DH key exchange</strong> — two peers create a shared secret key over an insecure channel without transmitting the key itself</div>
+    </div>
+  </div>
+
+  <div class="ipsec-fw" style="border-color:#38bdf8;margin-top:10px">
+    <div class="ifw-title" style="color:#38bdf8">⚙️ IPsec Framework — Full Options Table</div>
+    <div class="ifw-row">
+      <div class="ifw-fn" style="color:#38bdf8">Protocol</div>
+      <div class="ifw-opts">AH (Authentication Header) — auth only, no encryption<br>ESP (Encapsulating Security Payload) — auth + encryption ← <strong>preferred</strong></div>
+    </div>
+    <div class="ifw-row">
+      <div class="ifw-fn" style="color:#38bdf8">Confidentiality</div>
+      <div class="ifw-opts">DES (56-bit, weak) · 3DES (3×56-bit) · <strong>AES-128/192/256 (recommended)</strong> · SEAL (160-bit stream)</div>
+    </div>
+    <div class="ifw-row">
+      <div class="ifw-fn" style="color:#38bdf8">Integrity</div>
+      <div class="ifw-opts">HMAC-MD5 (128-bit) · HMAC-SHA-1 (160-bit, legacy) · <strong>SHA-256+ (recommended minimum)</strong></div>
+    </div>
+    <div class="ifw-row">
+      <div class="ifw-fn" style="color:#38bdf8">Authentication</div>
+      <div class="ifw-opts">PSK (pre-shared key, simple but doesn't scale) · <strong>RSA (digital certs, scales well)</strong></div>
+    </div>
+    <div class="ifw-row">
+      <div class="ifw-fn" style="color:#38bdf8">Key Exchange</div>
+      <div class="ifw-opts">DH groups 1/2/5 (deprecated ❌) · Groups 14/15/16 (2048–4096-bit, recommended) · Groups 19/20/21/24 (ECC, preferred)</div>
+    </div>
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">8.3.3</span> AH vs ESP — IPsec Protocol Encapsulation</h3>
+  <div class="proto-grid">
+    <div class="proto-card ah">
+      <div class="pc-hdr">AH — Authentication Header</div>
+      <div class="pc-body">
+        <div class="pc-tag">❌ NO encryption</div>
+        <ul>
+          <li>Provides <strong>data authentication and integrity ONLY</strong></li>
+          <li>Does <strong>NOT encrypt</strong> — all text transported in clear</li>
+          <li>Use when confidentiality is not required or not permitted</li>
+          <li><strong>Cannot traverse NAT</strong> — AH breaks when NAT changes IP headers (integrity check fails)</li>
+          <li>AH+ESP combination also fails through NAT</li>
+          <li>Rarely used in modern deployments</li>
+        </ul>
+      </div>
+    </div>
+    <div class="proto-card esp">
+      <div class="pc-hdr">ESP — Encapsulating Security Payload</div>
+      <div class="pc-body">
+        <div class="pc-tag">✅ Encryption + Auth</div>
+        <ul>
+          <li>Provides <strong>confidentiality (encryption) AND authentication</strong></li>
+          <li>Encrypts the IP packet payload</li>
+          <li>Authenticates inner IP packet and ESP header</li>
+          <li>At minimum: either encryption OR authentication must be selected</li>
+          <li><strong>Can traverse NAT</strong> (with NAT-Traversal/NAT-T)</li>
+          <li><strong>Most commonly used</strong> — standard for modern VPNs</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="et">
+    <div class="lbl">🎯 AH vs ESP — THE KEY DISTINCTION</div>
+    <strong>AH</strong> = Authentication Header = integrity + origin auth ONLY. <strong>No encryption</strong>. Breaks through NAT.<br>
+    <strong>ESP</strong> = Encapsulating Security Payload = <strong>encryption + authentication</strong>. Works through NAT (with NAT-T).<br><br>
+    In almost all real deployments: <strong>use ESP</strong>. AH is rarely used because it provides no confidentiality.
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">8.3.4</span> Confidentiality — Encryption Algorithms</h3>
+  <p>All are <strong>symmetric key</strong> cryptosystems — the same key is used for both encryption and decryption:</p>
+  <div class="algo-grid">
+    <div class="algo-row weak">
+      <div class="ar-name">DES</div>
+      <div class="ar-key">56-bit</div>
+      <div class="ar-desc"><strong>Legacy — do not use.</strong> Easily broken with modern hardware. Retained for backward compatibility only.</div>
+    </div>
+    <div class="algo-row medium">
+      <div class="ar-name">3DES</div>
+      <div class="ar-key">3×56-bit</div>
+      <div class="ar-desc">Applies DES three times with three independent keys per 64-bit block. Much stronger than DES but less efficient than AES.</div>
+    </div>
+    <div class="algo-row strong">
+      <div class="ar-name">AES</div>
+      <div class="ar-key">128/192/256-bit</div>
+      <div class="ar-desc"><strong>Recommended standard.</strong> Strongest and most computationally efficient. AES-256 could take ~10 quintillion years to brute-force.</div>
+    </div>
+    <div class="algo-row medium">
+      <div class="ar-name">SEAL</div>
+      <div class="ar-key">160-bit</div>
+      <div class="ar-desc">Stream cipher — encrypts data continuously rather than in fixed blocks. Lower CPU impact than block ciphers.</div>
+    </div>
+  </div>
+  <div class="ca info">
+    <span class="ic">💡</span>
+    <div><strong>Key length determines brute-force resistance:</strong> A 64-bit key may take ~1 year to break; a 128-bit key could take ~10 quintillion years with current technology. Always use AES-128 minimum; AES-256 for sensitive data.</div>
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">8.3.5</span> Integrity — HMAC Algorithms</h3>
+  <p><strong>HMAC (Hashed Message Authentication Code)</strong> guarantees data integrity — proves the packet was not altered in transit. A shared secret key is combined with the message before hashing:</p>
+  <div class="tw"><table>
+    <tr><th>Algorithm</th><th>Key Size</th><th>Hash Output</th><th>Status</th></tr>
+    <tr><td><strong>HMAC-MD5</strong></td><td>128-bit shared secret</td><td>128-bit hash</td><td>Adequate but SHA preferred; still widely used</td></tr>
+    <tr><td><strong>HMAC-SHA-1</strong></td><td>160-bit shared secret</td><td>160-bit hash</td><td>Cisco rates as legacy; use SHA-256 minimum</td></tr>
+    <tr><td><strong>HMAC-SHA-256</strong></td><td>256-bit shared secret</td><td>256-bit hash</td><td>✅ Recommended minimum — use this or higher</td></tr>
+  </table></div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">8.3.6</span> Authentication — PSK vs RSA</h3>
+  <div class="tw"><table>
+    <tr><th>Method</th><th>PSK (Pre-Shared Key)</th><th>RSA (Digital Certificates)</th></tr>
+    <tr><td><strong>How it works</strong></td><td>Secret key manually entered on each peer; combined with other info to form authentication key</td><td>Uses digital certificates; local device hashes identity info → encrypts with private key → creates digital signature → remote device verifies with sender's public key</td></tr>
+    <tr><td><strong>Configuration</strong></td><td>Simple to configure</td><td>Requires PKI infrastructure</td></tr>
+    <tr><td><strong>Scalability</strong></td><td>❌ Poor — every peer must manually know every other peer's key</td><td>✅ Excellent — digital certificates easily distributed via PKI; scales to large deployments</td></tr>
+    <tr><td><strong>Use case</strong></td><td>Small deployments, lab environments</td><td>Enterprise deployments with many VPN peers</td></tr>
+  </table></div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">8.3.7</span> Key Exchange — Diffie-Hellman (DH) Groups</h3>
+  <p>DH allows two peers to establish a <strong>shared secret key</strong> over an <strong>insecure public channel</strong> — without transmitting the key itself. This shared key is then used for symmetric encryption.</p>
+
+  <div class="dh-grid">
+    <div class="dh-row dep">
+      <div class="dh-grp">Groups 1, 2, 5</div>
+      <div class="dh-badge">Deprecated ❌</div>
+      <div style="font-size:.81em;color:#374151;flex:1">768, 1024, 1536-bit keys. <strong>Do NOT use</strong> — considered cryptographically weak. No longer secure against modern attacks.</div>
+    </div>
+    <div class="dh-row rec">
+      <div class="dh-grp">Groups 14, 15, 16</div>
+      <div class="dh-badge">Recommended ✅</div>
+      <div style="font-size:.81em;color:#374151;flex:1">2048, 3072, 4096-bit keys. <strong>Recommended until 2030.</strong> Use with AES-128+ encryption.</div>
+    </div>
+    <div class="dh-row pref">
+      <div class="dh-grp">Groups 19, 20, 21</div>
+      <div class="dh-badge">ECC Preferred</div>
+      <div style="font-size:.81em;color:#374151;flex:1">256, 384, 521-bit ECC keys. Uses <strong>Elliptic Curve Cryptography</strong> — faster key generation at equivalent security. Preferred for next-gen encryption.</div>
+    </div>
+    <div class="dh-row pref">
+      <div class="dh-grp">Group 24</div>
+      <div class="dh-badge">Next-Gen ⭐</div>
+      <div style="font-size:.81em;color:#374151;flex:1">2048-bit ECC. <strong>Preferred next-generation encryption choice.</strong> Use with AES-256.</div>
+    </div>
+  </div>
+
+  <div class="ca warn">
+    <span class="ic">⚠️</span>
+    <div><strong>DH group strength must match encryption strength:</strong><br>
+    AES-128 encryption → use DH Group 14, 19, 20, or 24<br>
+    AES-256 encryption → use DH Group 21 or 24<br>
+    Never pair strong encryption with a weak DH group — the DH group becomes the weakest link.</div>
+  </div>
+  </div>
+
+</div></div>
+
+<!-- ══════════════════════════════════════════════════
+     SECTION 8.4 — EXAM TRAPS
+══════════════════════════════════════════════════ -->
+<div class="sec" id="s4">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">🎯</span><span class="ttl">Common Exam Traps — Module 8</span></span><button class="sec-check" id="sch-s4" onclick="event.stopPropagation();toggleSection('s4',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb">
+
+  <div class="ca danger"><span class="ic">❌</span><div><strong>Trap 1: GRE does NOT encrypt — it only tunnels.</strong><br>GRE is a tunneling protocol, not a security protocol. It encapsulates packets (including multicast and broadcast) but provides zero confidentiality. To secure GRE, wrap it inside IPsec. GRE alone = unencrypted tunnel. GRE over IPsec = encrypted tunnel that supports routing protocols.</div></div>
+
+  <div class="ca danger"><span class="ic">❌</span><div><strong>Trap 2: IPsec alone cannot carry multicast — that's exactly why GRE over IPsec exists.</strong><br>Routing protocols (OSPF, EIGRP) use multicast addresses. Plain IPsec only supports unicast. GRE wraps the multicast routing packet (making it unicast), then IPsec encrypts the GRE packet. Passenger = routing protocol, Carrier = GRE, Transport = IPsec.</div></div>
+
+  <div class="ca danger"><span class="ic">❌</span><div><strong>Trap 3: AH = authentication only, no encryption. ESP = encryption + authentication.</strong><br>AH (Authentication Header) provides integrity and origin authentication — but zero confidentiality. ESP (Encapsulating Security Payload) provides both encryption and authentication. AH breaks when traversing NAT because NAT changes IP addresses and AH includes those in its integrity check. Use ESP.</div></div>
+
+  <div class="ca danger"><span class="ic">❌</span><div><strong>Trap 4: Site-to-site VPN — internal hosts are completely unaware the VPN exists.</strong><br>The VPN gateways (routers or firewalls) handle all encryption and decryption transparently. Internal hosts send and receive normal, unencrypted TCP/IP to the gateway. The gateway then encrypts before sending to the internet and decrypts on the return. Hosts never see VPN headers.</div></div>
+
+  <div class="ca danger"><span class="ic">❌</span><div><strong>Trap 5: DH groups 1, 2, and 5 are deprecated — do NOT use them.</strong><br>Groups 1/2/5 (768, 1024, 1536-bit) are no longer cryptographically secure. Cisco recommends Groups 14/15/16 (2048–4096-bit) until 2030, and Groups 19/20/21/24 (ECC) as the preferred next-generation option. Group 24 is the top recommended for next-gen encryption.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 6: SSL VPN actually uses TLS — they're the same thing in Cisco context.</strong><br>TLS is the modern, more secure version of SSL. Cisco curriculum and exams use "SSL VPN" and "TLS VPN" interchangeably. SSL VPNs use PKI and digital certificates to authenticate peers. When you see "SSL VPN," think TLS in actual implementation.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 7: Clientless VPN = just a browser. Client-based VPN = software required.</strong><br>Clientless VPN uses HTTPS in a standard web browser — nothing needs to be installed. Client-based VPN (e.g., Cisco AnyConnect) requires software installed on the endpoint. Client-based can encrypt with IPsec or SSL; clientless uses SSL/HTTPS only.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 8: IPsec is better for security depth; SSL is better for ease of deployment.</strong><br>IPsec supports all IP applications; SSL only supports web-based apps and file sharing. IPsec requires a pre-installed client; SSL needs only a browser. IPsec offers stronger authentication (two-way). Organizations deploy BOTH depending on the use case.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 9: DMVPN uses mGRE (Multipoint GRE) — one interface, many tunnels.</strong><br>DMVPN is Cisco proprietary. It uses a single mGRE interface that dynamically builds multiple IPsec tunnels. The hub router needs no reconfiguration when new spoke sites are added. Spokes can also build direct spoke-to-spoke tunnels without going through the hub.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 10: IPsec VTI natively supports multicast — no GRE wrapper needed.</strong><br>Unlike plain IPsec crypto maps, IPsec VTI applies IPsec to a virtual interface and supports both unicast and multicast traffic natively. This means OSPF and EIGRP work directly over VTI without needing the GRE over IPsec workaround.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 11: Layer 3 MPLS VPN = SP participates in routing. Layer 2 MPLS VPN = SP does not.</strong><br>L3 MPLS VPN: service provider peers with customer CE routers and redistributes routes across the MPLS backbone (using MP-BGP). L2 MPLS VPN (VPLS): SP emulates an Ethernet LAN segment; customer CE routers handle all routing and appear to be on the same multiaccess network.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 12: PSK does not scale — RSA digital certificates do.</strong><br>PSK requires every peer to manually know every other peer's secret key. For 100 sites, that's a massive key management problem. RSA uses digital certificates distributed via PKI — adding a new site just requires issuing a certificate. For large deployments, always use RSA.</div></div>
+
+  <div class="ca tip"><span class="ic">✅</span><div><strong>Module 8 quick-reference summary:</strong><br><br>
+  <strong>VPN types:</strong> Site-to-site (gateways, transparent to hosts) · Remote-access (user-initiated, IPsec or SSL)<br>
+  <strong>GRE:</strong> No encryption · Carries multicast/broadcast · Used to run routing protocols over IPsec<br>
+  <strong>GRE over IPsec layers:</strong> Passenger (OSPF) → Carrier (GRE) → Transport (IPsec)<br>
+  <strong>DMVPN:</strong> Cisco proprietary · mGRE · dynamic full mesh · hub needs no reconfig for new spokes<br>
+  <strong>IPsec VTI:</strong> Virtual interface · unicast + multicast · routing protocols work natively<br>
+  <strong>IPsec 4 functions:</strong> Confidentiality (AES) · Integrity (SHA-256) · Authentication (PSK/RSA via IKE) · Key exchange (DH)<br>
+  <strong>AH:</strong> Auth only, no encryption, breaks NAT<br>
+  <strong>ESP:</strong> Encryption + auth, works through NAT (NAT-T) — use this<br>
+  <strong>Encryption:</strong> DES (weak) · 3DES (medium) · AES 128/192/256 (recommended) · SEAL (stream)<br>
+  <strong>Integrity:</strong> HMAC-MD5 · HMAC-SHA-1 (legacy) · SHA-256+ (recommended)<br>
+  <strong>Auth:</strong> PSK (simple, no scale) · RSA/certs (scales with PKI)<br>
+  <strong>DH groups:</strong> 1/2/5 deprecated ❌ · 14/15/16 recommended ✅ · 19/20/21/24 ECC preferred ⭐<br>
+  <strong>SSL vs IPsec:</strong> SSL = browser-only, easy, web apps only · IPsec = all apps, stronger, needs client<br>
+  <strong>MPLS L3 VPN:</strong> SP routes for customer · MPLS L2 VPN (VPLS): SP emulates Ethernet, customer routes</div></div>
+
+</div></div>
+
+</div><!-- end .wrap -->
+
+<div class="ft">
+  CCNA 3 ENSA v7.02 — Module 8: VPN and IPsec Concepts v2.2<br>
+  Based on Cisco NetAcad curriculum · Study guide for personal use
+</div>
+
+<button class="tb-btn" id="topb" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+
+<div class="mod-nav">
+  <a class="mn-hub" href="index.html">🏠 Hub</a>
+  <div class="mn-divider"></div>
+  <a class="mn-prev" href="ccna3_module7_wan_concepts_v2.2.html">‹</a>
+  <span class="mn-label">M8 of 14</span>
+  <a class="mn-next" href="ccna3_module9_qos_concepts_v2.2.html">›</a>
+</div>
+
+<script>
+var MOD_KEY="ccna3-module8-vpn-ipsec-concepts";
+var SECS=["s1","s2","s3","s4"];
+var checked={};
+function loadState(){
+  try{var s=localStorage.getItem(MOD_KEY);if(s)checked=JSON.parse(s);}catch(e){}
+  SECS.forEach(function(id){
+    var pill=document.getElementById('pill-'+id);
+    var row=document.getElementById('row-'+id);
+    var st=document.getElementById('st-'+id);
+    var sch=document.getElementById('sch-'+id);
+    if(checked[id]){
+      if(pill){pill.classList.add('checked');pill.querySelector('.pill-check').textContent='✓';}
+      if(row)row.classList.add('done');
+      if(st)st.textContent='✓';
+      if(sch){sch.classList.add('checked');sch.textContent='✓ Done';}
+    } else {
+      if(pill){pill.classList.remove('checked');pill.querySelector('.pill-check').textContent='○';}
+      if(row)row.classList.remove('done');
+      if(st)st.textContent='○';
+      if(sch){sch.classList.remove('checked');sch.textContent='○ Mark done';}
+    }
+  });
+}
+function toggleSection(id,btn){checked[id]=!checked[id];try{localStorage.setItem(MOD_KEY,JSON.stringify(checked));}catch(e){}loadState();}
+function toggleStudyPanel(){
+  var hdr=document.getElementById('sp-hdr');
+  var body=document.getElementById('sp-body');
+  var arr=document.getElementById('sp-arr');
+  hdr.classList.toggle('open');body.classList.toggle('open');
+  if(arr)arr.textContent=body.classList.contains('open')?'▲':'▼';
+}
+function goTo(id){var el=document.getElementById(id);if(!el)return;var h=el.querySelector('.sh,.section-header'),b=el.querySelector('.sb,.section-body');if(h&&b&&!b.classList.contains('open')){h.classList.add('open');b.classList.add('open');}setTimeout(function(){window.scrollTo({top:el.getBoundingClientRect().top+window.pageYOffset-60,behavior:'smooth'});},50);}
+function setFs(size,btn){document.documentElement.style.setProperty('--base-fs',size);document.querySelectorAll('.fs-btn').forEach(function(b){b.classList.remove('active');});btn.classList.add('active');try{localStorage.setItem('ccna-fs',size);}catch(e){}}
+(function(){try{var s=localStorage.getItem('ccna-fs');if(s){document.documentElement.style.setProperty('--base-fs',s);document.querySelectorAll('.fs-btn').forEach(function(b){b.classList.remove('active');if((b.textContent==='S'&&s==='14px')||(b.textContent==='M'&&s==='16px')||(b.textContent==='L'&&s==='18px')||(b.textContent==='XL'&&s==='20px'))b.classList.add('active');});}}catch(e){}loadState();})();
+function copyCode(b){var t=b.closest('.cw').querySelector('pre').innerText;if(navigator.clipboard){navigator.clipboard.writeText(t).then(function(){b.textContent='Copied!';setTimeout(function(){b.textContent='Copy';},1500);}).catch(function(){fb(t,b);});}else{fb(t,b);}}
+function fb(t,b){var a=document.createElement('textarea');a.value=t;a.style.position='fixed';a.style.opacity='0';document.body.appendChild(a);a.focus();a.select();document.execCommand('copy');document.body.removeChild(a);b.textContent='Copied!';setTimeout(function(){b.textContent='Copy';},1500);}
+</script>
+<script src="../../site-config.js"></script>
+</body>
+</html>

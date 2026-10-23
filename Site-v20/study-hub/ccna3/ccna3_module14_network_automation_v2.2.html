@@ -1,0 +1,902 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=2.0">
+<title>CCNA 3 Module 14: Network Automation v2.2</title>
+<style>
+:root{
+  --blue:#1ba0d7;--dark:#005073;--green:#6cc24a;
+  --na:#3b0764;--nad:#a78bfa;--na2:#1e0336;--na3:#0d011a;
+  --bg:#f4f6f8;--card:#fff;--text:#1a1a2e;--muted:#5a6a7a;
+  --cbg:#0d1117;--ctxt:#c9d1d9;--r:12px;--sh:0 2px 12px rgba(0,0,0,.08);
+  --base-fs:16px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);font-size:var(--base-fs);line-height:1.7}
+.bc{background:#0d1117;padding:8px 16px;display:flex;align-items:center;flex-wrap:wrap;gap:4px;font-size:.75em;overflow-x:auto;white-space:nowrap;-webkit-overflow-scrolling:touch;border-bottom:1px solid #21262d}
+.bc a{color:#8b949e;text-decoration:none;font-weight:600;flex-shrink:0}
+.bc .sep{color:#6e7681;flex-shrink:0}
+.bc .cur{color:var(--nad);font-weight:700;flex-shrink:0}
+.fs-bar{position:sticky;top:0;z-index:200;background:#1a1a2e;display:flex;align-items:center;justify-content:flex-end;padding:6px 14px;gap:6px;box-shadow:0 2px 8px rgba(0,0,0,.3)}
+.fs-label{color:#8b949e;font-size:.72em;font-weight:700;letter-spacing:.5px;text-transform:uppercase;margin-right:4px}
+.fs-btn{background:#30363d;color:#c9d1d9;border:2px solid transparent;border-radius:6px;padding:4px 12px;font-size:.75em;font-weight:700;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:all .2s;line-height:1.4}
+.fs-btn:active,.fs-btn.active{background:var(--na);color:#fff;border-color:var(--nad)}
+.hdr{background:linear-gradient(135deg,var(--na3),var(--na2),var(--na));color:#fff;padding:32px 20px 24px;text-align:center}
+.hdr .badge{display:inline-block;background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.4);border-radius:20px;padding:4px 14px;font-size:.81em;margin-bottom:12px}
+.hdr h1{font-size:1.625em;font-weight:700;margin-bottom:6px}
+.hdr p{font-size:.94em;opacity:.85}
+.hdr .obj{display:inline-block;background:rgba(255,255,255,.15);border-radius:8px;padding:7px 16px;margin-top:12px;font-size:.875em;font-style:italic}
+.pb-wrap{background:var(--card);padding:14px 16px;margin:16px 16px 0;border-radius:var(--r);box-shadow:var(--sh)}
+.pb-lbl{font-size:.81em;color:var(--muted);margin-bottom:6px;font-weight:600}
+.pb-track{background:#e0e7ef;border-radius:10px;height:8px;overflow:hidden}
+.pb-fill{background:linear-gradient(90deg,var(--na),var(--nad));height:100%;border-radius:10px;width:0;transition:width 1s ease}
+.toc{background:var(--card);margin:16px;border-radius:var(--r);box-shadow:var(--sh);overflow:hidden}
+.toch{background:var(--na);color:#fff;padding:14px 18px;font-weight:700;font-size:.94em;display:flex;justify-content:space-between;align-items:center;cursor:pointer;user-select:none}
+.toch .arr{transition:transform .3s}
+.toch.open .arr{transform:rotate(180deg)}
+.tocb{display:none;padding:10px 0}
+.tocb.open{display:block}
+.tocg{font-size:.69em;font-weight:800;letter-spacing:.8px;color:var(--na);text-transform:uppercase;padding:8px 20px 2px}
+.tocb a{display:block;padding:9px 20px 9px 28px;color:var(--text);text-decoration:none;font-size:.875em;border-left:3px solid transparent;transition:all .2s}
+.tocb a:active{background:#f5f3ff;border-left-color:var(--nad)}
+.tocb a .n{display:inline-block;background:var(--na);color:#fff;border-radius:5px;padding:1px 8px;font-size:.75em;font-weight:700;margin-right:8px}
+.wrap{padding:0 16px 100px}
+.sec{background:var(--card);border-radius:var(--r);box-shadow:var(--sh);margin-bottom:16px;overflow:hidden}
+.sh{background:linear-gradient(90deg,var(--na3),var(--na));color:#fff;padding:16px 18px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;user-select:none;-webkit-tap-highlight-color:transparent}
+.sh .ttl{font-weight:700;font-size:1em}
+.sh .nb{background:rgba(255,255,255,.25);border-radius:6px;padding:3px 10px;font-size:.81em;font-weight:700;margin-right:10px;white-space:nowrap}
+.sh .ch{font-size:1.125em;transition:transform .3s}
+.sh.open .ch{transform:rotate(180deg)}
+.sb{display:none;padding:18px}
+.sb.open{display:block}
+.sub{margin-bottom:24px}
+.sub:last-child{margin-bottom:0}
+.sub h3{font-size:.94em;font-weight:700;color:var(--na);margin-bottom:10px;padding-bottom:6px;border-bottom:2px solid #f5f3ff;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.sub h3 .sn{background:var(--na);color:#fff;border-radius:5px;padding:2px 8px;font-size:.75em;white-space:nowrap}
+.sub h4{font-size:.875em;font-weight:700;color:var(--na);margin:14px 0 6px}
+.sub p{margin-bottom:10px;font-size:.94em}
+.sub ul,.sub ol{padding-left:20px;margin:8px 0;font-size:.94em}
+.sub li{margin-bottom:5px}
+.cw{background:var(--cbg);border-radius:10px;margin:12px 0;overflow:hidden}
+.cl{background:#21262d;color:#c9d1d9;font-size:.78em;font-weight:700;padding:6px 14px;letter-spacing:.5px;text-transform:uppercase;display:flex;justify-content:space-between;align-items:center}
+.cpb{background:#30363d;color:#c9d1d9;border:none;border-radius:5px;padding:3px 10px;font-size:.69em;cursor:pointer}
+.cpb:active{background:var(--na);color:#fff}
+pre{margin:0;padding:14px;overflow-x:auto;-webkit-overflow-scrolling:touch}
+code{font-family:'Courier New',monospace;font-size:.81em;color:var(--ctxt);line-height:1.6}
+p code,li code,td code,.ca code,.fc-body code{background:#f5f3ff;color:#3b0764;border-radius:4px;padding:1px 5px;font-size:.81em;font-family:'Courier New',monospace;font-weight:600}
+.ca{border-radius:8px;padding:12px 14px;margin:12px 0;font-size:.875em;line-height:1.6;display:flex;gap:10px;align-items:flex-start}
+.ca .ic{font-size:1.125em;flex-shrink:0;margin-top:1px}
+.ca.warn  {background:#fff3cd;border-left:4px solid #b38600;color:#3d2c00}
+.ca.tip   {background:#d4edda;border-left:4px solid #28a745;color:#0d3318}
+.ca.danger{background:#f8d7da;border-left:4px solid #dc3545;color:#3d0010}
+.ca.info  {background:#f5f3ff;border-left:4px solid var(--na);color:#1e0336}
+.et{background:linear-gradient(135deg,#1a1a2e,var(--na3));color:#fff;border-radius:10px;padding:14px 16px;margin:14px 0;font-size:.875em;line-height:1.6}
+.et .lbl{font-size:.69em;font-weight:800;letter-spacing:1px;color:var(--nad);margin-bottom:6px}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:12px 0;border-radius:8px}
+table{width:100%;border-collapse:collapse;font-size:.875em}
+th{background:var(--na);color:#fff;padding:10px 12px;text-align:left;font-weight:700;font-size:.81em}
+td{padding:9px 12px;border-bottom:1px solid #e8ecf0;vertical-align:top;color:#1a1a2e}
+tr:nth-child(even) td{background:#f5f3ff;color:#1e0336}
+tr:last-child td{border-bottom:none}
+
+/* Data format comparison */
+.fmt-tabs{display:flex;gap:6px;margin:0 0 2px}
+.fmt-tab{flex:1;padding:7px 6px;border-radius:8px 8px 0 0;font-size:.75em;font-weight:800;text-align:center;color:#fff}
+.fmt-tab.json{background:#1a4731}
+.fmt-tab.yaml{background:#1a3a5c}
+.fmt-tab.xml {background:#7c1e1e}
+.fmt-panel{border-radius:0 0 8px 8px;margin-bottom:14px}
+
+/* Format cards */
+.fmt-grid{display:grid;gap:10px;margin:12px 0}
+.fmt-card{border-radius:10px;overflow:hidden}
+.fmt-card .fc-hdr{padding:9px 14px;font-weight:800;font-size:.875em;color:#fff}
+.fmt-card.json .fc-hdr{background:#1a4731}
+.fmt-card.yaml .fc-hdr{background:#1a3a5c}
+.fmt-card.xml  .fc-hdr{background:#7c1e1e}
+.fmt-card .fc-body{padding:12px 14px;font-size:.81em;line-height:1.7;background:#f9fafb}
+.fmt-card .fc-body ul{padding-left:16px}
+.fmt-card .fc-body li{margin-bottom:3px}
+
+/* API types */
+.api-type-grid{display:grid;gap:8px;margin:12px 0}
+.api-type{border-radius:8px;padding:10px 13px;font-size:.81em;border-left:4px solid;line-height:1.6}
+.api-type.open    {border-left-color:#1a4731;background:#f0fdf4}
+.api-type.internal{border-left-color:var(--na);background:#f5f3ff}
+.api-type.partner {border-left-color:#5c3d00;background:#fffbeb}
+.api-type .at-name{font-weight:800;margin-bottom:3px}
+.api-type.open     .at-name{color:#1a4731}
+.api-type.internal .at-name{color:var(--na)}
+.api-type.partner  .at-name{color:#5c3d00}
+
+/* Web service API comparison */
+.ws-grid{display:grid;gap:6px;margin:12px 0}
+.ws-row{display:flex;gap:8px;align-items:flex-start;padding:8px 12px;border-radius:8px;font-size:.81em;line-height:1.6;border-left:4px solid}
+.ws-row.soap{border-left-color:#7c1e1e;background:#fff5f5}
+.ws-row.rest{border-left-color:#1a4731;background:#f0fdf4}
+.ws-row.xrpc{border-left-color:#5c3d00;background:#fffbeb}
+.ws-row.jrpc{border-left-color:#1a3a5c;background:#e0f2fe}
+.ws-row .wr-name{font-weight:800;min-width:80px;flex-shrink:0}
+.ws-row.soap .wr-name{color:#7c1e1e}
+.ws-row.rest .wr-name{color:#1a4731}
+.ws-row.xrpc .wr-name{color:#5c3d00}
+.ws-row.jrpc .wr-name{color:#1a3a5c}
+
+/* CRUD table */
+.crud-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:12px 0}
+@media(max-width:480px){.crud-grid{grid-template-columns:repeat(2,1fr)}}
+.crud-card{border-radius:8px;padding:10px 12px;text-align:center;font-size:.81em}
+.crud-card.post  {background:#f0fdf4;border:2px solid #1a4731}
+.crud-card.get   {background:#e0f2fe;border:2px solid #1a3a5c}
+.crud-card.put   {background:#fffbeb;border:2px solid #5c3d00}
+.crud-card.del   {background:#fff5f5;border:2px solid #7c1e1e}
+.crud-card .http {font-family:'Courier New',monospace;font-weight:900;font-size:.875em;display:block;margin-bottom:4px}
+.crud-card.post  .http{color:#1a4731}
+.crud-card.get   .http{color:#1a3a5c}
+.crud-card.put   .http{color:#5c3d00}
+.crud-card.del   .http{color:#7c1e1e}
+.crud-card .op   {font-size:.75em;color:var(--muted);font-weight:600}
+
+/* Config tools comparison */
+.tools-compare{display:grid;gap:8px;margin:12px 0}
+.tool-card{border-radius:8px;padding:11px 14px;font-size:.81em;border-left:5px solid;line-height:1.7}
+.tool-card.ansible{border-left-color:#1a4731;background:#f0fdf4}
+.tool-card.chef   {border-left-color:#5c3d00;background:#fffbeb}
+.tool-card.puppet {border-left-color:#1a3a5c;background:#e0f2fe}
+.tool-card.salt   {border-left-color:var(--na);background:#f5f3ff}
+.tool-card .tc-name{font-weight:800;font-size:.875em;margin-bottom:6px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.tool-card.ansible .tc-name{color:#1a4731}
+.tool-card.chef    .tc-name{color:#5c3d00}
+.tool-card.puppet  .tc-name{color:#1a3a5c}
+.tool-card.salt    .tc-name{color:var(--na)}
+.tool-card .tc-tag{font-size:.69em;font-weight:700;padding:2px 8px;border-radius:4px;color:#fff}
+.tool-card.ansible .tc-tag{background:#1a4731}
+.tool-card.chef    .tc-tag{background:#5c3d00}
+.tool-card.puppet  .tc-tag{background:#1a3a5c}
+.tool-card.salt    .tc-tag{background:var(--na)}
+
+/* IBN three functions */
+.ibn-grid{display:grid;gap:8px;margin:12px 0}
+.ibn-card{border-radius:8px;padding:11px 14px;font-size:.81em;border-left:4px solid;line-height:1.6}
+.ibn-card.trans{border-left-color:#1a3a5c;background:#e0f2fe}
+.ibn-card.act  {border-left-color:#1a4731;background:#f0fdf4}
+.ibn-card.assur{border-left-color:var(--na);background:#f5f3ff}
+.ibn-card .ic-name{font-weight:800;margin-bottom:3px}
+.ibn-card.trans .ic-name{color:#1a3a5c}
+.ibn-card.act   .ic-name{color:#1a4731}
+.ibn-card.assur .ic-name{color:var(--na)}
+
+/* DNA Center areas */
+.dna-grid{display:grid;gap:6px;margin:12px 0}
+.dna-row{display:flex;gap:10px;align-items:flex-start;padding:9px 12px;border-radius:8px;font-size:.81em;line-height:1.6;border-left:4px solid}
+.dna-row.des{border-left-color:var(--na);background:#f5f3ff}
+.dna-row.pol{border-left-color:#1a3a5c;background:#e0f2fe}
+.dna-row.pro{border-left-color:#1a4731;background:#f0fdf4}
+.dna-row.ass{border-left-color:#5c3d00;background:#fffbeb}
+.dna-row.pla{border-left-color:#7c1e1e;background:#fff5f5}
+.dna-row .dr-name{font-weight:800;min-width:80px;flex-shrink:0;color:#1a1a2e}
+
+/* URI anatomy */
+.uri-box{background:#0d1117;border:2px solid var(--nad);border-radius:10px;padding:14px;margin:12px 0;font-size:.81em}
+.uri-box .ub-title{font-size:.75em;font-weight:800;letter-spacing:.8px;color:var(--nad);text-transform:uppercase;margin-bottom:10px}
+.uri-example{font-family:'Courier New',monospace;color:#c9d1d9;word-break:break-all;line-height:1.8;margin-bottom:10px}
+.uri-parts{display:grid;gap:4px}
+.uri-part{display:flex;gap:8px;align-items:flex-start;font-size:.81em;color:#c9d1d9;padding:4px 0;border-bottom:1px solid #21262d}
+.uri-part:last-child{border-bottom:none}
+.uri-part .up-name{font-weight:800;min-width:80px;flex-shrink:0;color:var(--nad)}
+
+.tb-btn{position:fixed;bottom:80px;right:16px;background:var(--na);color:#fff;border:none;border-radius:50%;width:44px;height:44px;font-size:1.25em;box-shadow:0 4px 14px rgba(0,0,0,.25);cursor:pointer;display:none;align-items:center;justify-content:center;z-index:100}
+.tb-btn.show{display:flex}
+.ft{text-align:center;padding:24px 16px;color:var(--muted);font-size:.81em}
+.mod-nav{position:fixed;bottom:0;left:0;right:0;z-index:300;background:#1a1a2e;border-top:1px solid #30363d;display:flex;align-items:center;height:52px;padding:0 8px;gap:6px}
+.mn-hub{background:var(--blue);color:#fff;border:none;border-radius:8px;padding:6px 12px;font-size:.75em;font-weight:700;cursor:pointer;text-decoration:none;display:flex;align-items:center;gap:4px;white-space:nowrap;-webkit-tap-highlight-color:transparent;flex-shrink:0}
+.mn-hub:active{opacity:.8}
+.mn-divider{width:1px;height:28px;background:#30363d;flex-shrink:0}
+.mn-label{flex:1;text-align:center;font-size:.69em;color:#8b949e;font-weight:600;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding:0 4px}
+.mn-prev,.mn-next{background:#30363d;color:#c9d1d9;border:none;border-radius:8px;padding:6px 10px;font-size:.875em;font-weight:700;cursor:pointer;text-decoration:none;display:flex;align-items:center;-webkit-tap-highlight-color:transparent;flex-shrink:0}
+.mn-prev:active{background:var(--na);color:#fff}
+.mn-next{opacity:.4;pointer-events:none}
+/* Study progress panel */
+.sp-wrap{background:var(--card);margin:16px 16px 0;border-radius:var(--r);box-shadow:var(--sh);overflow:hidden}
+.sp-hdr{background:var(--nt);color:#fff;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;user-select:none;-webkit-tap-highlight-color:transparent;gap:10px}
+.sp-hdr .sp-title{font-weight:700;font-size:.875em;flex-shrink:0}
+.sp-hdr .sp-arr{transition:transform .3s;flex-shrink:0}
+.sp-hdr.open .sp-arr{transform:rotate(180deg)}
+.sp-body{display:none;padding:12px 14px}
+.sp-body.open{display:block}
+.sp-row{display:flex;align-items:center;gap:10px;padding:6px 4px;border-bottom:1px solid #f0f4f8;font-size:.81em}
+.sp-row:last-child{border-bottom:none}
+.sp-row .sr-status{font-size:1em;flex-shrink:0;width:20px;text-align:center}
+.sp-row .sr-nb{font-weight:800;color:var(--nt);min-width:36px;flex-shrink:0;font-size:.875em}
+.sp-row .sr-ttl{color:var(--text);flex:1}
+.sp-row.done .sr-ttl{color:var(--muted);text-decoration:line-through}
+.sc-pills{display:flex;align-items:center;gap:4px;overflow-x:auto;-webkit-overflow-scrolling:touch;flex:1;padding:0 4px}
+.sc-pill{background:#30363d;color:#8b949e;border:2px solid transparent;border-radius:6px;padding:3px 8px;font-size:.72em;font-weight:700;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:all .15s;white-space:nowrap;flex-shrink:0;line-height:1.4;display:flex;align-items:center;gap:3px}
+.sc-pill.checked{background:var(--nt);color:#fff;border-color:var(--ntd)}
+.sc-pill .pill-check{font-size:.875em}
+
+/* v2.1 — In-section check button */
+.sh{position:relative}
+.sec-check{position:absolute;right:40px;top:50%;transform:translateY(-50%);background:rgba(255,255,255,.15);border:2px solid rgba(255,255,255,.4);border-radius:6px;padding:2px 10px;font-size:.72em;font-weight:800;color:#fff;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:all .2s;white-space:nowrap;z-index:10;line-height:1.5}
+.sec-check.checked{background:var(--ntd);border-color:var(--ntd);color:#052e1e}
+.sec-check:active{opacity:.75}
+/* Sections panel + tick colours (these pages never defined --nt/--ntd, so the panel header was invisible) */
+:root{--nt:var(--na);--ntd:#4ade80}
+</style>
+</head>
+<body>
+<nav class="bc">
+  <a href="../../index.html">🏠 Home</a><span class="sep">›</span>
+  <a href="index.html">CCNA 3 — ENSA</a><span class="sep">›</span>
+  <span class="cur">M14: Network Automation</span>
+</nav>
+<div class="fs-bar">
+  <div class="sc-pills" id="sc-pills">
+  <button class="sc-pill" id="pill-s1" onclick="toggleSection('s1',this)"><span class="pill-check">○</span>14.1</button>
+  <button class="sc-pill" id="pill-s2" onclick="toggleSection('s2',this)"><span class="pill-check">○</span>14.2</button>
+  <button class="sc-pill" id="pill-s3" onclick="toggleSection('s3',this)"><span class="pill-check">○</span>14.3</button>
+  <button class="sc-pill" id="pill-s4" onclick="toggleSection('s4',this)"><span class="pill-check">○</span>14.4</button>
+  <button class="sc-pill" id="pill-s5" onclick="toggleSection('s5',this)"><span class="pill-check">○</span>14.5</button>
+  <button class="sc-pill" id="pill-s6" onclick="toggleSection('s6',this)"><span class="pill-check">○</span>14.6</button>
+  <button class="sc-pill" id="pill-s7" onclick="toggleSection('s7',this)"><span class="pill-check">○</span>🎯</button>
+  </div>
+  <span class="fs-label" style="flex-shrink:0;margin-left:6px">Size</span>
+  <button class="fs-btn" onclick="setFs('14px',this)">S</button>
+  <button class="fs-btn active" onclick="setFs('16px',this)">M</button>
+  <button class="fs-btn" onclick="setFs('18px',this)">L</button>
+  <button class="fs-btn" onclick="setFs('20px',this)">XL</button>
+</div>
+<div class="hdr">
+  <div class="badge">CCNA 3 — ENSA v7.02 · Final Module</div>
+  <h1>🤖 Module 14: Network Automation</h1>
+  <p>Enterprise Networking, Security &amp; Automation · NetAcad Study Guide</p>
+  <div class="obj">Module Objective: Explain how network automation is enabled through RESTful APIs and configuration management tools</div>
+</div>
+<div class="sp-wrap">
+  <div class="sp-hdr" id="sp-hdr" onclick="toggleStudyPanel()">
+    <span class="sp-title">📚 Sections</span>
+    <span class="sp-arr" id="sp-arr">▼</span>
+  </div>
+  <div class="sp-body" id="sp-body">
+    <div class="sp-row" id="row-s1"><span class="sr-status" id="st-s1">○</span><span class="sr-nb">14.1</span><span class="sr-ttl">Automation Overview</span></div>
+    <div class="sp-row" id="row-s2"><span class="sr-status" id="st-s2">○</span><span class="sr-nb">14.2</span><span class="sr-ttl">Data Formats</span></div>
+    <div class="sp-row" id="row-s3"><span class="sr-status" id="st-s3">○</span><span class="sr-nb">14.3</span><span class="sr-ttl">APIs</span></div>
+    <div class="sp-row" id="row-s4"><span class="sr-status" id="st-s4">○</span><span class="sr-nb">14.4</span><span class="sr-ttl">REST</span></div>
+    <div class="sp-row" id="row-s5"><span class="sr-status" id="st-s5">○</span><span class="sr-nb">14.5</span><span class="sr-ttl">Configuration Management Tools</span></div>
+    <div class="sp-row" id="row-s6"><span class="sr-status" id="st-s6">○</span><span class="sr-nb">14.6</span><span class="sr-ttl">IBN and Cisco DNA Center</span></div>
+    <div class="sp-row" id="row-s7"><span class="sr-status" id="st-s7">○</span><span class="sr-nb">🎯</span><span class="sr-ttl">Common Exam Traps — Module 14</span></div>
+  </div>
+</div>
+
+<div class="toc">
+  <div class="toch open" onclick="this.classList.toggle('open');document.getElementById('tocb').classList.toggle('open')">
+    📋 Table of Contents — Tap to expand <span class="arr">▼</span>
+  </div>
+  <div class="tocb open" id="tocb">
+    <div class="tocg">14.1 — Automation Overview</div>
+    <a href="javascript:void(0)" onclick="goTo('s1')"><span class="n">14.1.2</span> Benefits of Automation</a>
+    <a href="javascript:void(0)" onclick="goTo('s1')"><span class="n">14.1.3</span> Thinking Devices and Smart Devices</a>
+    <div class="tocg">14.2 — Data Formats</div>
+    <a href="javascript:void(0)" onclick="goTo('s2')"><span class="n">14.2.2</span> JSON · YAML · XML — The Three Formats</a>
+    <a href="javascript:void(0)" onclick="goTo('s2')"><span class="n">14.2.3</span> Data Format Rules — Key/Value Pairs</a>
+    <a href="javascript:void(0)" onclick="goTo('s2')"><span class="n">14.2.5</span> JSON Syntax Rules — Objects and Arrays</a>
+    <a href="javascript:void(0)" onclick="goTo('s2')"><span class="n">14.2.7</span> YAML Syntax Rules — Indentation</a>
+    <a href="javascript:void(0)" onclick="goTo('s2')"><span class="n">14.2.8</span> XML Syntax Rules — Tags</a>
+    <a href="javascript:void(0)" onclick="goTo('s2')"><span class="n">Side-by-Side</span> All Three Formats Compared</a>
+    <div class="tocg">14.3 — APIs</div>
+    <a href="javascript:void(0)" onclick="goTo('s3')"><span class="n">14.3.2</span> The API Concept — Waiter Analogy</a>
+    <a href="javascript:void(0)" onclick="goTo('s3')"><span class="n">14.3.4</span> Open, Internal, and Partner APIs</a>
+    <a href="javascript:void(0)" onclick="goTo('s3')"><span class="n">14.3.5</span> Four Types of Web Service APIs — SOAP, REST, XML-RPC, JSON-RPC</a>
+    <div class="tocg">14.4 — REST</div>
+    <a href="javascript:void(0)" onclick="goTo('s4')"><span class="n">14.4.2</span> REST and RESTful API — Three Requirements</a>
+    <a href="javascript:void(0)" onclick="goTo('s4')"><span class="n">14.4.3</span> HTTP Methods and CRUD Operations</a>
+    <a href="javascript:void(0)" onclick="goTo('s4')"><span class="n">14.4.4</span> URI, URN, and URL</a>
+    <a href="javascript:void(0)" onclick="goTo('s4')"><span class="n">14.4.5</span> Anatomy of a RESTful Request</a>
+    <a href="javascript:void(0)" onclick="goTo('s4')"><span class="n">14.4.6</span> RESTful API Tools — Postman, Python, NETCONF</a>
+    <div class="tocg">14.5 — Configuration Management Tools</div>
+    <a href="javascript:void(0)" onclick="goTo('s5')"><span class="n">14.5.2</span> Traditional Configuration — The Problem</a>
+    <a href="javascript:void(0)" onclick="goTo('s5')"><span class="n">14.5.4</span> Automation vs Orchestration</a>
+    <a href="javascript:void(0)" onclick="goTo('s5')"><span class="n">14.5.5</span> Ansible · Chef · Puppet · SaltStack Comparison</a>
+    <div class="tocg">14.6 — IBN and Cisco DNA Center</div>
+    <a href="javascript:void(0)" onclick="goTo('s6')"><span class="n">14.6.2</span> Intent-Based Networking — Three Functions</a>
+    <a href="javascript:void(0)" onclick="goTo('s6')"><span class="n">14.6.3</span> Overlay and Underlay — Network as Fabric</a>
+    <a href="javascript:void(0)" onclick="goTo('s6')"><span class="n">14.6.4</span> Cisco DNA and DNA Solutions</a>
+    <a href="javascript:void(0)" onclick="goTo('s6')"><span class="n">14.6.5</span> Cisco DNA Center — Five Areas</a>
+    <div class="tocg">Reference</div>
+    <a href="javascript:void(0)" onclick="goTo('s7')"><span class="n">🎯</span> Common Exam Traps</a>
+  </div>
+</div>
+
+<div class="wrap">
+
+<!-- 14.1 AUTOMATION -->
+<div class="sec" id="s1">
+<div class="sh open" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">14.1</span><span class="ttl">Automation Overview</span></span><button class="sec-check" id="sch-s1" onclick="event.stopPropagation();toggleSection('s1',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb open">
+  <div class="sub">
+  <h3><span class="sn">14.1.2</span> The Increase in Automation</h3>
+  <p><strong>Automation</strong> = any process that is self-driven and reduces — or potentially eliminates — the need for human intervention.</p>
+  <p>Benefits of automation:</p>
+  <ul>
+    <li>Machines work 24/7 without breaks → greater output volume</li>
+    <li>Machines produce a more uniform, consistent product — fewer human errors</li>
+    <li>Enables collection of vast amounts of data for rapid analysis and informed decision-making</li>
+    <li>Robots handle dangerous conditions (mining, firefighting, industrial accident cleanup) → reduces risk to humans</li>
+    <li>Smart devices can alter behavior to reduce energy usage, aid medical diagnosis, improve driving safety</li>
+  </ul>
+  </div>
+  <div class="sub">
+  <h3><span class="sn">14.1.3</span> Thinking Devices and Smart Devices</h3>
+  <p>A <strong>smart device</strong> = any device that takes a course of action based on an outside piece of information. Having "smart" in a device name indicates it can alter behavior depending on its environment.</p>
+  <div class="ca info"><span class="ic">💡</span><div>For smart devices to "think" and react, they must be <strong>programmed using network automation tools</strong>. Without programming, devices cannot make intelligent decisions — they simply execute fixed instructions.</div></div>
+  </div>
+</div></div>
+
+<!-- 14.2 DATA FORMATS -->
+<div class="sec" id="s2">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">14.2</span><span class="ttl">Data Formats</span></span><button class="sec-check" id="sch-s2" onclick="event.stopPropagation();toggleSection('s2',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb">
+  <div class="sub">
+  <h3><span class="sn">14.2.2</span> The Three Common Data Formats</h3>
+  <p>Data formats = structured ways to store and exchange data so computers can understand each other. The three primary formats used in network automation and programmability:</p>
+  <div class="fmt-grid">
+    <div class="fmt-card json">
+      <div class="fc-hdr">{ } JSON — JavaScript Object Notation</div>
+      <div class="fc-body">
+        Human readable. Very popular for web services and APIs. Easy to parse. Works with most modern programming languages including Python. Uses <strong>curly braces { } for objects</strong> and <strong>square brackets [ ] for arrays</strong>.
+      </div>
+    </div>
+    <div class="fmt-card yaml">
+      <div class="fc-hdr">⬛ YAML — YAML Ain't Markup Language</div>
+      <div class="fc-body">
+        Minimalist and most human-readable. Superset of JSON. Uses <strong>indentation</strong> instead of brackets or commas to define structure. A <strong>hyphen `-`</strong> separates list elements. No quotation marks on keys.
+      </div>
+    </div>
+    <div class="fmt-card xml">
+      <div class="fc-hdr">&lt;/&gt; XML — eXtensible Markup Language</div>
+      <div class="fc-body">
+        Like HTML but with <strong>no predefined tags</strong> — you define your own. Self-descriptive: data enclosed within paired tags <code>&lt;tag&gt;data&lt;/tag&gt;</code>. Most verbose of the three formats. Lists use repeated instances of the same tag.
+      </div>
+    </div>
+  </div>
+  <div class="ca info"><span class="ic">💡</span><div>The format selected depends on the application, tool, or script being used. Many systems support more than one format and allow user preference.</div></div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">14.2.3</span> Data Format Rules — Key/Value Pairs</h3>
+  <p>All data formats have rules and structure (similar to programming languages):</p>
+  <ul>
+    <li><strong>Syntax</strong> — brackets used <code>[ ] ( ) { }</code>, whitespace/indentation, quotes, commas</li>
+    <li><strong>How objects are represented</strong> — characters, strings, lists, arrays</li>
+    <li><strong>Key/value pairs</strong> — key (left side) identifies the data; value (right side) is the actual data</li>
+  </ul>
+  <div class="cw"><div class="cl">ISS Location API — same data in all three formats <button class="cpb" onclick="copyCode(this)">Copy</button></div>
+  <pre><code><!-- JSON -->
+JSON:
+{
+  "message": "success",
+  "timestamp": 1560789260,
+  "iss_position": {
+    "latitude": "25.9990",
+    "longitude": "-132.6992"
+  }
+}
+
+<!-- YAML -->
+YAML:
+message: success
+timestamp: 1560789260
+iss_position:
+    latitude: '25.9990'
+    longitude: '-132.6992'
+
+<!-- XML -->
+XML:
+&lt;?xml version="1.0" encoding="UTF-8" ?&gt;
+&lt;root&gt;
+  &lt;message&gt;success&lt;/message&gt;
+  &lt;timestamp&gt;1560789260&lt;/timestamp&gt;
+  &lt;iss_position&gt;
+    &lt;latitude&gt;25.9990&lt;/latitude&gt;
+    &lt;longitude&gt;-132.6992&lt;/longitude&gt;
+  &lt;/iss_position&gt;
+&lt;/root&gt;</code></pre></div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">14.2.5–14.2.6</span> JSON Syntax Rules — Objects and Arrays</h3>
+  <p><strong>JSON Objects</strong> — one or more key/value pairs enclosed in curly braces <code>{ }</code>:</p>
+  <ul>
+    <li>Keys must be strings in <strong>double quotation marks <code>" "</code></strong></li>
+    <li>Values must be a valid JSON type: string, number, array, Boolean, null, or another object</li>
+    <li>Keys and values separated by a <strong>colon <code>:</code></strong></li>
+    <li>Multiple key/value pairs separated by <strong>commas <code>,</code></strong></li>
+    <li>Whitespace is <strong>not significant</strong> — can add for readability without affecting data</li>
+  </ul>
+  <p><strong>JSON Arrays</strong> — ordered list of values enclosed in square brackets <code>[ ]</code>:</p>
+  <ul>
+    <li>Key followed by colon, then list in <code>[ ]</code></li>
+    <li>Each array element separated by comma</li>
+    <li>Can contain strings, numbers, Booleans, objects, or other arrays</li>
+  </ul>
+  <div class="cw"><div class="cl">JSON interface example with array <button class="cpb" onclick="copyCode(this)">Copy</button></div>
+  <pre><code>{
+    "ietf-interfaces:interface": {
+         "name": "GigabitEthernet0/0/0",
+         "description": "Wide Area Network",
+         "enabled": true,
+         "ietf-ip:ipv4": {
+             "address": [
+                 {
+                     "ip": "172.16.0.2",
+                     "netmask": "255.255.255.0"
+                 },
+                 {
+                     "ip": "172.16.0.3",
+                     "netmask": "255.255.255.0"
+                 }
+             ]
+          }
+    }
+}
+! { } = object   [ ] = array
+! Keys MUST be in double quotes
+! "enabled": true   ← Boolean value (no quotes)
+! Array of address objects uses [ ]</code></pre></div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">14.2.7</span> YAML Syntax Rules — Indentation</h3>
+  <ul>
+    <li>Superset of JSON — all valid JSON is valid YAML</li>
+    <li>Uses <strong>indentation</strong> to define structure (no brackets or commas)</li>
+    <li>Key/value pairs separated by <strong>colon</strong> — <strong>no quotation marks</strong> on keys</li>
+    <li>A <strong>hyphen <code>-</code></strong> separates each element in a list</li>
+    <li>Considered most human-readable of the three formats</li>
+  </ul>
+  <div class="cw"><div class="cl">YAML interface example <button class="cpb" onclick="copyCode(this)">Copy</button></div>
+  <pre><code>ietf-interfaces:interface:
+  name: GigabitEthernet2
+  description: Wide Area Network
+  enabled: true
+  ietf-ip:ipv4:
+    address:
+    - ip: 172.16.0.2          ← hyphen marks list element
+      netmask: 255.255.255.0
+    - ip: 172.16.0.3          ← second list element
+      netmask: 255.255.255.0
+! No { } brackets · No [ ] brackets · No commas
+! Indentation defines hierarchy
+! Hyphens separate list items</code></pre></div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">14.2.8</span> XML Syntax Rules — Tags</h3>
+  <ul>
+    <li>Like HTML but <strong>no predefined tags or document structure</strong></li>
+    <li><strong>Self-descriptive</strong> — encloses data within related tags: <code>&lt;tag&gt;data&lt;/tag&gt;</code></li>
+    <li>Key/value pair: beginning tag = key, data inside = value: <code>&lt;key&gt;value&lt;/key&gt;</code></li>
+    <li>Lists use <strong>repeated instances of the same tag</strong> for each element</li>
+    <li>Most verbose of the three formats</li>
+  </ul>
+  <div class="cw"><div class="cl">XML interface example <button class="cpb" onclick="copyCode(this)">Copy</button></div>
+  <pre><code>&lt;?xml version="1.0" encoding="UTF-8" ?&gt;
+&lt;ietf-interfaces:interface&gt;
+  &lt;name&gt;GigabitEthernet2&lt;/name&gt;
+  &lt;description&gt;Wide Area Network&lt;/description&gt;
+  &lt;enabled&gt;true&lt;/enabled&gt;
+  &lt;ietf-ip:ipv4&gt;
+    &lt;address&gt;                         &lt;!-- list item 1 --&gt;
+      &lt;ip&gt;172.16.0.2&lt;/ip&gt;
+      &lt;netmask&gt;255.255.255.0&lt;/netmask&gt;
+    &lt;/address&gt;
+    &lt;address&gt;                         &lt;!-- list item 2 --&gt;
+      &lt;ip&gt;172.16.0.3&lt;/ip&gt;
+      &lt;netmask&gt;255.255.255.0&lt;/netmask&gt;
+    &lt;/address&gt;
+  &lt;/ietf-ip:ipv4&gt;
+&lt;/ietf-interfaces:interface&gt;
+! &lt;tag&gt;value&lt;/tag&gt; = key/value pair
+! No predefined tags (unlike HTML)
+! Lists = repeated instances of same tag</code></pre></div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">Side-by-Side</span> Three Formats Compared</h3>
+  <div class="tw"><table>
+    <tr><th>Characteristic</th><th>JSON</th><th>YAML</th><th>XML</th></tr>
+    <tr><td><strong>Readability</strong></td><td>Good</td><td>Best (most human-readable)</td><td>Verbose, moderate</td></tr>
+    <tr><td><strong>Structure</strong></td><td><code>{ }</code> objects, <code>[ ]</code> arrays</td><td>Indentation + hyphens</td><td><code>&lt;tag&gt;value&lt;/tag&gt;</code></td></tr>
+    <tr><td><strong>Key quotes</strong></td><td>Required (<code>" "</code>)</td><td>Not required</td><td>Tags are keys (no quotes)</td></tr>
+    <tr><td><strong>Superset of</strong></td><td>—</td><td>JSON</td><td>—</td></tr>
+    <tr><td><strong>List notation</strong></td><td><code>[ ]</code> array</td><td>Hyphen <code>-</code></td><td>Repeated tags</td></tr>
+    <tr><td><strong>Most popular for</strong></td><td>APIs and web services</td><td>Config files (Ansible)</td><td>Legacy systems, SOAP</td></tr>
+  </table></div>
+  </div>
+
+</div></div>
+
+<!-- 14.3 APIs -->
+<div class="sec" id="s3">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">14.3</span><span class="ttl">APIs</span></span><button class="sec-check" id="sch-s3" onclick="event.stopPropagation();toggleSection('s3',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb">
+  <div class="sub">
+  <h3><span class="sn">14.3.2</span> The API Concept</h3>
+  <p><strong>API (Application Programming Interface)</strong> = software that allows other applications to access its data or services. A set of rules describing how one application can interact with another.</p>
+  <div class="ca info"><span class="ic">🍽️</span><div><strong>Waiter analogy:</strong> The waiter (API) takes the customer's order (API request) to the kitchen (server) and delivers the food (API response) back. The customer doesn't need to know how the kitchen works — the waiter handles all the interaction. The message from the requesting application to the server = <strong>API call</strong>.</div></div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">14.3.4</span> Three Types of APIs</h3>
+  <div class="api-type-grid">
+    <div class="api-type open">
+      <div class="at-name">🌐 Open / Public APIs</div>
+      Publicly available with no restrictions. Many require a free <strong>key or token</strong> to control request volume and identify the source. Example: ISS Location API, Google Maps (requires free key).
+    </div>
+    <div class="api-type internal">
+      <div class="at-name">🔒 Internal / Private APIs</div>
+      Used only within a company or organization to access internal data and services. Not available to the public or partners. Example: salespeople accessing internal sales data on mobile devices.
+    </div>
+    <div class="api-type partner">
+      <div class="at-name">🤝 Partner APIs</div>
+      Used between a company and its business partners or contractors. Requires license or permission to use. Example: a travel service using an airline's API to display flight information and pricing.
+    </div>
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">14.3.5</span> Four Types of Web Service APIs</h3>
+  <div class="ws-grid">
+    <div class="ws-row soap"><div class="wr-name">SOAP</div><div>XML only · Released 1998 · Designed by Microsoft · Slow to parse, complex, rigid · Usually over HTTP or SMTP. Predecessor to REST.</div></div>
+    <div class="ws-row rest"><div class="wr-name">REST ⭐</div><div>JSON, XML, YAML + others · Released 2000 · <strong>Most widely used — over 80% of all API types</strong> · Flexible, scalable, simple, reliable · Works on HTTP.</div></div>
+    <div class="ws-row xrpc"><div class="wr-name">XML-RPC</div><div>XML only · Released 1998 · Predecessor to SOAP · Simple but less flexible · Later evolved into SOAP.</div></div>
+    <div class="ws-row jrpc"><div class="wr-name">JSON-RPC</div><div>JSON only · Released 2005 · Very simple protocol · Similar to XML-RPC but uses JSON instead of XML.</div></div>
+  </div>
+  <div class="et"><div class="lbl">🎯 REST = MOST WIDELY USED — EXAM KEY</div>
+  REST accounts for <strong>over 80%</strong> of all web service API types used.<br>
+  SOAP was first but is slow, complex, and rigid. REST replaced it with simpler HTTP-based implementation.<br>
+  RPC types (XML-RPC, JSON-RPC) are similar to REST but differ in formatting and flexibility.
+  </div>
+  </div>
+
+</div></div>
+
+<!-- 14.4 REST -->
+<div class="sec" id="s4">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">14.4</span><span class="ttl">REST</span></span><button class="sec-check" id="sch-s4" onclick="event.stopPropagation();toggleSection('s4',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb">
+  <div class="sub">
+  <h3><span class="sn">14.4.2</span> REST and RESTful API — Three Requirements</h3>
+  <p><strong>REST (Representational State Transfer)</strong> = architectural style for designing web service applications that works on top of the HTTP protocol.</p>
+  <p>An API is <strong>RESTful</strong> if it meets all three constraints:</p>
+  <div class="tw"><table>
+    <tr><th>Constraint</th><th>Meaning</th></tr>
+    <tr><td><strong>Client-Server</strong></td><td>Client handles front end; server handles back end. Each can be replaced independently of the other.</td></tr>
+    <tr><td><strong>Stateless</strong></td><td>No client data stored on the server between requests. Session state is stored on the client.</td></tr>
+    <tr><td><strong>Cacheable</strong></td><td>Clients can cache server responses to improve performance.</td></tr>
+  </table></div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">14.4.3</span> HTTP Methods → CRUD Operations</h3>
+  <p>RESTful APIs use HTTP methods that map directly to CRUD operations:</p>
+  <div class="crud-grid">
+    <div class="crud-card post"><span class="http">POST</span><span class="op">Create</span></div>
+    <div class="crud-card get" ><span class="http">GET</span><span class="op">Read</span></div>
+    <div class="crud-card put" ><span class="http">PUT / PATCH</span><span class="op">Update</span></div>
+    <div class="crud-card del" ><span class="http">DELETE</span><span class="op">Delete</span></div>
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">14.4.4</span> URI, URN, and URL</h3>
+  <p><strong>URI (Uniform Resource Identifier)</strong> = string of characters identifying a specific network resource. Has two specializations:</p>
+  <ul>
+    <li><strong>URN</strong> (Uniform Resource Name) — identifies only the namespace/name of the resource, without specifying protocol or location</li>
+    <li><strong>URL</strong> (Uniform Resource Locator) — defines the <strong>full network location</strong> including protocol (HTTP, HTTPS, FTP, SFTP, SSH)</li>
+  </ul>
+  <div class="uri-box">
+    <div class="ub-title">🔗 Parts of a URI</div>
+    <div class="uri-example">https://www.example.com/author/book.html#page155</div>
+    <div class="uri-parts">
+      <div class="uri-part"><div class="up-name">Protocol</div><div style="color:#c9d1d9;font-size:.81em">https:// — scheme (HTTPS, HTTP, FTP, SFTP, SSH, mailto, etc.)</div></div>
+      <div class="uri-part"><div class="up-name">Hostname</div><div style="color:#c9d1d9;font-size:.81em">www.example.com — the server's domain name</div></div>
+      <div class="uri-part"><div class="up-name">Path/Filename</div><div style="color:#c9d1d9;font-size:.81em">/author/book.html — path to the specific resource</div></div>
+      <div class="uri-part"><div class="up-name">Fragment</div><div style="color:#c9d1d9;font-size:.81em">#page155 — specific section within the resource</div></div>
+    </div>
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">14.4.5</span> Anatomy of a RESTful Request</h3>
+  <p>A RESTful request to a resource's URI gets a response — typically a JSON payload.</p>
+  <div class="tw"><table>
+    <tr><th>Part</th><th>Description</th><th>Example</th></tr>
+    <tr><td><strong>API Server</strong></td><td>URL of the server answering REST requests</td><td><code>www.mapquestapi.com</code></td></tr>
+    <tr><td><strong>Resources</strong></td><td>Which specific API is being requested</td><td><code>/directions/v2/route</code></td></tr>
+    <tr><td><strong>Format</strong></td><td>Requested data format (usually JSON)</td><td><code>json</code></td></tr>
+    <tr><td><strong>Key</strong></td><td>Authorization token (if required)</td><td><code>key=YOUR_KEY</code></td></tr>
+    <tr><td><strong>Parameters</strong></td><td>Specific info for the request</td><td><code>from=San+Jose,Ca&amp;to=Monterey,Ca</code></td></tr>
+  </table></div>
+  <p><strong>Why API providers require keys:</strong></p>
+  <ul>
+    <li>Authenticate the source (verify authorization)</li>
+    <li>Limit the number of users and requests per user</li>
+    <li>Track and capture data being requested</li>
+    <li>Gather information about API users</li>
+  </ul>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">14.4.6</span> RESTful API Tools</h3>
+  <div class="tw"><table>
+    <tr><th>Tool</th><th>Description</th></tr>
+    <tr><td><strong>Web browser</strong></td><td>Type URI directly for simple GET requests</td></tr>
+    <tr><td><strong>Developer web site</strong></td><td>API provider's site with documentation, parameters, and test interface</td></tr>
+    <tr><td><strong>Postman</strong></td><td>Application for testing and using REST APIs; enter parameters and keys; save requests as collections; excellent for learning API structure and analyzing responses</td></tr>
+    <tr><td><strong>Python</strong></td><td>Call APIs from scripts for automation, customization, and app integration</td></tr>
+    <tr><td><strong>NETCONF / RESTCONF</strong></td><td>Network OS protocols providing programmatic configuration and management. Used with Python scripts or tools like Cisco DNA Center. Working at CLI with NETCONF is <em>not</em> automation — scripts provide the automation.</td></tr>
+  </table></div>
+  </div>
+
+</div></div>
+
+<!-- 14.5 CONFIG MANAGEMENT -->
+<div class="sec" id="s5">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">14.5</span><span class="ttl">Configuration Management Tools</span></span><button class="sec-check" id="sch-s5" onclick="event.stopPropagation();toggleSection('s5',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb">
+  <div class="sub">
+  <h3><span class="sn">14.5.2</span> Traditional Configuration — The Problem</h3>
+  <ul>
+    <li>CLI on each device, device by device — time-consuming and error-prone</li>
+    <li>Not scalable — impossible for thousands of devices</li>
+    <li><strong>SNMP limitation:</strong> Works for monitoring but NOT configuration — security concerns, difficult implementation; cannot serve as an automation tool for today's networks</li>
+    <li>APIs can automate deployment and management — administrators use tools to hook into network APIs for routine provisioning tasks</li>
+  </ul>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">14.5.4</span> Automation vs Orchestration</h3>
+  <div class="ca info"><span class="ic">💡</span><div>
+    <strong>Automation</strong> = a tool automatically performs a specific task on a system. Example: configuring an interface, deploying a VLAN, applying an ACL.<br><br>
+    <strong>Orchestration</strong> = the process of arranging and coordinating multiple automated tasks. Defines the order, dependencies, and workflow — what must complete before another task can begin. Orchestration is the overall workflow.
+  </div></div>
+  <p><strong>What configuration management tools automate:</strong></p>
+  <ul>
+    <li>Software and version control across all devices</li>
+    <li>Device attributes (names, addressing, security settings)</li>
+    <li>Protocol configurations</li>
+    <li>ACL configurations</li>
+  </ul>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">14.5.5</span> Ansible · Chef · Puppet · SaltStack</h3>
+  <div class="tools-compare">
+    <div class="tool-card ansible">
+      <div class="tc-name">Ansible <span class="tc-tag">Agentless · Push · Playbook</span></div>
+      <strong>Language:</strong> Python + YAML · <strong>Agent:</strong> Agentless (push-based) · <strong>Controller:</strong> Any computer can be controller (no dedicated master) · <strong>Config file:</strong> <strong>Playbook</strong><br>
+      The master connects to devices and pushes/executes configuration. No agent software needed on managed devices.
+    </div>
+    <div class="tool-card chef">
+      <div class="tc-name">Chef <span class="tc-tag">Agent-based · Pull · Cookbook</span></div>
+      <strong>Language:</strong> Ruby · <strong>Agent:</strong> Agent-based (pull-based) · <strong>Controller:</strong> Chef Master · <strong>Config file:</strong> <strong>Cookbook</strong><br>
+      Agent on managed device periodically connects to Chef Master to pull its configuration.
+    </div>
+    <div class="tool-card puppet">
+      <div class="tc-name">Puppet <span class="tc-tag">Both · Manifest</span></div>
+      <strong>Language:</strong> Ruby · <strong>Agent:</strong> Supports both agent and agentless · <strong>Controller:</strong> Puppet Master · <strong>Config file:</strong> <strong>Manifest</strong>
+    </div>
+    <div class="tool-card salt">
+      <div class="tc-name">SaltStack <span class="tc-tag">Both · Pillar</span></div>
+      <strong>Language:</strong> Python · <strong>Agent:</strong> Supports both agent and agentless · <strong>Controller:</strong> Salt Master · <strong>Config file:</strong> <strong>Pillar</strong>
+    </div>
+  </div>
+  <div class="tw" style="margin-top:12px"><table>
+    <tr><th></th><th>Ansible</th><th>Chef</th><th>Puppet</th><th>SaltStack</th></tr>
+    <tr><td><strong>Language</strong></td><td>Python + YAML</td><td>Ruby</td><td>Ruby</td><td>Python</td></tr>
+    <tr><td><strong>Agent?</strong></td><td><strong>Agentless</strong></td><td>Agent-based</td><td>Both</td><td>Both</td></tr>
+    <tr><td><strong>Push/Pull?</strong></td><td><strong>Push</strong></td><td>Pull</td><td>Both</td><td>Both</td></tr>
+    <tr><td><strong>Master?</strong></td><td><em>Any computer</em></td><td>Chef Master</td><td>Puppet Master</td><td>Salt Master</td></tr>
+    <tr><td><strong>Config name</strong></td><td><strong>Playbook</strong></td><td>Cookbook</td><td>Manifest</td><td>Pillar</td></tr>
+  </table></div>
+  <div class="et"><div class="lbl">🎯 AGENT PUSH vs PULL — EXAM KEY</div>
+  <strong>Agent-based (Pull):</strong> Agent on managed device periodically connects to master → pulls configuration<br>
+  <strong>Agentless (Push):</strong> Master connects to device → pushes and executes configuration directly<br><br>
+  <strong>Only Ansible is agentless</strong> among the four tools.<br>
+  Because Ansible is agentless → <strong>any computer can be the controller</strong> (no dedicated master needed).<br>
+  Ansible + SaltStack = Python (easier). Chef + Puppet = Ruby (harder).
+  </div>
+  </div>
+
+</div></div>
+
+<!-- 14.6 IBN AND DNA CENTER -->
+<div class="sec" id="s6">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">14.6</span><span class="ttl">IBN and Cisco DNA Center</span></span><button class="sec-check" id="sch-s6" onclick="event.stopPropagation();toggleSection('s6',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb">
+  <div class="sub">
+  <h3><span class="sn">14.6.2</span> Intent-Based Networking (IBN)</h3>
+  <p><strong>IBN</strong> = the emerging industry model for next-generation networking. Builds on SDN, transforming from hardware-centric and manual to software-centric and fully automated.</p>
+  <p>Business objectives are expressed as <strong>intent</strong>. IBN uses <strong>analytics, machine learning, and automation</strong> to continuously align the network as business needs change.</p>
+  <h4>Three Essential IBN Functions (Cisco)</h4>
+  <div class="ibn-grid">
+    <div class="ibn-card trans">
+      <div class="ic-name">1. Translation</div>
+      Enables the network administrator to express the expected networking behavior that will best support the business intent. Converts human business goals into network specifications.
+    </div>
+    <div class="ibn-card act">
+      <div class="ic-name">2. Activation</div>
+      Captured intent is interpreted into policies and then installed into the physical and virtual network infrastructure using <strong>network-wide automation</strong>.
+    </div>
+    <div class="ibn-card assur">
+      <div class="ic-name">3. Assurance</div>
+      Continuously checks that the expressed intent is honored by the network at any point in time. Maintains a <strong>continuous validation-and-verification loop</strong>.
+    </div>
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">14.6.3</span> Network as Fabric — Overlay and Underlay</h3>
+  <div class="tw"><table>
+    <tr><th>Layer</th><th>Description</th><th>Function</th></tr>
+    <tr><td><strong>Overlay</strong></td><td>Logical topology above physical hardware. The "fabric" administrators program through policies.</td><td>Limits devices admin must program · Provides services not controlled by physical devices · Where IPsec and CAPWAP encapsulation occur · IBN administrators specify policy here</td></tr>
+    <tr><td><strong>Underlay</strong></td><td>Physical topology — all hardware required to meet business objectives.</td><td>Reveals all physical devices and connections · End points access network through Layer 2 devices · Responsible for simple forwarding tasks</td></tr>
+  </table></div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">14.6.4</span> Cisco DNA — Solutions</h3>
+  <p>Cisco implements IBN using <strong>Cisco DNA (Digital Network Architecture)</strong>. Business intent is deployed into the network fabric. Cisco DNA continuously gathers data from devices and applications, analyzes it, and ensures network performance aligns with business intent.</p>
+  <div class="tw"><table>
+    <tr><th>Solution</th><th>What it Does</th></tr>
+    <tr><td><strong>SD-Access</strong></td><td>First intent-based enterprise solution using Cisco DNA. Single fabric across LAN and WLAN. Segments user/device/application traffic. Automates user-access policies. Enables network access in minutes for any user or device.</td></tr>
+    <tr><td><strong>SD-WAN</strong></td><td>Secure cloud-delivered architecture for centrally managing WAN connections. Simplifies delivery of secure, flexible WAN services. Better application experiences; cost savings through transport independence.</td></tr>
+    <tr><td><strong>DNA Assurance</strong></td><td>Advanced analytics and machine learning for performance monitoring and issue resolution. Real-time notifications. Predicts problems before they occur. Single dashboard with drill-down insights.</td></tr>
+    <tr><td><strong>DNA Security</strong></td><td>Network as a sensor for real-time analysis. Granular control to enforce policy and contain threats — including encrypted traffic. 360-degree visibility; lower security complexity.</td></tr>
+  </table></div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">14.6.5</span> Cisco DNA Center — Five Areas</h3>
+  <p><strong>Cisco DNA Center</strong> = foundational controller and analytics platform at the heart of Cisco DNA. A <strong>"single-pane-of-glass"</strong> — one interface focusing on <strong>Assurance, Analytics, and Automation</strong>.</p>
+  <div class="dna-grid">
+    <div class="dna-row des"><div class="dr-name">🎨 Design</div><div>Model the entire network — sites, buildings, devices, links (physical and virtual); campus, branch, WAN, and cloud</div></div>
+    <div class="dna-row pol"><div class="dr-name">📋 Policy</div><div>Use policies to automate and simplify network management; reduce cost and risk; speed rollout of new and enhanced services</div></div>
+    <div class="dna-row pro"><div class="dr-name">⚙️ Provision</div><div>Provide new services to users with ease, speed, and security across the enterprise network regardless of size and complexity</div></div>
+    <div class="dna-row ass"><div class="dr-name">📊 Assurance</div><div>Proactive monitoring and insights from network, devices, and applications; predicts problems; validates business intent and user experience</div></div>
+    <div class="dna-row pla"><div class="dr-name">🔌 Platform</div><div>APIs to integrate with preferred IT systems; create end-to-end solutions; add support for multi-vendor devices</div></div>
+  </div>
+  </div>
+
+</div></div>
+
+<!-- 14.7 EXAM TRAPS -->
+<div class="sec" id="s7">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">🎯</span><span class="ttl">Common Exam Traps — Module 14</span></span><button class="sec-check" id="sch-s7" onclick="event.stopPropagation();toggleSection('s7',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb">
+
+  <div class="ca danger"><span class="ic">❌</span><div><strong>Trap 1: Automation ≠ Orchestration. Automation performs the task; orchestration manages the workflow.</strong><br>Automation = tool automatically performs a specific task (configure interface, deploy VLAN). Orchestration = process of arranging and coordinating multiple automated activities — the order, dependencies, and overall workflow. Without orchestration, automated tasks might run in the wrong order.</div></div>
+
+  <div class="ca danger"><span class="ic">❌</span><div><strong>Trap 2: JSON uses { } for objects and [ ] for arrays. Keys MUST be in double quotation marks.</strong><br>This syntax is directly tested. Objects = curly braces. Arrays = square brackets. Keys MUST be quoted with double quotes (single quotes are not valid JSON). Values can be string, number, array, Boolean, null, or another object. Whitespace is not significant in JSON.</div></div>
+
+  <div class="ca danger"><span class="ic">❌</span><div><strong>Trap 3: YAML uses indentation and hyphens — NO brackets, NO commas, NO quotation marks on keys.</strong><br>YAML is a superset of JSON (all valid JSON is valid YAML). Structure is defined by indentation. A hyphen "-" separates each list element. Keys have no quotation marks. YAML is the most minimalist and human-readable of the three formats.</div></div>
+
+  <div class="ca danger"><span class="ic">❌</span><div><strong>Trap 4: REST = most widely used web service API — over 80% of all API types.</strong><br>SOAP was first (1998) but is slow, complex, and rigid. REST (2000) replaced it with simpler HTTP-based implementation. REST accounts for over 80% of all web service APIs. XML-RPC (1998) evolved into SOAP. JSON-RPC (2005) is similar but uses JSON.</div></div>
+
+  <div class="ca danger"><span class="ic">❌</span><div><strong>Trap 5: REST requirements: Client-Server + Stateless + Cacheable. All three required to be RESTful.</strong><br>Stateless means no client data is stored on the server between requests — session state stays on the client. Cacheable means clients can store server responses. Client-Server means each side can be replaced independently. Missing any one of these = not RESTful.</div></div>
+
+  <div class="ca danger"><span class="ic">❌</span><div><strong>Trap 6: HTTP methods → CRUD: POST=Create, GET=Read, PUT/PATCH=Update, DELETE=Delete.</strong><br>This exact mapping is tested directly. GET retrieves (reads) existing data. POST creates new resources. PUT/PATCH modifies existing resources. DELETE removes resources. Remember: GET = Read (like reading a web page).</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 7: Only Ansible is agentless (push). Chef, Puppet, SaltStack support agent-based (pull).</strong><br>Agentless (push) = master connects to device and executes configuration directly — no agent needed on managed device. Agent-based (pull) = agent on device periodically checks master for configuration updates. Because Ansible is agentless, ANY computer can be the controller — no dedicated master required.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 8: Know the four config tool file names: Playbook (Ansible), Cookbook (Chef), Manifest (Puppet), Pillar (SaltStack).</strong><br>These appear in matching questions on the exam. Playbook → Ansible. Cookbook → Chef. Manifest → Puppet. Pillar → SaltStack. These names are unique and don't overlap.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 9: Ansible and SaltStack use Python. Chef and Puppet use Ruby.</strong><br>Python is generally considered easier to learn. Ruby is cross-platform but typically harder. This appears in language-matching questions. Ansible = Python + YAML (both languages). SaltStack = Python. Chef = Ruby. Puppet = Ruby.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 10: IBN three functions — Translation, Activation, Assurance.</strong><br>Translation: express business intent as network behavior. Activation: convert to policies and deploy network-wide via automation. Assurance: continuously verify intent is honored. These are Cisco's three essential IBN functions. IBN builds on SDN, making networks software-centric and fully automated.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 11: Overlay = logical topology (policies, encapsulation). Underlay = physical topology (hardware).</strong><br>The overlay is what IBN administrators program through policies. IPsec and CAPWAP encapsulation occur in the overlay. The underlay is the actual physical infrastructure. Simple forwarding occurs in the underlay. End points connect to the network through Layer 2 devices in the underlay.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 12: Cisco DNA Center = "single-pane-of-glass" focusing on Assurance, Analytics, and Automation.</strong><br>Five DNA Center areas: Design, Policy, Provision, Assurance, Platform. DNA Center is the foundational controller for Cisco DNA. It is hardware and software combined. SD-Access is the first intent-based enterprise solution using Cisco DNA, not DNA Center itself.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 13: SNMP works for monitoring but NOT configuration automation.</strong><br>SNMP has security concerns and is difficult to implement for configuration. It cannot serve as an automation tool for today's networks. Configuration management tools (Ansible, Chef, Puppet, SaltStack) use RESTful APIs to automate tasks — SNMP does not.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 14: API types — Open/Public (free key), Internal/Private (org only), Partner (license required).</strong><br>Public APIs may be free but often require a free API key to control volume and track usage. Internal APIs are never available outside the organization. Partner APIs require a license or formal business agreement — the travel service using an airline API is a classic partner API example.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 15: URI ⊃ URN (namespace only) and URL (full location with protocol).</strong><br>URI is the umbrella term. URL is the most common URI — it includes protocol, hostname, path, and fragment. URN identifies by name without specifying where to find it or what protocol to use. In practice, URL is what you use in a web browser.</div></div>
+
+  <div class="ca tip"><span class="ic">✅</span><div><strong>Module 14 — CCNA 3 Final Module — Quick-Reference Summary:</strong><br><br>
+  <strong>Automation:</strong> Self-driven process eliminating human intervention · Smart devices programmed with automation tools<br>
+  <strong>Data formats:</strong> JSON (objects/arrays) · YAML (indentation/hyphens, superset of JSON) · XML (tags, no predefined structure)<br>
+  <strong>JSON rules:</strong> { }=objects · [ ]=arrays · Keys in " " · colon separates key:value · comma separates pairs · whitespace insignificant<br>
+  <strong>YAML rules:</strong> indentation=structure · hyphen=list item · no brackets/commas/key quotes · superset of JSON<br>
+  <strong>XML rules:</strong> &lt;tag&gt;value&lt;/tag&gt; · self-descriptive · no predefined tags · repeated tags=list<br>
+  <strong>API types:</strong> Open/Public (free, may need key) · Internal/Private (org only) · Partner (license required)<br>
+  <strong>Web service APIs:</strong> SOAP (XML, 1998, rigid) · REST (JSON+, 2000, >80% usage, most widely used) · XML-RPC · JSON-RPC<br>
+  <strong>RESTful requirements:</strong> Client-Server · Stateless · Cacheable<br>
+  <strong>HTTP→CRUD:</strong> POST=Create · GET=Read · PUT/PATCH=Update · DELETE=Delete<br>
+  <strong>URI:</strong> URN (name only) + URL (full location with protocol/hostname/path/fragment)<br>
+  <strong>API request parts:</strong> API server · Resources · Query (format + key + parameters)<br>
+  <strong>API tools:</strong> Browser · Developer site · Postman (testing/collections) · Python (scripting) · NETCONF/RESTCONF<br>
+  <strong>Config tools:</strong> Ansible (Python+YAML, agentless/push, any controller, Playbook) · Chef (Ruby, agent/pull, Chef Master, Cookbook) · Puppet (Ruby, both, Puppet Master, Manifest) · SaltStack (Python, both, Salt Master, Pillar)<br>
+  <strong>Agent-based=Pull</strong> (device→master) · <strong>Agentless=Push</strong> (master→device) · Only Ansible = agentless<br>
+  <strong>IBN functions:</strong> Translation (express intent) → Activation (deploy policies) → Assurance (verify continuously)<br>
+  <strong>Fabric:</strong> Overlay (logical, policies, IPsec/CAPWAP) + Underlay (physical hardware, simple forwarding)<br>
+  <strong>Cisco DNA solutions:</strong> SD-Access (LAN+WLAN fabric, first IBN enterprise) · SD-WAN (central WAN) · DNA Assurance (ML/analytics) · DNA Security (threat visibility)<br>
+  <strong>DNA Center:</strong> Single-pane-of-glass · Assurance+Analytics+Automation · 5 areas: Design/Policy/Provision/Assurance/Platform</div></div>
+
+</div></div>
+
+<div class="ca tip" style="margin:0 0 16px">
+  <span class="ic">🎓</span>
+  <div><strong>🎉 CCNA 3 — Enterprise Networking, Security &amp; Automation v7.02 COMPLETE!</strong><br>
+  You have studied all 14 modules of CCNA 3 ENSA: OSPFv2 → Security → ACLs → NAT → WAN → VPN → QoS → Network Management → Network Design → Network Troubleshooting → Network Virtualization → Network Automation. Great work — you're ready to tackle the CCNA exam!</div>
+</div>
+
+</div>
+<div class="ft">CCNA 3 ENSA v7.02 — Module 14: Network Automation v2.2<br>Based on Cisco NetAcad curriculum · Study guide for personal use</div>
+<button class="tb-btn" id="topb" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+<div class="mod-nav">
+  <a class="mn-hub" href="index.html">🏠 Hub</a>
+  <div class="mn-divider"></div>
+  <a class="mn-prev" href="ccna3_module13_network_virtualization_v2.2.html">‹</a>
+  <span class="mn-label">M14 of 14 — Final</span>
+  <span class="mn-next" style="opacity:.3">✓</span>
+</div>
+<script>
+var MOD_KEY="ccna3-module14-network-automation";
+var SECS=["s1","s2","s3","s4","s5","s6","s7"];
+var checked={};
+function loadState(){
+  try{var s=localStorage.getItem(MOD_KEY);if(s)checked=JSON.parse(s);}catch(e){}
+  SECS.forEach(function(id){
+    var pill=document.getElementById('pill-'+id);
+    var row=document.getElementById('row-'+id);
+    var st=document.getElementById('st-'+id);
+    var sch=document.getElementById('sch-'+id);
+    if(checked[id]){
+      if(pill){pill.classList.add('checked');pill.querySelector('.pill-check').textContent='✓';}
+      if(row)row.classList.add('done');
+      if(st)st.textContent='✓';
+      if(sch){sch.classList.add('checked');sch.textContent='✓ Done';}
+    } else {
+      if(pill){pill.classList.remove('checked');pill.querySelector('.pill-check').textContent='○';}
+      if(row)row.classList.remove('done');
+      if(st)st.textContent='○';
+      if(sch){sch.classList.remove('checked');sch.textContent='○ Mark done';}
+    }
+  });
+}
+function toggleSection(id,btn){checked[id]=!checked[id];try{localStorage.setItem(MOD_KEY,JSON.stringify(checked));}catch(e){}loadState();}
+function toggleStudyPanel(){
+  var hdr=document.getElementById('sp-hdr');
+  var body=document.getElementById('sp-body');
+  var arr=document.getElementById('sp-arr');
+  hdr.classList.toggle('open');body.classList.toggle('open');
+  if(arr)arr.textContent=body.classList.contains('open')?'▲':'▼';
+}
+function goTo(id){var el=document.getElementById(id);if(!el)return;var h=el.querySelector('.sh,.section-header'),b=el.querySelector('.sb,.section-body');if(h&&b&&!b.classList.contains('open')){h.classList.add('open');b.classList.add('open');}setTimeout(function(){window.scrollTo({top:el.getBoundingClientRect().top+window.pageYOffset-60,behavior:'smooth'});},50);}
+function setFs(size,btn){document.documentElement.style.setProperty('--base-fs',size);document.querySelectorAll('.fs-btn').forEach(function(b){b.classList.remove('active');});btn.classList.add('active');try{localStorage.setItem('ccna-fs',size);}catch(e){}}
+(function(){try{var s=localStorage.getItem('ccna-fs');if(s){document.documentElement.style.setProperty('--base-fs',s);document.querySelectorAll('.fs-btn').forEach(function(b){b.classList.remove('active');if((b.textContent==='S'&&s==='14px')||(b.textContent==='M'&&s==='16px')||(b.textContent==='L'&&s==='18px')||(b.textContent==='XL'&&s==='20px'))b.classList.add('active');});}}catch(e){}loadState();})();
+function copyCode(b){var t=b.closest('.cw').querySelector('pre').innerText;if(navigator.clipboard){navigator.clipboard.writeText(t).then(function(){b.textContent='Copied!';setTimeout(function(){b.textContent='Copy';},1500);}).catch(function(){fb(t,b);});}else{fb(t,b);}}
+function fb(t,b){var a=document.createElement('textarea');a.value=t;a.style.position='fixed';a.style.opacity='0';document.body.appendChild(a);a.focus();a.select();document.execCommand('copy');document.body.removeChild(a);b.textContent='Copied!';setTimeout(function(){b.textContent='Copy';},1500);}
+</script>
+<script src="../../site-config.js"></script>
+</body>
+</html>

@@ -1,0 +1,743 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=2.0">
+<title>CCNA 2 Module 9: FHRP Concepts v2.2</title>
+<style>
+:root{
+  --blue:#1ba0d7;--dark:#005073;--green:#6cc24a;
+  --bg:#f4f6f8;--card:#fff;--text:#1a1a2e;--muted:#5a6a7a;
+  --cbg:#0d1117;--ctxt:#c9d1d9;--r:12px;--sh:0 2px 12px rgba(0,0,0,.08);
+  --base-fs:16px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);font-size:var(--base-fs);line-height:1.7}
+
+/* ── Font size toggle ── */
+.fs-bar{position:sticky;top:0;z-index:200;background:#1a1a2e;display:flex;align-items:center;justify-content:flex-end;padding:6px 14px;gap:6px;box-shadow:0 2px 8px rgba(0,0,0,.3)}
+.fs-label{color:#8b949e;font-size:.72em;font-weight:700;letter-spacing:.5px;text-transform:uppercase;margin-right:4px}
+.fs-btn{background:#30363d;color:#c9d1d9;border:2px solid transparent;border-radius:6px;padding:4px 12px;font-size:.75em;font-weight:700;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:all .2s;line-height:1.4}
+.fs-btn:active,.fs-btn.active{background:var(--blue);color:#fff;border-color:var(--blue)}
+
+/* ── Header ── */
+.hdr{background:linear-gradient(135deg,var(--dark),var(--blue));color:#fff;padding:32px 20px 24px;text-align:center}
+.hdr .badge{display:inline-block;background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.4);border-radius:20px;padding:4px 14px;font-size:.81em;margin-bottom:12px}
+.hdr h1{font-size:1.625em;font-weight:700;margin-bottom:6px}
+.hdr p{font-size:.94em;opacity:.85}
+.hdr .obj{display:inline-block;background:rgba(255,255,255,.15);border-radius:8px;padding:7px 16px;margin-top:12px;font-size:.875em;font-style:italic}
+
+/* ── Progress bar ── */
+.pb{background:var(--card);padding:14px 16px;margin:16px 16px 0;border-radius:var(--r);box-shadow:var(--sh)}
+.pbl{font-size:.81em;color:var(--muted);margin-bottom:6px;font-weight:600}
+.pbt{background:#e0e7ef;border-radius:10px;height:8px;overflow:hidden}
+.pbf{background:linear-gradient(90deg,var(--blue),var(--green));height:100%;border-radius:10px;width:0;transition:width 1s ease}
+
+/* ── TOC ── */
+.toc{background:var(--card);margin:16px;border-radius:var(--r);box-shadow:var(--sh);overflow:hidden}
+.toch{background:var(--dark);color:#fff;padding:14px 18px;font-weight:700;font-size:.94em;display:flex;justify-content:space-between;align-items:center;cursor:pointer;user-select:none}
+.toch .arr{transition:transform .3s}
+.toch.open .arr{transform:rotate(180deg)}
+.tocb{display:none;padding:10px 0}
+.tocb.open{display:block}
+.tocg{font-size:.69em;font-weight:800;letter-spacing:.8px;color:var(--dark);text-transform:uppercase;padding:8px 20px 2px}
+.tocb a{display:block;padding:9px 20px 9px 28px;color:var(--dark);text-decoration:none;font-size:.875em;border-left:3px solid transparent;transition:all .2s}
+.tocb a:hover,.tocb a:active{background:#d0e8f5;border-left-color:var(--blue)}
+.tocb a .n{display:inline-block;background:var(--blue);color:#fff;border-radius:5px;padding:1px 8px;font-size:.75em;font-weight:700;margin-right:8px}
+
+/* ── Main wrap ── */
+.wrap{padding:0 16px 100px}
+
+/* ── Section cards ── */
+.sec{background:var(--card);border-radius:var(--r);box-shadow:var(--sh);margin-bottom:16px;overflow:hidden}
+.sh{background:linear-gradient(90deg,var(--dark),var(--blue));color:#fff;padding:16px 18px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;user-select:none;-webkit-tap-highlight-color:transparent}
+.sh .ttl{font-weight:700;font-size:1em}
+.sh .nb{background:rgba(255,255,255,.25);border-radius:6px;padding:3px 10px;font-size:.81em;font-weight:700;margin-right:10px;white-space:nowrap}
+.sh .ch{font-size:1.125em;transition:transform .3s}
+.sh.open .ch{transform:rotate(180deg)}
+.sb{display:none;padding:18px}
+.sb.open{display:block}
+
+/* ── Subsections ── */
+.sub{margin-bottom:24px}
+.sub:last-child{margin-bottom:0}
+.sub h3{font-size:.94em;font-weight:700;color:var(--dark);margin-bottom:10px;padding-bottom:6px;border-bottom:2px solid #d0e8f5;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.sub h3 .sn{background:var(--blue);color:#fff;border-radius:5px;padding:2px 8px;font-size:.75em;white-space:nowrap}
+.sub h4{font-size:.875em;font-weight:700;color:var(--dark);margin:14px 0 6px}
+.sub p{margin-bottom:10px;font-size:.94em}
+.sub ul,.sub ol{padding-left:20px;margin:8px 0;font-size:.94em}
+.sub li{margin-bottom:5px}
+
+/* ── Code blocks ── */
+.cw{background:var(--cbg);border-radius:10px;margin:12px 0;overflow:hidden}
+.cl{background:#21262d;color:#c9d1d9;font-size:.78em;font-weight:700;padding:6px 14px;letter-spacing:.5px;text-transform:uppercase;display:flex;justify-content:space-between;align-items:center}
+.cpb{background:#30363d;color:#c9d1d9;border:none;border-radius:5px;padding:3px 10px;font-size:.69em;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.cpb:active{background:var(--blue);color:#fff}
+pre{margin:0;padding:14px;overflow-x:auto;-webkit-overflow-scrolling:touch}
+code{font-family:'Courier New',monospace;font-size:.81em;color:var(--ctxt);line-height:1.6}
+p code,li code,td code,h3 code,h4 code,.ca code{background:#c2d9ea;color:#002233;border-radius:4px;padding:1px 5px;font-size:.81em;font-family:'Courier New',monospace;font-weight:600}
+
+/* ── Callout boxes ── */
+.ca{border-radius:8px;padding:12px 14px;margin:12px 0;font-size:.875em;line-height:1.6;display:flex;gap:10px;align-items:flex-start}
+.ca .ic{font-size:1.125em;flex-shrink:0;margin-top:1px}
+.ca.warn  {background:#fff3cd;border-left:4px solid #b38600;color:#3d2c00}
+.ca.tip   {background:#d4edda;border-left:4px solid #28a745;color:#0d3318}
+.ca.danger{background:#f8d7da;border-left:4px solid #dc3545;color:#3d0010}
+.ca.info  {background:#d0e8f5;border-left:4px solid var(--blue);color:#002d44}
+
+/* ── Exam tip dark box ── */
+.et{background:linear-gradient(135deg,#1a1a2e,var(--dark));color:#fff;border-radius:10px;padding:14px 16px;margin:14px 0;font-size:.875em;line-height:1.6}
+.et .lbl{font-size:.69em;font-weight:800;letter-spacing:1px;color:var(--green);margin-bottom:6px}
+.et ol,.et ul{padding-left:18px;margin-top:6px}
+.et li{margin-bottom:5px}
+
+/* ── Tables ── */
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:12px 0;border-radius:8px}
+table{width:100%;border-collapse:collapse;font-size:.875em}
+th{background:var(--dark);color:#fff;padding:10px 12px;text-align:left;font-weight:700;font-size:.81em}
+td{padding:9px 12px;border-bottom:1px solid #e8ecf0;vertical-align:top;color:#1a1a2e}
+tr:nth-child(even) td{background:#d0e8f5;color:#002d44}
+tr:last-child td{border-bottom:none}
+
+/* ── Numbered steps ── */
+.steps{counter-reset:step;list-style:none;padding:0;margin:12px 0}
+.steps li{counter-increment:step;display:flex;gap:12px;align-items:flex-start;padding:10px 0;border-bottom:1px solid #eef0f3;font-size:.875em;line-height:1.6}
+.steps li:last-child{border-bottom:none}
+.steps li::before{content:counter(step);background:var(--blue);color:#fff;border-radius:50%;min-width:26px;height:26px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.81em;flex-shrink:0;margin-top:2px}
+
+/* ── Diagram box ── */
+.dg{background:#0d1117;border-radius:10px;padding:14px;margin:12px 0;overflow-x:auto;-webkit-overflow-scrolling:touch}
+.dg pre{color:#58a6ff;font-family:'Courier New',monospace;font-size:.75em;line-height:1.6}
+
+/* ── Scenario box ── */
+.sc{background:#1a1a2e;color:#c9d1d9;border-radius:8px;padding:14px;margin:12px 0;font-size:.875em;line-height:1.6}
+.sc .scl{font-size:.69em;font-weight:800;letter-spacing:.8px;color:var(--green);margin-bottom:8px}
+
+/* ── FHRP protocol cards ── */
+.fhrp-grid{display:grid;gap:10px;margin:12px 0}
+.fhrp-card{border-radius:10px;padding:14px;border-left:5px solid}
+.fhrp-card.cisco{border-left-color:var(--blue);background:#e8f4fb}
+.fhrp-card.ieee{border-left-color:#28a745;background:#d4edda}
+.fhrp-card.legacy{border-left-color:#6c757d;background:#f8f9fa}
+.fhrp-card .fc-title{font-size:.875em;font-weight:800;margin-bottom:4px}
+.fhrp-card.cisco .fc-title{color:var(--dark)}
+.fhrp-card.ieee .fc-title{color:#0d3318}
+.fhrp-card.legacy .fc-title{color:#495057}
+.fhrp-card .fc-badge{display:inline-block;font-size:.69em;font-weight:700;padding:1px 8px;border-radius:4px;margin-bottom:6px}
+.fhrp-card.cisco .fc-badge{background:var(--dark);color:#fff}
+.fhrp-card.ieee .fc-badge{background:#28a745;color:#fff}
+.fhrp-card.legacy .fc-badge{background:#6c757d;color:#fff}
+.fhrp-card p{font-size:.81em;color:#1a1a2e;line-height:1.6}
+
+/* ── HSRP state timeline ── */
+.state-flow{display:flex;flex-direction:column;gap:0;margin:12px 0;border-radius:10px;overflow:hidden}
+.state-row{display:flex;align-items:center;gap:10px;padding:10px 14px;font-size:.81em;border-bottom:1px solid rgba(255,255,255,.1)}
+.state-row:last-child{border-bottom:none}
+.state-row.initial{background:#2d333b}
+.state-row.learn{background:#1f3a4f}
+.state-row.listen{background:#1a3a2e}
+.state-row.speak{background:#3a2f1a}
+.state-row.standby{background:#2f1a3a}
+.state-row.active{background:#1a3a1a}
+.state-badge{min-width:70px;font-weight:800;font-size:.75em;text-align:center;padding:3px 8px;border-radius:4px}
+.state-row.initial .state-badge{background:#444;color:#ccc}
+.state-row.learn .state-badge{background:#1ba0d7;color:#fff}
+.state-row.listen .state-badge{background:#28a745;color:#fff}
+.state-row.speak .state-badge{background:#e07b00;color:#fff}
+.state-row.standby .state-badge{background:#9b59b6;color:#fff}
+.state-row.active .state-badge{background:#27ae60;color:#fff}
+.state-desc{color:#c9d1d9;line-height:1.5}
+
+/* ── Virtual router diagram ── */
+.vr-box{background:#0d1117;border:2px solid var(--blue);border-radius:10px;padding:16px;margin:14px 0}
+.vr-box .vr-title{font-size:.75em;font-weight:800;letter-spacing:.8px;color:var(--blue);text-transform:uppercase;margin-bottom:10px}
+.vr-row{display:flex;gap:12px;align-items:flex-start;padding:6px 0;border-bottom:1px solid #21262d;font-size:.81em;color:#c9d1d9}
+.vr-row:last-child{border-bottom:none}
+.vr-key{color:#8b949e;min-width:100px;flex-shrink:0;font-weight:700}
+
+/* ── Preemption scenario cards ── */
+.preempt-grid{display:grid;gap:10px;margin:12px 0}
+.preempt-card{border-radius:10px;padding:12px 14px}
+.preempt-card.no-preempt{background:#f8d7da;border:2px solid #dc3545}
+.preempt-card.with-preempt{background:#d4edda;border:2px solid #28a745}
+.preempt-card .pc-title{font-size:.81em;font-weight:800;margin-bottom:6px}
+.preempt-card.no-preempt .pc-title{color:#3d0010}
+.preempt-card.with-preempt .pc-title{color:#0d3318}
+.preempt-card p{font-size:.81em;color:#1a1a2e;line-height:1.6}
+
+/* ── Numbers to memorize box ── */
+.mem-box{background:linear-gradient(135deg,#1a1a2e,var(--dark));color:#fff;border-radius:10px;padding:16px;margin:14px 0}
+.mem-box .mb-title{font-size:.75em;font-weight:800;letter-spacing:.8px;color:var(--green);text-transform:uppercase;margin-bottom:10px}
+.mem-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+@media(max-width:400px){.mem-grid{grid-template-columns:1fr}}
+.mem-item{background:rgba(255,255,255,.08);border-radius:8px;padding:10px 12px}
+.mem-item .mi-val{font-size:1.25em;font-weight:900;color:var(--green);line-height:1}
+.mem-item .mi-label{font-size:.75em;color:#8b949e;margin-top:2px}
+
+
+/* ── Module navigation bar ── */
+.mod-nav{position:fixed;bottom:0;left:0;right:0;z-index:300;background:#1a1a2e;border-top:1px solid #30363d;display:flex;align-items:center;height:52px;padding:0 8px;gap:6px}
+.mn-hub{background:#1ba0d7;color:#fff;border:none;border-radius:8px;padding:6px 12px;font-size:.75em;font-weight:700;cursor:pointer;text-decoration:none;display:flex;align-items:center;gap:4px;white-space:nowrap;-webkit-tap-highlight-color:transparent;flex-shrink:0}
+.mn-hub:active{opacity:.8}
+.mn-divider{width:1px;height:28px;background:#30363d;flex-shrink:0}
+.mn-label{flex:1;text-align:center;font-size:.69em;color:#8b949e;font-weight:600;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding:0 4px}
+.mn-prev,.mn-next{background:#30363d;color:#c9d1d9;border:none;border-radius:8px;padding:6px 10px;font-size:.875em;font-weight:700;cursor:pointer;text-decoration:none;display:flex;align-items:center;-webkit-tap-highlight-color:transparent;flex-shrink:0}
+.mn-prev:active,.mn-next:active{background:#1ba0d7;color:#fff}
+.mn-prev.disabled,.mn-next.disabled{opacity:.3;pointer-events:none}
+
+/* ── Scroll to top ── */
+.tb{position:fixed;bottom:80px;right:16px;background:var(--blue);color:#fff;border:none;border-radius:50%;width:44px;height:44px;font-size:1.25em;box-shadow:0 4px 14px rgba(0,0,0,.25);cursor:pointer;display:none;align-items:center;justify-content:center;z-index:100}
+.tb.show{display:flex}
+.ft{text-align:center;padding:24px 16px;color:var(--muted);font-size:.81em}
+/* Study progress panel */
+.sp-wrap{background:var(--card);margin:16px 16px 0;border-radius:var(--r);box-shadow:var(--sh);overflow:hidden}
+.sp-hdr{background:var(--nt);color:#fff;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;user-select:none;-webkit-tap-highlight-color:transparent;gap:10px}
+.sp-hdr .sp-title{font-weight:700;font-size:.875em;flex-shrink:0}
+.sp-hdr .sp-arr{transition:transform .3s;flex-shrink:0}
+.sp-hdr.open .sp-arr{transform:rotate(180deg)}
+.sp-body{display:none;padding:12px 14px}
+.sp-body.open{display:block}
+.sp-row{display:flex;align-items:center;gap:10px;padding:6px 4px;border-bottom:1px solid #f0f4f8;font-size:.81em}
+.sp-row:last-child{border-bottom:none}
+.sp-row .sr-status{font-size:1em;flex-shrink:0;width:20px;text-align:center}
+.sp-row .sr-nb{font-weight:800;color:var(--nt);min-width:36px;flex-shrink:0;font-size:.875em}
+.sp-row .sr-ttl{color:var(--text);flex:1}
+.sp-row.done .sr-ttl{color:var(--muted);text-decoration:line-through}
+.sc-pills{display:flex;align-items:center;gap:4px;overflow-x:auto;-webkit-overflow-scrolling:touch;flex:1;padding:0 4px}
+.sc-pill{background:#30363d;color:#8b949e;border:2px solid transparent;border-radius:6px;padding:3px 8px;font-size:.72em;font-weight:700;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:all .15s;white-space:nowrap;flex-shrink:0;line-height:1.4;display:flex;align-items:center;gap:3px}
+.sc-pill.checked{background:var(--nt);color:#fff;border-color:var(--ntd)}
+.sc-pill .pill-check{font-size:.875em}
+
+/* v2.1 — In-section check button */
+.sh{position:relative}
+.sec-check{position:absolute;right:40px;top:50%;transform:translateY(-50%);background:rgba(255,255,255,.15);border:2px solid rgba(255,255,255,.4);border-radius:6px;padding:2px 10px;font-size:.72em;font-weight:800;color:#fff;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:all .2s;white-space:nowrap;z-index:10;line-height:1.5}
+.sec-check.checked{background:var(--ntd);border-color:var(--ntd);color:#052e1e}
+.sec-check:active{opacity:.75}
+/* Sections panel + tick colours (these pages never defined --nt/--ntd, so the panel header was invisible) */
+:root{--nt:var(--dark);--ntd:#4ade80}
+</style>
+<style>.bc{background:#0d1117;padding:8px 16px;display:flex;align-items:center;flex-wrap:wrap;gap:4px;font-size:.75em;overflow-x:auto;white-space:nowrap;-webkit-overflow-scrolling:touch;border-bottom:1px solid #21262d}.bc a{color:#8b949e;text-decoration:none;font-weight:600;flex-shrink:0}.bc a:active{color:#c9d1d9}.bc .sep{color:#6e7681;flex-shrink:0}.bc .cur{color:#1ba0d7;font-weight:700;flex-shrink:0}</style>
+</head>
+<body>
+<nav class="bc"><a href="../../index.html">🏠 Home</a><span class="sep">›</span><a href="index.html">CCNA 2 — SRWE</a><span class="sep">›</span><span class="cur">M9: FHRP</span></nav>
+
+<!-- FONT SIZE TOGGLE -->
+<div class="fs-bar">
+  <div class="sc-pills" id="sc-pills">
+  <button class="sc-pill" id="pill-s1" onclick="toggleSection('s1',this)"><span class="pill-check">○</span>9.1</button>
+  <button class="sc-pill" id="pill-s2" onclick="toggleSection('s2',this)"><span class="pill-check">○</span>9.2</button>
+  <button class="sc-pill" id="pill-s3" onclick="toggleSection('s3',this)"><span class="pill-check">○</span>📊</button>
+  <button class="sc-pill" id="pill-s-pt-9-3" onclick="toggleSection('s-pt-9-3',this)"><span class="pill-check">○</span>PT 9.3</button>
+  <button class="sc-pill" id="pill-s4" onclick="toggleSection('s4',this)"><span class="pill-check">○</span>🎯</button>
+  </div>
+  <span class="fs-label" style="flex-shrink:0;margin-left:6px">Size</span>
+  <button class="fs-btn" onclick="setFs('14px',this)">S</button>
+  <button class="fs-btn active" onclick="setFs('16px',this)">M</button>
+  <button class="fs-btn" onclick="setFs('18px',this)">L</button>
+  <button class="fs-btn" onclick="setFs('20px',this)">XL</button>
+</div>
+
+<!-- HEADER -->
+<div class="hdr">
+  <div class="badge">CCNA 2 — SRWE v7.02</div>
+  <h1>🔄 Module 9: FHRP Concepts</h1>
+  <p>Switching, Routing &amp; Wireless Essentials · NetAcad Study Guide</p>
+  <div class="obj">Module Objective: Explain how FHRPs provide default gateway services in a redundant network</div>
+</div>
+
+<div class="sp-wrap">
+  <div class="sp-hdr" id="sp-hdr" onclick="toggleStudyPanel()">
+    <span class="sp-title">📚 Sections</span>
+    <span class="sp-arr" id="sp-arr">▼</span>
+  </div>
+  <div class="sp-body" id="sp-body">
+    <div class="sp-row" id="row-s1"><span class="sr-status" id="st-s1">○</span><span class="sr-nb">9.1</span><span class="sr-ttl">First Hop Redundancy Protocols</span></div>
+    <div class="sp-row" id="row-s2"><span class="sr-status" id="st-s2">○</span><span class="sr-nb">9.2</span><span class="sr-ttl">HSRP</span></div>
+    <div class="sp-row" id="row-s3"><span class="sr-status" id="st-s3">○</span><span class="sr-nb">📊</span><span class="sr-ttl">Numbers to Memorize</span></div>
+    <div class="sp-row" id="row-s-pt-9-3"><span class="sr-status" id="st-s-pt-9-3">○</span><span class="sr-nb">PT 9.3</span><span class="sr-ttl">Packet Tracer — HSRP and Data Center</span></div>
+    <div class="sp-row" id="row-s4"><span class="sr-status" id="st-s4">○</span><span class="sr-nb">🎯</span><span class="sr-ttl">Common Exam Traps — Module 9</span></div>
+  </div>
+</div>
+
+<!-- TABLE OF CONTENTS -->
+<div class="toc">
+  <div class="toch open" onclick="this.classList.toggle('open');document.getElementById('tocb').classList.toggle('open')">
+    📋 Table of Contents — Tap to expand <span class="arr">▼</span>
+  </div>
+  <div class="tocb open" id="tocb">
+    <div class="tocg">9.1 — First Hop Redundancy Protocols</div>
+    <a href="javascript:void(0)" onclick="goTo('s1')"><span class="n">9.1.1</span> Default Gateway Limitations</a>
+    <a href="javascript:void(0)" onclick="goTo('s1')"><span class="n">9.1.2</span> Router Redundancy — The Virtual Router</a>
+    <a href="javascript:void(0)" onclick="goTo('s1')"><span class="n">9.1.3</span> Steps for Router Failover</a>
+    <a href="javascript:void(0)" onclick="goTo('s1')"><span class="n">9.1.4</span> FHRP Options</a>
+    <div class="tocg">9.2 — HSRP</div>
+    <a href="javascript:void(0)" onclick="goTo('s2')"><span class="n">9.2.1</span> HSRP Overview</a>
+    <a href="javascript:void(0)" onclick="goTo('s2')"><span class="n">9.2.2</span> HSRP Priority and Preemption</a>
+    <a href="javascript:void(0)" onclick="goTo('s2')"><span class="n">9.2.3</span> HSRP States and Timers</a>
+    <a href="javascript:void(0)" onclick="goTo('s2')"><span class="n">9.2.4</span> HSRP Configuration (Optional)</a>
+    <div class="tocg">Reference</div>
+    <a href="javascript:void(0)" onclick="goTo('s3')"><span class="n">📊</span> Numbers to Memorize</a>
+    <a href="javascript:void(0)" onclick="goTo('s4')"><span class="n">🎯</span> Common Exam Traps</a>
+  </div>
+</div>
+
+<div class="wrap">
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- SECTION 9.1 — FIRST HOP REDUNDANCY PROTOCOLS -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div class="sec" id="s1">
+<div class="sh open" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">9.1</span><span class="ttl">First Hop Redundancy Protocols</span></span><button class="sec-check" id="sch-s1" onclick="event.stopPropagation();toggleSection('s1',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb open">
+
+  <div class="sub">
+  <h3><span class="sn">9.1.1</span> Default Gateway Limitations</h3>
+  <p>Every host on a LAN is configured with a <strong>single default gateway IP address</strong>. This is the router the host sends all external traffic to. This single gateway creates a <strong>single point of failure</strong> — if that router or its interface goes down, every host using that gateway loses access to all external networks.</p>
+  <div class="dg"><pre>
+  Normal operation:
+  PC1 ──────── [R1 = default gateway 10.0.0.1] ──── Internet
+  PC2 ──────── [R1]
+  
+  R1 fails:
+  PC1 ──── × ──── [R1 DOWN — 10.0.0.1 unreachable]
+  PC2 ──── × ──── [R1 DOWN]
+  
+  [R2 = 10.0.0.2 exists and is up, but hosts still point to 10.0.0.1]
+  → PC1 and PC2 are isolated from all external networks
+  → Even though R2 is fully operational, hosts have no way to use it</pre></div>
+  <p>The fundamental problem: IPv4 hosts are configured with a <strong>static default gateway address</strong>. When that address becomes unreachable, there is no automatic mechanism to switch to an alternate gateway. The host keeps sending traffic to the dead router indefinitely.</p>
+  <div class="ca info">
+    <span class="ic">💡</span>
+    <div><strong>IPv6 Note:</strong> IPv6 devices receive their default gateway from ICMPv6 RA messages and can receive a new RA from a backup router relatively quickly. However, IPv6 devices still benefit from FHRP for faster, more reliable failover — especially in enterprise environments.</div>
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">9.1.2</span> Router Redundancy — The Virtual Router</h3>
+  <p>The solution is to configure multiple physical routers to collectively present the illusion of a <strong>single virtual router</strong> to hosts. The virtual router has its own dedicated IP address and MAC address that never change from the hosts' perspective — regardless of which physical router is currently active.</p>
+
+  <div class="vr-box">
+    <div class="vr-title">🔄 How the Virtual Router Works</div>
+    <div class="vr-row"><span class="vr-key">Virtual IP:</span><span>10.0.0.1 — configured as the default gateway on ALL hosts. This IP never changes.</span></div>
+    <div class="vr-row"><span class="vr-key">Virtual MAC:</span><span>0000.0c07.ac01 — auto-generated by FHRP. Hosts ARP for the virtual IP and receive this MAC.</span></div>
+    <div class="vr-row"><span class="vr-key">R1 (active):</span><span>Physical IP 10.0.0.2 — currently processes all frames sent to the virtual MAC</span></div>
+    <div class="vr-row"><span class="vr-key">R2 (standby):</span><span>Physical IP 10.0.0.3 — monitors R1 and ready to take over instantly</span></div>
+    <div class="vr-row"><span class="vr-key">Hosts see:</span><span>Only 10.0.0.1 / 0000.0c07.ac01 — they have no awareness of R1 or R2 as separate devices</span></div>
+  </div>
+
+  <p>When frames are sent from hosts to the default gateway, they ARP for the virtual IP address and receive the virtual MAC in response. Frames sent to the virtual MAC are physically processed by whichever router is currently the active router. The physical router handling the traffic is completely transparent to hosts.</p>
+  <div class="ca tip">
+    <span class="ic">✅</span>
+    <div><strong>The key insight:</strong> Hosts are configured once with the virtual IP as their gateway. They never need reconfiguration regardless of which physical router fails or recovers. The virtual IP and virtual MAC are stable identifiers that move between physical routers as needed.</div>
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">9.1.3</span> Steps for Router Failover</h3>
+  <p>When the active router fails, the FHRP transitions the standby router to the active role automatically and transparently. The entire process takes about 10 seconds with default HSRP timers.</p>
+  <ol class="steps">
+    <li><strong>Standby router stops receiving Hello messages from the active router.</strong> Active and standby routers continuously exchange Hello messages. When the standby's hold timer expires (10 seconds by default) without a Hello, it concludes the active router has failed.</li>
+    <li><strong>Standby router assumes the role of the active (forwarding) router.</strong> The standby transitions to active state and begins forwarding all traffic for the FHRP group.</li>
+    <li><strong>New active router assumes the virtual IP and virtual MAC address.</strong> Because the new active router responds to the same virtual IP and MAC, hosts see no disruption. Their ARP caches already have the correct mapping — no ARP refresh, no host reconfiguration needed.</li>
+  </ol>
+  <div class="ca tip">
+    <span class="ic">✅</span>
+    <div><strong>The failover is completely transparent to end devices.</strong> From a host's perspective, the default gateway never changed — the same IP and MAC still respond, just on a different physical device. No error messages, no connection drops (beyond a brief pause during the hold timer).</div>
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">9.1.4</span> FHRP Options</h3>
+  <p>The FHRP used depends on equipment type, vendor requirements, and whether load balancing is needed:</p>
+
+  <div class="fhrp-grid">
+    <div class="fhrp-card cisco">
+      <div class="fc-title">HSRP — Hot Standby Router Protocol</div>
+      <div class="fc-badge">Cisco Proprietary</div>
+      <p>IPv4 only. Active/standby model — one router forwards, others are idle. Most commonly tested on the CCNA exam. Cisco's primary FHRP for enterprise networks.</p>
+    </div>
+    <div class="fhrp-card cisco">
+      <div class="fc-title">HSRP for IPv6</div>
+      <div class="fc-badge">Cisco Proprietary</div>
+      <p>Same HSRP logic applied to IPv6 environments. Uses a virtual IPv6 link-local address derived from the HSRP virtual MAC address.</p>
+    </div>
+    <div class="fhrp-card ieee">
+      <div class="fc-title">VRRPv2 — Virtual Router Redundancy Protocol v2</div>
+      <div class="fc-badge">IEEE Open Standard</div>
+      <p>IPv4 only. Master/backup model — functionally similar to HSRP but works across multiple vendors. Use when network includes non-Cisco equipment.</p>
+    </div>
+    <div class="fhrp-card ieee">
+      <div class="fc-title">VRRPv3 — Virtual Router Redundancy Protocol v3</div>
+      <div class="fc-badge">IEEE Open Standard</div>
+      <p>Supports both IPv4 and IPv6 in a single protocol. More scalable than VRRPv2. The modern open-standard choice for multivendor environments needing IPv6 support.</p>
+    </div>
+    <div class="fhrp-card cisco">
+      <div class="fc-title">GLBP — Gateway Load Balancing Protocol</div>
+      <div class="fc-badge">Cisco Proprietary</div>
+      <p>IPv4. The only FHRP that provides true <strong>load balancing</strong> — multiple routers all actively forward traffic simultaneously using different virtual MAC addresses. Each router in the group serves as the active forwarder for a subset of hosts.</p>
+    </div>
+    <div class="fhrp-card cisco">
+      <div class="fc-title">GLBP for IPv6</div>
+      <div class="fc-badge">Cisco Proprietary</div>
+      <p>Same GLBP load-balancing functionality applied to IPv6 environments.</p>
+    </div>
+    <div class="fhrp-card legacy">
+      <div class="fc-title">IRDP — ICMP Router Discovery Protocol</div>
+      <div class="fc-badge">RFC 1256 — Legacy</div>
+      <p>An older IPv4 FHRP solution. Rarely used in modern networks. Know the name for the exam but it is not a focus area.</p>
+    </div>
+  </div>
+
+  <div class="et">
+    <div class="lbl">🎯 EXAM TIP — FHRP Key Distinctions</div>
+    <ul>
+      <li><strong>HSRP</strong> = Cisco proprietary, IPv4, active/standby (one active at a time)</li>
+      <li><strong>VRRP</strong> = Open standard (IEEE), works with any vendor. VRRPv2 = IPv4. VRRPv3 = IPv4 + IPv6</li>
+      <li><strong>GLBP</strong> = Cisco proprietary, IPv4, the ONLY FHRP with load balancing</li>
+      <li>HSRP and VRRP waste standby routers — they sit idle. GLBP uses ALL routers to forward traffic</li>
+    </ul>
+  </div>
+
+  <div class="tw"><table>
+    <tr><th>FHRP</th><th>Standard</th><th>Load Balancing?</th><th>IPv6?</th></tr>
+    <tr><td><strong>HSRP</strong></td><td>Cisco proprietary</td><td>❌ No</td><td>Separate HSRP for IPv6</td></tr>
+    <tr><td><strong>VRRPv2</strong></td><td>IEEE open standard</td><td>❌ No</td><td>❌ No</td></tr>
+    <tr><td><strong>VRRPv3</strong></td><td>IEEE open standard</td><td>❌ No</td><td>✅ Yes</td></tr>
+    <tr><td><strong>GLBP</strong></td><td>Cisco proprietary</td><td>✅ Yes</td><td>Separate GLBP for IPv6</td></tr>
+    <tr><td><strong>IRDP</strong></td><td>RFC 1256 (legacy)</td><td>❌ No</td><td>❌ No</td></tr>
+  </table></div>
+  </div>
+
+</div></div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- SECTION 9.2 — HSRP -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div class="sec" id="s2">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">9.2</span><span class="ttl">HSRP</span></span><button class="sec-check" id="sch-s2" onclick="event.stopPropagation();toggleSection('s2',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb">
+
+  <div class="sub">
+  <h3><span class="sn">9.2.1</span> HSRP Overview</h3>
+  <p><strong>HSRP (Hot Standby Router Protocol)</strong> is Cisco's proprietary FHRP for IPv4. It creates a virtual router group where one physical router is <strong>active</strong> (forwarding all traffic) and one is <strong>standby</strong> (monitoring the active and ready to take over instantly).</p>
+  <div class="tw"><table>
+    <tr><th>HSRP Characteristic</th><th>Detail</th></tr>
+    <tr><td><strong>Standard</strong></td><td>Cisco proprietary — only between Cisco devices</td></tr>
+    <tr><td><strong>IPv4 or IPv6</strong></td><td>IPv4 (separate protocol for IPv6)</td></tr>
+    <tr><td><strong>Active routers</strong></td><td>One active router per HSRP group — others are standby or listen</td></tr>
+    <tr><td><strong>Virtual IP address</strong></td><td>Configured by the administrator — this is what hosts use as their default gateway</td></tr>
+    <tr><td><strong>Virtual MAC address</strong></td><td>Auto-generated: <code>0000.0c07.acXX</code> where XX = group number in hex</td></tr>
+    <tr><td><strong>Hello timer</strong></td><td><strong>3 seconds</strong> (default)</td></tr>
+    <tr><td><strong>Hold timer</strong></td><td><strong>10 seconds</strong> (default) — standby waits this long before taking over</td></tr>
+    <tr><td><strong>Default priority</strong></td><td><strong>100</strong> — higher value wins the active role</td></tr>
+  </table></div>
+
+  <div class="cw"><div class="cl">HSRP virtual MAC address format <button class="cpb" onclick="copyCode(this)">Copy</button></div>
+  <pre><code>Virtual MAC format: 0000.0c07.acXX  (XX = HSRP group number in hex)
+
+Group  0: 0000.0c07.ac00
+Group  1: 0000.0c07.ac01   ← most common in labs
+Group 10: 0000.0c07.ac0a
+Group 16: 0000.0c07.ac10
+
+! Hosts ARP for the virtual IP address (e.g., 10.0.0.1)
+! and receive this virtual MAC in response
+! When failover occurs, the new active router answers to this same MAC
+! Hosts never need to update their ARP cache</code></pre></div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">9.2.2</span> HSRP Priority and Preemption</h3>
+
+  <h4>HSRP Priority</h4>
+  <p>HSRP uses a <strong>priority value</strong> to determine which router becomes active. The router with the <strong>highest priority wins</strong> the active role.</p>
+  <ul>
+    <li>Default priority: <strong>100</strong></li>
+    <li>Range: <strong>0 to 255</strong></li>
+    <li>If priorities are equal: the router with the <strong>highest IPv4 address</strong> wins</li>
+    <li>Configure with: <code>standby [group] priority [value]</code></li>
+  </ul>
+
+  <div class="sc">
+    <div class="scl">🔍 PRIORITY EXAMPLE</div>
+    R1: HSRP priority = 150 → becomes ACTIVE (highest priority)<br>
+    R2: HSRP priority = 100 (default) → becomes STANDBY<br><br>
+    If priorities were both 100:<br>
+    R1: IP = 10.0.0.2, R2: IP = 10.0.0.3<br>
+    R2 wins (higher IPv4 address) → R2 becomes ACTIVE
+  </div>
+
+  <h4>HSRP Preemption</h4>
+  <p>By default, once a router becomes active, it stays active even if a higher-priority router comes online later. This is called <strong>non-preemptive</strong> behavior.</p>
+
+  <div class="preempt-grid">
+    <div class="preempt-card no-preempt">
+      <div class="pc-title">❌ WITHOUT Preemption (default behavior)</div>
+      <p>R1 (priority 150) is active. R1 fails. R2 (priority 100) takes over as active.<br><br>
+      R1 recovers and comes back online.<br>
+      R1 just becomes standby — R2 remains active even though R1 has higher priority.<br><br>
+      The higher-priority router does NOT automatically reclaim the active role.</p>
+    </div>
+    <div class="preempt-card with-preempt">
+      <div class="pc-title">✅ WITH Preemption enabled on R1</div>
+      <p>R1 (priority 150, preempt enabled) is active. R1 fails. R2 (priority 100) takes over as active.<br><br>
+      R1 recovers and comes back online.<br>
+      R1 detects it has higher priority → forces a new election → <strong>reclaims active role</strong>.<br>
+      R2 returns to standby.<br><br>
+      Configure: <code>standby 1 preempt</code> on R1.</p>
+    </div>
+  </div>
+
+  <div class="ca warn">
+    <span class="ic">⚠️</span>
+    <div><strong>Preemption works only for priority — not for IP address tiebreakers.</strong> If two routers have equal priority and the higher-IP router is active, preemption will NOT trigger a re-election based on IP address alone. Preemption only forces re-election when a router with a strictly <em>higher priority value</em> comes online.</div>
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">9.2.3</span> HSRP States and Timers</h3>
+  <p>When an interface is configured with HSRP or first activated, the router transitions through a series of states before reaching its final role. Only <strong>one router per group is Active</strong> and only <strong>one is Standby</strong> — all others are in Listen state.</p>
+
+  <div class="state-flow">
+    <div class="state-row initial"><div class="state-badge">Initial</div><div class="state-desc">HSRP is not yet running — entered when the interface first becomes available or when the configuration changes</div></div>
+    <div class="state-row learn"><div class="state-badge">Learn</div><div class="state-desc">Router has not yet determined the virtual IP address and has not seen a Hello from the active router — waits passively for information</div></div>
+    <div class="state-row listen"><div class="state-badge">Listen</div><div class="state-desc">Router knows the virtual IP but is neither active nor standby — listens for Hello messages from the active and standby routers. Most routers in a group stay here.</div></div>
+    <div class="state-row speak"><div class="state-badge">Speak</div><div class="state-desc">Router sends periodic Hello messages and actively participates in the election of the active and standby router</div></div>
+    <div class="state-row standby"><div class="state-badge">Standby</div><div class="state-desc">Router is the next-in-line to become active — sends periodic Hellos and monitors the active router. Only one router per group reaches this state.</div></div>
+    <div class="state-row active"><div class="state-badge">Active</div><div class="state-desc">Router is currently forwarding traffic for the HSRP group. Sends Hello messages every 3 seconds. Only one router per group is in this state.</div></div>
+  </div>
+
+  <h4 style="margin-top:16px">HSRP Timers</h4>
+  <div class="tw"><table>
+    <tr><th>Timer</th><th>Default</th><th>Purpose</th></tr>
+    <tr><td><strong>Hello timer</strong></td><td><strong>3 seconds</strong></td><td>How often the active and standby routers send Hello messages to the HSRP group multicast address</td></tr>
+    <tr><td><strong>Hold timer (Dead timer)</strong></td><td><strong>10 seconds</strong></td><td>How long the standby waits without receiving a Hello before declaring the active router failed and taking over</td></tr>
+  </table></div>
+
+  <div class="cw"><div class="cl">HSRP failover timeline with default timers <button class="cpb" onclick="copyCode(this)">Copy</button></div>
+  <pre><code>Active router fails at T=0
+Standby router waits 10 seconds (hold timer) without receiving a Hello
+At T=10 seconds: standby declares active dead → transitions to Active state
+Total failover time ≈ 10 seconds (default timers)
+
+! Reducing timers speeds failover but increases CPU usage:
+! Minimum Hello timer: 1 second
+! Minimum Hold timer: 4 seconds
+! Rule: Hold timer must be at least 3× the Hello timer
+!
+! Example — aggressive timers (faster failover):
+R1(config-if)# standby 1 timers 1 3
+! (1 second Hello, 3 second Hold)
+! Failover time ≈ 3 seconds instead of 10 seconds</code></pre></div>
+
+  <div class="ca info">
+    <span class="ic">💡</span>
+    <div><strong>Timer tuning rule:</strong> The hold timer should always be at least 3× the Hello timer. Setting Hello=1, Hold=3 gives fast failover (~3 seconds) with acceptable CPU impact. Do not set Hello below 1 second or Hold below 4 seconds — this causes excessive CPU usage and unnecessary state changes.</div>
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">9.2.4</span> HSRP Configuration — Optional (Not Tested on CCNA Exam)</h3>
+  <div class="ca warn">
+    <span class="ic">⚠️</span>
+    <div><strong>HSRP configuration is explicitly labeled optional in the NetAcad curriculum (section 9.3.3).</strong> You are NOT required to configure HSRP for the CCNA exam. This section is included so you can follow along with the Packet Tracer activity and understand what the commands do.</div>
+  </div>
+
+  <div class="cw"><div class="cl">R1 — Active HSRP router configuration <button class="cpb" onclick="copyCode(this)">Copy</button></div>
+  <pre><code>R1(config)# interface GigabitEthernet0/0/0
+R1(config-if)# standby version 2               ! Use HSRPv2 (recommended)
+R1(config-if)# standby 1 ip 10.0.0.1          ! Group 1, virtual IP = 10.0.0.1
+R1(config-if)# standby 1 priority 150          ! Higher priority → becomes active
+R1(config-if)# standby 1 preempt              ! Reclaim active role if recovered
+R1(config-if)# end</code></pre></div>
+
+  <div class="cw"><div class="cl">R2 — Standby HSRP router configuration <button class="cpb" onclick="copyCode(this)">Copy</button></div>
+  <pre><code>R2(config)# interface GigabitEthernet0/0/0
+R2(config-if)# standby version 2
+R2(config-if)# standby 1 ip 10.0.0.1          ! Same group, same virtual IP
+R2(config-if)# standby 1 priority 100          ! Lower priority → becomes standby
+R2(config-if)# end                             ! (or just leave default of 100)</code></pre></div>
+
+  <div class="cw"><div class="cl">Verify HSRP — show standby brief <button class="cpb" onclick="copyCode(this)">Copy</button></div>
+  <pre><code>R1# show standby brief
+                     P indicates configured to preempt.
+                     |
+Interface   Grp  Pri P State    Active          Standby         Virtual IP
+Gi0/0/0     1    150 P Active   local           10.0.0.3        10.0.0.1
+!                ↑↑ ↑  ↑          ↑               ↑               ↑
+!               150 preempt Active  this router    R2's real IP    virtual IP
+!               priority  on        IS the active              (hosts' gateway)
+
+R2# show standby brief
+Interface   Grp  Pri P State    Active          Standby         Virtual IP
+Gi0/0/0     1    100   Standby  10.0.0.2        local           10.0.0.1
+!                         ↑       ↑               ↑
+!                       Standby   R1's real IP    this router is standby</code></pre></div>
+
+  <div class="tw" style="margin-top:12px"><table>
+    <tr><th>show standby brief Column</th><th>What It Shows</th></tr>
+    <tr><td><strong>Grp</strong></td><td>HSRP group number</td></tr>
+    <tr><td><strong>Pri</strong></td><td>This router's configured HSRP priority</td></tr>
+    <tr><td><strong>P</strong></td><td>Preemption is configured on this router</td></tr>
+    <tr><td><strong>State</strong></td><td>Current HSRP state (Active, Standby, Listen, etc.)</td></tr>
+    <tr><td><strong>Active</strong></td><td>IP address of the current active router ("local" if it is this router)</td></tr>
+    <tr><td><strong>Standby</strong></td><td>IP address of the current standby router ("local" if it is this router)</td></tr>
+    <tr><td><strong>Virtual IP</strong></td><td>The virtual IP address — what hosts use as their default gateway</td></tr>
+  </table></div>
+  </div>
+
+</div></div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- SECTION 9.3 — NUMBERS TO MEMORIZE -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div class="sec" id="s3">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">📊</span><span class="ttl">Numbers to Memorize</span></span><button class="sec-check" id="sch-s3" onclick="event.stopPropagation();toggleSection('s3',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb">
+
+  <div class="mem-box">
+    <div class="mb-title">🔢 HSRP Key Values</div>
+    <div class="mem-grid">
+      <div class="mem-item"><div class="mi-val">3 sec</div><div class="mi-label">Hello timer (default)</div></div>
+      <div class="mem-item"><div class="mi-val">10 sec</div><div class="mi-label">Hold timer / failover time (default)</div></div>
+      <div class="mem-item"><div class="mi-val">100</div><div class="mi-label">Default HSRP priority</div></div>
+      <div class="mem-item"><div class="mi-val">0–255</div><div class="mi-label">HSRP priority range</div></div>
+      <div class="mem-item"><div class="mi-val">Higher</div><div class="mi-label">Priority wins active role</div></div>
+      <div class="mem-item"><div class="mi-val">Higher</div><div class="mi-label">IPv4 address wins tie</div></div>
+    </div>
+  </div>
+
+  <div class="ca info">
+    <span class="ic">💡</span>
+    <div><strong>Virtual MAC address formula:</strong> <code>0000.0c07.acXX</code> where XX = HSRP group number in hexadecimal.<br><br>
+    Group 1 → XX = 01 → MAC = <code>0000.0c07.ac01</code><br>
+    Group 10 → XX = 0a → MAC = <code>0000.0c07.ac0a</code><br>
+    Group 255 → XX = ff → MAC = <code>0000.0c07.acff</code></div>
+  </div>
+
+  <p style="font-weight:700;color:var(--dark);margin:16px 0 8px;">FHRP Quick Comparison</p>
+  <div class="tw"><table>
+    <tr><th>FHRP</th><th>Standard</th><th>Load Balance?</th><th>IPv6?</th><th>Active/Standby Terms</th></tr>
+    <tr><td><strong>HSRP</strong></td><td>Cisco</td><td>❌ No</td><td>Separate protocol</td><td>Active / Standby</td></tr>
+    <tr><td><strong>VRRPv2</strong></td><td>IEEE open</td><td>❌ No</td><td>❌ No</td><td>Master / Backup</td></tr>
+    <tr><td><strong>VRRPv3</strong></td><td>IEEE open</td><td>❌ No</td><td>✅ Yes</td><td>Master / Backup</td></tr>
+    <tr><td><strong>GLBP</strong></td><td>Cisco</td><td>✅ Yes</td><td>Separate protocol</td><td>AVG / AVF</td></tr>
+    <tr><td><strong>IRDP</strong></td><td>RFC 1256</td><td>❌ No</td><td>❌ No</td><td>Legacy — rarely used</td></tr>
+  </table></div>
+
+</div></div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- SECTION 9.4 — EXAM TRAPS -->
+<!-- ═══════════════════════════════════════════════════════ -->
+
+<div class="sec" id="s-pt-9-3">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">9.3</span><span class="ttl">Packet Tracer — HSRP and Data Center</span></span><button class="sec-check" id="sch-s-pt-9-3" onclick="event.stopPropagation();toggleSection('s-pt-9-3',this)">○ Mark done</button>
+</div>
+<div class="sb">
+  <div style="padding:14px 16px;background:#0d1117;border:1px solid #30363d;border-left:3px solid #1f6feb;border-radius:6px">
+    <div style="font-size:.72em;font-weight:800;text-transform:uppercase;letter-spacing:.8px;color:#1f6feb;margin-bottom:10px">&#x1F4E6; Packet Tracer Activities</div>
+    <div style="font-size:.82em;color:#6e7681;margin-bottom:10px">Open in Cisco Packet Tracer via your NetAcad course.</div>
+      <div style="display:flex;align-items:baseline;gap:10px;padding:6px 0;border-bottom:1px solid #21262d"><span style="font-family:monospace;font-size:.85em;color:#79c0ff;white-space:nowrap;flex-shrink:0;min-width:52px">9.3.3</span><span style="font-size:.88em;color:#c9d1d9">HSRP Configuration Guide</span></div>
+      <div style="display:flex;align-items:baseline;gap:10px;padding:6px 0;border-bottom:1px solid #21262d"><span style="font-family:monospace;font-size:.85em;color:#79c0ff;white-space:nowrap;flex-shrink:0;min-width:52px">9.3.4</span><span style="font-size:.88em;color:#c9d1d9">Data Center Exploration (Physical Mode)</span></div>
+    <div style="margin-top:12px;font-size:.78em;color:#6e7681">Full list: <a href="https://itexamanswers.net/ccna-2-packet-tracer-labs-answers-srwe-v7-02.html" target="_blank" rel="noopener" style="color:#58a6ff;word-break:break-all">https://itexamanswers.net/ccna-2-packet-tracer-labs-answers-srwe-v7-02.html</a></div>
+  </div>
+</div>
+</div>
+<div class="sec" id="s4">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">🎯</span><span class="ttl">Common Exam Traps — Module 9</span></span><button class="sec-check" id="sch-s4" onclick="event.stopPropagation();toggleSection('s4',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb">
+
+  <div class="ca danger"><span class="ic">❌</span><div><strong>Trap 1: HSRP is Cisco proprietary — VRRP is the open standard.</strong><br>When the exam asks for a multivendor-compatible FHRP, the answer is VRRP. VRRPv2 = IPv4 only. VRRPv3 = both IPv4 and IPv6. HSRP and GLBP are Cisco proprietary and cannot be used with non-Cisco equipment.</div></div>
+
+  <div class="ca danger"><span class="ic">❌</span><div><strong>Trap 2: Higher HSRP priority = active router.</strong><br>Students sometimes assume "higher priority = standby" based on other protocols. In HSRP, higher priority wins the active role. Default is 100. To make a router active, set its priority above 100 (e.g., 150).</div></div>
+
+  <div class="ca danger"><span class="ic">❌</span><div><strong>Trap 3: Without preemption, a recovered router does NOT automatically reclaim the active role.</strong><br>If R1 (priority 150) fails, R2 takes over. When R1 recovers, it just becomes standby — R2 stays active. Only with <code>standby preempt</code> on R1 will it force a re-election and reclaim the active role.</div></div>
+
+  <div class="ca danger"><span class="ic">❌</span><div><strong>Trap 4: Preemption works only for priority — not for IP address tiebreakers.</strong><br>If two routers have equal priority and the higher-IP router is currently active, preemption will NOT trigger a re-election based on IP address alone. Preemption only forces re-election when a router with a strictly higher <em>priority value</em> comes online.</div></div>
+
+  <div class="ca danger"><span class="ic">❌</span><div><strong>Trap 5: GLBP is the ONLY FHRP that provides load balancing.</strong><br>HSRP and VRRP only allow one active router at a time — all standby routers sit completely idle. GLBP assigns different virtual MAC addresses to each router so different hosts use different physical routers, distributing load across all routers in the group simultaneously.</div></div>
+
+  <div class="ca danger"><span class="ic">❌</span><div><strong>Trap 6: Hosts configure the HSRP virtual IP as their default gateway — NOT the physical router's IP.</strong><br>If hosts pointed to R1's physical IP (e.g., 10.0.0.2), they'd lose connectivity when R1 fails. The virtual IP (e.g., 10.0.0.1) always works because it moves with the active role. This is the entire point of FHRP.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 7: Default Hello = 3 seconds. Default Hold = 10 seconds.</strong><br>If standby doesn't receive a Hello for 10 seconds, it assumes the active has failed and takes over. Total failover time ≈ 10 seconds with defaults. Reducing timers speeds failover but increases CPU load. Hold timer must be at least 3× the Hello timer.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 8: HSRP virtual MAC = 0000.0c07.acXX where XX is the group number in hex.</strong><br>Group 1 = 0000.0c07.ac01. Group 10 = 0000.0c07.ac0a. This MAC is what hosts receive when they ARP for the virtual IP. The virtual MAC stays the same during failover — the new active router simply starts responding to that MAC.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 9: The failover is transparent to end devices — no ARP refresh needed.</strong><br>Hosts never see the failover. The virtual IP and virtual MAC remain the same — only which physical router responds to that MAC changes. Existing host ARP caches remain valid throughout the failover.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 10: Only one router is Active and only one is Standby per HSRP group.</strong><br>All other routers in the group are in Listen state. Listen state routers monitor the group but do not participate in forwarding unless both Active and Standby fail. There is never more than one active router per HSRP group.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 11: VRRPv3 supports both IPv4 and IPv6 — VRRPv2 supports only IPv4.</strong><br>If the exam asks which open-standard FHRP supports IPv6, the answer is VRRPv3. VRRPv2 is IPv4 only. Don't confuse version numbers with IPv6 support.</div></div>
+
+  <div class="ca tip"><span class="ic">✅</span><div><strong>Module 9 is concepts-only — HSRP configuration is NOT tested on the CCNA exam.</strong><br><br>
+  Focus on memorizing:<br>
+  • Hello = 3s, Hold = 10s, Default priority = 100<br>
+  • Higher priority wins active role<br>
+  • Preemption required for recovered router to reclaim active role<br>
+  • HSRP and GLBP = Cisco. VRRP = open standard (multivendor)<br>
+  • GLBP = the only FHRP with load balancing<br>
+  • Virtual MAC = 0000.0c07.acXX (XX = group number in hex)<br>
+  • Hosts use the virtual IP as their gateway — never the physical router's IP</div></div>
+
+</div></div>
+
+</div><!-- end .wrap -->
+
+<div class="ft">
+  CCNA 2 SRWE v7.02 — Module 9: FHRP Concepts v1.4<br>
+  Based on Cisco NetAcad curriculum · Study guide for personal use
+</div>
+
+<button class="tb" id="topb" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+
+<script>
+var MOD_KEY="ccna2-module9-fhrp-concepts";
+var SECS=["s1","s2","s3","s-pt-9-3","s4"];
+var checked={};
+function loadState(){
+  try{var s=localStorage.getItem(MOD_KEY);if(s)checked=JSON.parse(s);}catch(e){}
+  SECS.forEach(function(id){
+    var pill=document.getElementById('pill-'+id);
+    var row=document.getElementById('row-'+id);
+    var st=document.getElementById('st-'+id);
+    var sch=document.getElementById('sch-'+id);
+    if(checked[id]){
+      if(pill){pill.classList.add('checked');pill.querySelector('.pill-check').textContent='✓';}
+      if(row)row.classList.add('done');
+      if(st)st.textContent='✓';
+      if(sch){sch.classList.add('checked');sch.textContent='✓ Done';}
+    } else {
+      if(pill){pill.classList.remove('checked');pill.querySelector('.pill-check').textContent='○';}
+      if(row)row.classList.remove('done');
+      if(st)st.textContent='○';
+      if(sch){sch.classList.remove('checked');sch.textContent='○ Mark done';}
+    }
+  });
+}
+function toggleSection(id,btn){checked[id]=!checked[id];try{localStorage.setItem(MOD_KEY,JSON.stringify(checked));}catch(e){}loadState();}
+function toggleStudyPanel(){
+  var hdr=document.getElementById('sp-hdr');
+  var body=document.getElementById('sp-body');
+  var arr=document.getElementById('sp-arr');
+  hdr.classList.toggle('open');body.classList.toggle('open');
+  if(arr)arr.textContent=body.classList.contains('open')?'▲':'▼';
+}
+function goTo(id){var el=document.getElementById(id);if(!el)return;var h=el.querySelector('.sh,.section-header'),b=el.querySelector('.sb,.section-body');if(h&&b&&!b.classList.contains('open')){h.classList.add('open');b.classList.add('open');}setTimeout(function(){window.scrollTo({top:el.getBoundingClientRect().top+window.pageYOffset-60,behavior:'smooth'});},50);}
+function setFs(size,btn){document.documentElement.style.setProperty('--base-fs',size);document.querySelectorAll('.fs-btn').forEach(function(b){b.classList.remove('active');});btn.classList.add('active');try{localStorage.setItem('ccna-fs',size);}catch(e){}}
+(function(){try{var s=localStorage.getItem('ccna-fs');if(s){document.documentElement.style.setProperty('--base-fs',s);document.querySelectorAll('.fs-btn').forEach(function(b){b.classList.remove('active');if((b.textContent==='S'&&s==='14px')||(b.textContent==='M'&&s==='16px')||(b.textContent==='L'&&s==='18px')||(b.textContent==='XL'&&s==='20px'))b.classList.add('active');});}}catch(e){}loadState();})();
+function copyCode(b){var t=b.closest('.cw').querySelector('pre').innerText;if(navigator.clipboard){navigator.clipboard.writeText(t).then(function(){b.textContent='Copied!';setTimeout(function(){b.textContent='Copy';},1500);}).catch(function(){fb(t,b);});}else{fb(t,b);}}
+function fb(t,b){var a=document.createElement('textarea');a.value=t;a.style.position='fixed';a.style.opacity='0';document.body.appendChild(a);a.focus();a.select();document.execCommand('copy');document.body.removeChild(a);b.textContent='Copied!';setTimeout(function(){b.textContent='Copy';},1500);}
+</script>
+<script src="../../site-config.js"></script>
+</body>
+</html>

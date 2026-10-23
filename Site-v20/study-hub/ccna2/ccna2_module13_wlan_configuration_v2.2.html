@@ -1,0 +1,959 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=2.0">
+<title>CCNA 2 Module 13: WLAN Configuration v2.2</title>
+<style>
+:root{
+  --blue:#1ba0d7;--dark:#005073;--green:#6cc24a;
+  --teal:#0e7490;--teald:#67e8f9;
+  --bg:#f4f6f8;--card:#fff;--text:#1a1a2e;--muted:#5a6a7a;
+  --cbg:#0d1117;--ctxt:#c9d1d9;--r:12px;--sh:0 2px 12px rgba(0,0,0,.08);
+  --base-fs:16px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);font-size:var(--base-fs);line-height:1.7}
+
+/* ── Font size toggle ── */
+.fs-bar{position:sticky;top:0;z-index:200;background:#1a1a2e;display:flex;align-items:center;justify-content:flex-end;padding:6px 14px;gap:6px;box-shadow:0 2px 8px rgba(0,0,0,.3)}
+.fs-label{color:#8b949e;font-size:.72em;font-weight:700;letter-spacing:.5px;text-transform:uppercase;margin-right:4px}
+.fs-btn{background:#30363d;color:#c9d1d9;border:2px solid transparent;border-radius:6px;padding:4px 12px;font-size:.75em;font-weight:700;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:all .2s;line-height:1.4}
+.fs-btn:active,.fs-btn.active{background:var(--teal);color:#fff;border-color:var(--teal)}
+
+/* ── Header ── */
+.hdr{background:linear-gradient(135deg,#0f4c5c,var(--teal));color:#fff;padding:32px 20px 24px;text-align:center}
+.hdr .badge{display:inline-block;background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.4);border-radius:20px;padding:4px 14px;font-size:.81em;margin-bottom:12px}
+.hdr h1{font-size:1.625em;font-weight:700;margin-bottom:6px}
+.hdr p{font-size:.94em;opacity:.85}
+.hdr .obj{display:inline-block;background:rgba(255,255,255,.15);border-radius:8px;padding:7px 16px;margin-top:12px;font-size:.875em;font-style:italic}
+
+/* ── Progress bar ── */
+.pb{background:var(--card);padding:14px 16px;margin:16px 16px 0;border-radius:var(--r);box-shadow:var(--sh)}
+.pbl{font-size:.81em;color:var(--muted);margin-bottom:6px;font-weight:600}
+.pbt{background:#e0e7ef;border-radius:10px;height:8px;overflow:hidden}
+.pbf{background:linear-gradient(90deg,var(--teal),var(--teald));height:100%;border-radius:10px;width:0;transition:width 1s ease}
+
+/* ── TOC ── */
+.toc{background:var(--card);margin:16px;border-radius:var(--r);box-shadow:var(--sh);overflow:hidden}
+.toch{background:var(--teal);color:#fff;padding:14px 18px;font-weight:700;font-size:.94em;display:flex;justify-content:space-between;align-items:center;cursor:pointer;user-select:none}
+.toch .arr{transition:transform .3s}
+.toch.open .arr{transform:rotate(180deg)}
+.tocb{display:none;padding:10px 0}
+.tocb.open{display:block}
+.tocg{font-size:.69em;font-weight:800;letter-spacing:.8px;color:var(--teal);text-transform:uppercase;padding:8px 20px 2px}
+.tocb a{display:block;padding:9px 20px 9px 28px;color:var(--text);text-decoration:none;font-size:.875em;border-left:3px solid transparent;transition:all .2s}
+.tocb a:hover,.tocb a:active{background:#e0f2fe;border-left-color:var(--teal)}
+.tocb a .n{display:inline-block;background:var(--teal);color:#fff;border-radius:5px;padding:1px 8px;font-size:.75em;font-weight:700;margin-right:8px}
+
+/* ── Main wrap ── */
+.wrap{padding:0 16px 100px}
+
+/* ── Section cards ── */
+.sec{background:var(--card);border-radius:var(--r);box-shadow:var(--sh);margin-bottom:16px;overflow:hidden}
+.sh{background:linear-gradient(90deg,#0f4c5c,var(--teal));color:#fff;padding:16px 18px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;user-select:none;-webkit-tap-highlight-color:transparent}
+.sh .ttl{font-weight:700;font-size:1em}
+.sh .nb{background:rgba(255,255,255,.25);border-radius:6px;padding:3px 10px;font-size:.81em;font-weight:700;margin-right:10px;white-space:nowrap}
+.sh .ch{font-size:1.125em;transition:transform .3s}
+.sh.open .ch{transform:rotate(180deg)}
+.sb{display:none;padding:18px}
+.sb.open{display:block}
+
+/* ── Subsections ── */
+.sub{margin-bottom:24px}
+.sub:last-child{margin-bottom:0}
+.sub h3{font-size:.94em;font-weight:700;color:var(--teal);margin-bottom:10px;padding-bottom:6px;border-bottom:2px solid #e0f2fe;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.sub h3 .sn{background:var(--teal);color:#fff;border-radius:5px;padding:2px 8px;font-size:.75em;white-space:nowrap}
+.sub h4{font-size:.875em;font-weight:700;color:var(--teal);margin:14px 0 6px}
+.sub p{margin-bottom:10px;font-size:.94em}
+.sub ul,.sub ol{padding-left:20px;margin:8px 0;font-size:.94em}
+.sub li{margin-bottom:5px}
+
+/* ── Code blocks ── */
+.cw{background:var(--cbg);border-radius:10px;margin:12px 0;overflow:hidden}
+.cl{background:#21262d;color:#c9d1d9;font-size:.78em;font-weight:700;padding:6px 14px;letter-spacing:.5px;text-transform:uppercase;display:flex;justify-content:space-between;align-items:center}
+.cpb{background:#30363d;color:#c9d1d9;border:none;border-radius:5px;padding:3px 10px;font-size:.69em;cursor:pointer}
+.cpb:active{background:var(--teal);color:#fff}
+pre{margin:0;padding:14px;overflow-x:auto;-webkit-overflow-scrolling:touch}
+code{font-family:'Courier New',monospace;font-size:.81em;color:var(--ctxt);line-height:1.6}
+p code,li code,td code,.ca code{background:#e0f2fe;color:#0f4c5c;border-radius:4px;padding:1px 5px;font-size:.81em;font-family:'Courier New',monospace;font-weight:600}
+
+/* ── Callout boxes ── */
+.ca{border-radius:8px;padding:12px 14px;margin:12px 0;font-size:.875em;line-height:1.6;display:flex;gap:10px;align-items:flex-start}
+.ca .ic{font-size:1.125em;flex-shrink:0;margin-top:1px}
+.ca.warn  {background:#fff3cd;border-left:4px solid #b38600;color:#3d2c00}
+.ca.tip   {background:#d4edda;border-left:4px solid #28a745;color:#0d3318}
+.ca.danger{background:#f8d7da;border-left:4px solid #dc3545;color:#3d0010}
+.ca.info  {background:#e0f2fe;border-left:4px solid var(--teal);color:#0f4c5c}
+
+/* ── Exam tip dark box ── */
+.et{background:linear-gradient(135deg,#1a1a2e,#0f4c5c);color:#fff;border-radius:10px;padding:14px 16px;margin:14px 0;font-size:.875em;line-height:1.6}
+.et .lbl{font-size:.69em;font-weight:800;letter-spacing:1px;color:var(--teald);margin-bottom:6px}
+.et ul,.et ol{padding-left:18px;margin-top:6px}
+.et li{margin-bottom:5px}
+
+/* ── Tables ── */
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:12px 0;border-radius:8px}
+table{width:100%;border-collapse:collapse;font-size:.875em}
+th{background:var(--teal);color:#fff;padding:10px 12px;text-align:left;font-weight:700;font-size:.81em}
+td{padding:9px 12px;border-bottom:1px solid #e8ecf0;vertical-align:top;color:#1a1a2e}
+tr:nth-child(even) td{background:#e0f2fe;color:#0f4c5c}
+tr:last-child td{border-bottom:none}
+
+/* ── Numbered steps ── */
+.steps{counter-reset:step;list-style:none;padding:0;margin:12px 0}
+.steps li{counter-increment:step;display:flex;gap:12px;align-items:flex-start;padding:10px 0;border-bottom:1px solid #eef0f3;font-size:.875em;line-height:1.6}
+.steps li:last-child{border-bottom:none}
+.steps li::before{content:counter(step);background:var(--teal);color:#fff;border-radius:50%;min-width:26px;height:26px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.81em;flex-shrink:0;margin-top:2px}
+
+/* ── Diagram box ── */
+.dg{background:#0d1117;border-radius:10px;padding:14px;margin:12px 0;overflow-x:auto}
+.dg pre{color:#58a6ff;font-family:'Courier New',monospace;font-size:.75em;line-height:1.6}
+
+/* ── WLC config flow ── */
+.wlc-flow{background:#0d1117;border:2px solid var(--teald);border-radius:10px;padding:16px;margin:14px 0}
+.wlc-flow .wf-title{font-size:.75em;font-weight:800;letter-spacing:.8px;color:var(--teald);text-transform:uppercase;margin-bottom:10px}
+.wlc-step{display:flex;gap:12px;align-items:flex-start;padding:8px 0;border-bottom:1px solid #21262d;font-size:.81em;color:#c9d1d9;line-height:1.6}
+.wlc-step:last-child{border-bottom:none}
+.wlc-step .ws-num{background:var(--teal);color:#fff;border-radius:50%;min-width:24px;height:24px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.75em;flex-shrink:0;margin-top:1px}
+.wlc-step .ws-path{color:var(--teald);font-weight:700;font-size:.75em;margin-bottom:2px}
+
+/* ── Router vs WLC compare ── */
+.compare-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:12px 0}
+@media(max-width:520px){.compare-grid{grid-template-columns:1fr}}
+.compare-card{border-radius:10px;overflow:hidden}
+.compare-card .cc-hdr{padding:10px 12px;font-size:.81em;font-weight:800;color:#fff;text-align:center}
+.compare-card.router .cc-hdr{background:#1a472a}
+.compare-card.wlc .cc-hdr{background:var(--teal)}
+.compare-card .cc-body{padding:12px;font-size:.81em;background:#f8f9fa;color:#1a1a2e;line-height:1.8}
+
+/* ── Troubleshoot step cards ── */
+.ts-grid{display:grid;gap:8px;margin:12px 0}
+.ts-card{border-radius:10px;padding:12px 14px;border-left:5px solid var(--teal);background:#e0f2fe;display:flex;gap:10px;align-items:flex-start}
+.ts-card .tc-num{background:var(--teal);color:#fff;border-radius:50%;min-width:28px;height:28px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:.875em;flex-shrink:0}
+.ts-card .tc-title{font-weight:800;color:var(--teal);font-size:.875em;margin-bottom:2px}
+.ts-card .tc-desc{font-size:.81em;color:#1a1a2e;line-height:1.6}
+
+/* ── Ports vs interfaces box ── */
+.pvi-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:12px 0}
+@media(max-width:480px){.pvi-grid{grid-template-columns:1fr}}
+.pvi-card{border-radius:10px;padding:14px;text-align:center;border:2px solid}
+.pvi-card.ports{border-color:var(--teal);background:#e0f2fe}
+.pvi-card.ifaces{border-color:#9333ea;background:#f3e8ff}
+.pvi-card .pv-icon{font-size:1.5em;margin-bottom:6px}
+.pvi-card .pv-title{font-weight:800;font-size:.875em;margin-bottom:4px}
+.pvi-card.ports .pv-title{color:var(--teal)}
+.pvi-card.ifaces .pv-title{color:#9333ea}
+.pvi-card p{font-size:.81em;color:#1a1a2e;line-height:1.6}
+
+/* ── Security mode comparison ── */
+.sec-compare{display:grid;gap:10px;margin:12px 0}
+.sec-card{border-radius:10px;padding:14px;border-left:5px solid}
+.sec-card.psk{border-left-color:#28a745;background:#f0fff4}
+.sec-card.ent{border-left-color:var(--teal);background:#e0f2fe}
+.sec-card .sc-title{font-weight:800;font-size:.875em;margin-bottom:6px}
+.sec-card.psk .sc-title{color:#1e8449}
+.sec-card.ent .sc-title{color:var(--teal)}
+.sec-card ul{padding-left:18px;font-size:.81em;color:#1a1a2e;line-height:1.8}
+
+/* ── Scroll to top ── */
+.tb{position:fixed;bottom:80px;right:16px;background:var(--teal);color:#fff;border:none;border-radius:50%;width:44px;height:44px;font-size:1.25em;box-shadow:0 4px 14px rgba(0,0,0,.25);cursor:pointer;display:none;align-items:center;justify-content:center;z-index:100}
+.tb.show{display:flex}
+.ft{text-align:center;padding:24px 16px;color:var(--muted);font-size:.81em}
+
+/* ── Module nav bar ── */
+.mod-nav{position:fixed;bottom:0;left:0;right:0;z-index:300;background:#1a1a2e;border-top:1px solid #30363d;display:flex;align-items:center;height:52px;padding:0 8px;gap:6px}
+.mn-hub{background:var(--blue);color:#fff;border:none;border-radius:8px;padding:6px 12px;font-size:.75em;font-weight:700;cursor:pointer;text-decoration:none;display:flex;align-items:center;gap:4px;white-space:nowrap;-webkit-tap-highlight-color:transparent;flex-shrink:0}
+.mn-hub:active{opacity:.8}
+.mn-divider{width:1px;height:28px;background:#30363d;flex-shrink:0}
+.mn-label{flex:1;text-align:center;font-size:.69em;color:#8b949e;font-weight:600;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding:0 4px}
+.mn-prev,.mn-next{background:#30363d;color:#c9d1d9;border:none;border-radius:8px;padding:6px 10px;font-size:.875em;font-weight:700;cursor:pointer;text-decoration:none;display:flex;align-items:center;-webkit-tap-highlight-color:transparent;flex-shrink:0}
+.mn-prev:active,.mn-next:active{background:var(--teal);color:#fff}
+.mn-prev.disabled,.mn-next.disabled{opacity:.3;pointer-events:none}
+/* Study progress panel */
+.sp-wrap{background:var(--card);margin:16px 16px 0;border-radius:var(--r);box-shadow:var(--sh);overflow:hidden}
+.sp-hdr{background:var(--nt);color:#fff;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;user-select:none;-webkit-tap-highlight-color:transparent;gap:10px}
+.sp-hdr .sp-title{font-weight:700;font-size:.875em;flex-shrink:0}
+.sp-hdr .sp-arr{transition:transform .3s;flex-shrink:0}
+.sp-hdr.open .sp-arr{transform:rotate(180deg)}
+.sp-body{display:none;padding:12px 14px}
+.sp-body.open{display:block}
+.sp-row{display:flex;align-items:center;gap:10px;padding:6px 4px;border-bottom:1px solid #f0f4f8;font-size:.81em}
+.sp-row:last-child{border-bottom:none}
+.sp-row .sr-status{font-size:1em;flex-shrink:0;width:20px;text-align:center}
+.sp-row .sr-nb{font-weight:800;color:var(--nt);min-width:36px;flex-shrink:0;font-size:.875em}
+.sp-row .sr-ttl{color:var(--text);flex:1}
+.sp-row.done .sr-ttl{color:var(--muted);text-decoration:line-through}
+.sc-pills{display:flex;align-items:center;gap:4px;overflow-x:auto;-webkit-overflow-scrolling:touch;flex:1;padding:0 4px}
+.sc-pill{background:#30363d;color:#8b949e;border:2px solid transparent;border-radius:6px;padding:3px 8px;font-size:.72em;font-weight:700;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:all .15s;white-space:nowrap;flex-shrink:0;line-height:1.4;display:flex;align-items:center;gap:3px}
+.sc-pill.checked{background:var(--nt);color:#fff;border-color:var(--ntd)}
+.sc-pill .pill-check{font-size:.875em}
+
+/* v2.1 — In-section check button */
+.sh{position:relative}
+.sec-check{position:absolute;right:40px;top:50%;transform:translateY(-50%);background:rgba(255,255,255,.15);border:2px solid rgba(255,255,255,.4);border-radius:6px;padding:2px 10px;font-size:.72em;font-weight:800;color:#fff;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:all .2s;white-space:nowrap;z-index:10;line-height:1.5}
+.sec-check.checked{background:var(--ntd);border-color:var(--ntd);color:#052e1e}
+.sec-check:active{opacity:.75}
+/* Sections panel + tick colours (these pages never defined --nt/--ntd, so the panel header was invisible) */
+:root{--nt:var(--teal);--ntd:#4ade80}
+</style>
+<style>.bc{background:#0d1117;padding:8px 16px;display:flex;align-items:center;flex-wrap:wrap;gap:4px;font-size:.75em;overflow-x:auto;white-space:nowrap;-webkit-overflow-scrolling:touch;border-bottom:1px solid #21262d}.bc a{color:#8b949e;text-decoration:none;font-weight:600;flex-shrink:0}.bc a:active{color:#c9d1d9}.bc .sep{color:#6e7681;flex-shrink:0}.bc .cur{color:#1ba0d7;font-weight:700;flex-shrink:0}</style>
+</head>
+<body>
+<nav class="bc"><a href="../../index.html">🏠 Home</a><span class="sep">›</span><a href="index.html">CCNA 2 — SRWE</a><span class="sep">›</span><span class="cur">M13: WLAN Config</span></nav>
+
+<!-- FONT SIZE TOGGLE -->
+<div class="fs-bar">
+  <div class="sc-pills" id="sc-pills">
+  <button class="sc-pill" id="pill-s1" onclick="toggleSection('s1',this)"><span class="pill-check">○</span>13.1</button>
+  <button class="sc-pill" id="pill-s2" onclick="toggleSection('s2',this)"><span class="pill-check">○</span>13.2</button>
+  <button class="sc-pill" id="pill-s3" onclick="toggleSection('s3',this)"><span class="pill-check">○</span>13.3</button>
+  <button class="sc-pill" id="pill-s4" onclick="toggleSection('s4',this)"><span class="pill-check">○</span>13.4</button>
+  <button class="sc-pill" id="pill-s5" onclick="toggleSection('s5',this)"><span class="pill-check">○</span>REF</button>
+  <button class="sc-pill" id="pill-s-pt-13-5" onclick="toggleSection('s-pt-13-5',this)"><span class="pill-check">○</span>PT 13.5</button>
+  <button class="sc-pill" id="pill-s6" onclick="toggleSection('s6',this)"><span class="pill-check">○</span>🎯</button>
+  </div>
+  <span class="fs-label" style="flex-shrink:0;margin-left:6px">Size</span>
+  <button class="fs-btn" onclick="setFs('14px',this)">S</button>
+  <button class="fs-btn active" onclick="setFs('16px',this)">M</button>
+  <button class="fs-btn" onclick="setFs('18px',this)">L</button>
+  <button class="fs-btn" onclick="setFs('20px',this)">XL</button>
+</div>
+
+<!-- HEADER -->
+<div class="hdr">
+  <div class="badge">CCNA 2 — SRWE v7.02</div>
+  <h1>⚙️ Module 13: WLAN Configuration</h1>
+  <p>Switching, Routing &amp; Wireless Essentials · NetAcad Study Guide</p>
+  <div class="obj">Module Objective: Implement a WLAN using a wireless router and WLC</div>
+</div>
+
+<div class="sp-wrap">
+  <div class="sp-hdr" id="sp-hdr" onclick="toggleStudyPanel()">
+    <span class="sp-title">📚 Sections</span>
+    <span class="sp-arr" id="sp-arr">▼</span>
+  </div>
+  <div class="sp-body" id="sp-body">
+    <div class="sp-row" id="row-s1"><span class="sr-status" id="st-s1">○</span><span class="sr-nb">13.1</span><span class="sr-ttl">Remote Site WLAN Configuration</span></div>
+    <div class="sp-row" id="row-s2"><span class="sr-status" id="st-s2">○</span><span class="sr-nb">13.2</span><span class="sr-ttl">Configure a Basic WLAN on the WLC</span></div>
+    <div class="sp-row" id="row-s3"><span class="sr-status" id="st-s3">○</span><span class="sr-nb">13.3</span><span class="sr-ttl">Configure WPA2 Enterprise WLAN on the WLC</span></div>
+    <div class="sp-row" id="row-s4"><span class="sr-status" id="st-s4">○</span><span class="sr-nb">13.4</span><span class="sr-ttl">Troubleshoot WLAN Issues</span></div>
+    <div class="sp-row" id="row-s5"><span class="sr-status" id="st-s5">○</span><span class="sr-nb">REF</span><span class="sr-ttl">Router vs WLC Configuration Reference</span></div>
+    <div class="sp-row" id="row-s-pt-13-5"><span class="sr-status" id="st-s-pt-13-5">○</span><span class="sr-nb">PT 13.5</span><span class="sr-ttl">Packet Tracer — WLAN Configuration</span></div>
+    <div class="sp-row" id="row-s6"><span class="sr-status" id="st-s6">○</span><span class="sr-nb">🎯</span><span class="sr-ttl">Common Exam Traps — Module 13</span></div>
+  </div>
+</div>
+
+<!-- TABLE OF CONTENTS -->
+<div class="toc">
+  <div class="toch open" onclick="this.classList.toggle('open');document.getElementById('tocb').classList.toggle('open')">
+    📋 Table of Contents — Tap to expand <span class="arr">▼</span>
+  </div>
+  <div class="tocb open" id="tocb">
+    <div class="tocg">13.1 — Remote Site WLAN Configuration</div>
+    <a href="javascript:void(0)" onclick="goTo('s1')"><span class="n">13.1.2</span> The Wireless Router</a>
+    <a href="javascript:void(0)" onclick="goTo('s1')"><span class="n">13.1.3</span> Log in to the Wireless Router</a>
+    <a href="javascript:void(0)" onclick="goTo('s1')"><span class="n">13.1.4</span> Basic Network Setup — Six Steps</a>
+    <a href="javascript:void(0)" onclick="goTo('s1')"><span class="n">13.1.5</span> Basic Wireless Setup — Six Steps</a>
+    <a href="javascript:void(0)" onclick="goTo('s1')"><span class="n">13.1.6</span> Configure a Wireless Mesh Network</a>
+    <a href="javascript:void(0)" onclick="goTo('s1')"><span class="n">13.1.7</span> NAT for IPv4</a>
+    <a href="javascript:void(0)" onclick="goTo('s1')"><span class="n">13.1.8</span> Quality of Service</a>
+    <a href="javascript:void(0)" onclick="goTo('s1')"><span class="n">13.1.9</span> Port Forwarding</a>
+    <div class="tocg">13.2 — Configure a Basic WLAN on the WLC</div>
+    <a href="javascript:void(0)" onclick="goTo('s2')"><span class="n">13.2.2</span> WLC Topology</a>
+    <a href="javascript:void(0)" onclick="goTo('s2')"><span class="n">13.2.3</span> Log in to the WLC</a>
+    <a href="javascript:void(0)" onclick="goTo('s2')"><span class="n">13.2.5</span> Advanced Settings</a>
+    <a href="javascript:void(0)" onclick="goTo('s2')"><span class="n">13.2.6</span> WLC Ports vs Interfaces</a>
+    <a href="javascript:void(0)" onclick="goTo('s2')"><span class="n">13.2.6</span> Configure a WLAN — Seven Steps</a>
+    <div class="tocg">13.3 — Configure WPA2 Enterprise WLAN on WLC</div>
+    <a href="javascript:void(0)" onclick="goTo('s3')"><span class="n">13.3.2</span> SNMP and RADIUS</a>
+    <a href="javascript:void(0)" onclick="goTo('s3')"><span class="n">13.3.3</span> Configure SNMP Server</a>
+    <a href="javascript:void(0)" onclick="goTo('s3')"><span class="n">13.3.4</span> Configure RADIUS Server</a>
+    <a href="javascript:void(0)" onclick="goTo('s3')"><span class="n">13.3.7</span> Configure a New VLAN Interface — Six Steps</a>
+    <a href="javascript:void(0)" onclick="goTo('s3')"><span class="n">13.3.9</span> Configure a DHCP Scope — Five Steps</a>
+    <a href="javascript:void(0)" onclick="goTo('s3')"><span class="n">13.3.11</span> Configure WPA2 Enterprise WLAN — Six Steps</a>
+    <a href="javascript:void(0)" onclick="goTo('s3')"><span class="n">CMP</span> WPA2-PSK vs WPA2-Enterprise Comparison</a>
+    <div class="tocg">13.4 — Troubleshoot WLAN Issues</div>
+    <a href="javascript:void(0)" onclick="goTo('s4')"><span class="n">13.4.1</span> Troubleshooting Approach — Six Steps</a>
+    <a href="javascript:void(0)" onclick="goTo('s4')"><span class="n">13.4.2</span> Wireless Client Not Connecting</a>
+    <a href="javascript:void(0)" onclick="goTo('s4')"><span class="n">13.4.3</span> Troubleshooting When the Network Is Slow</a>
+    <a href="javascript:void(0)" onclick="goTo('s4')"><span class="n">13.4.4</span> Updating Firmware</a>
+    <div class="tocg">Reference</div>
+    <a href="javascript:void(0)" onclick="goTo('s5')"><span class="n">REF</span> Router vs WLC Configuration Comparison</a>
+    <a href="javascript:void(0)" onclick="goTo('s5')"><span class="n">🔄</span> WLC Enterprise Configuration Order</a>
+    <a href="javascript:void(0)" onclick="goTo('s6')"><span class="n">🎯</span> Common Exam Traps</a>
+  </div>
+</div>
+
+<div class="wrap">
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- SECTION 13.1 — REMOTE SITE WLAN CONFIGURATION -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div class="sec" id="s1">
+<div class="sh open" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">13.1</span><span class="ttl">Remote Site WLAN Configuration</span></span><button class="sec-check" id="sch-s1" onclick="event.stopPropagation();toggleSection('s1',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb open">
+
+  <div class="sub">
+  <h3><span class="sn">13.1.2</span> The Wireless Router</h3>
+  <p>Remote workers, small branch offices, and home networks use a <strong>wireless router</strong> — also called an <strong>integrated router</strong> because it combines three roles in one device:</p>
+  <ul>
+    <li><strong>Access Point</strong> — provides 802.11 wireless access and broadcasts the SSID</li>
+    <li><strong>Switch</strong> — typically a 4-port Ethernet switch for wired devices</li>
+    <li><strong>Router</strong> — provides the default gateway for internet access</li>
+  </ul>
+  <p>Connected to a cable or DSL modem for internet. Also provides: WLAN security, DHCP services, NAT, and QoS.</p>
+  <div class="ca danger">
+    <span class="ic">🚨</span>
+    <div><strong>Change all defaults immediately.</strong> Default IP addresses, usernames, and passwords for wireless routers are freely searchable on the internet. Your very first action after accessing a new wireless router must be to change the admin credentials.</div>
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">13.1.3</span> Log in to the Wireless Router</h3>
+  <p>Access the GUI through a web browser using the router's default IP address — commonly <code>192.168.0.1</code> or <code>192.168.1.1</code>. Default credentials are typically <code>admin</code> / <code>admin</code> — check the device documentation. Change these immediately after first login.</p>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">13.1.4</span> Basic Network Setup — Six Steps</h3>
+  <ol class="steps">
+    <li><strong>Log in to the router from a web browser</strong> — use the default IP address to reach the GUI</li>
+    <li><strong>Change the default administrative password</strong> — found under Administration tab; default credentials are publicly known</li>
+    <li><strong>Log in with the new administrative password</strong> — confirm the new password works before continuing</li>
+    <li><strong>Change the default DHCP IPv4 addresses</strong> — change from default subnet; example: use 10.10.10.1/24 instead of 192.168.0.1/24</li>
+    <li><strong>Renew the IP address</strong> — run <code>ipconfig /renew</code> on the PC; when the router IP changes, the PC loses access and must renew its DHCP lease</li>
+    <li><strong>Log in to the router with the new IP address</strong> — resume configuration at the new management IP</li>
+  </ol>
+  <div class="ca info">
+    <span class="ic">💡</span>
+    <div><strong>Why `ipconfig /renew` is required at Step 5:</strong> When you change the router's LAN IP through the GUI and save, the PC immediately loses access — its gateway and DNS are now wrong. Running <code>ipconfig /renew</code> forces the PC to request a fresh DHCP lease from the router's new IP, restoring connectivity.</div>
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">13.1.5</span> Basic Wireless Setup — Six Steps</h3>
+  <ol class="steps">
+    <li><strong>View the WLAN defaults</strong> — review what is already configured (SSID, channel, security) before making changes</li>
+    <li><strong>Change the network mode</strong> — select the 802.11 standard. "Legacy" or "Mixed" supports multiple generations simultaneously; mixed mode runs at the speed of the slowest connected client</li>
+    <li><strong>Configure the SSID</strong> — change from the default to a descriptive name (e.g., "OfficeNet"). If SSID broadcast is disabled, clients must manually enter the SSID to connect</li>
+    <li><strong>Configure the channel</strong> — select a non-overlapping channel (1, 6, or 11 for 2.4 GHz) to avoid interference from adjacent APs. Example: router on channel 6</li>
+    <li><strong>Configure the security mode</strong> — select <strong>WPA2 Personal (WPA2-PSK)</strong> with AES encryption — currently the strongest recommended mode for home/small office</li>
+    <li><strong>Configure the passphrase</strong> — the WPA2 Personal pre-shared key that wireless clients must enter to connect. Stronger = better.</li>
+  </ol>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">13.1.6</span> Configure a Wireless Mesh Network</h3>
+  <p>A single wireless router covers approximately <strong>45 meters indoors / 90 meters outdoors</strong>. To extend coverage, add APs with the same WLAN settings. Key rules:</p>
+  <ul>
+    <li>All APs share the same SSID and security settings</li>
+    <li>Adjacent APs must use <strong>different non-overlapping channels</strong> to avoid interference</li>
+  </ul>
+  <div class="dg"><pre>
+  Example mesh — 3 devices covering a large office:
+  Wireless Router:  Channel 6   ← center of building
+  AP1:              Channel 1   ← left wing
+  AP2:              Channel 11  ← right wing
+
+  Channels 1, 6, and 11 don't overlap → no mutual interference</pre></div>
+  <div class="ca info">
+    <span class="ic">💡</span>
+    <div>Modern WMN systems (Eero, Google Nest, Netgear Orbi) are configured through smartphone apps — very simplified setup. Search "best wi-fi mesh network system" for current options.</div>
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">13.1.7</span> NAT for IPv4</h3>
+  <p>The wireless router uses <strong>NAT (Network Address Translation)</strong> to allow all LAN devices with private IPv4 addresses to share a single public IP address for internet access.</p>
+  <div class="tw"><table>
+    <tr><th>Interface</th><th>IP Address</th><th>Type</th><th>Routable?</th></tr>
+    <tr><td>WAN (internet-facing)</td><td>209.165.201.11</td><td>Public</td><td>✅ Yes — internet routable</td></tr>
+    <tr><td>LAN (internal network)</td><td>10.10.10.1</td><td>Private</td><td>❌ No — not internet routable</td></tr>
+  </table></div>
+  <p>NAT translates private → public for outbound traffic and reverses for inbound. All devices on the LAN appear to the internet as sharing the same single public IP address.</p>
+  <div class="ca tip">
+    <span class="ic">✅</span>
+    <div>If the ISP provides IPv6, each device gets its own unique globally routable IPv6 address — NAT is not needed. NAT is an IPv4 workaround for address exhaustion.</div>
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">13.1.8</span> Quality of Service (QoS)</h3>
+  <p>QoS prioritizes certain traffic types to guarantee performance for time-sensitive applications:</p>
+  <ul>
+    <li><strong>Voice and video</strong> — time-sensitive — given higher priority</li>
+    <li><strong>Email and web browsing</strong> — not time-sensitive — given lower priority</li>
+    <li>Traffic can also be prioritized per specific port number</li>
+  </ul>
+  <p>QoS settings are found under <strong>Advanced</strong> menus — sometimes labeled "bandwidth control." Consult the router's documentation for exact location.</p>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">13.1.9</span> Port Forwarding</h3>
+  <p>Wireless routers block all unsolicited inbound TCP/UDP ports by default. <strong>Port forwarding</strong> creates rules that map external ports to internal devices:</p>
+  <div class="tw"><table>
+    <tr><th>Type</th><th>How It Works</th><th>Example</th></tr>
+    <tr><td><strong>Port Forwarding</strong></td><td>Static rule — external port always forwards to a specific internal IP and port</td><td>Port 80 (HTTP) → internal web server at 10.10.10.50 — all inbound HTTP requests go to that server</td></tr>
+    <tr><td><strong>Port Triggering</strong></td><td>Dynamic rule — outbound traffic on a trigger port range temporarily opens an inbound port for that device only</td><td>Game traffic on outbound ports 27000–27100 triggers inbound port 56 (chat) to open for that device only</td></tr>
+  </table></div>
+  <div class="ca info">
+    <span class="ic">💡</span>
+    <div><strong>Port triggering vs port forwarding:</strong> Port forwarding is always active — any inbound request on that port is forwarded. Port triggering is temporary and device-specific — it only opens when triggered by outbound traffic from that specific device, and closes when the trigger traffic stops.</div>
+  </div>
+  </div>
+
+  <!-- PT INLINE -->
+  <div style="margin:20px 0 6px;padding:14px 16px;background:#0d1117;border:1px solid #30363d;border-left:3px solid #1f6feb;border-radius:6px">
+    <div style="font-size:.72em;font-weight:800;text-transform:uppercase;letter-spacing:.8px;color:#1f6feb;margin-bottom:10px">&#x1F4E6; Packet Tracer Activities</div>
+  <div style="display:flex;align-items:baseline;gap:10px;padding:6px 0;border-bottom:1px solid #21262d"><span style="font-family:monospace;font-size:.85em;color:#79c0ff;white-space:nowrap;flex-shrink:0;min-width:52px">13.1.10</span><span style="font-size:.88em;color:#c9d1d9">Configure a Wireless Network</span></div>
+    <div style="margin-top:10px;font-size:.78em;color:#6e7681">Full list: <a href="https://itexamanswers.net/ccna-2-packet-tracer-labs-answers-srwe-v7-02.html" target="_blank" rel="noopener" style="color:#58a6ff;word-break:break-all">https://itexamanswers.net/ccna-2-packet-tracer-labs-answers-srwe-v7-02.html</a></div>
+  </div>
+
+</div></div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- SECTION 13.2 — CONFIGURE A BASIC WLAN ON THE WLC -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div class="sec" id="s2">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">13.2</span><span class="ttl">Configure a Basic WLAN on the WLC</span></span><button class="sec-check" id="sch-s2" onclick="event.stopPropagation();toggleSection('s2',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb">
+
+  <div class="sub">
+  <h3><span class="sn">13.2.2</span> WLC Topology</h3>
+  <p>The reference topology for WLC configuration:</p>
+  <div class="tw"><table>
+    <tr><th>Device</th><th>Interface</th><th>IP Address</th><th>Notes</th></tr>
+    <tr><td>R1</td><td>F0/0</td><td>172.16.1.1</td><td>Connects to PC-A</td></tr>
+    <tr><td>R1</td><td>F0/1.1</td><td>192.168.200.1</td><td>Subinterface for management VLAN</td></tr>
+    <tr><td>WLC</td><td>Management</td><td>192.168.200.254</td><td>WLC management interface</td></tr>
+    <tr><td>AP1</td><td>Wired 0</td><td>192.168.200.3</td><td><strong>PoE-powered</strong> through Ethernet cable from S1</td></tr>
+    <tr><td>PC-A</td><td>NIC</td><td>172.16.1.254</td><td>Fixed IP — wired client</td></tr>
+    <tr><td>PC-B / Wireless Laptop</td><td>NIC</td><td>DHCP</td><td>Dynamic clients</td></tr>
+  </table></div>
+  <div class="ca info">
+    <span class="ic">💡</span>
+    <div><strong>PoE (Power over Ethernet):</strong> The AP is powered through the Ethernet cable connected to a PoE-capable switch port. No separate power adapter is needed — a single cable provides both data and power to the AP.</div>
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">13.2.3</span> Log in to the WLC</h3>
+  <p>Access the WLC through a web browser using the management IP address. Credentials are configured during initial WLC setup (first-time wizard).</p>
+  <p>The <strong>Network Summary dashboard</strong> shows at a glance:</p>
+  <ul>
+    <li>Number of configured WLANs</li>
+    <li>Number of associated APs</li>
+    <li>Number of active clients</li>
+    <li>Number of detected rogue APs and clients</li>
+  </ul>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">13.2.5</span> Advanced Settings</h3>
+  <p>The basic WLC view shows limited options. Click <strong>Advanced</strong> in the upper right corner to access the full feature set — all WLC configuration capabilities are available from the Advanced Summary page.</p>
+  <div class="ca info">
+    <span class="ic">💡</span>
+    <div>The figures in NetAcad show the Cisco 3504 Wireless Controller GUI. Other WLC models have similar menus and features. The Cisco 3504 can support <strong>150 APs</strong> and <strong>4096 VLANs</strong> through just 5 physical ports.</div>
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">13.2.6</span> WLC Ports vs Interfaces</h3>
+  <div class="pvi-grid">
+    <div class="pvi-card ports">
+      <div class="pv-icon">🔌</div>
+      <div class="pv-title">Physical Ports</div>
+      <p>Sockets for physical connections to the wired network — like switch ports. The Cisco 3504 has <strong>5 physical ports</strong>. Each port acts as a trunk carrying traffic from multiple VLANs and multiple APs simultaneously.</p>
+    </div>
+    <div class="pvi-card ifaces">
+      <div class="pv-icon">💻</div>
+      <div class="pv-title">Virtual Interfaces</div>
+      <p>Created in software — like VLAN interfaces. <strong>Each WLAN maps to a different virtual interface</strong>, which corresponds to a different VLAN. A WLC with 5 ports can support 4096 virtual interfaces.</p>
+    </div>
+  </div>
+  <div class="ca tip">
+    <span class="ic">✅</span>
+    <div>Think of WLC physical ports as trunks — each carries many VLANs. Each WLAN = one VLAN = one virtual interface. The 5-port WLC can run hundreds of APs and thousands of WLANs because the ports trunk all that traffic.</div>
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">13.2.6</span> Configure a WLAN — Seven Steps</h3>
+  <div class="wlc-flow">
+    <div class="wf-title">⚙️ Basic WLAN Configuration on the WLC</div>
+    <div class="wlc-step"><div class="ws-num">1</div><div><div class="ws-path">WLANs → Create New → Go</div><strong>Create the WLAN</strong> — assign a profile name and SSID (e.g., "Wireless_LAN"). The WLAN ID is an arbitrary display number.</div></div>
+    <div class="wlc-step"><div class="ws-num">2</div><div><div class="ws-path">General tab → Status checkbox</div><strong>Apply and Enable the WLAN</strong> — new WLANs are created <em>disabled</em>. Must check Enable before clients can connect. Multiple WLANs can be configured before enabling any.</div></div>
+    <div class="wlc-step"><div class="ws-num">3</div><div><div class="ws-path">General tab → Interface/Interface Group dropdown</div><strong>Select the Interface</strong> — choose which virtual interface (VLAN) carries this WLAN's traffic</div></div>
+    <div class="wlc-step"><div class="ws-num">4</div><div><div class="ws-path">Security tab → Layer 2 Security → PSK</div><strong>Secure the WLAN</strong> — WPA+WPA2 is selected by default. Click PSK, enter the pre-shared key → Apply. WPA2 with AES is the default encryption.</div></div>
+    <div class="wlc-step"><div class="ws-num">5</div><div><div class="ws-path">Left menu → WLANs</div><strong>Verify the WLAN is Operational</strong> — confirm WLAN ID, name, SSID, enabled status, and security method in the WLANs list</div></div>
+    <div class="wlc-step"><div class="ws-num">6</div><div><div class="ws-path">Monitor tab → Summary</div><strong>Monitor the WLAN</strong> — shows active client count per WLAN in real time</div></div>
+    <div class="wlc-step"><div class="ws-num">7</div><div><div class="ws-path">Left menu → Clients</div><strong>View Wireless Client Details</strong> — shows each client's IP address, associated AP, and WLAN — confirms successful DHCP assignment</div></div>
+  </div>
+  <div class="ca danger">
+    <span class="ic">🚨</span>
+    <div><strong>New WLANs are DISABLED by default.</strong> Creating the WLAN is not enough — you must explicitly check the Enable checkbox (Step 2) before any clients can connect. This is one of the most commonly missed steps in labs.</div>
+  </div>
+  </div>
+
+  <!-- PT INLINE -->
+  <div style="margin:20px 0 6px;padding:14px 16px;background:#0d1117;border:1px solid #30363d;border-left:3px solid #1f6feb;border-radius:6px">
+    <div style="font-size:.72em;font-weight:800;text-transform:uppercase;letter-spacing:.8px;color:#1f6feb;margin-bottom:10px">&#x1F4E6; Packet Tracer Activities</div>
+  <div style="display:flex;align-items:baseline;gap:10px;padding:6px 0;border-bottom:1px solid #21262d"><span style="font-family:monospace;font-size:.85em;color:#79c0ff;white-space:nowrap;flex-shrink:0;min-width:52px">13.2.7</span><span style="font-size:.88em;color:#c9d1d9">Configure a Basic WLAN on the WLC</span></div>
+    <div style="margin-top:10px;font-size:.78em;color:#6e7681">Full list: <a href="https://itexamanswers.net/ccna-2-packet-tracer-labs-answers-srwe-v7-02.html" target="_blank" rel="noopener" style="color:#58a6ff;word-break:break-all">https://itexamanswers.net/ccna-2-packet-tracer-labs-answers-srwe-v7-02.html</a></div>
+  </div>
+
+</div></div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- SECTION 13.3 — WPA2 ENTERPRISE WLAN ON WLC -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div class="sec" id="s3">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">13.3</span><span class="ttl">Configure WPA2 Enterprise WLAN on the WLC</span></span><button class="sec-check" id="sch-s3" onclick="event.stopPropagation();toggleSection('s3',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb">
+
+  <div class="sub">
+  <h3><span class="sn">13.3.2</span> SNMP and RADIUS</h3>
+  <p>Enterprise WLAN configuration uses two external servers:</p>
+  <div class="tw"><table>
+    <tr><th>Server</th><th>Purpose</th><th>What It Does on the WLC</th></tr>
+    <tr><td><strong>SNMP Server</strong></td><td>Network monitoring</td><td>WLC sends SNMP trap messages (log events) to the SNMP server for monitoring and alerting</td></tr>
+    <tr><td><strong>RADIUS Server</strong></td><td>AAA — Authentication, Authorization, Accounting</td><td>Validates individual user credentials for WPA2 Enterprise; tracks and audits per-user access; required for 802.1X authentication</td></tr>
+  </table></div>
+  <div class="ca info">
+    <span class="ic">💡</span>
+    <div>With WPA2 Enterprise, each user enters their <strong>own unique username and password</strong> — not a shared PSK. The RADIUS server validates each credential individually. User accounts can be added, modified, or revoked centrally without changing the WLAN configuration.</div>
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">13.3.3</span> Configure SNMP Server Information</h3>
+  <div class="wlc-flow">
+    <div class="wf-title">📊 SNMP Trap Receiver Configuration</div>
+    <div class="wlc-step"><div class="ws-num">1</div><div><div class="ws-path">MANAGEMENT → SNMP → Trap Receivers → New…</div>Enter the SNMP Community name and IP address of the SNMP server → Apply. The WLC will now forward all SNMP log messages (traps) to that server.</div></div>
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">13.3.4</span> Configure RADIUS Server Information</h3>
+  <div class="wlc-flow">
+    <div class="wf-title">🔐 RADIUS Authentication Server Configuration</div>
+    <div class="wlc-step"><div class="ws-num">1</div><div><div class="ws-path">SECURITY → RADIUS → Authentication → New…</div>Enter the IP address of the RADIUS server and the <strong>shared secret</strong> (password between WLC and RADIUS server — NOT the user password) → Apply. Server now appears in the RADIUS Authentication Servers list.</div></div>
+  </div>
+  <div class="ca warn">
+    <span class="ic">⚠️</span>
+    <div><strong>The shared secret is between the WLC and RADIUS server only.</strong> End users never see or use this key. Users authenticate with their own individual credentials via 802.1X/EAP. The shared secret only authenticates the WLC itself to the RADIUS server.</div>
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">13.3.7</span> Configure a New VLAN Interface — Six Steps</h3>
+  <p>Each WLAN needs its own virtual interface. The new enterprise WLAN will use <strong>VLAN 5</strong> (192.168.5.0/24). R1 has subinterface Fa0/1.5 at 192.168.5.254 already configured.</p>
+
+  <div class="wlc-flow">
+    <div class="wf-title">🌐 New VLAN Interface Configuration</div>
+    <div class="wlc-step"><div class="ws-num">1</div><div><div class="ws-path">CONTROLLER → Interfaces → New…</div><strong>Create a new interface</strong></div></div>
+    <div class="wlc-step"><div class="ws-num">2</div><div><div class="ws-path">Interface Name field + VLAN ID field</div><strong>Configure VLAN name and ID</strong> — Interface name: "vlan5", VLAN ID: 5 → Apply</div></div>
+    <div class="wlc-step"><div class="ws-num">3</div><div><div class="ws-path">Edit page → Port Number + IP Address fields</div><strong>Configure port and interface address</strong> — Port: G1 (Port Number 1 on WLC), IP: 192.168.5.254/24, Default Gateway: 192.168.5.1 (R1 subinterface)</div></div>
+    <div class="wlc-step"><div class="ws-num">4</div><div><div class="ws-path">Primary DHCP Server field</div><strong>Configure DHCP server address</strong> — IP: 192.168.5.1 (R1 is the DHCP server for this subnet — it has a DHCP pool for WLAN clients)</div></div>
+    <div class="wlc-step"><div class="ws-num">5</div><div><div class="ws-path">Scroll to top → Apply → OK</div><strong>Apply and Confirm</strong> — accept the warning popup</div></div>
+    <div class="wlc-step"><div class="ws-num">6</div><div><div class="ws-path">Interfaces list page</div><strong>Verify interfaces</strong> — vlan5 now appears with its IP address (192.168.5.254)</div></div>
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">13.3.9</span> Configure a DHCP Scope — Five Steps</h3>
+  <p>A DHCP scope on the WLC is equivalent to a DHCP pool on a router — defines the address range, gateway, DNS, and lease time for a subnet:</p>
+
+  <div class="wlc-flow">
+    <div class="wf-title">📋 WLC Internal DHCP Scope Configuration</div>
+    <div class="wlc-step"><div class="ws-num">1</div><div><div class="ws-path">Internal DHCP Server → DHCP Scope → New…</div><strong>Create a new DHCP scope</strong></div></div>
+    <div class="wlc-step"><div class="ws-num">2</div><div><div class="ws-path">Scope Name field</div><strong>Name the DHCP scope</strong> — use a descriptive name (e.g., "Wireless_Management") → Apply</div></div>
+    <div class="wlc-step"><div class="ws-num">3</div><div><div class="ws-path">DHCP Scopes list → click the scope name</div><strong>Verify the new scope</strong> — confirms scope is ready to configure; click it to open the Edit page</div></div>
+    <div class="wlc-step"><div class="ws-num">4</div><div><div class="ws-path">Edit page — all address fields + Status dropdown</div><strong>Configure and enable the scope</strong> — set: Start IP, End IP, Network Address, Subnet Mask, Default Gateway. Change Status to <strong>Enabled</strong> → Apply</div></div>
+    <div class="wlc-step"><div class="ws-num">5</div><div><div class="ws-path">DHCP Scopes list</div><strong>Verify the enabled scope</strong> — confirms scope is ready to be assigned to a WLAN</div></div>
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">13.3.11</span> Configure a WPA2 Enterprise WLAN — Six Steps</h3>
+  <p>By default, all newly created WLANs on the WLC use <strong>WPA2 with AES</strong> and <strong>802.1X</strong>. Since the RADIUS server is already configured on the WLC, the only extra step compared to WPA2-PSK is assigning the RADIUS server in the AAA Servers tab:</p>
+
+  <div class="wlc-flow">
+    <div class="wf-title">🏢 WPA2 Enterprise WLAN Configuration</div>
+    <div class="wlc-step"><div class="ws-num">1</div><div><div class="ws-path">WLANs tab → Go</div><strong>Create a new WLAN</strong></div></div>
+    <div class="wlc-step"><div class="ws-num">2</div><div><div class="ws-path">Profile Name + SSID fields</div><strong>Configure WLAN name and SSID</strong> — e.g., "CompanyName", ID: 5 → Apply</div></div>
+    <div class="wlc-step"><div class="ws-num">3</div><div><div class="ws-path">General tab → Status + Interface dropdown</div><strong>Enable for VLAN 5</strong> — Status: Enabled, Interface: vlan5 → Apply → OK</div></div>
+    <div class="wlc-step"><div class="ws-num">4</div><div><div class="ws-path">Security tab → Layer 2</div><strong>Verify AES and 802.1X defaults</strong> — confirm AES encryption and 802.1X key management are already selected (these are the defaults on new WLANs)</div></div>
+    <div class="wlc-step"><div class="ws-num">5</div><div><div class="ws-path">Security tab → AAA Servers tab → Server 1 dropdown</div><strong>Configure RADIUS server</strong> — select the previously configured RADIUS server from the dropdown → Apply. This is the only step different from WPA2-PSK.</div></div>
+    <div class="wlc-step"><div class="ws-num">6</div><div><div class="ws-path">WLANs list</div><strong>Verify the WLAN is available</strong> — both WLANs should now be listed and enabled. Wireless_LAN: WPA2-PSK. CompanyName: WPA2-802.1X.</div></div>
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">CMP</span> WPA2-PSK vs WPA2-Enterprise — Configuration Comparison</h3>
+  <div class="sec-compare">
+    <div class="sec-card psk">
+      <div class="sc-title">🔑 WPA2-PSK (Personal)</div>
+      <ul>
+        <li>Security tab → Layer 2 Security: WPA+WPA2</li>
+        <li>Click <strong>PSK</strong></li>
+        <li>Enter the pre-shared key (passphrase)</li>
+        <li>Click Apply</li>
+        <li><strong>No AAA Servers tab needed</strong> — no RADIUS server</li>
+        <li>All users share the same passphrase</li>
+        <li>Suitable for: home, small office</li>
+      </ul>
+    </div>
+    <div class="sec-card ent">
+      <div class="sc-title">🏢 WPA2-Enterprise (802.1X)</div>
+      <ul>
+        <li>Security tab → Layer 2 Security: WPA+WPA2</li>
+        <li>Leave <strong>802.1X</strong> selected (default)</li>
+        <li>Verify AES encryption is selected</li>
+        <li>Click <strong>AAA Servers tab</strong></li>
+        <li>Select the RADIUS server from the dropdown</li>
+        <li>Click Apply</li>
+        <li>Each user has individual credentials</li>
+        <li>Suitable for: enterprise, audited environments</li>
+      </ul>
+    </div>
+  </div>
+  <div class="et">
+    <div class="lbl">🎯 KEY DIFFERENCE</div>
+    WPA2-PSK → Security tab → PSK → enter passphrase → done<br>
+    WPA2-Enterprise → Security tab → 802.1X (default) → AAA Servers tab → select RADIUS server → done<br><br>
+    The only extra step for Enterprise is the <strong>AAA Servers tab</strong>. Everything else (WPA2, AES) is already the default on new WLANs.
+  </div>
+  </div>
+
+  <!-- PT INLINE -->
+  <div style="margin:20px 0 6px;padding:14px 16px;background:#0d1117;border:1px solid #30363d;border-left:3px solid #1f6feb;border-radius:6px">
+    <div style="font-size:.72em;font-weight:800;text-transform:uppercase;letter-spacing:.8px;color:#1f6feb;margin-bottom:10px">&#x1F4E6; Packet Tracer Activities</div>
+  <div style="display:flex;align-items:baseline;gap:10px;padding:6px 0;border-bottom:1px solid #21262d"><span style="font-family:monospace;font-size:.85em;color:#79c0ff;white-space:nowrap;flex-shrink:0;min-width:52px">13.3.12</span><span style="font-size:.88em;color:#c9d1d9">Configure a WPA2 Enterprise WLAN on the WLC</span></div>
+    <div style="margin-top:10px;font-size:.78em;color:#6e7681">Full list: <a href="https://itexamanswers.net/ccna-2-packet-tracer-labs-answers-srwe-v7-02.html" target="_blank" rel="noopener" style="color:#58a6ff;word-break:break-all">https://itexamanswers.net/ccna-2-packet-tracer-labs-answers-srwe-v7-02.html</a></div>
+  </div>
+
+</div></div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- SECTION 13.4 — TROUBLESHOOT WLAN ISSUES -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div class="sec" id="s4">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">13.4</span><span class="ttl">Troubleshoot WLAN Issues</span></span><button class="sec-check" id="sch-s4" onclick="event.stopPropagation();toggleSection('s4',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb">
+
+  <div class="sub">
+  <h3><span class="sn">13.4.1</span> Troubleshooting Approach — Six Steps</h3>
+  <p>A systematic methodology based on the scientific method — eliminates one problem at a time:</p>
+  <div class="ts-grid">
+    <div class="ts-card"><div class="tc-num">1</div><div><div class="tc-title">Identify the Problem</div><div class="tc-desc">Talk to the user — understand what is wrong, when it started, what changed. Determine scope: one device affected or all devices? If one device, start there. If all, start at the common connection point (AP or router).</div></div></div>
+    <div class="ts-card"><div class="tc-num">2</div><div><div class="tc-title">Establish a Theory of Probable Causes</div><div class="tc-desc">List all possible causes — network config, device hardware, physical layer, security mismatch, interference. Generate multiple theories before testing any.</div></div></div>
+    <div class="ts-card"><div class="tc-num">3</div><div><div class="tc-title">Test the Theory to Determine Cause</div><div class="tc-desc">Apply quick fixes one at a time to test each theory. If a quick fix doesn't work, research further. Stop when you find the actual cause.</div></div></div>
+    <div class="ts-card"><div class="tc-num">4</div><div><div class="tc-title">Establish a Plan of Action and Implement</div><div class="tc-desc">Once the cause is confirmed, determine the fix, plan the implementation, and execute it.</div></div></div>
+    <div class="ts-card"><div class="tc-num">5</div><div><div class="tc-title">Verify Full Functionality</div><div class="tc-desc">Confirm the fix works completely. Implement preventive measures to stop recurrence.</div></div></div>
+    <div class="ts-card"><div class="tc-num">6</div><div><div class="tc-title">Document Findings, Actions, and Outcomes</div><div class="tc-desc">Record what was found, what was done, and what the result was. Essential for future reference and pattern analysis.</div></div></div>
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">13.4.2</span> Wireless Client Not Connecting</h3>
+  <p><strong>Process of elimination — check in this order:</strong></p>
+
+  <h4>Step 1 — Check the PC's IP configuration</h4>
+  <div class="cw"><div class="cl">Check if DHCP assignment succeeded <button class="cpb" onclick="copyCode(this)">Copy</button></div>
+  <pre><code>C:\> ipconfig
+
+! If you see 169.254.x.x (APIPA address) → DHCP failed
+! Check DHCP server, VLAN configuration, and SSID association
+
+! If address looks correct:
+C:\> ping 192.168.x.1    ! Ping the default gateway
+
+! If gateway unreachable → check AP, VLAN, and physical connectivity</code></pre></div>
+
+  <h4>Step 2 — Test wired connectivity</h4>
+  <p>Connect the device to a wired LAN port and ping a known IP. If wired works but wireless doesn't → the problem is wireless-specific.</p>
+
+  <h4>Step 3 — Check wireless NIC drivers</h4>
+  <p>Reload or update wireless NIC drivers. Try a different wireless NIC if necessary.</p>
+
+  <h4>Step 4 — Check security settings (most common cause)</h4>
+  <div class="ca danger">
+    <span class="ic">🚨</span>
+    <div><strong>Security mismatch is the #1 cause of wireless connection failure.</strong> If the client is configured for WPA2 but the AP is using a different mode, or if the passphrase doesn't match, the client simply fails to connect with no useful error message. Verify security mode and passphrase match exactly on both the client and the AP.</div>
+  </div>
+
+  <h4>If connected but performing poorly</h4>
+  <ul>
+    <li><strong>Distance</strong> — is the client outside the planned BSA coverage area?</li>
+    <li><strong>Channel settings</strong> — client software should auto-detect the correct channel when SSID is configured correctly</li>
+    <li><strong>Interference</strong> — check for 2.4 GHz interference: cordless phones, baby monitors, microwave ovens, wireless security systems, rogue APs</li>
+    <li><strong>Physical layer</strong> — are all devices powered on? Check cables and connectors</li>
+    <li><strong>Ping the AP</strong> — if the AP is unreachable from the client, the issue is with the AP or its configuration</li>
+  </ul>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">13.4.3</span> Troubleshooting When the Network Is Slow</h3>
+  <p>Two primary solutions for poor wireless performance:</p>
+
+  <div class="tw"><table>
+    <tr><th>Solution</th><th>How It Helps</th><th>Implementation</th></tr>
+    <tr><td><strong>Upgrade wireless clients</strong></td><td>Older clients (802.11b/g) force the AP to accommodate the slowest standard — slowing all other clients. Upgrading eliminates the lowest common denominator.</td><td>Replace 802.11b/g NICs with 802.11n or 802.11ac. Current recommended enterprise standard: 802.11ac.</td></tr>
+    <tr><td><strong>Split traffic across bands</strong></td><td>Separates congested 2.4 GHz traffic from clean 5 GHz traffic — assigns each type to the appropriate band.</td><td>Give each band a different SSID. Route basic traffic (email, web) to 2.4 GHz. Route real-time traffic (video, VoIP) to 5 GHz.</td></tr>
+  </table></div>
+
+  <div class="dg"><pre>
+  Split-band strategy:
+  
+  SSID: "OfficeNet_2.4"  → 2.4 GHz band
+  Use for: web browsing, email, downloads (not time-sensitive)
+  Shared with other nearby 2.4 GHz WLANs — more congested
+  
+  SSID: "OfficeNet_5"    → 5 GHz band
+  Use for: video streaming, VoIP, video conferencing (time-sensitive)
+  Far less crowded; 24 non-overlapping channels; lower latency</pre></div>
+
+  <div class="ca info">
+    <span class="ic">💡</span>
+    <div><strong>Why give each band its own SSID?</strong> By default, dual-band routers use the same SSID on both bands. Clients then automatically connect to whichever band they detect first. With separate SSIDs, users consciously choose which band — and time-sensitive applications go to 5 GHz where they belong.</div>
+  </div>
+
+  <h4>Additional range/performance fixes</h4>
+  <ul>
+    <li>Remove physical obstructions from around the AP (furniture, appliances, walls)</li>
+    <li>If range is still insufficient: deploy a <strong>Wi-Fi Range Extender</strong> or <strong>Powerline wireless technology</strong></li>
+  </ul>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">13.4.4</span> Updating Firmware</h3>
+  <p>Always keep firmware up to date — releases contain bug fixes and security patches:</p>
+
+  <div class="tw"><table>
+    <tr><th>Device Type</th><th>Update Method</th><th>Impact</th></tr>
+    <tr><td><strong>Autonomous AP / Wireless router</strong></td><td>Check manufacturer's website; update through device's management GUI</td><td>Brief disruption during update and reboot</td></tr>
+    <tr><td><strong>WLC-managed APs (Cisco 3504)</strong></td><td>WIRELESS → Access Points → Global Configuration → AP Image Pre-download</td><td><strong>All wireless clients are disconnected</strong> during the upgrade — schedule during maintenance window</td></tr>
+  </table></div>
+  <div class="ca warn">
+    <span class="ic">⚠️</span>
+    <div><strong>WLC firmware updates disconnect all wireless users.</strong> When the WLC pushes firmware to managed APs, every client loses WLAN and internet access for the duration of the upgrade. The router/AP may reboot multiple times before normal operations resume. Always schedule during a maintenance window.</div>
+  </div>
+  </div>
+
+  <!-- PT INLINE -->
+  <div style="margin:20px 0 6px;padding:14px 16px;background:#0d1117;border:1px solid #30363d;border-left:3px solid #1f6feb;border-radius:6px">
+    <div style="font-size:.72em;font-weight:800;text-transform:uppercase;letter-spacing:.8px;color:#1f6feb;margin-bottom:10px">&#x1F4E6; Packet Tracer Activities</div>
+  <div style="display:flex;align-items:baseline;gap:10px;padding:6px 0;border-bottom:1px solid #21262d"><span style="font-family:monospace;font-size:.85em;color:#79c0ff;white-space:nowrap;flex-shrink:0;min-width:52px">13.4.5</span><span style="font-size:.88em;color:#c9d1d9">Troubleshoot WLAN Issues</span></div>
+    <div style="margin-top:10px;font-size:.78em;color:#6e7681">Full list: <a href="https://itexamanswers.net/ccna-2-packet-tracer-labs-answers-srwe-v7-02.html" target="_blank" rel="noopener" style="color:#58a6ff;word-break:break-all">https://itexamanswers.net/ccna-2-packet-tracer-labs-answers-srwe-v7-02.html</a></div>
+  </div>
+
+</div></div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- SECTION 13.5 — REFERENCE -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div class="sec" id="s5">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">REF</span><span class="ttl">Router vs WLC Configuration Reference</span></span><button class="sec-check" id="sch-s5" onclick="event.stopPropagation();toggleSection('s5',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb">
+
+  <div class="sub">
+  <h3><span class="sn">REF</span> Wireless Router vs WLC — Configuration Comparison</h3>
+  <div class="compare-grid">
+    <div class="compare-card router">
+      <div class="cc-hdr">🏠 Wireless Router (Home/Branch)</div>
+      <div class="cc-body">
+        <strong>Access:</strong> Web browser → default IP (192.168.0.1)<br>
+        <strong>Admin PW:</strong> Administration tab<br>
+        <strong>SSID:</strong> Basic wireless settings<br>
+        <strong>Security:</strong> WPA2 Personal or Enterprise tab<br>
+        <strong>DHCP:</strong> Built-in DHCP server<br>
+        <strong>VLAN:</strong> Not applicable<br>
+        <strong>Enterprise auth:</strong> Not available on most<br>
+        <strong>Monitor:</strong> Client device list<br>
+        <strong>Firmware:</strong> Admin/management page<br>
+        <strong>Scale:</strong> 1 AP — home/small office
+      </div>
+    </div>
+    <div class="compare-card wlc">
+      <div class="cc-hdr">🏢 WLC (Enterprise)</div>
+      <div class="cc-body">
+        <strong>Access:</strong> Web browser → management IP<br>
+        <strong>Admin PW:</strong> Set during initial setup wizard<br>
+        <strong>SSID:</strong> WLANs menu → Create New<br>
+        <strong>Security:</strong> Security tab → Layer 2 → PSK or 802.1X<br>
+        <strong>DHCP:</strong> Internal DHCP scope or external server<br>
+        <strong>VLAN:</strong> Virtual interfaces map WLANs to VLANs<br>
+        <strong>Enterprise auth:</strong> AAA Servers tab → RADIUS server<br>
+        <strong>Monitor:</strong> Monitor tab → Clients menu<br>
+        <strong>Firmware:</strong> WIRELESS → APs → Global Config<br>
+        <strong>Scale:</strong> 150+ APs — enterprise campus
+      </div>
+    </div>
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">🔄</span> WLC Enterprise WLAN — Complete Configuration Order</h3>
+  <p>When building a WPA2 Enterprise WLAN from scratch on a WLC, follow this sequence:</p>
+  <ol class="steps">
+    <li><strong>Log in to WLC</strong> — access via management IP in web browser</li>
+    <li><strong>Configure SNMP server</strong> — Management → SNMP → Trap Receivers → New</li>
+    <li><strong>Configure RADIUS server</strong> — Security → RADIUS → Authentication → New (enter IP + shared secret)</li>
+    <li><strong>Create new VLAN virtual interface</strong> — Controller → Interfaces → New (name, VLAN ID, IP, gateway, DHCP server)</li>
+    <li><strong>Configure DHCP scope</strong> (if WLC provides DHCP) — Internal DHCP Server → DHCP Scope → New (address range, gateway, enable)</li>
+    <li><strong>Create new WLAN</strong> — WLANs → Create New (name, SSID, enable, select VLAN interface)</li>
+    <li><strong>Configure WLAN security</strong> — Security tab → Layer 2 → verify 802.1X → AAA Servers tab → select RADIUS server → Apply</li>
+    <li><strong>Verify</strong> — WLANs list (both WLANs enabled), Monitor tab (clients connecting), Clients menu (IP assignment confirmed)</li>
+  </ol>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">⚡</span> Quick Troubleshooting Checklist</h3>
+  <div class="tw"><table>
+    <tr><th>Symptom</th><th>Most Likely Cause</th><th>Fix</th></tr>
+    <tr><td>Client shows 169.254.x.x</td><td>DHCP failure</td><td>Check DHCP server, VLAN config, AP association</td></tr>
+    <tr><td>Client can't connect at all</td><td>Security mismatch (most common)</td><td>Verify security mode and passphrase match on client and AP</td></tr>
+    <tr><td>Wired works, wireless doesn't</td><td>Wireless-specific issue</td><td>Check SSID, security settings, NIC drivers, distance</td></tr>
+    <tr><td>Intermittent drops on 2.4 GHz</td><td>RF interference</td><td>Check for cordless phones, microwaves; switch to 5 GHz</td></tr>
+    <tr><td>Slow performance on mixed network</td><td>Legacy clients pulling speed down</td><td>Upgrade clients or split traffic across bands</td></tr>
+    <tr><td>All clients lose wireless after WLC update</td><td>Normal behavior during firmware upgrade</td><td>Wait for upgrade to complete and APs to rejoin WLC</td></tr>
+    <tr><td>New WLAN created but clients can't see it</td><td>WLAN not enabled</td><td>Check Enable checkbox on the WLAN in the WLC GUI</td></tr>
+  </table></div>
+  </div>
+
+</div></div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- SECTION 13.6 — EXAM TRAPS -->
+<!-- ═══════════════════════════════════════════════════════ -->
+
+<div class="sec" id="s-pt-13-5">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">13.5</span><span class="ttl">Packet Tracer — WLAN Configuration</span></span><button class="sec-check" id="sch-s-pt-13-5" onclick="event.stopPropagation();toggleSection('s-pt-13-5',this)">○ Mark done</button>
+</div>
+<div class="sb">
+  <div style="padding:14px 16px;background:#0d1117;border:1px solid #30363d;border-left:3px solid #1f6feb;border-radius:6px">
+    <div style="font-size:.72em;font-weight:800;text-transform:uppercase;letter-spacing:.8px;color:#1f6feb;margin-bottom:10px">&#x1F4E6; Packet Tracer Activities</div>
+    <div style="font-size:.82em;color:#6e7681;margin-bottom:10px">Open in Cisco Packet Tracer via your NetAcad course.</div>
+      <div style="display:flex;align-items:baseline;gap:10px;padding:6px 0;border-bottom:1px solid #21262d"><span style="font-family:monospace;font-size:.85em;color:#79c0ff;white-space:nowrap;flex-shrink:0;min-width:52px">13.5.1</span><span style="font-size:.88em;color:#c9d1d9">WLAN Configuration</span></div>
+      <div style="display:flex;align-items:baseline;gap:10px;padding:6px 0;border-bottom:1px solid #21262d"><span style="font-family:monospace;font-size:.85em;color:#79c0ff;white-space:nowrap;flex-shrink:0;min-width:52px">13.5.2</span><span style="font-size:.88em;color:#c9d1d9">Wireless Technology Exploration (Physical Mode)</span></div>
+    <div style="margin-top:12px;font-size:.78em;color:#6e7681">Full list: <a href="https://itexamanswers.net/ccna-2-packet-tracer-labs-answers-srwe-v7-02.html" target="_blank" rel="noopener" style="color:#58a6ff;word-break:break-all">https://itexamanswers.net/ccna-2-packet-tracer-labs-answers-srwe-v7-02.html</a></div>
+  </div>
+</div>
+</div>
+<div class="sec" id="s6">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">🎯</span><span class="ttl">Common Exam Traps — Module 13</span></span><button class="sec-check" id="sch-s6" onclick="event.stopPropagation();toggleSection('s6',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb">
+
+  <div class="ca danger"><span class="ic">❌</span><div><strong>Trap 1: Change wireless router defaults immediately — username, password, AND default IP.</strong><br>Default credentials are freely available online. The first action after accessing a new wireless router is changing the admin password. The default IP address (192.168.0.1) should also be changed to a less predictable subnet.</div></div>
+
+  <div class="ca danger"><span class="ic">❌</span><div><strong>Trap 2: After changing the router's LAN IP, run `ipconfig /renew`.</strong><br>When you change the router's IP through the GUI, your PC immediately loses access because it still has the old gateway. `ipconfig /renew` forces a fresh DHCP lease and restores access at the new IP. This exact step is tested in labs.</div></div>
+
+  <div class="ca danger"><span class="ic">❌</span><div><strong>Trap 3: New WLANs on the WLC are DISABLED by default.</strong><br>After creating a WLAN, you must explicitly enable it using the Enable checkbox before any clients can connect. This is one of the most commonly missed configuration steps in both labs and exam scenarios.</div></div>
+
+  <div class="ca danger"><span class="ic">❌</span><div><strong>Trap 4: WLC ports are physical (trunks); WLC interfaces are virtual (VLANs).</strong><br>A WLC with 5 physical ports can support 150 APs and 4096 VLANs because the ports act as trunks. Each WLAN maps to a virtual interface which corresponds to a VLAN. Confusing ports and interfaces is a common exam mistake.</div></div>
+
+  <div class="ca danger"><span class="ic">❌</span><div><strong>Trap 5: Security mismatch = client cannot connect, with no clear error.</strong><br>If the client's security settings don't match the AP (wrong mode, wrong passphrase), the client simply fails to connect — no helpful error message. Always check security mode and passphrase first when troubleshooting a client that can't connect.</div></div>
+
+  <div class="ca danger"><span class="ic">❌</span><div><strong>Trap 6: The RADIUS shared secret is between WLC and RADIUS server — NOT the user password.</strong><br>The shared secret only authenticates the WLC to the RADIUS server. End users authenticate with their own individual username and password via 802.1X/EAP. The shared secret is never given to end users.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 7: WPA2 and 802.1X are defaults on new WLANs — not PSK.</strong><br>When you create a new WLAN on a Cisco WLC, it defaults to WPA2 with AES encryption and 802.1X authentication. For WPA2-PSK, you must go to the Security tab and specifically select PSK. For Enterprise, 802.1X is already configured — you just need to add the RADIUS server in the AAA Servers tab.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 8: Use non-overlapping channels in mesh/multi-AP deployments — 1, 6, 11.</strong><br>All APs in a mesh network share the same SSID and security settings, but must use different non-overlapping channels to avoid mutual interference. This is the direct application of Module 12's channel theory to real configuration.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 9: PoE powers the AP through the Ethernet cable — no power adapter needed.</strong><br>In WLC topology labs, controller-based APs receive power through the Ethernet cable from a PoE-capable switch port. Only one cable runs to the AP.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 10: Slow WLAN = split 2.4 GHz and 5 GHz with separate SSIDs.</strong><br>Give each band its own SSID — use 2.4 GHz for email and web, 5 GHz for video and VoIP. Even one legacy 802.11b/g client on the 2.4 GHz network forces the AP to accommodate that slower standard — reducing performance for all clients.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 11: WLC firmware updates disconnect all wireless clients.</strong><br>When the WLC pushes firmware to managed APs, every connected client is disconnected. Schedule updates during maintenance windows. The WLC and APs may reboot multiple times before normal operations resume.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 12: 169.254.x.x = DHCP failure, not wireless failure.</strong><br>If a client shows an APIPA address (169.254.x.x), it received no DHCP response. Check the DHCP server, VLAN interface assignment on the WLC, and whether the AP is correctly associated with the WLC — not the wireless security settings.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 13: DHCP scope on WLC = DHCP pool on router — same information, different location.</strong><br>Both define: address range (start/end IP), subnet mask, default gateway, and optionally DNS. The WLC DHCP scope is configured under Internal DHCP Server → DHCP Scope. The WLC can forward DHCP requests to an external server (like R1) or handle them internally.</div></div>
+
+  <div class="ca tip"><span class="ic">✅</span><div><strong>Module 13 quick summary — key configuration locations on the WLC:</strong><br><br>
+  SNMP server → <strong>Management → SNMP → Trap Receivers</strong><br>
+  RADIUS server → <strong>Security → RADIUS → Authentication</strong><br>
+  VLAN interface → <strong>Controller → Interfaces</strong><br>
+  DHCP scope → <strong>Internal DHCP Server → DHCP Scope</strong><br>
+  Create WLAN → <strong>WLANs → Create New</strong><br>
+  Enable WLAN → <strong>General tab → Enable checkbox</strong><br>
+  WPA2-PSK → <strong>Security tab → PSK → enter passphrase</strong><br>
+  WPA2-Enterprise → <strong>Security tab → 802.1X (default) → AAA Servers tab → select RADIUS</strong><br>
+  Monitor clients → <strong>Monitor tab → Clients menu</strong><br>
+  Firmware update → <strong>Wireless → APs → Global Configuration</strong></div></div>
+
+</div></div>
+
+</div><!-- end .wrap -->
+
+<div class="ft">
+  CCNA 2 SRWE v7.02 — Module 13: WLAN Configuration v2.2<br>
+  Based on Cisco NetAcad curriculum · Study guide for personal use
+</div>
+
+<button class="tb" id="topb" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+
+<!-- MODULE NAVIGATION BAR -->
+<div class="mod-nav">
+  <a class="mn-hub" href="index.html">🏠 Hub</a>
+  <div class="mn-divider"></div>
+  <a class="mn-prev" href="ccna2_module12_wlan_concepts_v2.2.html">‹</a>
+  <span class="mn-label">M13 of 16</span>
+  <a class="mn-next" href="ccna2_module14_routing_concepts_v2.2.html">›</a>
+</div>
+
+<script>
+var MOD_KEY="ccna2-module13-wlan-configuration";
+var SECS=["s1","s2","s3","s4","s5","s-pt-13-5","s6"];
+var checked={};
+function loadState(){
+  try{var s=localStorage.getItem(MOD_KEY);if(s)checked=JSON.parse(s);}catch(e){}
+  SECS.forEach(function(id){
+    var pill=document.getElementById('pill-'+id);
+    var row=document.getElementById('row-'+id);
+    var st=document.getElementById('st-'+id);
+    var sch=document.getElementById('sch-'+id);
+    if(checked[id]){
+      if(pill){pill.classList.add('checked');pill.querySelector('.pill-check').textContent='✓';}
+      if(row)row.classList.add('done');
+      if(st)st.textContent='✓';
+      if(sch){sch.classList.add('checked');sch.textContent='✓ Done';}
+    } else {
+      if(pill){pill.classList.remove('checked');pill.querySelector('.pill-check').textContent='○';}
+      if(row)row.classList.remove('done');
+      if(st)st.textContent='○';
+      if(sch){sch.classList.remove('checked');sch.textContent='○ Mark done';}
+    }
+  });
+}
+function toggleSection(id,btn){checked[id]=!checked[id];try{localStorage.setItem(MOD_KEY,JSON.stringify(checked));}catch(e){}loadState();}
+function toggleStudyPanel(){
+  var hdr=document.getElementById('sp-hdr');
+  var body=document.getElementById('sp-body');
+  var arr=document.getElementById('sp-arr');
+  hdr.classList.toggle('open');body.classList.toggle('open');
+  if(arr)arr.textContent=body.classList.contains('open')?'▲':'▼';
+}
+function goTo(id){var el=document.getElementById(id);if(!el)return;var h=el.querySelector('.sh,.section-header'),b=el.querySelector('.sb,.section-body');if(h&&b&&!b.classList.contains('open')){h.classList.add('open');b.classList.add('open');}setTimeout(function(){window.scrollTo({top:el.getBoundingClientRect().top+window.pageYOffset-60,behavior:'smooth'});},50);}
+function setFs(size,btn){document.documentElement.style.setProperty('--base-fs',size);document.querySelectorAll('.fs-btn').forEach(function(b){b.classList.remove('active');});btn.classList.add('active');try{localStorage.setItem('ccna-fs',size);}catch(e){}}
+(function(){try{var s=localStorage.getItem('ccna-fs');if(s){document.documentElement.style.setProperty('--base-fs',s);document.querySelectorAll('.fs-btn').forEach(function(b){b.classList.remove('active');if((b.textContent==='S'&&s==='14px')||(b.textContent==='M'&&s==='16px')||(b.textContent==='L'&&s==='18px')||(b.textContent==='XL'&&s==='20px'))b.classList.add('active');});}}catch(e){}loadState();})();
+function copyCode(b){var t=b.closest('.cw').querySelector('pre').innerText;if(navigator.clipboard){navigator.clipboard.writeText(t).then(function(){b.textContent='Copied!';setTimeout(function(){b.textContent='Copy';},1500);}).catch(function(){fb(t,b);});}else{fb(t,b);}}
+function fb(t,b){var a=document.createElement('textarea');a.value=t;a.style.position='fixed';a.style.opacity='0';document.body.appendChild(a);a.focus();a.select();document.execCommand('copy');document.body.removeChild(a);b.textContent='Copied!';setTimeout(function(){b.textContent='Copy';},1500);}
+</script>
+<script src="../../site-config.js"></script>
+</body>
+</html>

@@ -1,0 +1,849 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=2.0">
+<title>CCNA 1 Module 5: Number Systems v2.2</title>
+<style>
+:root{
+  --nt:#0a6e4e;--ntd:#4ade80;--nt2:#052e1e;--nt3:#021710;
+  --bg:#f4f6f8;--card:#fff;--text:#1a1a2e;--muted:#5a6a7a;
+  --cbg:#0d1117;--ctxt:#c9d1d9;--r:12px;--sh:0 2px 12px rgba(0,0,0,.08);
+  --base-fs:20px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);font-size:var(--base-fs);line-height:1.7}
+.bc{background:#0d1117;padding:8px 16px;display:flex;align-items:center;flex-wrap:wrap;gap:4px;font-size:.75em;overflow-x:auto;white-space:nowrap;-webkit-overflow-scrolling:touch;border-bottom:1px solid #21262d}
+.bc a{color:#8b949e;text-decoration:none;font-weight:600;flex-shrink:0}
+.bc .sep{color:#6e7681;flex-shrink:0}
+.bc .cur{color:var(--ntd);font-weight:700;flex-shrink:0}
+.fs-bar{position:sticky;top:0;z-index:200;background:#1a1a2e;display:flex;align-items:center;justify-content:flex-end;padding:6px 14px;gap:6px;box-shadow:0 2px 8px rgba(0,0,0,.3)}
+.fs-label{color:#8b949e;font-size:.72em;font-weight:700;letter-spacing:.5px;text-transform:uppercase;margin-right:4px}
+.fs-btn{background:#30363d;color:#c9d1d9;border:2px solid transparent;border-radius:6px;padding:4px 12px;font-size:.75em;font-weight:700;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:all .2s;line-height:1.4}
+.fs-btn:active,.fs-btn.active{background:var(--nt);color:#fff;border-color:var(--ntd)}
+.hdr{background:linear-gradient(135deg,var(--nt3),var(--nt2),var(--nt));color:#fff;padding:32px 20px 24px;text-align:center}
+.hdr .badge{display:inline-block;background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.4);border-radius:20px;padding:4px 14px;font-size:.81em;margin-bottom:12px}
+.hdr h1{font-size:1.5em;font-weight:700;margin-bottom:6px}
+.hdr p{font-size:.94em;opacity:.85}
+.hdr .obj{display:inline-block;background:rgba(255,255,255,.15);border-radius:8px;padding:7px 16px;margin-top:12px;font-size:.875em;font-style:italic}
+/* Study progress panel */
+.sp-wrap{background:var(--card);margin:16px 16px 0;border-radius:var(--r);box-shadow:var(--sh);overflow:hidden}
+.sp-hdr{background:var(--nt);color:#fff;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;user-select:none;-webkit-tap-highlight-color:transparent;gap:10px}
+.sp-hdr .sp-title{font-weight:700;font-size:.875em;flex-shrink:0}
+.sp-hdr .sp-arr{transition:transform .3s;flex-shrink:0}
+.sp-hdr.open .sp-arr{transform:rotate(180deg)}
+.sp-body{display:none;padding:12px 14px}
+.sp-body.open{display:block}
+.sp-row{display:flex;align-items:center;gap:10px;padding:6px 4px;border-bottom:1px solid #f0f4f8;font-size:.81em}
+.sp-row:last-child{border-bottom:none}
+.sp-row .sr-status{font-size:1em;flex-shrink:0;width:20px;text-align:center}
+.sp-row .sr-nb{font-weight:800;color:var(--nt);min-width:36px;flex-shrink:0;font-size:.875em}
+.sp-row .sr-ttl{color:var(--text);flex:1}
+.sp-row.done .sr-ttl{color:var(--muted);text-decoration:line-through}
+/* Section check pills in fs-bar */
+.sc-pills{display:flex;align-items:center;gap:4px;overflow-x:auto;-webkit-overflow-scrolling:touch;flex:1;padding:0 4px}
+.sc-pill{background:#30363d;color:#8b949e;border:2px solid transparent;border-radius:6px;padding:3px 8px;font-size:.72em;font-weight:700;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:all .15s;white-space:nowrap;flex-shrink:0;line-height:1.4;display:flex;align-items:center;gap:3px}
+.sc-pill.checked{background:var(--nt);color:#fff;border-color:var(--ntd)}
+.sc-pill .pill-check{font-size:.875em}
+.toc{background:var(--card);margin:16px;border-radius:var(--r);box-shadow:var(--sh);overflow:hidden}
+.toch{background:var(--nt);color:#fff;padding:14px 18px;font-weight:700;font-size:.94em;display:flex;justify-content:space-between;align-items:center;cursor:pointer;user-select:none}
+.toch .arr{transition:transform .3s}
+.toch.open .arr{transform:rotate(180deg)}
+.tocb{display:none;padding:10px 0}
+.tocb.open{display:block}
+.tocg{font-size:.69em;font-weight:800;letter-spacing:.8px;color:var(--nt);text-transform:uppercase;padding:8px 20px 2px}
+.tocb a{display:block;padding:9px 20px 9px 28px;color:var(--text);text-decoration:none;font-size:.875em;border-left:3px solid transparent;transition:all .2s}
+.tocb a:active{background:#f0fdf4;border-left-color:var(--ntd)}
+.tocb a .n{display:inline-block;background:var(--nt);color:#fff;border-radius:5px;padding:1px 8px;font-size:.75em;font-weight:700;margin-right:8px}
+.wrap{padding:0 16px 100px}
+.sec{background:var(--card);border-radius:var(--r);box-shadow:var(--sh);margin-bottom:16px;overflow:hidden}
+.sh{background:linear-gradient(90deg,var(--nt3),var(--nt));color:#fff;padding:16px 18px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;user-select:none;-webkit-tap-highlight-color:transparent}
+.sh .ttl{font-weight:700;font-size:1em}
+.sh .nb{background:rgba(255,255,255,.25);border-radius:6px;padding:3px 10px;font-size:.81em;font-weight:700;margin-right:10px;white-space:nowrap}
+.sh .ch{font-size:1.125em;transition:transform .3s}
+.sh.open .ch{transform:rotate(180deg)}
+.sb{display:none;padding:18px}
+.sb.open{display:block}
+.sub{margin-bottom:24px}
+.sub:last-child{margin-bottom:0}
+.sub h3{font-size:.94em;font-weight:700;color:var(--nt);margin-bottom:10px;padding-bottom:6px;border-bottom:2px solid #f0fdf4;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.sub h3 .sn{background:var(--nt);color:#fff;border-radius:5px;padding:2px 8px;font-size:.75em;white-space:nowrap}
+.sub h4{font-size:.875em;font-weight:700;color:var(--nt);margin:14px 0 6px}
+.sub p{margin-bottom:10px;font-size:.94em}
+.sub ul,.sub ol{padding-left:20px;margin:8px 0;font-size:.94em}
+.sub li{margin-bottom:5px}
+.ca{border-radius:8px;padding:12px 14px;margin:12px 0;font-size:.875em;line-height:1.6;display:flex;gap:10px;align-items:flex-start}
+.ca .ic{font-size:1.125em;flex-shrink:0;margin-top:1px}
+.ca.warn  {background:#fff3cd;border-left:4px solid #b38600;color:#3d2c00}
+.ca.tip   {background:#d4edda;border-left:4px solid #28a745;color:#0d3318}
+.ca.danger{background:#f8d7da;border-left:4px solid #dc3545;color:#3d0010}
+.ca.info  {background:#f0fdf4;border-left:4px solid var(--nt);color:#052e1e}
+.ca code{color:inherit!important;background:rgba(0,0,0,.1)!important;border:1px solid rgba(0,0,0,.15)}
+.et{background:linear-gradient(135deg,#1a1a2e,var(--nt3));color:#fff;border-radius:10px;padding:14px 16px;margin:14px 0;font-size:.875em;line-height:1.6}
+.et .lbl{font-size:.69em;font-weight:800;letter-spacing:1px;color:var(--ntd);margin-bottom:6px}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:12px 0;border-radius:8px}
+table{width:100%;border-collapse:collapse;font-size:.875em}
+th{background:var(--nt);color:#fff;padding:10px 12px;text-align:left;font-weight:700;font-size:.81em}
+td{padding:9px 12px;border-bottom:1px solid #e8ecf0;vertical-align:top;color:#1a1a2e}
+tr:nth-child(even) td{background:#f0fdf4;color:#052e1e}
+tr:last-child td{border-bottom:none}
+p code,li code,td code,.ca code{background:#f0fdf4;color:#052e1e;border-radius:4px;padding:1px 5px;font-size:.81em;font-family:'Courier New',monospace;font-weight:600}
+
+/* Positional value bar — the key binary tool */
+.pos-bar{background:var(--cbg);border-radius:10px;overflow:hidden;margin:12px 0}
+.pos-bar .pb-title{background:#21262d;color:#8b949e;font-size:.69em;font-weight:800;letter-spacing:.8px;text-transform:uppercase;padding:7px 14px}
+.pos-grid{display:grid;grid-template-columns:repeat(8,1fr);gap:3px;padding:10px}
+.pos-cell{border-radius:6px;padding:7px 4px;text-align:center}
+.pos-cell .pv{font-family:'Courier New',monospace;font-weight:900;font-size:.94em;color:var(--ntd)}
+.pos-cell .pp{font-size:.63em;color:#8b949e;margin-top:2px}
+.pos-cell.high{background:#1a3a5c}
+.pos-cell.mid {background:#1a4731}
+.pos-cell.low {background:#3d2c00}
+
+/* Binary conversion worked example */
+.conv-box{background:var(--cbg);border-radius:10px;overflow:hidden;margin:12px 0}
+.conv-box .cb-title{background:#21262d;color:#8b949e;font-size:.69em;font-weight:800;letter-spacing:.5px;text-transform:uppercase;padding:7px 14px;display:flex;justify-content:space-between;align-items:center}
+.conv-box .cb-title span{color:var(--ntd)}
+.conv-table{width:100%;border-collapse:collapse}
+.conv-table th{background:#161b22;color:#4ade80;font-family:'Courier New',monospace;font-size:.81em;padding:6px 8px;text-align:center;border:1px solid #30363d}
+.conv-table td{font-family:'Courier New',monospace;font-size:.875em;padding:7px 8px;text-align:center;border:1px solid #30363d;color:#c9d1d9}
+.conv-table td.one{color:#4ade80;font-weight:900;background:#0d2818}
+.conv-table td.zero{color:#8b949e;background:#0d1117}
+.conv-table td.val{color:#fbbf24;background:#161b22;font-weight:700}
+.conv-table td.result{color:#fff;font-weight:800;font-size:1em;background:#0a6e4e}
+.conv-table tr.sum-row td{background:#0a3d26;color:#4ade80;font-weight:800}
+
+/* Hex table */
+.hex-grid{display:grid;grid-template-columns:1fr 1fr;gap:3px;margin:12px 0;border-radius:8px;overflow:hidden}
+.hex-cell{display:grid;grid-template-columns:1fr 1fr 1fr;text-align:center;padding:6px 4px;font-size:.81em;font-family:'Courier New',monospace;gap:0}
+.hex-cell.hdr-row{background:#0a6e4e;color:#fff;font-weight:800}
+.hex-cell.r0{background:#0d1117;color:#c9d1d9}
+.hex-cell.r1{background:#161b22;color:#c9d1d9}
+.hex-cell .hv{color:#fbbf24;font-weight:900}
+.hex-cell .bv{color:#38bdf8}
+.hex-cell .dv{color:#a3e635}
+
+/* Number system comparison */
+.sys-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:12px 0}
+@media(max-width:480px){.sys-grid{grid-template-columns:1fr}}
+.sys-card{border-radius:10px;padding:12px 14px;text-align:center;font-size:.81em;line-height:1.6}
+.sys-card.dec{background:#e0f2fe;border:2px solid #1a3a5c}
+.sys-card.bin{background:#f0fdf4;border:2px solid var(--nt)}
+.sys-card.hex{background:#fff3cd;border:2px solid #b38600}
+.sys-card .sc-base{font-size:2em;font-weight:900;margin-bottom:4px;font-family:'Courier New',monospace}
+.sys-card.dec .sc-base{color:#1a3a5c}
+.sys-card.bin .sc-base{color:var(--nt)}
+.sys-card.hex .sc-base{color:#b38600}
+.sys-card .sc-name{font-weight:800;margin-bottom:4px}
+.sys-card.dec .sc-name{color:#1a3a5c}
+.sys-card.bin .sc-name{color:var(--nt)}
+.sys-card.hex .sc-name{color:#b38600}
+
+/* Interactive converter */
+.converter{background:var(--cbg);border-radius:10px;padding:16px;margin:12px 0}
+.converter .cv-title{color:var(--ntd);font-size:.69em;font-weight:800;letter-spacing:.8px;text-transform:uppercase;margin-bottom:12px}
+.cv-row{display:flex;gap:8px;align-items:center;margin-bottom:10px;flex-wrap:wrap}
+.cv-row label{color:#8b949e;font-size:.81em;font-weight:700;min-width:85px;flex-shrink:0}
+.cv-input{background:#21262d;color:#c9d1d9;border:2px solid #30363d;border-radius:6px;padding:8px 12px;font-family:'Courier New',monospace;font-size:.94em;flex:1;min-width:0;outline:none;-webkit-appearance:none}
+.cv-input:focus{border-color:var(--ntd)}
+.cv-output{background:#0a3d26;color:#4ade80;border:2px solid var(--nt);border-radius:6px;padding:8px 12px;font-family:'Courier New',monospace;font-size:.94em;flex:1;min-width:0;font-weight:700}
+.cv-btn{background:var(--nt);color:#fff;border:none;border-radius:6px;padding:8px 16px;font-size:.81em;font-weight:700;cursor:pointer;-webkit-tap-highlight-color:transparent;white-space:nowrap;flex-shrink:0}
+.cv-btn:active{opacity:.8}
+.cv-divider{border:none;border-top:1px solid #21262d;margin:12px 0}
+.cv-err{color:#f87171;font-size:.75em;margin-top:4px;display:none}
+
+/* Step-by-step method box */
+.method-box{background:#0d1117;border-radius:10px;padding:14px;margin:12px 0;border-left:4px solid var(--ntd)}
+.method-box .mb-title{color:var(--ntd);font-size:.75em;font-weight:800;letter-spacing:.5px;text-transform:uppercase;margin-bottom:8px}
+.method-box ol{padding-left:18px;color:#c9d1d9;font-size:.875em;line-height:1.8}
+.method-box li{margin-bottom:4px}
+.method-box li code{background:#21262d;color:#4ade80;border-radius:4px;padding:1px 6px;font-family:'Courier New',monospace;font-size:.875em}
+
+/* Subnet mask quick ref */
+.mask-grid{display:grid;gap:3px;margin:12px 0}
+.mask-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:4px}
+.mask-cell{background:#0d1117;color:#e6edf3;border-radius:5px;padding:7px 10px;text-align:center;font-family:'Courier New',monospace;font-size:.81em}
+.mask-cell.mh{background:var(--nt);color:#fff;font-weight:800}
+.mask-cell.dec{color:#fbbf24;font-weight:700}
+.mask-cell.bin{color:#38bdf8}
+
+.tb-btn{position:fixed;bottom:80px;right:16px;background:var(--nt);color:#fff;border:none;border-radius:50%;width:44px;height:44px;font-size:1.25em;box-shadow:0 4px 14px rgba(0,0,0,.25);cursor:pointer;display:none;align-items:center;justify-content:center;z-index:100}
+.tb-btn.show{display:flex}
+.ft{text-align:center;padding:24px 16px;color:var(--muted);font-size:.81em}
+.mod-nav{position:fixed;bottom:0;left:0;right:0;z-index:300;background:#1a1a2e;border-top:1px solid #30363d;display:flex;align-items:center;height:52px;padding:0 8px;gap:6px}
+.mn-hub{background:#1ba0d7;color:#fff;border:none;border-radius:8px;padding:6px 12px;font-size:.75em;font-weight:700;cursor:pointer;text-decoration:none;display:flex;align-items:center;gap:4px;white-space:nowrap;-webkit-tap-highlight-color:transparent;flex-shrink:0}
+.mn-hub:active{opacity:.8}
+.mn-divider{width:1px;height:28px;background:#30363d;flex-shrink:0}
+.mn-label{flex:1;text-align:center;font-size:.69em;color:#8b949e;font-weight:600;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding:0 4px}
+.mn-prev,.mn-next{background:#30363d;color:#c9d1d9;border:none;border-radius:8px;padding:6px 10px;font-size:.875em;font-weight:700;cursor:pointer;text-decoration:none;display:flex;align-items:center;-webkit-tap-highlight-color:transparent;flex-shrink:0}
+.mn-prev:active,.mn-next:active{background:var(--nt);color:#fff}
+
+/* v2.1 — In-section check button */
+.sh{position:relative}
+.sec-check{position:absolute;right:40px;top:50%;transform:translateY(-50%);background:rgba(255,255,255,.15);border:2px solid rgba(255,255,255,.4);border-radius:6px;padding:2px 10px;font-size:.72em;font-weight:800;color:#fff;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:all .2s;white-space:nowrap;z-index:10;line-height:1.5}
+.sec-check.checked{background:var(--ntd);border-color:var(--ntd);color:#052e1e}
+.sec-check:active{opacity:.75}
+</style>
+</head>
+<body>
+<nav class="bc">
+  <a href="../../index.html">🏠 Home</a><span class="sep">›</span>
+  <a href="index.html">CCNA 1 — ITN</a><span class="sep">›</span>
+  <span class="cur">M5: Number Systems</span>
+</nav>
+<div class="fs-bar">
+  <div class="sc-pills" id="sc-pills">
+  <button class="sc-pill" id="pill-s0" onclick="toggleSection('s0',this)"><span class="pill-check">○</span>5.0</button>
+  <button class="sc-pill" id="pill-s1" onclick="toggleSection('s1',this)"><span class="pill-check">○</span>5.1</button>
+  <button class="sc-pill" id="pill-s2" onclick="toggleSection('s2',this)"><span class="pill-check">○</span>5.2</button>
+  <button class="sc-pill" id="pill-s3" onclick="toggleSection('s3',this)"><span class="pill-check">○</span>🔧</button>
+  <button class="sc-pill" id="pill-s4" onclick="toggleSection('s4',this)"><span class="pill-check">○</span>📋</button>
+  <button class="sc-pill" id="pill-s5" onclick="toggleSection('s5',this)"><span class="pill-check">○</span>🎯</button>
+  </div>
+  <span class="fs-label" style="flex-shrink:0;margin-left:6px">Size</span>
+  <button class="fs-btn" onclick="setFs('14px',this)">S</button>
+  <button class="fs-btn" onclick="setFs('16px',this)">M</button>
+  <button class="fs-btn" onclick="setFs('18px',this)">L</button>
+  <button class="fs-btn active" onclick="setFs('20px',this)">XL</button>
+</div>
+<div class="hdr">
+  <div class="badge">CCNA 1 — ITN v7.02 · Module 5</div>
+  <h1>🔢 Number Systems</h1>
+  <p>Introduction to Networks · NetAcad Study Guide</p>
+  <div class="obj">Module Objective: Calculate numbers between decimal, binary, and hexadecimal systems</div>
+</div>
+<div class="sp-wrap">
+  <div class="sp-hdr" id="sp-hdr" onclick="toggleStudyPanel()">
+    <span class="sp-title">📚 Sections</span>
+    <span class="sp-arr" id="sp-arr">▼</span>
+  </div>
+  <div class="sp-body" id="sp-body">
+    <div class="sp-row" id="row-s0"><span class="sr-status" id="st-s0">○</span><span class="sr-nb">5.0</span><span class="sr-ttl">Why Number Systems Matter in Networking</span></div>
+    <div class="sp-row" id="row-s1"><span class="sr-status" id="st-s1">○</span><span class="sr-nb">5.1</span><span class="sr-ttl">Binary Number System</span></div>
+    <div class="sp-row" id="row-s2"><span class="sr-status" id="st-s2">○</span><span class="sr-nb">5.2</span><span class="sr-ttl">Hexadecimal Number System</span></div>
+    <div class="sp-row" id="row-s3"><span class="sr-status" id="st-s3">○</span><span class="sr-nb">🔧</span><span class="sr-ttl">Interactive Converter Tool</span></div>
+    <div class="sp-row" id="row-s4"><span class="sr-status" id="st-s4">○</span><span class="sr-nb">📋</span><span class="sr-ttl">Quick Reference Tables</span></div>
+    <div class="sp-row" id="row-s5"><span class="sr-status" id="st-s5">○</span><span class="sr-nb">🎯</span><span class="sr-ttl">Common Exam Traps — Module 5</span></div>
+  </div>
+</div>
+
+<div class="toc">
+  <div class="toch open" onclick="this.classList.toggle('open');document.getElementById('tocb').classList.toggle('open')">
+    📋 Table of Contents — Tap to expand <span class="arr">▼</span>
+  </div>
+  <div class="tocb open" id="tocb">
+    <div class="tocg">Why Number Systems Matter</div>
+    <a href="javascript:void(0)" onclick="goTo('s0')"><span class="n">5.0</span> Decimal · Binary · Hexadecimal — Where Each Is Used</a>
+    <div class="tocg">5.1 — Binary Number System</div>
+    <a href="javascript:void(0)" onclick="goTo('s1')"><span class="n">5.1.1</span> Binary Basics and IPv4 Structure</a>
+    <a href="javascript:void(0)" onclick="goTo('s1')"><span class="n">5.1.3</span> Positional Notation — The 8 Binary Values</a>
+    <a href="javascript:void(0)" onclick="goTo('s1')"><span class="n">5.1.5</span> Binary → Decimal Conversion (Worked Examples)</a>
+    <a href="javascript:void(0)" onclick="goTo('s1')"><span class="n">5.1.7</span> Decimal → Binary Conversion — Subtraction Method</a>
+    <a href="javascript:void(0)" onclick="goTo('s1')"><span class="n">5.1.11</span> IPv4 Address Structure Review</a>
+    <div class="tocg">5.2 — Hexadecimal Number System</div>
+    <a href="javascript:void(0)" onclick="goTo('s2')"><span class="n">5.2.1</span> Hex Basics — 0–9 and A–F · IPv6 and MAC</a>
+    <a href="javascript:void(0)" onclick="goTo('s2')"><span class="n">5.2.3</span> Decimal → Hex Conversion (Worked Examples)</a>
+    <a href="javascript:void(0)" onclick="goTo('s2')"><span class="n">5.2.4</span> Hex → Decimal Conversion (Worked Examples)</a>
+    <div class="tocg">Reference</div>
+    <a href="javascript:void(0)" onclick="goTo('s3')"><span class="n">📊</span> Interactive Converter Tool</a>
+    <a href="javascript:void(0)" onclick="goTo('s4')"><span class="n">📋</span> Quick Reference Tables</a>
+    <a href="javascript:void(0)" onclick="goTo('s5')"><span class="n">🎯</span> Common Exam Traps</a>
+  </div>
+</div>
+
+<div class="wrap">
+
+<!-- WHY IT MATTERS -->
+<div class="sec" id="s0">
+<div class="sh open" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">5.0</span><span class="ttl">Why Number Systems Matter in Networking</span></span><button class="sec-check" id="sch-s0" onclick="event.stopPropagation();toggleSection('s0',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb open">
+  <div class="sub">
+  <div class="sys-grid">
+    <div class="sys-card dec">
+      <div class="sc-base">10</div>
+      <div class="sc-name">Decimal</div>
+      Digits 0–9<br>
+      Base 10<br><br>
+      Used by <strong>humans</strong> to read and write IPv4 addresses (dotted decimal notation)
+    </div>
+    <div class="sys-card bin">
+      <div class="sc-base">2</div>
+      <div class="sc-name">Binary</div>
+      Digits 0 and 1 only<br>
+      Base 2<br><br>
+      Used by <strong>computers and network devices</strong> — all data is ultimately binary
+    </div>
+    <div class="sys-card hex">
+      <div class="sc-base">16</div>
+      <div class="sc-name">Hexadecimal</div>
+      Digits 0–9 and A–F<br>
+      Base 16<br><br>
+      Used for <strong>IPv6 addresses</strong> and <strong>MAC addresses</strong> — compresses binary
+    </div>
+  </div>
+  <div class="et"><div class="lbl">🎯 WHY THIS MODULE EXISTS</div>
+  Networking devices only understand binary. But IPv4 addresses (32 bits) and especially IPv6 addresses (128 bits) are impractical to read as raw binary strings. Network administrators must:<br>
+  · Convert <strong>binary ↔ decimal</strong> (for IPv4 subnetting)<br>
+  · Convert <strong>decimal ↔ hexadecimal</strong> (for IPv6 and MAC addresses)<br>
+  · Convert <strong>hexadecimal ↔ binary</strong> (the bridge between the two)<br><br>
+  This module builds the foundation for <strong>all IPv4 subnetting</strong> in Module 11.
+  </div>
+  </div>
+</div></div>
+
+<!-- 5.1 BINARY -->
+<div class="sec" id="s1">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">5.1</span><span class="ttl">Binary Number System</span></span><button class="sec-check" id="sch-s1" onclick="event.stopPropagation();toggleSection('s1',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb">
+
+  <div class="sub">
+  <h3><span class="sn">5.1.1</span> Binary Basics and IPv4 Structure</h3>
+  <p><strong>Binary</strong> = base 2 number system with only two digits: <strong>0</strong> and <strong>1</strong> (called bits). Every network device stores and processes data in binary.</p>
+  <p><strong>IPv4 addresses are 32-bit binary numbers</strong> divided into four 8-bit sections called <strong>octets</strong>, separated by dots:</p>
+  <div class="conv-box">
+    <div class="cb-title">IPv4 Binary vs Dotted Decimal <span>192.168.10.10</span></div>
+    <table class="conv-table">
+      <tr><th>Octet 1</th><th>Octet 2</th><th>Octet 3</th><th>Octet 4</th></tr>
+      <tr><td class="val">11000000</td><td class="val">10101000</td><td class="val">00001010</td><td class="val">00001010</td></tr>
+      <tr><td class="result">192</td><td class="result">168</td><td class="result">10</td><td class="result">10</td></tr>
+    </table>
+  </div>
+  <p>Humans work with <strong>dotted decimal</strong>; network devices store and process <strong>binary</strong>. Converting between the two is a core networking skill.</p>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">5.1.3</span> Binary Positional Notation — The 8 Values to Memorize</h3>
+  <p>Just like decimal uses powers of 10 (1, 10, 100, 1000…), binary uses <strong>powers of 2</strong>. Each position in a binary octet has a fixed value:</p>
+  <div class="pos-bar">
+    <div class="pb-title">Binary Octet Positional Values — MEMORIZE THESE</div>
+    <div class="pos-grid">
+      <div class="pos-cell high"><div class="pv">128</div><div class="pp">2⁷</div></div>
+      <div class="pos-cell high"><div class="pv">64</div><div class="pp">2⁶</div></div>
+      <div class="pos-cell mid"><div class="pv">32</div><div class="pp">2⁵</div></div>
+      <div class="pos-cell mid"><div class="pv">16</div><div class="pp">2⁴</div></div>
+      <div class="pos-cell low"><div class="pv">8</div><div class="pp">2³</div></div>
+      <div class="pos-cell low"><div class="pv">4</div><div class="pp">2²</div></div>
+      <div class="pos-cell low"><div class="pv">2</div><div class="pp">2¹</div></div>
+      <div class="pos-cell low"><div class="pv">1</div><div class="pp">2⁰</div></div>
+    </div>
+  </div>
+  <div class="ca tip"><span class="ic">✅</span><div><strong>Key facts:</strong><br>
+  · Sum of all 8 values = 128+64+32+16+8+4+2+1 = <strong>255</strong> (maximum octet value = <code>11111111</code>)<br>
+  · Minimum octet value = 0 (<code>00000000</code>)<br>
+  · Any number raised to the power 0 = 1 (2⁰ = 1)<br>
+  · Each value is exactly double the one to its right</div></div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">5.1.5</span> Binary → Decimal Conversion</h3>
+  <div class="method-box">
+    <div class="mb-title">Method — Binary to Decimal</div>
+    <ol>
+      <li>Write out the 8 positional values: <code>128 64 32 16 8 4 2 1</code></li>
+      <li>For each bit: if the bit is <code>1</code> → add that positional value</li>
+      <li>If the bit is <code>0</code> → add nothing (skip that position)</li>
+      <li>Sum all values where the bit was 1</li>
+    </ol>
+  </div>
+
+  <h4>Example 1 — <code>11000000</code> → decimal</h4>
+  <div class="conv-box">
+    <div class="cb-title">11000000 = ? <span>Answer: 192</span></div>
+    <table class="conv-table">
+      <tr><th>128</th><th>64</th><th>32</th><th>16</th><th>8</th><th>4</th><th>2</th><th>1</th></tr>
+      <tr><td class="one">1</td><td class="one">1</td><td class="zero">0</td><td class="zero">0</td><td class="zero">0</td><td class="zero">0</td><td class="zero">0</td><td class="zero">0</td></tr>
+      <tr class="sum-row"><td>128</td><td>+64</td><td>+0</td><td>+0</td><td>+0</td><td>+0</td><td>+0</td><td>+0</td></tr>
+      <tr><td colspan="8" class="result">128 + 64 = 192</td></tr>
+    </table>
+  </div>
+
+  <h4>Example 2 — <code>10101000</code> → decimal</h4>
+  <div class="conv-box">
+    <div class="cb-title">10101000 = ? <span>Answer: 168</span></div>
+    <table class="conv-table">
+      <tr><th>128</th><th>64</th><th>32</th><th>16</th><th>8</th><th>4</th><th>2</th><th>1</th></tr>
+      <tr><td class="one">1</td><td class="zero">0</td><td class="one">1</td><td class="zero">0</td><td class="one">1</td><td class="zero">0</td><td class="zero">0</td><td class="zero">0</td></tr>
+      <tr class="sum-row"><td>128</td><td>+0</td><td>+32</td><td>+0</td><td>+8</td><td>+0</td><td>+0</td><td>+0</td></tr>
+      <tr><td colspan="8" class="result">128 + 32 + 8 = 168</td></tr>
+    </table>
+  </div>
+
+  <h4>Example 3 — <code>00001011</code> → decimal</h4>
+  <div class="conv-box">
+    <div class="cb-title">00001011 = ? <span>Answer: 11</span></div>
+    <table class="conv-table">
+      <tr><th>128</th><th>64</th><th>32</th><th>16</th><th>8</th><th>4</th><th>2</th><th>1</th></tr>
+      <tr><td class="zero">0</td><td class="zero">0</td><td class="zero">0</td><td class="zero">0</td><td class="one">1</td><td class="zero">0</td><td class="one">1</td><td class="one">1</td></tr>
+      <tr class="sum-row"><td>+0</td><td>+0</td><td>+0</td><td>+0</td><td>8</td><td>+0</td><td>+2</td><td>+1</td></tr>
+      <tr><td colspan="8" class="result">8 + 2 + 1 = 11</td></tr>
+    </table>
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">5.1.7</span> Decimal → Binary Conversion — Subtraction Method</h3>
+  <div class="method-box">
+    <div class="mb-title">Method — Decimal to Binary (Subtraction Method)</div>
+    <ol>
+      <li>Start with the leftmost positional value: <code>128</code></li>
+      <li>Is the decimal number <strong>≥</strong> this positional value? → write <code>1</code>, subtract the value, continue with the remainder</li>
+      <li>Is the decimal number <strong>&lt;</strong> this positional value? → write <code>0</code>, move to next position (no subtraction)</li>
+      <li>Repeat for 64, 32, 16, 8, 4, 2, 1</li>
+      <li>When remainder reaches 0 → all remaining bits are <code>0</code></li>
+    </ol>
+  </div>
+
+  <h4>Example 1 — decimal 192 → binary</h4>
+  <div class="conv-box">
+    <div class="cb-title">192 = ? <span>Answer: 11000000</span></div>
+    <table class="conv-table">
+      <tr><th>128</th><th>64</th><th>32</th><th>16</th><th>8</th><th>4</th><th>2</th><th>1</th></tr>
+      <tr>
+        <td class="val">192≥128✅<br>rem=64</td>
+        <td class="val">64≥64✅<br>rem=0</td>
+        <td class="zero">0&lt;32❌</td>
+        <td class="zero">0&lt;16❌</td>
+        <td class="zero">0&lt;8❌</td>
+        <td class="zero">0&lt;4❌</td>
+        <td class="zero">0&lt;2❌</td>
+        <td class="zero">0&lt;1❌</td>
+      </tr>
+      <tr><td class="one">1</td><td class="one">1</td><td class="zero">0</td><td class="zero">0</td><td class="zero">0</td><td class="zero">0</td><td class="zero">0</td><td class="zero">0</td></tr>
+      <tr><td colspan="8" class="result">192 = 11000000</td></tr>
+    </table>
+  </div>
+
+  <h4>Example 2 — decimal 168 → binary</h4>
+  <div class="conv-box">
+    <div class="cb-title">168 = ? <span>Answer: 10101000</span></div>
+    <table class="conv-table">
+      <tr><th>128</th><th>64</th><th>32</th><th>16</th><th>8</th><th>4</th><th>2</th><th>1</th></tr>
+      <tr>
+        <td class="val">168≥128✅<br>rem=40</td>
+        <td class="zero">40&lt;64❌</td>
+        <td class="val">40≥32✅<br>rem=8</td>
+        <td class="zero">8&lt;16❌</td>
+        <td class="val">8≥8✅<br>rem=0</td>
+        <td class="zero">0&lt;4❌</td>
+        <td class="zero">0&lt;2❌</td>
+        <td class="zero">0&lt;1❌</td>
+      </tr>
+      <tr><td class="one">1</td><td class="zero">0</td><td class="one">1</td><td class="zero">0</td><td class="one">1</td><td class="zero">0</td><td class="zero">0</td><td class="zero">0</td></tr>
+      <tr><td colspan="8" class="result">168 = 10101000</td></tr>
+    </table>
+  </div>
+
+  <h4>Example 3 — decimal 10 → binary</h4>
+  <div class="conv-box">
+    <div class="cb-title">10 = ? <span>Answer: 00001010</span></div>
+    <table class="conv-table">
+      <tr><th>128</th><th>64</th><th>32</th><th>16</th><th>8</th><th>4</th><th>2</th><th>1</th></tr>
+      <tr>
+        <td class="zero">10&lt;128❌</td>
+        <td class="zero">10&lt;64❌</td>
+        <td class="zero">10&lt;32❌</td>
+        <td class="zero">10&lt;16❌</td>
+        <td class="val">10≥8✅<br>rem=2</td>
+        <td class="zero">2&lt;4❌</td>
+        <td class="val">2≥2✅<br>rem=0</td>
+        <td class="zero">0&lt;1❌</td>
+      </tr>
+      <tr><td class="zero">0</td><td class="zero">0</td><td class="zero">0</td><td class="zero">0</td><td class="one">1</td><td class="zero">0</td><td class="one">1</td><td class="zero">0</td></tr>
+      <tr><td colspan="8" class="result">10 = 00001010</td></tr>
+    </table>
+  </div>
+
+  <h4>Complete IPv4 Address Conversion — 192.168.10.11 → binary</h4>
+  <div class="conv-box">
+    <div class="cb-title">192.168.10.11 → binary</div>
+    <table class="conv-table">
+      <tr><th>Decimal</th><th>128</th><th>64</th><th>32</th><th>16</th><th>8</th><th>4</th><th>2</th><th>1</th><th>Binary</th></tr>
+      <tr><td class="val">192</td><td class="one">1</td><td class="one">1</td><td class="zero">0</td><td class="zero">0</td><td class="zero">0</td><td class="zero">0</td><td class="zero">0</td><td class="zero">0</td><td class="result">11000000</td></tr>
+      <tr><td class="val">168</td><td class="one">1</td><td class="zero">0</td><td class="one">1</td><td class="zero">0</td><td class="one">1</td><td class="zero">0</td><td class="zero">0</td><td class="zero">0</td><td class="result">10101000</td></tr>
+      <tr><td class="val">10</td><td class="zero">0</td><td class="zero">0</td><td class="zero">0</td><td class="zero">0</td><td class="one">1</td><td class="zero">0</td><td class="one">1</td><td class="zero">0</td><td class="result">00001010</td></tr>
+      <tr><td class="val">11</td><td class="zero">0</td><td class="zero">0</td><td class="zero">0</td><td class="zero">0</td><td class="one">1</td><td class="zero">0</td><td class="one">1</td><td class="one">1</td><td class="result">00001011</td></tr>
+    </table>
+  </div>
+  <p style="font-size:.875em;margin-top:8px">Result: <code>11000000.10101000.00001010.00001011</code></p>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">5.1.11</span> IPv4 Address Structure Review</h3>
+  <div class="tw"><table>
+    <tr><th>Property</th><th>Value</th></tr>
+    <tr><td>Total bits</td><td>32 bits</td></tr>
+    <tr><td>Sections (octets)</td><td>4 octets × 8 bits each</td></tr>
+    <tr><td>Human representation</td><td>Dotted decimal: <code>192.168.10.10</code></td></tr>
+    <tr><td>Device representation</td><td>Binary: <code>11000000.10101000.00001010.00001010</code></td></tr>
+    <tr><td>Minimum octet value</td><td>0 = <code>00000000</code></td></tr>
+    <tr><td>Maximum octet value</td><td>255 = <code>11111111</code></td></tr>
+    <tr><td>Valid octet range</td><td>0–255</td></tr>
+  </table></div>
+  </div>
+
+</div></div>
+
+<!-- 5.2 HEXADECIMAL -->
+<div class="sec" id="s2">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">5.2</span><span class="ttl">Hexadecimal Number System</span></span><button class="sec-check" id="sch-s2" onclick="event.stopPropagation();toggleSection('s2',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb">
+
+  <div class="sub">
+  <h3><span class="sn">5.2.1</span> Hexadecimal Basics</h3>
+  <p><strong>Hexadecimal</strong> = base 16 number system. Uses digits <strong>0–9</strong> and letters <strong>A–F</strong> (where A=10, B=11, C=12, D=13, E=14, F=15).</p>
+  <p>Why hexadecimal in networking? Because IPv6 addresses are <strong>128 bits long</strong> — too long to work with as binary or decimal. Hex compresses <strong>every 4 binary bits into one single character</strong>.</p>
+  <div class="tw"><table>
+    <tr><th>Where Used</th><th>Bit Length</th><th>Hex Length</th><th>Example</th></tr>
+    <tr><td><strong>IPv6 address</strong></td><td>128 bits</td><td>32 hex digits</td><td><code>2001:0DB8:ACAD:0001::</code></td></tr>
+    <tr><td><strong>Ethernet MAC address</strong></td><td>48 bits</td><td>12 hex digits</td><td><code>AA-BB-CC-DD-EE-FF</code></td></tr>
+  </table></div>
+
+  <h4>Complete Hex Digit Table — Decimal, Binary, Hex</h4>
+  <div class="hex-grid">
+    <div class="hex-cell hdr-row"><span>HEX</span><span>DEC</span><span>BIN</span></div>
+    <div class="hex-cell hdr-row"><span>HEX</span><span>DEC</span><span>BIN</span></div>
+    <div class="hex-cell r0"><span class="hv">0</span><span class="dv">0</span><span class="bv">0000</span></div>
+    <div class="hex-cell r0"><span class="hv">8</span><span class="dv">8</span><span class="bv">1000</span></div>
+    <div class="hex-cell r1"><span class="hv">1</span><span class="dv">1</span><span class="bv">0001</span></div>
+    <div class="hex-cell r1"><span class="hv">9</span><span class="dv">9</span><span class="bv">1001</span></div>
+    <div class="hex-cell r0"><span class="hv">2</span><span class="dv">2</span><span class="bv">0010</span></div>
+    <div class="hex-cell r0"><span class="hv">A</span><span class="dv">10</span><span class="bv">1010</span></div>
+    <div class="hex-cell r1"><span class="hv">3</span><span class="dv">3</span><span class="bv">0011</span></div>
+    <div class="hex-cell r1"><span class="hv">B</span><span class="dv">11</span><span class="bv">1011</span></div>
+    <div class="hex-cell r0"><span class="hv">4</span><span class="dv">4</span><span class="bv">0100</span></div>
+    <div class="hex-cell r0"><span class="hv">C</span><span class="dv">12</span><span class="bv">1100</span></div>
+    <div class="hex-cell r1"><span class="hv">5</span><span class="dv">5</span><span class="bv">0101</span></div>
+    <div class="hex-cell r1"><span class="hv">D</span><span class="dv">13</span><span class="bv">1101</span></div>
+    <div class="hex-cell r0"><span class="hv">6</span><span class="dv">6</span><span class="bv">0110</span></div>
+    <div class="hex-cell r0"><span class="hv">E</span><span class="dv">14</span><span class="bv">1110</span></div>
+    <div class="hex-cell r1"><span class="hv">7</span><span class="dv">7</span><span class="bv">0111</span></div>
+    <div class="hex-cell r1"><span class="hv">F</span><span class="dv">15</span><span class="bv">1111</span></div>
+  </div>
+  <div class="ca info"><span class="ic">💡</span><div>A <strong>nibble</strong> = 4 bits = one hex digit. A <strong>byte</strong> = 8 bits = two hex digits. This is the core relationship for all hex↔binary conversions.<br><br><strong>IPv6 addresses are not case-sensitive</strong> — <code>2001:DB8</code> is the same as <code>2001:db8</code>.<br><br>Hexadecimal values are often prefixed with <code>0x</code> — for example <code>0xC0</code> means C0 in hex (= 192 decimal).</div></div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">5.2.3</span> Decimal → Hexadecimal Conversion</h3>
+  <div class="method-box">
+    <div class="mb-title">Method — Decimal to Hex (via Binary)</div>
+    <ol>
+      <li>Convert the decimal number to its <code>8-bit</code> binary representation</li>
+      <li>Split the 8-bit binary string into <strong>two nibbles</strong> (groups of 4 bits each)</li>
+      <li>Convert each nibble to its hex digit using the table above</li>
+    </ol>
+  </div>
+
+  <h4>Example 1 — decimal 168 → hex</h4>
+  <div class="conv-box">
+    <div class="cb-title">168 decimal → hex <span>Answer: A8</span></div>
+    <table class="conv-table">
+      <tr><th colspan="4">Step 1: 168 binary</th><th colspan="4">→ split nibbles</th></tr>
+      <tr><td class="one">1</td><td class="zero">0</td><td class="one">1</td><td class="zero">0</td><td class="one">1</td><td class="zero">0</td><td class="zero">0</td><td class="zero">0</td></tr>
+      <tr><td colspan="4" class="val">1010 → A (=10)</td><td colspan="4" class="val">1000 → 8</td></tr>
+      <tr><td colspan="8" class="result">168 decimal = A8 hex</td></tr>
+    </table>
+  </div>
+
+  <h4>Example 2 — decimal 192 → hex</h4>
+  <div class="conv-box">
+    <div class="cb-title">192 decimal → hex <span>Answer: C0</span></div>
+    <table class="conv-table">
+      <tr><th colspan="4">Step 1: 192 binary</th><th colspan="4">→ split nibbles</th></tr>
+      <tr><td class="one">1</td><td class="one">1</td><td class="zero">0</td><td class="zero">0</td><td class="zero">0</td><td class="zero">0</td><td class="zero">0</td><td class="zero">0</td></tr>
+      <tr><td colspan="4" class="val">1100 → C (=12)</td><td colspan="4" class="val">0000 → 0</td></tr>
+      <tr><td colspan="8" class="result">192 decimal = C0 hex</td></tr>
+    </table>
+  </div>
+
+  <h4>Example 3 — decimal 10 → hex</h4>
+  <div class="conv-box">
+    <div class="cb-title">10 decimal → hex <span>Answer: 0A</span></div>
+    <table class="conv-table">
+      <tr><th colspan="4">Step 1: 10 binary</th><th colspan="4">→ split nibbles</th></tr>
+      <tr><td class="zero">0</td><td class="zero">0</td><td class="zero">0</td><td class="zero">0</td><td class="one">1</td><td class="zero">0</td><td class="one">1</td><td class="zero">0</td></tr>
+      <tr><td colspan="4" class="val">0000 → 0</td><td colspan="4" class="val">1010 → A (=10)</td></tr>
+      <tr><td colspan="8" class="result">10 decimal = 0A hex</td></tr>
+    </table>
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">5.2.4</span> Hexadecimal → Decimal Conversion</h3>
+  <div class="method-box">
+    <div class="mb-title">Method — Hex to Decimal (via Binary)</div>
+    <ol>
+      <li>Convert each hex digit to its <strong>4-bit nibble</strong> using the table</li>
+      <li>Combine the nibbles into a full 8-bit binary string</li>
+      <li>Convert the 8-bit binary to decimal using the positional value method</li>
+    </ol>
+  </div>
+
+  <h4>Example 1 — hex D2 → decimal</h4>
+  <div class="conv-box">
+    <div class="cb-title">D2 hex → decimal <span>Answer: 210</span></div>
+    <table class="conv-table">
+      <tr><th colspan="4">D = 13 = 1101</th><th colspan="4">2 = 2 = 0010</th></tr>
+      <tr><td class="one">1</td><td class="one">1</td><td class="zero">0</td><td class="one">1</td><td class="zero">0</td><td class="zero">0</td><td class="one">1</td><td class="zero">0</td></tr>
+      <tr class="sum-row"><td>128</td><td>+64</td><td>+0</td><td>+16</td><td>+0</td><td>+0</td><td>+2</td><td>+0</td></tr>
+      <tr><td colspan="8" class="result">128+64+16+2 = 210</td></tr>
+    </table>
+  </div>
+
+  <h4>Example 2 — hex A8 → decimal</h4>
+  <div class="conv-box">
+    <div class="cb-title">A8 hex → decimal <span>Answer: 168</span></div>
+    <table class="conv-table">
+      <tr><th colspan="4">A = 10 = 1010</th><th colspan="4">8 = 8 = 1000</th></tr>
+      <tr><td class="one">1</td><td class="zero">0</td><td class="one">1</td><td class="zero">0</td><td class="one">1</td><td class="zero">0</td><td class="zero">0</td><td class="zero">0</td></tr>
+      <tr class="sum-row"><td>128</td><td>+0</td><td>+32</td><td>+0</td><td>+8</td><td>+0</td><td>+0</td><td>+0</td></tr>
+      <tr><td colspan="8" class="result">128+32+8 = 168</td></tr>
+    </table>
+  </div>
+
+  <h4>Example 3 — hex C9 → decimal</h4>
+  <div class="conv-box">
+    <div class="cb-title">C9 hex → decimal <span>Answer: 201</span></div>
+    <table class="conv-table">
+      <tr><th colspan="4">C = 12 = 1100</th><th colspan="4">9 = 9 = 1001</th></tr>
+      <tr><td class="one">1</td><td class="one">1</td><td class="zero">0</td><td class="zero">0</td><td class="one">1</td><td class="zero">0</td><td class="zero">0</td><td class="one">1</td></tr>
+      <tr class="sum-row"><td>128</td><td>+64</td><td>+0</td><td>+0</td><td>+8</td><td>+0</td><td>+0</td><td>+1</td></tr>
+      <tr><td colspan="8" class="result">128+64+8+1 = 201</td></tr>
+    </table>
+  </div>
+  </div>
+
+</div></div>
+
+<!-- INTERACTIVE CONVERTER -->
+<div class="sec" id="s3">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">🔧</span><span class="ttl">Interactive Converter Tool</span></span><button class="sec-check" id="sch-s3" onclick="event.stopPropagation();toggleSection('s3',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb">
+  <div class="sub">
+  <div class="converter">
+    <div class="cv-title">🔢 Number System Converter — Practice Tool</div>
+
+    <div style="margin-bottom:14px">
+      <div style="color:#8b949e;font-size:.75em;font-weight:700;margin-bottom:8px;text-transform:uppercase;letter-spacing:.5px">Decimal → Binary and Hex</div>
+      <div class="cv-row">
+        <label>Decimal (0–255)</label>
+        <input class="cv-input" id="decIn" type="number" min="0" max="255" placeholder="e.g. 192">
+        <button class="cv-btn" onclick="convDec()">Convert</button>
+      </div>
+      <div class="cv-row">
+        <label>→ Binary</label>
+        <div class="cv-output" id="decBin">—</div>
+      </div>
+      <div class="cv-row">
+        <label>→ Hex</label>
+        <div class="cv-output" id="decHex">—</div>
+      </div>
+      <div id="decErr" class="cv-err">Enter a number between 0 and 255</div>
+    </div>
+
+    <hr class="cv-divider">
+
+    <div style="margin-bottom:14px">
+      <div style="color:#8b949e;font-size:.75em;font-weight:700;margin-bottom:8px;text-transform:uppercase;letter-spacing:.5px">Binary → Decimal and Hex</div>
+      <div class="cv-row">
+        <label>Binary (8 bits)</label>
+        <input class="cv-input" id="binIn" type="text" maxlength="8" placeholder="e.g. 11000000">
+        <button class="cv-btn" onclick="convBin()">Convert</button>
+      </div>
+      <div class="cv-row">
+        <label>→ Decimal</label>
+        <div class="cv-output" id="binDec">—</div>
+      </div>
+      <div class="cv-row">
+        <label>→ Hex</label>
+        <div class="cv-output" id="binHex">—</div>
+      </div>
+      <div id="binErr" class="cv-err">Enter exactly 8 bits (0s and 1s only)</div>
+    </div>
+
+    <hr class="cv-divider">
+
+    <div>
+      <div style="color:#8b949e;font-size:.75em;font-weight:700;margin-bottom:8px;text-transform:uppercase;letter-spacing:.5px">Hex → Decimal and Binary</div>
+      <div class="cv-row">
+        <label>Hex (2 digits)</label>
+        <input class="cv-input" id="hexIn" type="text" maxlength="2" placeholder="e.g. C0">
+        <button class="cv-btn" onclick="convHex()">Convert</button>
+      </div>
+      <div class="cv-row">
+        <label>→ Decimal</label>
+        <div class="cv-output" id="hexDec">—</div>
+      </div>
+      <div class="cv-row">
+        <label>→ Binary</label>
+        <div class="cv-output" id="hexBin">—</div>
+      </div>
+      <div id="hexErr" class="cv-err">Enter 1–2 valid hex digits (0–9 and A–F)</div>
+    </div>
+  </div>
+  </div>
+</div></div>
+
+<!-- QUICK REFERENCE -->
+<div class="sec" id="s4">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">📋</span><span class="ttl">Quick Reference Tables</span></span><button class="sec-check" id="sch-s4" onclick="event.stopPropagation();toggleSection('s4',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb">
+
+  <div class="sub">
+  <h3><span class="sn">Ref</span> Common Binary ↔ Decimal Values (IPv4)</h3>
+  <div class="tw"><table>
+    <tr><th>Decimal</th><th>Binary</th><th>Notes</th></tr>
+    <tr><td>0</td><td><code>00000000</code></td><td>All zeros — minimum octet value</td></tr>
+    <tr><td>1</td><td><code>00000001</code></td><td></td></tr>
+    <tr><td>10</td><td><code>00001010</code></td><td>Common network octets (10.x.x.x)</td></tr>
+    <tr><td>11</td><td><code>00001011</code></td><td></td></tr>
+    <tr><td>128</td><td><code>10000000</code></td><td>Only the leftmost bit set</td></tr>
+    <tr><td>168</td><td><code>10101000</code></td><td>192.168.x.x private networks</td></tr>
+    <tr><td>172</td><td><code>10101100</code></td><td>172.16–31.x.x private networks</td></tr>
+    <tr><td>192</td><td><code>11000000</code></td><td>192.168.x.x private networks</td></tr>
+    <tr><td>254</td><td><code>11111110</code></td><td>Subnet mask valid value</td></tr>
+    <tr><td>255</td><td><code>11111111</code></td><td>All ones — maximum octet value</td></tr>
+  </table></div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">Ref</span> Subnet Mask Octet Values (Binary)</h3>
+  <p>Valid subnet mask octets are always contiguous 1s followed by contiguous 0s:</p>
+  <div class="mask-grid">
+    <div class="mask-row"><div class="mask-cell mh">Decimal</div><div class="mask-cell mh">Binary</div><div class="mask-cell mh">Bits Set</div></div>
+    <div class="mask-row"><div class="mask-cell dec">0</div><div class="mask-cell bin">00000000</div><div class="mask-cell">0 bits</div></div>
+    <div class="mask-row"><div class="mask-cell dec">128</div><div class="mask-cell bin">10000000</div><div class="mask-cell">1 bit</div></div>
+    <div class="mask-row"><div class="mask-cell dec">192</div><div class="mask-cell bin">11000000</div><div class="mask-cell">2 bits</div></div>
+    <div class="mask-row"><div class="mask-cell dec">224</div><div class="mask-cell bin">11100000</div><div class="mask-cell">3 bits</div></div>
+    <div class="mask-row"><div class="mask-cell dec">240</div><div class="mask-cell bin">11110000</div><div class="mask-cell">4 bits</div></div>
+    <div class="mask-row"><div class="mask-cell dec">248</div><div class="mask-cell bin">11111000</div><div class="mask-cell">5 bits</div></div>
+    <div class="mask-row"><div class="mask-cell dec">252</div><div class="mask-cell bin">11111100</div><div class="mask-cell">6 bits</div></div>
+    <div class="mask-row"><div class="mask-cell dec">254</div><div class="mask-cell bin">11111110</div><div class="mask-cell">7 bits</div></div>
+    <div class="mask-row"><div class="mask-cell dec">255</div><div class="mask-cell bin">11111111</div><div class="mask-cell">8 bits</div></div>
+  </div>
+  <div class="ca info"><span class="ic">💡</span><div>These are the ONLY valid values for each octet of a subnet mask. Any other value (e.g. 200, 173, 100) is an <strong>invalid subnet mask</strong>. You'll use this table extensively in Module 11 subnetting.</div></div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">Ref</span> IPv6 Structure Summary</h3>
+  <div class="tw"><table>
+    <tr><th>Property</th><th>Value</th></tr>
+    <tr><td>Total bits</td><td>128 bits</td></tr>
+    <tr><td>Representation</td><td>Hexadecimal</td></tr>
+    <tr><td>Total hex digits</td><td>32 hex digits</td></tr>
+    <tr><td>Groups</td><td>8 groups (hextets) of 4 hex digits</td></tr>
+    <tr><td>Separator</td><td>Colons (<code>:</code>)</td></tr>
+    <tr><td>Bits per hextet</td><td>16 bits</td></tr>
+    <tr><td>Case sensitivity</td><td>Not case-sensitive (A = a)</td></tr>
+    <tr><td>Example</td><td><code>2001:0DB8:ACAD:0001:0000:0000:0000:0001</code></td></tr>
+  </table></div>
+  </div>
+
+</div></div>
+
+<!-- EXAM TRAPS -->
+<div class="sec" id="s5">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">🎯</span><span class="ttl">Common Exam Traps — Module 5</span></span><button class="sec-check" id="sch-s5" onclick="event.stopPropagation();toggleSection('s5',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb">
+
+  <div class="ca danger"><span class="ic">❌</span><div><strong>Trap 1: Hex A=10, B=11, C=12, D=13, E=14, F=15. These MUST be memorized.</strong><br>Students often forget that hex A through F represent decimal values 10–15. Every hex-to-decimal conversion depends on knowing these mappings. A quick check: the letters A–F represent the decimal values that couldn't fit in a single digit (10–15).</div></div>
+
+  <div class="ca danger"><span class="ic">❌</span><div><strong>Trap 2: The 8 binary positional values MUST be memorized: 128-64-32-16-8-4-2-1.</strong><br>These are 2⁷ through 2⁰. Every binary↔decimal conversion depends on these. Sum of all 8 = 255 (maximum octet value). Each value is double the one to its right: 1→2→4→8→16→32→64→128.</div></div>
+
+  <div class="ca danger"><span class="ic">❌</span><div><strong>Trap 3: All ones (11111111) = 255. All zeros (00000000) = 0. These are the octet limits.</strong><br>IPv4 octet range is 0–255 only. An octet cannot be 256 or greater — that would require 9 bits. On exams, addresses with octets outside 0–255 are always invalid IPv4 addresses.</div></div>
+
+  <div class="ca danger"><span class="ic">❌</span><div><strong>Trap 4: Decimal to binary — always start at 128 and work LEFT to RIGHT.</strong><br>Never start in the middle or from the right. The method is: Is the number ≥ 128? Place 1 or 0. Work with remainder. Move to 64, then 32, and so on down to 1. Starting from anywhere else produces wrong answers.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 5: A nibble = 4 bits = 1 hex digit. A byte = 8 bits = 2 hex digits.</strong><br>This relationship is the foundation of all hex conversions. When splitting an 8-bit binary number for hex conversion, always split into two groups of 4 (left nibble and right nibble) before looking up each hex digit.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 6: To convert decimal↔hex you MUST go through binary first (at CCNA level).</strong><br>There is no simple direct formula from decimal to hex without the binary intermediate step. The process is: decimal → 8-bit binary → two nibbles → two hex digits (and reversed for hex to decimal).</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 7: IPv6 is NOT case-sensitive. 2001:DB8 = 2001:db8.</strong><br>Students sometimes think hex addresses must be uppercase. Both cases are valid and identical. Cisco IOS typically displays IPv6 addresses in lowercase. Exams may show either case — don't be tripped up.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 8: 0x prefix means hexadecimal. 0xC0 = C0 hex = 192 decimal.</strong><br>The "0x" is just a notation indicator — it is NOT part of the hex value. Strip the 0x and work with the remaining hex digits. This notation appears in IOS configuration output, programming contexts, and some exam questions.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 9: When remainder hits 0 in decimal-to-binary, all remaining bits are 0.</strong><br>This is a common time-wasting mistake. After your subtraction reduces the remainder to 0, immediately write 0 for ALL remaining bit positions. Don't continue checking each position one by one.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 10: Hex is used for both IPv6 addresses AND MAC addresses.</strong><br>Students associate hex only with IPv6 and forget MAC addresses. Ethernet MAC addresses are 48 bits = 12 hex digits (e.g., AA-BB-CC-DD-EE-FF). Both types appear in questions asking "where is hexadecimal used in networking?"</div></div>
+
+  <div class="ca tip"><span class="ic">✅</span><div><strong>Module 5 quick-reference summary:</strong><br><br>
+  <strong>Decimal:</strong> Base 10 · Digits 0–9 · Used by humans for IPv4<br>
+  <strong>Binary:</strong> Base 2 · Digits 0–1 (bits) · Used by devices for all data<br>
+  <strong>Hexadecimal:</strong> Base 16 · Digits 0–9 and A–F (A=10 B=11 C=12 D=13 E=14 F=15) · Used for IPv6 and MAC<br>
+  <strong>Positional values (MEMORIZE):</strong> 128 · 64 · 32 · 16 · 8 · 4 · 2 · 1<br>
+  <strong>Max octet:</strong> 11111111 = 255 · <strong>Min octet:</strong> 00000000 = 0<br>
+  <strong>Binary→Decimal:</strong> Add positional values where bit=1<br>
+  <strong>Decimal→Binary:</strong> Work L→R through 128,64,32,16,8,4,2,1 · ≥value=1(subtract) · &lt;value=0<br>
+  <strong>Decimal→Hex:</strong> Dec→8-bit binary→split two nibbles→hex digit each<br>
+  <strong>Hex→Decimal:</strong> Each hex→4-bit nibble→combine→decimal via positional values<br>
+  <strong>Nibble:</strong> 4 bits = 1 hex digit · <strong>Byte:</strong> 8 bits = 2 hex digits<br>
+  <strong>IPv4:</strong> 32 bits · 4 octets · dotted decimal · range 0–255 per octet<br>
+  <strong>IPv6:</strong> 128 bits · 32 hex digits · 8 hextets of 4 hex · colons · not case-sensitive<br>
+  <strong>MAC:</strong> 48 bits · 12 hex digits · dashes or colons<br>
+  <strong>0x prefix:</strong> means hexadecimal · 0x is not part of the value<br>
+  <strong>Subnet mask valid octets:</strong> 0,128,192,224,240,248,252,254,255 only<br>
+  <strong>Common values:</strong> 192=11000000 · 168=10101000 · 255=11111111 · 10=00001010</div></div>
+
+</div></div>
+
+</div>
+<div class="ft">CCNA 1 ITN v7.02 — Module 5: Number Systems v2.2<br>Based on Cisco NetAcad curriculum · Study guide for personal use</div>
+<button class="tb-btn" id="topb" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+<div class="mod-nav">
+  <a class="mn-hub" href="index.html">🏠 Hub</a>
+  <div class="mn-divider"></div>
+  <a class="mn-prev" href="ccna1_module4_physical_layer_v2.2.html">‹</a>
+  <span class="mn-label">M5 of 17</span>
+  <a class="mn-next" href="ccna1_module6_data_link_layer_v2.2.html">›</a>
+</div>
+<script>
+var MOD_KEY="ccna1-module5-number-systems";
+var SECS=["s0","s1","s2","s3","s4","s5"];
+var checked={};
+function loadState(){
+  try{var s=localStorage.getItem(MOD_KEY);if(s)checked=JSON.parse(s);}catch(e){}
+  SECS.forEach(function(id){
+    var pill=document.getElementById('pill-'+id);
+    var row=document.getElementById('row-'+id);
+    var st=document.getElementById('st-'+id);
+    var sch=document.getElementById('sch-'+id);
+    if(checked[id]){
+      if(pill){pill.classList.add('checked');pill.querySelector('.pill-check').textContent='✓';}
+      if(row)row.classList.add('done');
+      if(st)st.textContent='✓';
+      if(sch){sch.classList.add('checked');sch.textContent='✓ Done';}
+    } else {
+      if(pill){pill.classList.remove('checked');pill.querySelector('.pill-check').textContent='○';}
+      if(row)row.classList.remove('done');
+      if(st)st.textContent='○';
+      if(sch){sch.classList.remove('checked');sch.textContent='○ Mark done';}
+    }
+  });
+}
+function toggleSection(id,btn){checked[id]=!checked[id];try{localStorage.setItem(MOD_KEY,JSON.stringify(checked));}catch(e){}loadState();}
+function toggleStudyPanel(){
+  var hdr=document.getElementById('sp-hdr');
+  var body=document.getElementById('sp-body');
+  var arr=document.getElementById('sp-arr');
+  hdr.classList.toggle('open');body.classList.toggle('open');
+  if(arr)arr.textContent=body.classList.contains('open')?'▲':'▼';
+}
+function goTo(id){var el=document.getElementById(id);if(!el)return;var h=el.querySelector('.sh'),b=el.querySelector('.sb');if(h&&b&&!b.classList.contains('open')){h.classList.add('open');b.classList.add('open');}setTimeout(function(){window.scrollTo({top:el.getBoundingClientRect().top+window.pageYOffset-60,behavior:'smooth'});},50);}
+function setFs(size,btn){document.documentElement.style.setProperty('--base-fs',size);document.querySelectorAll('.fs-btn').forEach(function(b){b.classList.remove('active');});btn.classList.add('active');try{localStorage.setItem('ccna-fs',size);}catch(e){}}
+(function(){try{var s=localStorage.getItem('ccna-fs');if(s){document.documentElement.style.setProperty('--base-fs',s);document.querySelectorAll('.fs-btn').forEach(function(b){b.classList.remove('active');if((b.textContent==='S'&&s==='14px')||(b.textContent==='M'&&s==='16px')||(b.textContent==='L'&&s==='18px')||(b.textContent==='XL'&&s==='20px'))b.classList.add('active');});}}catch(e){}loadState();})();
+function copyCode(btn){var pre=btn.closest('.cw').querySelector('pre');navigator.clipboard.writeText(pre.innerText||pre.textContent).then(function(){btn.textContent='Copied!';setTimeout(function(){btn.textContent='Copy';},1500);});}
+</script>
+<script src="../../site-config.js"></script>
+</body>
+</html>

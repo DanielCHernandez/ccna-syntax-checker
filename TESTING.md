@@ -15,6 +15,53 @@ shouldn't need to ask for this again.
 
 ---
 
+## Site v20 — Study Hub + Simple Syntax Checker + CLI Engine combined
+
+Open http://127.0.0.1:8720/ (local server, while it's running) or
+`Site-v20/index.html` directly.
+
+1. Landing page: confirm the three course Study Hub cards, then ONE
+   "Practice tools" row with two cards side by side: Simple Syntax
+   Checker (with CCNA 1 / 2 / 3 buttons) and CLI Engine. Click each of the
+   7 links and confirm each opens a NEW window/tab while the landing page
+   stays open.
+2. CCNA 1 → Module 10: scroll to "Syntax Checker — 10.1.2". Confirm the
+   green and blue buttons sit side by side, each with its one-line
+   description, and hovering shows the same text as a tooltip.
+3. Click Open Syntax Checker → confirm it opens on lab 10.1.2 and has a
+   🏠 Home link top-left that goes back to the landing page.
+4. Click Open CLI Engine → confirm the engine opens. Pick the menu entry
+   the button named ("Course 1 · 10.1 — Configure Initial Router
+   Settings") and confirm it's the matching exercise.
+5. Click "🏠 All study tools (home)" under the buttons, and the "🏠 Home"
+   breadcrumb at the top of a module page: both go to the landing page.
+6. Course index pages (all 3): confirm there's no progress bar anymore.
+   On CCNA 3, confirm Modules 1–2 now sit under a "Single-Area OSPFv2"
+   heading like the other groups.
+7. Module pages: confirm there's no progress bar; the panel is now called
+   "📚 Sections" and lists every section, including Packet Tracer ones
+   (shown as "PT 2.9" etc.).
+8. Ticks: on CCNA 1 Module 1, tick 1.9 and Exam Traps; on Module 2, tick
+   2.8 and PT 2.9; on Module 5, tick 5.0 and the converter (📋). Reload
+   each page and confirm the button, the pill at the top and the row in
+   the Sections panel all still show ✓.
+9. CCNA 2 Module 3 (VLANs): tap a section header and confirm it opens and
+   closes. Before this, tapping did nothing.
+10. Spot-check a few other modules' Syntax Checker buttons (e.g. CCNA 2
+    Module 3, CCNA 3 Module 6) and confirm each opens its own lab.
+11. Readability fixes. Confirm each is now easy to read:
+    - CCNA 1 Module 5, "Subnet Mask Octet Values (Binary)": the Bits Set column.
+    - Any CCNA 2 or 3 module: the "📚 Sections" panel header now shows (it
+      was an invisible white-on-white box), and ticking a section turns its
+      pill and button green.
+    - CCNA 1 Module 1, PT 1.0: the activity name, now inside a dark box.
+    - CCNA 2 Module 1, 1.1.2 tip box: `config.text` is now a readable chip.
+    - CCNA 2 Module 3, "DTP Negotiation Matrix": the Auto and Trunk rows.
+    - CCNA 1 Module 11, Logical AND: "0 AND 1 = 0" and the other zero rules.
+    - CCNA 1 Module 13: traceroute output text. CCNA 1 Module 16: the DDoS card.
+
+---
+
 ## v1.41.0 — New Home Lab: 10.3.5 Troubleshoot Default Gateway Issues
 
 1. Open `terminal-v1.41.0.html`, confirm the header says v1.41.0.

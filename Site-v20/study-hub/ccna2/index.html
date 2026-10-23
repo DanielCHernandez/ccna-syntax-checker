@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>CCNA 2 SRWE — Study Guide Hub</title>
+<style>
+:root{
+  --blue:#1ba0d7;--dark:#005073;--green:#6cc24a;
+  --bg:#f4f6f8;--card:#fff;--text:#1a1a2e;--muted:#5a6a7a;
+  --r:12px;--sh:0 2px 12px rgba(0,0,0,.08);
+  --base-fs:16px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);font-size:var(--base-fs);line-height:1.6;padding-bottom:40px}
+
+/* ── Header ── */
+.hdr{background:linear-gradient(135deg,var(--dark),var(--blue));color:#fff;padding:36px 20px 28px;text-align:center}
+.hdr .logo{font-size:2.5em;margin-bottom:8px}
+.hdr h1{font-size:1.5em;font-weight:800;margin-bottom:4px}
+.hdr p{font-size:.875em;opacity:.85}
+.hdr .subtitle{display:inline-block;background:rgba(255,255,255,.15);border-radius:8px;padding:5px 14px;margin-top:10px;font-size:.81em}
+
+/* ── Progress summary ── */
+
+/* ── Checkpoint group headers ── */
+.group{margin:20px 16px 6px}
+.group-title{font-size:.69em;font-weight:800;letter-spacing:.8px;text-transform:uppercase;color:var(--dark);padding:6px 12px;background:#d0e8f5;border-radius:6px;display:flex;justify-content:space-between;align-items:center}
+.group-badge{background:var(--dark);color:#fff;border-radius:4px;padding:1px 8px;font-size:.875em}
+
+/* ── Module cards ── */
+.cards{padding:0 16px;display:grid;gap:10px}
+.card{background:var(--card);border-radius:var(--r);box-shadow:var(--sh);display:flex;align-items:center;gap:14px;padding:14px 16px;text-decoration:none;color:var(--text);transition:transform .15s,box-shadow .15s;-webkit-tap-highlight-color:transparent;border-left:5px solid var(--blue)}
+.card:active{transform:scale(.98)}
+.card.coming{border-left-color:#c8d6e0;opacity:.65}
+.card .num{background:var(--blue);color:#fff;border-radius:8px;width:40px;height:40px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:.875em;flex-shrink:0}
+.card.coming .num{background:#b0bec5}
+.card .info{flex:1;min-width:0}
+.card .mod-title{font-weight:700;font-size:.94em;margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.card .mod-sub{font-size:.75em;color:var(--muted)}
+.card .status{flex-shrink:0;font-size:.75em;font-weight:700;padding:3px 10px;border-radius:20px;white-space:nowrap}
+.card .status.ready{background:#d4edda;color:#0d3318}
+.card .status.soon{background:#e0e7ef;color:#5a6a7a}
+.card .arrow{color:var(--blue);font-size:1.125em;flex-shrink:0}
+.card.coming .arrow{color:#b0bec5}
+
+/* ── Footer ── */
+.ft{text-align:center;margin:28px 16px 0;font-size:.75em;color:var(--muted);line-height:1.8}
+.ft strong{color:var(--dark)}
+
+
+.card .status{display:none}
+</style>
+<style>.bc{background:#0d1117;padding:8px 16px;display:flex;align-items:center;flex-wrap:wrap;gap:4px;font-size:.75em;overflow-x:auto;white-space:nowrap;-webkit-overflow-scrolling:touch;border-bottom:1px solid #21262d}.bc a{color:#8b949e;text-decoration:none;font-weight:600;flex-shrink:0}.bc a:active{color:#c9d1d9}.bc .sep{color:#6e7681;flex-shrink:0}.bc .cur{color:#1ba0d7;font-weight:700;flex-shrink:0;overflow:hidden;text-overflow:ellipsis;max-width:180px}</style>
+</head>
+<body>
+<nav class="bc"><a href="../../index.html">🏠 Home</a><span class="sep">›</span><span class="cur">CCNA 2 — SRWE</span></nav>
+
+<div class="hdr">
+  <div class="logo">📚</div>
+  <h1>CCNA 2 Study Guide</h1>
+  <p>Switching, Routing &amp; Wireless Essentials — SRWE v7.02</p>
+  <div class="subtitle">NetAcad Curriculum · 16 Modules · Phone Optimized</div>
+</div>
+  
+
+
+<!-- GROUP 1: Modules 1–4 -->
+<div class="group">
+  <div class="group-title">Switching Concepts, VLANs &amp; Inter-VLAN Routing <span class="group-badge">Modules 1–4</span></div>
+</div>
+<div class="cards">
+  <a class="card" href="ccna2_module1_basic_device_configuration_v2.2.html">
+    <div class="num">1</div>
+    <div class="info">
+      <div class="mod-title">Basic Device Configuration</div>
+      <div class="mod-sub">Boot sequence · SSH · SVI · Interface config · show commands</div>
+    </div>
+    <span class="arrow">›</span>
+  </a>
+  <a class="card" href="ccna2_module2_switching_concepts_v2.2.html">
+    <div class="num">2</div>
+    <div class="info">
+      <div class="mod-title">Switching Concepts</div>
+      <div class="mod-sub">Frame forwarding · CAM table · Store-and-forward · Switching domains</div>
+    </div>
+    <span class="arrow">›</span>
+  </a>
+  <a class="card" href="ccna2_module3_vlans_v2.2.html">
+    <div class="num">3</div>
+    <div class="info">
+      <div class="mod-title">VLANs</div>
+      <div class="mod-sub">802.1Q · Trunk config · DTP modes · Native VLAN · VLAN ranges</div>
+    </div>
+    <span class="arrow">›</span>
+  </a>
+  <a class="card" href="ccna2_module4_intervlan_routing_v2.2.html">
+    <div class="num">4</div>
+    <div class="info">
+      <div class="mod-title">Inter-VLAN Routing</div>
+      <div class="mod-sub">RoaS · Layer 3 switch · SVI · ip routing · Troubleshooting</div>
+    </div>
+    <span class="arrow">›</span>
+  </a>
+</div>
+
+<!-- GROUP 2: Modules 5–6 -->
+<div class="group">
+  <div class="group-title">Redundant Networks <span class="group-badge">Modules 5–6</span></div>
+</div>
+<div class="cards">
+  <a class="card" href="ccna2_module5_stp_concepts_v2.2.html">
+    <div class="num">5</div>
+    <div class="info">
+      <div class="mod-title">STP Concepts</div>
+      <div class="mod-sub">BID · Root bridge election · Port roles · Timers · RSTP · PortFast</div>
+    </div>
+    <span class="arrow">›</span>
+  </a>
+  <a class="card" href="ccna2_module6_etherchannel_v2.2.html">
+    <div class="num">6</div>
+    <div class="info">
+      <div class="mod-title">EtherChannel</div>
+      <div class="mod-sub">PAgP · LACP · Mode compatibility · Port channel config · Troubleshooting</div>
+    </div>
+    <span class="arrow">›</span>
+  </a>
+</div>
+
+<!-- GROUP 3: Modules 7–9 -->
+<div class="group">
+  <div class="group-title">Available &amp; Reliable Networks <span class="group-badge">Modules 7–9</span></div>
+</div>
+<div class="cards">
+  <a class="card" href="ccna2_module7_dhcpv4_v2.2.html">
+    <div class="num">7</div>
+    <div class="info">
+      <div class="mod-title">DHCPv4</div>
+      <div class="mod-sub">DORA · Server config · ip helper-address relay · DHCPv4 client</div>
+    </div>
+    <span class="arrow">›</span>
+  </a>
+  <a class="card" href="ccna2_module8_slaac_dhcpv6_v2.2.html">
+    <div class="num">8</div>
+    <div class="info">
+      <div class="mod-title">SLAAC and DHCPv6</div>
+      <div class="mod-sub">RA flags · SLAAC · Stateless DHCPv6 · Stateful DHCPv6 · DAD · Relay</div>
+    </div>
+    <span class="arrow">›</span>
+  </a>
+  <a class="card" href="ccna2_module9_fhrp_concepts_v2.2.html">
+    <div class="num">9</div>
+    <div class="info">
+      <div class="mod-title">FHRP Concepts</div>
+      <div class="mod-sub">HSRP · Virtual router · Priority · Preemption · GLBP · VRRP</div>
+    </div>
+    <span class="arrow">›</span>
+  </a>
+</div>
+
+<!-- GROUP 4: Modules 10–13 -->
+<div class="group">
+  <div class="group-title">L2 Security &amp; WLANs <span class="group-badge">Modules 10–13</span></div>
+</div>
+<div class="cards">
+  <a class="card" href="ccna2_module10_lan_security_concepts_v2.2.html">
+    <div class="num">10</div>
+    <div class="info">
+      <div class="mod-title">LAN Security Concepts</div>
+      <div class="mod-sub">AAA · 802.1X · MAC flooding · VLAN attacks · DHCP/ARP/STP attacks</div>
+    </div>
+    <span class="arrow">›</span>
+  </a>
+  <a class="card" href="ccna2_module11_switch_security_configuration_v2.2.html">
+    <div class="num">11</div>
+    <div class="info">
+      <div class="mod-title">Switch Security Configuration</div>
+      <div class="mod-sub">Port Security · DHCP Snooping · DAI · PortFast · BPDU Guard</div>
+    </div>
+    <span class="arrow">›</span>
+  </a>
+  <a class="card" href="ccna2_module12_wlan_concepts_v2.2.html">
+    <div class="num">12</div>
+    <div class="info">
+      <div class="mod-title">WLAN Concepts</div>
+      <div class="mod-sub">802.11 standards · CSMA/CA · BSS · ESS · WPA2/WPA3 · CAPWAP</div>
+    </div>
+    <span class="arrow">›</span>
+  </a>
+  <a class="card" href="ccna2_module13_wlan_configuration_v2.2.html">
+    <div class="num">13</div>
+    <div class="info">
+      <div class="mod-title">WLAN Configuration</div>
+      <div class="mod-sub">Wireless router setup · WLC basic WLAN · WPA2 Enterprise · Troubleshoot</div>
+    </div>
+    <span class="arrow">›</span>
+  </a>
+</div>
+
+<!-- GROUP 5: Modules 14–16 -->
+<div class="group">
+  <div class="group-title">Routing Concepts &amp; Configuration <span class="group-badge">Modules 14–16</span></div>
+</div>
+<div class="cards">
+  <a class="card" href="ccna2_module14_routing_concepts_v2.2.html">
+    <div class="num">14</div>
+    <div class="info">
+      <div class="mod-title">Routing Concepts</div>
+      <div class="mod-sub">Longest match · CEF · Routing table · AD · Static vs Dynamic</div>
+    </div>
+    <span class="arrow">›</span>
+  </a>
+  <a class="card" href="ccna2_module15_ip_static_routing_v2.2.html">
+    <div class="num">15</div>
+    <div class="info">
+      <div class="mod-title">IP Static Routing</div>
+      <div class="mod-sub">Next-hop · Directly connected · Fully specified · Default · Floating · Host routes</div>
+    </div>
+    <span class="arrow">›</span>
+  </a>
+  <a class="card" href="ccna2_module16_troubleshoot_static_default_routes_v2.2.html">
+    <div class="num">16</div>
+    <div class="info">
+      <div class="mod-title">Troubleshoot Static and Default Routes</div>
+      <div class="mod-sub">5 commands · Extended ping · Routing loops · Problem patterns · Methodology</div>
+    </div>
+    <span class="arrow">›</span>
+  </a>
+</div>
+
+<div class="ft">
+  <strong>CCNA 2 SRWE v7.02</strong> — Study Guide Hub<br>
+  Based on Cisco NetAcad curriculum · For personal study use<br>
+  Keep all files in the same folder for navigation to work
+</div>
+
+</body>
+</html>

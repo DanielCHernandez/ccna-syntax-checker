@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=2.0">
+<title>CCNA NetAcad Study Hub</title>
+<style>
+:root{--blue:#1ba0d7;--dark:#005073;--green:#6cc24a;--bg:#f4f6f8;--card:#fff;--text:#1a1a2e;--muted:#5a6a7a;--r:12px;--sh:0 2px 12px rgba(0,0,0,.08)}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);font-size:16px;line-height:1.6;padding-bottom:48px}
+a{-webkit-tap-highlight-color:transparent}
+.hdr{background:linear-gradient(135deg,#0a1628,var(--dark),#0a6e4e);color:#fff;padding:36px 20px 28px;text-align:center}
+.hdr .logo{font-size:2.6em;margin-bottom:8px}
+.hdr h1{font-size:1.6em;font-weight:800;margin-bottom:6px}
+.hdr p{font-size:.94em;opacity:.85;max-width:520px;margin:0 auto}
+.wrap{max-width:900px;margin:0 auto;padding:0 16px}
+.sec-title{font-size:.75em;font-weight:800;letter-spacing:.8px;text-transform:uppercase;color:var(--muted);margin:24px 0 -6px}
+.tools{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:18px}
+@media (max-width:560px){.tools{grid-template-columns:1fr}}
+.tool{display:block;text-decoration:none;color:inherit;background:var(--card);border-radius:var(--r);box-shadow:var(--sh);padding:16px 18px}
+.tool.sc{border-top:4px solid #1a7f37}.tool.cli{border-top:4px solid #0b5cad}
+a.tool:hover{background:#f8fafb}
+.tool .t-name{font-weight:800;font-size:1.05em;display:flex;align-items:center;gap:6px}
+.tool.sc .t-name{color:#1a7f37}.tool.cli .t-name{color:#0b5cad}
+.tool .t-desc{font-size:.85em;color:var(--muted);margin-top:6px}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.chip{font-size:.85em;font-weight:700;color:#1a7f37;text-decoration:none;border:1px solid #b7dfc3;background:#f0faf3;border-radius:8px;padding:6px 12px}
+.chip:hover{background:#dff3e6}
+.course{background:var(--card);border-radius:var(--r);box-shadow:var(--sh);margin-top:18px;overflow:hidden}
+.course.c1{border-top:4px solid #0a6e4e}.course.c2{border-top:4px solid var(--dark)}.course.c3{border-top:4px solid #5c3d00}
+.badge{font-size:.69em;font-weight:800;letter-spacing:.5px;text-transform:uppercase;padding:2px 10px;border-radius:10px;display:inline-block;margin-bottom:4px;color:#fff}
+.c1 .badge{background:#0a6e4e}.c2 .badge{background:var(--dark)}.c3 .badge{background:#5c3d00}
+.hub{display:flex;align-items:center;gap:14px;padding:16px 18px;text-decoration:none;color:inherit}
+.hub:hover{background:#f8fafb}
+.hub .icon{font-size:1.9em;flex-shrink:0}
+.hub .info{flex:1;min-width:0}
+.hub .title{font-weight:800;font-size:1.05em}
+.hub .sub{font-size:.81em;color:var(--muted)}
+.hub .go{font-size:.78em;font-weight:700;color:var(--dark);white-space:nowrap}
+.ext{font-size:.8em;opacity:.6}
+.ft{text-align:center;padding:28px 16px 0;color:var(--muted);font-size:.75em}
+</style>
+</head>
+<body>
+<div class="hdr">
+  <div class="logo">📡</div>
+  <h1>CCNA NetAcad Study Hub</h1>
+  <p>Study notes, guided syntax drills and a full simulated Cisco IOS terminal, all based on Cisco NetAcad v7.02. Everything opens in its own window.</p>
+</div>
+
+<div class="wrap">
+  <div class="sec-title">📚 Study Hub — notes by course</div>
+
+  <div class="course c1">
+    <a class="hub" href="study-hub/ccna1/index.html" target="_blank" rel="noopener">
+      <div class="icon">🌐</div>
+      <div class="info">
+        <div class="badge">CCNA 1 · ITN v7.02</div>
+        <div class="title">Introduction to Networks</div>
+        <div class="sub">Networking basics · IP addressing · Routing fundamentals · Network services</div>
+      </div>
+      <div class="go">Study Hub <span class="ext">↗</span></div>
+    </a>
+  </div>
+
+  <div class="course c2">
+    <a class="hub" href="study-hub/ccna2/index.html" target="_blank" rel="noopener">
+      <div class="icon">🔀</div>
+      <div class="info">
+        <div class="badge">CCNA 2 · SRWE v7.02</div>
+        <div class="title">Switching, Routing &amp; Wireless Essentials</div>
+        <div class="sub">VLANs · STP · EtherChannel · DHCP · Wireless · Layer 2 security · Static routing</div>
+      </div>
+      <div class="go">Study Hub <span class="ext">↗</span></div>
+    </a>
+  </div>
+
+  <div class="course c3">
+    <a class="hub" href="study-hub/ccna3/index.html" target="_blank" rel="noopener">
+      <div class="icon">🛡️</div>
+      <div class="info">
+        <div class="badge">CCNA 3 · ENSA v7.02</div>
+        <div class="title">Enterprise Networking, Security &amp; Automation</div>
+        <div class="sub">OSPF · ACLs · NAT · WAN · VPN · QoS · Network management &amp; automation</div>
+      </div>
+      <div class="go">Study Hub <span class="ext">↗</span></div>
+    </a>
+  </div>
+  <div class="sec-title">🛠️ Practice tools</div>
+  <div class="tools">
+    <div class="tool sc">
+      <div class="t-name">✅ Simple Syntax Checker</div>
+      <div class="t-desc">Quick, guided, type-the-exact-command drills that mirror the NetAcad labs. Choose your course:</div>
+      <div class="chips">
+        <a class="chip" href="syntax-checker-simple/ccna1_syntax_checker.html" target="_blank" rel="noopener">CCNA 1 <span class="ext">↗</span></a>
+        <a class="chip" href="syntax-checker-simple/ccna2_syntax_checker.html" target="_blank" rel="noopener">CCNA 2 <span class="ext">↗</span></a>
+        <a class="chip" href="syntax-checker-simple/ccna3_syntax_checker.html" target="_blank" rel="noopener">CCNA 3 <span class="ext">↗</span></a>
+      </div>
+    </div>
+    <a class="tool cli cli-engine-link" href="cli-engine/ccna-cli-engine.html" target="_blank" rel="noopener">
+      <div class="t-name">💻 CLI Engine <span class="ext">↗</span></div>
+      <div class="t-desc">A full simulated Cisco IOS terminal with Tab completion, device state, Free Practice, Home Labs and Subnetting. Covers all three courses.</div>
+    </a>
+  </div>
+</div>
+
+<div class="ft">CCNA NetAcad Study Hub · Site v20 · Based on Cisco NetAcad v7.02 curriculum · For personal study use</div>
+<script src="site-config.js"></script>
+</body>
+</html>

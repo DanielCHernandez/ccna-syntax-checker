@@ -1,0 +1,976 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=2.0">
+<title>CCNA 2 Module 15: IP Static Routing v2.2</title>
+<style>
+:root{
+  --blue:#1ba0d7;--dark:#005073;--green:#6cc24a;
+  --rtr:#c45200;--rtrd:#fb923c;
+  --bg:#f4f6f8;--card:#fff;--text:#1a1a2e;--muted:#5a6a7a;
+  --cbg:#0d1117;--ctxt:#c9d1d9;--r:12px;--sh:0 2px 12px rgba(0,0,0,.08);
+  --base-fs:16px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);font-size:var(--base-fs);line-height:1.7}
+
+/* ── Font size toggle ── */
+.fs-bar{position:sticky;top:0;z-index:200;background:#1a1a2e;display:flex;align-items:center;justify-content:flex-end;padding:6px 14px;gap:6px;box-shadow:0 2px 8px rgba(0,0,0,.3)}
+.fs-label{color:#8b949e;font-size:.72em;font-weight:700;letter-spacing:.5px;text-transform:uppercase;margin-right:4px}
+.fs-btn{background:#30363d;color:#c9d1d9;border:2px solid transparent;border-radius:6px;padding:4px 12px;font-size:.75em;font-weight:700;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:all .2s;line-height:1.4}
+.fs-btn:active,.fs-btn.active{background:var(--rtr);color:#fff;border-color:var(--rtr)}
+
+/* ── Header ── */
+.hdr{background:linear-gradient(135deg,#7c2d00,var(--rtr));color:#fff;padding:32px 20px 24px;text-align:center}
+.hdr .badge{display:inline-block;background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.4);border-radius:20px;padding:4px 14px;font-size:.81em;margin-bottom:12px}
+.hdr h1{font-size:1.625em;font-weight:700;margin-bottom:6px}
+.hdr p{font-size:.94em;opacity:.85}
+.hdr .obj{display:inline-block;background:rgba(255,255,255,.15);border-radius:8px;padding:7px 16px;margin-top:12px;font-size:.875em;font-style:italic}
+
+/* ── Progress bar ── */
+.pb{background:var(--card);padding:14px 16px;margin:16px 16px 0;border-radius:var(--r);box-shadow:var(--sh)}
+.pbl{font-size:.81em;color:var(--muted);margin-bottom:6px;font-weight:600}
+.pbt{background:#e0e7ef;border-radius:10px;height:8px;overflow:hidden}
+.pbf{background:linear-gradient(90deg,var(--rtr),var(--rtrd));height:100%;border-radius:10px;width:0;transition:width 1s ease}
+
+/* ── TOC ── */
+.toc{background:var(--card);margin:16px;border-radius:var(--r);box-shadow:var(--sh);overflow:hidden}
+.toch{background:var(--rtr);color:#fff;padding:14px 18px;font-weight:700;font-size:.94em;display:flex;justify-content:space-between;align-items:center;cursor:pointer;user-select:none}
+.toch .arr{transition:transform .3s}
+.toch.open .arr{transform:rotate(180deg)}
+.tocb{display:none;padding:10px 0}
+.tocb.open{display:block}
+.tocg{font-size:.69em;font-weight:800;letter-spacing:.8px;color:var(--rtr);text-transform:uppercase;padding:8px 20px 2px}
+.tocb a{display:block;padding:9px 20px 9px 28px;color:var(--text);text-decoration:none;font-size:.875em;border-left:3px solid transparent;transition:all .2s}
+.tocb a:hover,.tocb a:active{background:#fff3ea;border-left-color:var(--rtrd)}
+.tocb a .n{display:inline-block;background:var(--rtr);color:#fff;border-radius:5px;padding:1px 8px;font-size:.75em;font-weight:700;margin-right:8px}
+
+/* ── Main wrap ── */
+.wrap{padding:0 16px 100px}
+
+/* ── Section cards ── */
+.sec{background:var(--card);border-radius:var(--r);box-shadow:var(--sh);margin-bottom:16px;overflow:hidden}
+.sh{background:linear-gradient(90deg,#7c2d00,var(--rtr));color:#fff;padding:16px 18px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;user-select:none;-webkit-tap-highlight-color:transparent}
+.sh .ttl{font-weight:700;font-size:1em}
+.sh .nb{background:rgba(255,255,255,.25);border-radius:6px;padding:3px 10px;font-size:.81em;font-weight:700;margin-right:10px;white-space:nowrap}
+.sh .ch{font-size:1.125em;transition:transform .3s}
+.sh.open .ch{transform:rotate(180deg)}
+.sb{display:none;padding:18px}
+.sb.open{display:block}
+
+/* ── Subsections ── */
+.sub{margin-bottom:24px}
+.sub:last-child{margin-bottom:0}
+.sub h3{font-size:.94em;font-weight:700;color:var(--rtr);margin-bottom:10px;padding-bottom:6px;border-bottom:2px solid #fff3ea;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.sub h3 .sn{background:var(--rtr);color:#fff;border-radius:5px;padding:2px 8px;font-size:.75em;white-space:nowrap}
+.sub h4{font-size:.875em;font-weight:700;color:var(--rtr);margin:14px 0 6px}
+.sub p{margin-bottom:10px;font-size:.94em}
+.sub ul,.sub ol{padding-left:20px;margin:8px 0;font-size:.94em}
+.sub li{margin-bottom:5px}
+
+/* ── Code blocks ── */
+.cw{background:var(--cbg);border-radius:10px;margin:12px 0;overflow:hidden}
+.cl{background:#21262d;color:#c9d1d9;font-size:.78em;font-weight:700;padding:6px 14px;letter-spacing:.5px;text-transform:uppercase;display:flex;justify-content:space-between;align-items:center}
+.cpb{background:#30363d;color:#c9d1d9;border:none;border-radius:5px;padding:3px 10px;font-size:.69em;cursor:pointer}
+.cpb:active{background:var(--rtr);color:#fff}
+pre{margin:0;padding:14px;overflow-x:auto;-webkit-overflow-scrolling:touch}
+code{font-family:'Courier New',monospace;font-size:.81em;color:var(--ctxt);line-height:1.6}
+p code,li code,td code,.ca code{background:#fff3ea;color:#7c2d00;border-radius:4px;padding:1px 5px;font-size:.81em;font-family:'Courier New',monospace;font-weight:600}
+
+/* ── Callout boxes ── */
+.ca{border-radius:8px;padding:12px 14px;margin:12px 0;font-size:.875em;line-height:1.6;display:flex;gap:10px;align-items:flex-start}
+.ca .ic{font-size:1.125em;flex-shrink:0;margin-top:1px}
+.ca.warn  {background:#fff3cd;border-left:4px solid #b38600;color:#3d2c00}
+.ca.tip   {background:#d4edda;border-left:4px solid #28a745;color:#0d3318}
+.ca.danger{background:#f8d7da;border-left:4px solid #dc3545;color:#3d0010}
+.ca.info  {background:#fff3ea;border-left:4px solid var(--rtr);color:#7c2d00}
+
+/* ── Exam tip dark box ── */
+.et{background:linear-gradient(135deg,#1a1a2e,#7c2d00);color:#fff;border-radius:10px;padding:14px 16px;margin:14px 0;font-size:.875em;line-height:1.6}
+.et .lbl{font-size:.69em;font-weight:800;letter-spacing:1px;color:var(--rtrd);margin-bottom:6px}
+.et ul{padding-left:18px;margin-top:6px}
+.et li{margin-bottom:4px}
+
+/* ── Tables ── */
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:12px 0;border-radius:8px}
+table{width:100%;border-collapse:collapse;font-size:.875em}
+th{background:var(--rtr);color:#fff;padding:10px 12px;text-align:left;font-weight:700;font-size:.81em}
+td{padding:9px 12px;border-bottom:1px solid #e8ecf0;vertical-align:top;color:#1a1a2e}
+tr:nth-child(even) td{background:#fff3ea;color:#7c2d00}
+tr:last-child td{border-bottom:none}
+
+/* ── Numbered steps ── */
+.steps{counter-reset:step;list-style:none;padding:0;margin:12px 0}
+.steps li{counter-increment:step;display:flex;gap:12px;align-items:flex-start;padding:10px 0;border-bottom:1px solid #eef0f3;font-size:.875em;line-height:1.6}
+.steps li:last-child{border-bottom:none}
+.steps li::before{content:counter(step);background:var(--rtr);color:#fff;border-radius:50%;min-width:26px;height:26px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.81em;flex-shrink:0;margin-top:2px}
+
+/* ── Dual-stack side by side ── */
+.dual{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:12px 0}
+@media(max-width:520px){.dual{grid-template-columns:1fr}}
+.dual-card{border-radius:10px;overflow:hidden}
+.dual-card .dc-hdr{padding:8px 12px;font-size:.81em;font-weight:800;color:#fff;text-align:center}
+.dual-card.v4 .dc-hdr{background:#1a472a}
+.dual-card.v6 .dc-hdr{background:var(--dark)}
+.dual-card .dc-body{background:var(--cbg);padding:12px;font-family:'Courier New',monospace;font-size:.75em;color:var(--ctxt);line-height:1.7;overflow-x:auto}
+
+/* ── Route type cards ── */
+.rt-grid{display:grid;gap:10px;margin:12px 0}
+.rt-card{border-radius:10px;padding:14px;border-left:5px solid}
+.rt-card.nexthop{border-left-color:#27ae60;background:#f0fff4}
+.rt-card.direct{border-left-color:var(--blue);background:#e8f4fb}
+.rt-card.full{border-left-color:var(--rtr);background:#fff3ea}
+.rt-card.deflt{border-left-color:#9333ea;background:#f3e8ff}
+.rt-card.float{border-left-color:#b38600;background:#fffbf0}
+.rt-card.host{border-left-color:#0e7490;background:#e0f2fe}
+.rt-card .rc-title{font-weight:800;font-size:.875em;margin-bottom:4px}
+.rt-card.nexthop .rc-title{color:#1e8449}
+.rt-card.direct .rc-title{color:var(--dark)}
+.rt-card.full .rc-title{color:var(--rtr)}
+.rt-card.deflt .rc-title{color:#9333ea}
+.rt-card.float .rc-title{color:#b38600}
+.rt-card.host .rc-title{color:#0e7490}
+.rt-card .rc-cmd{font-family:'Courier New',monospace;font-size:.75em;background:rgba(0,0,0,.07);border-radius:4px;padding:4px 8px;margin:4px 0;display:block;color:#1a1a2e;line-height:1.5;word-break:break-all}
+.rt-card p{font-size:.81em;color:#1a1a2e;line-height:1.6;margin-top:4px}
+
+/* ── Floating route diagram ── */
+.float-diagram{background:#0d1117;border:2px solid #b38600;border-radius:10px;padding:16px;margin:14px 0}
+.float-diagram .fd-title{font-size:.75em;font-weight:800;letter-spacing:.8px;color:#fbbf24;text-transform:uppercase;margin-bottom:10px}
+.fd-row{display:flex;gap:10px;align-items:flex-start;padding:8px 0;border-bottom:1px solid #21262d;font-size:.81em;color:#c9d1d9;line-height:1.6}
+.fd-row:last-child{border-bottom:none}
+.fd-badge{min-width:80px;font-weight:800;font-size:.75em;text-align:center;padding:3px 8px;border-radius:4px;flex-shrink:0;color:#fff}
+.fd-badge.active{background:#27ae60}
+.fd-badge.floating{background:#b38600}
+.fd-badge.fail{background:#dc3545}
+
+/* ── Host route comparison ── */
+.host-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:12px 0}
+@media(max-width:480px){.host-grid{grid-template-columns:1fr}}
+.host-card{border-radius:10px;padding:12px;text-align:center;border:2px solid}
+.host-card.v4{border-color:#1a472a;background:#f0fff4}
+.host-card.v6{border-color:var(--dark);background:#e8f4fb}
+.host-card .hc-label{font-size:.69em;font-weight:700;color:var(--muted);margin-bottom:4px;text-transform:uppercase}
+.host-card .hc-mask{font-size:1.375em;font-weight:900;font-family:'Courier New',monospace}
+.host-card.v4 .hc-mask{color:#1a472a}
+.host-card.v6 .hc-mask{color:var(--dark)}
+.host-card .hc-alt{font-size:.75em;color:var(--muted);margin-top:4px}
+.host-card p{font-size:.75em;color:#1a1a2e;margin-top:6px;line-height:1.5}
+
+/* ── Scroll to top ── */
+.tb{position:fixed;bottom:80px;right:16px;background:var(--rtr);color:#fff;border:none;border-radius:50%;width:44px;height:44px;font-size:1.25em;box-shadow:0 4px 14px rgba(0,0,0,.25);cursor:pointer;display:none;align-items:center;justify-content:center;z-index:100}
+.tb.show{display:flex}
+.ft{text-align:center;padding:24px 16px;color:var(--muted);font-size:.81em}
+
+/* ── Module nav bar ── */
+.mod-nav{position:fixed;bottom:0;left:0;right:0;z-index:300;background:#1a1a2e;border-top:1px solid #30363d;display:flex;align-items:center;height:52px;padding:0 8px;gap:6px}
+.mn-hub{background:var(--blue);color:#fff;border:none;border-radius:8px;padding:6px 12px;font-size:.75em;font-weight:700;cursor:pointer;text-decoration:none;display:flex;align-items:center;gap:4px;white-space:nowrap;-webkit-tap-highlight-color:transparent;flex-shrink:0}
+.mn-hub:active{opacity:.8}
+.mn-divider{width:1px;height:28px;background:#30363d;flex-shrink:0}
+.mn-label{flex:1;text-align:center;font-size:.69em;color:#8b949e;font-weight:600;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding:0 4px}
+.mn-prev,.mn-next{background:#30363d;color:#c9d1d9;border:none;border-radius:8px;padding:6px 10px;font-size:.875em;font-weight:700;cursor:pointer;text-decoration:none;display:flex;align-items:center;-webkit-tap-highlight-color:transparent;flex-shrink:0}
+.mn-prev:active,.mn-next:active{background:var(--rtr);color:#fff}
+/* Study progress panel */
+.sp-wrap{background:var(--card);margin:16px 16px 0;border-radius:var(--r);box-shadow:var(--sh);overflow:hidden}
+.sp-hdr{background:var(--nt);color:#fff;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;user-select:none;-webkit-tap-highlight-color:transparent;gap:10px}
+.sp-hdr .sp-title{font-weight:700;font-size:.875em;flex-shrink:0}
+.sp-hdr .sp-arr{transition:transform .3s;flex-shrink:0}
+.sp-hdr.open .sp-arr{transform:rotate(180deg)}
+.sp-body{display:none;padding:12px 14px}
+.sp-body.open{display:block}
+.sp-row{display:flex;align-items:center;gap:10px;padding:6px 4px;border-bottom:1px solid #f0f4f8;font-size:.81em}
+.sp-row:last-child{border-bottom:none}
+.sp-row .sr-status{font-size:1em;flex-shrink:0;width:20px;text-align:center}
+.sp-row .sr-nb{font-weight:800;color:var(--nt);min-width:36px;flex-shrink:0;font-size:.875em}
+.sp-row .sr-ttl{color:var(--text);flex:1}
+.sp-row.done .sr-ttl{color:var(--muted);text-decoration:line-through}
+.sc-pills{display:flex;align-items:center;gap:4px;overflow-x:auto;-webkit-overflow-scrolling:touch;flex:1;padding:0 4px}
+.sc-pill{background:#30363d;color:#8b949e;border:2px solid transparent;border-radius:6px;padding:3px 8px;font-size:.72em;font-weight:700;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:all .15s;white-space:nowrap;flex-shrink:0;line-height:1.4;display:flex;align-items:center;gap:3px}
+.sc-pill.checked{background:var(--nt);color:#fff;border-color:var(--ntd)}
+.sc-pill .pill-check{font-size:.875em}
+
+/* v2.1 — In-section check button */
+.sh{position:relative}
+.sec-check{position:absolute;right:40px;top:50%;transform:translateY(-50%);background:rgba(255,255,255,.15);border:2px solid rgba(255,255,255,.4);border-radius:6px;padding:2px 10px;font-size:.72em;font-weight:800;color:#fff;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:all .2s;white-space:nowrap;z-index:10;line-height:1.5}
+.sec-check.checked{background:var(--ntd);border-color:var(--ntd);color:#052e1e}
+.sec-check:active{opacity:.75}
+/* Sections panel + tick colours (these pages never defined --nt/--ntd, so the panel header was invisible) */
+:root{--nt:var(--rtr);--ntd:#4ade80}
+</style>
+<style>.bc{background:#0d1117;padding:8px 16px;display:flex;align-items:center;flex-wrap:wrap;gap:4px;font-size:.75em;overflow-x:auto;white-space:nowrap;-webkit-overflow-scrolling:touch;border-bottom:1px solid #21262d}.bc a{color:#8b949e;text-decoration:none;font-weight:600;flex-shrink:0}.bc a:active{color:#c9d1d9}.bc .sep{color:#6e7681;flex-shrink:0}.bc .cur{color:#1ba0d7;font-weight:700;flex-shrink:0}</style>
+</head>
+<body>
+<nav class="bc"><a href="../../index.html">🏠 Home</a><span class="sep">›</span><a href="index.html">CCNA 2 — SRWE</a><span class="sep">›</span><span class="cur">M15: Static Routing</span></nav>
+
+<!-- FONT SIZE TOGGLE -->
+<div class="fs-bar">
+  <div class="sc-pills" id="sc-pills">
+  <button class="sc-pill" id="pill-s1" onclick="toggleSection('s1',this)"><span class="pill-check">○</span>15.1</button>
+  <button class="sc-pill" id="pill-s2" onclick="toggleSection('s2',this)"><span class="pill-check">○</span>15.2</button>
+  <button class="sc-pill" id="pill-s3" onclick="toggleSection('s3',this)"><span class="pill-check">○</span>15.3</button>
+  <button class="sc-pill" id="pill-s4" onclick="toggleSection('s4',this)"><span class="pill-check">○</span>15.4</button>
+  <button class="sc-pill" id="pill-s5" onclick="toggleSection('s5',this)"><span class="pill-check">○</span>15.5</button>
+  <button class="sc-pill" id="pill-s-pt-15-6" onclick="toggleSection('s-pt-15-6',this)"><span class="pill-check">○</span>PT 15.6</button>
+  <button class="sc-pill" id="pill-s6" onclick="toggleSection('s6',this)"><span class="pill-check">○</span>CMD</button>
+  <button class="sc-pill" id="pill-s7" onclick="toggleSection('s7',this)"><span class="pill-check">○</span>🎯</button>
+  </div>
+  <span class="fs-label" style="flex-shrink:0;margin-left:6px">Size</span>
+  <button class="fs-btn" onclick="setFs('14px',this)">S</button>
+  <button class="fs-btn active" onclick="setFs('16px',this)">M</button>
+  <button class="fs-btn" onclick="setFs('18px',this)">L</button>
+  <button class="fs-btn" onclick="setFs('20px',this)">XL</button>
+</div>
+
+<!-- HEADER -->
+<div class="hdr">
+  <div class="badge">CCNA 2 — SRWE v7.02</div>
+  <h1>🛣️ Module 15: IP Static Routing</h1>
+  <p>Switching, Routing &amp; Wireless Essentials · NetAcad Study Guide</p>
+  <div class="obj">Module Objective: Configure IPv4 and IPv6 static routes</div>
+</div>
+
+<div class="sp-wrap">
+  <div class="sp-hdr" id="sp-hdr" onclick="toggleStudyPanel()">
+    <span class="sp-title">📚 Sections</span>
+    <span class="sp-arr" id="sp-arr">▼</span>
+  </div>
+  <div class="sp-body" id="sp-body">
+    <div class="sp-row" id="row-s1"><span class="sr-status" id="st-s1">○</span><span class="sr-nb">15.1</span><span class="sr-ttl">Static Routes</span></div>
+    <div class="sp-row" id="row-s2"><span class="sr-status" id="st-s2">○</span><span class="sr-nb">15.2</span><span class="sr-ttl">Configure IP Static Routes</span></div>
+    <div class="sp-row" id="row-s3"><span class="sr-status" id="st-s3">○</span><span class="sr-nb">15.3</span><span class="sr-ttl">Configure IP Default Static Routes</span></div>
+    <div class="sp-row" id="row-s4"><span class="sr-status" id="st-s4">○</span><span class="sr-nb">15.4</span><span class="sr-ttl">Configure Floating Static Routes</span></div>
+    <div class="sp-row" id="row-s5"><span class="sr-status" id="st-s5">○</span><span class="sr-nb">15.5</span><span class="sr-ttl">Configure Static Host Routes</span></div>
+    <div class="sp-row" id="row-s-pt-15-6"><span class="sr-status" id="st-s-pt-15-6">○</span><span class="sr-nb">PT 15.6</span><span class="sr-ttl">Packet Tracer — Configure IPv4 and IPv6 Static Routes</span></div>
+    <div class="sp-row" id="row-s6"><span class="sr-status" id="st-s6">○</span><span class="sr-nb">CMD</span><span class="sr-ttl">Complete Static Route Command Reference</span></div>
+    <div class="sp-row" id="row-s7"><span class="sr-status" id="st-s7">○</span><span class="sr-nb">🎯</span><span class="sr-ttl">Common Exam Traps — Module 15</span></div>
+  </div>
+</div>
+
+<!-- TABLE OF CONTENTS -->
+<div class="toc">
+  <div class="toch open" onclick="this.classList.toggle('open');document.getElementById('tocb').classList.toggle('open')">
+    📋 Table of Contents — Tap to expand <span class="arr">▼</span>
+  </div>
+  <div class="tocb open" id="tocb">
+    <div class="tocg">15.1 — Static Routes</div>
+    <a href="javascript:void(0)" onclick="goTo('s1')"><span class="n">15.1.1</span> Four Types of Static Routes</a>
+    <a href="javascript:void(0)" onclick="goTo('s1')"><span class="n">15.1.2</span> Three Next-Hop Options</a>
+    <a href="javascript:void(0)" onclick="goTo('s1')"><span class="n">15.1.3</span> IPv4 ip route Command Syntax</a>
+    <a href="javascript:void(0)" onclick="goTo('s1')"><span class="n">15.1.4</span> IPv6 ipv6 route Command Syntax</a>
+    <a href="javascript:void(0)" onclick="goTo('s1')"><span class="n">15.1.5</span> Starting State — Before Static Routes</a>
+    <div class="tocg">15.2 — Configure IP Static Routes</div>
+    <a href="javascript:void(0)" onclick="goTo('s2')"><span class="n">15.2.1</span> IPv4 Next-Hop Static Route</a>
+    <a href="javascript:void(0)" onclick="goTo('s2')"><span class="n">15.2.2</span> IPv6 Next-Hop Static Route</a>
+    <a href="javascript:void(0)" onclick="goTo('s2')"><span class="n">15.2.3</span> IPv4 Directly Connected Static Route</a>
+    <a href="javascript:void(0)" onclick="goTo('s2')"><span class="n">15.2.4</span> IPv6 Directly Connected Static Route</a>
+    <a href="javascript:void(0)" onclick="goTo('s2')"><span class="n">15.2.5</span> IPv4 Fully Specified Static Route</a>
+    <a href="javascript:void(0)" onclick="goTo('s2')"><span class="n">15.2.6</span> IPv6 Fully Specified — Link-Local Next-Hop</a>
+    <a href="javascript:void(0)" onclick="goTo('s2')"><span class="n">15.2.7</span> Verify a Static Route</a>
+    <div class="tocg">15.3 — Configure IP Default Static Routes</div>
+    <a href="javascript:void(0)" onclick="goTo('s3')"><span class="n">15.3.1</span> Default Static Route — Quad-Zero Route</a>
+    <a href="javascript:void(0)" onclick="goTo('s3')"><span class="n">15.3.2</span> Configure a Default Static Route</a>
+    <a href="javascript:void(0)" onclick="goTo('s3')"><span class="n">15.3.3</span> Verify a Default Static Route</a>
+    <div class="tocg">15.4 — Configure Floating Static Routes</div>
+    <a href="javascript:void(0)" onclick="goTo('s4')"><span class="n">15.4.1</span> How Floating Static Routes Work</a>
+    <a href="javascript:void(0)" onclick="goTo('s4')"><span class="n">15.4.2</span> Configure Floating Static Routes</a>
+    <a href="javascript:void(0)" onclick="goTo('s4')"><span class="n">15.4.3</span> Test the Floating Static Route</a>
+    <div class="tocg">15.5 — Configure Static Host Routes</div>
+    <a href="javascript:void(0)" onclick="goTo('s5')"><span class="n">15.5.1</span> Host Routes — /32 and /128</a>
+    <a href="javascript:void(0)" onclick="goTo('s5')"><span class="n">15.5.2</span> Automatically Installed Host Routes (L)</a>
+    <a href="javascript:void(0)" onclick="goTo('s5')"><span class="n">15.5.4</span> Configure Static Host Routes</a>
+    <a href="javascript:void(0)" onclick="goTo('s5')"><span class="n">15.5.6</span> IPv6 Host Route with Link-Local Next-Hop</a>
+    <div class="tocg">Reference</div>
+    <a href="javascript:void(0)" onclick="goTo('s6')"><span class="n">CMD</span> Complete Static Route Command Reference</a>
+    <a href="javascript:void(0)" onclick="goTo('s7')"><span class="n">🎯</span> Common Exam Traps</a>
+  </div>
+</div>
+
+<div class="wrap">
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- SECTION 15.1 — STATIC ROUTES -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div class="sec" id="s1">
+<div class="sh open" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">15.1</span><span class="ttl">Static Routes</span></span><button class="sec-check" id="sch-s1" onclick="event.stopPropagation();toggleSection('s1',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb open">
+
+  <div class="sub">
+  <h3><span class="sn">15.1.1</span> Four Types of Static Routes</h3>
+  <p>Static routes are commonly implemented even when a dynamic routing protocol is already running. Both IPv4 and IPv6 support all four types:</p>
+  <div class="rt-grid">
+    <div class="rt-card nexthop">
+      <div class="rc-title">Standard Static Route</div>
+      <p>Explicit path to a specific remote network. The most common type — used to tell a router exactly how to reach a specific destination.</p>
+    </div>
+    <div class="rt-card deflt">
+      <div class="rc-title">Default Static Route</div>
+      <p>Gateway of last resort — matches ALL packets that have no more-specific route. Zero bits need to match. IPv4: <code>0.0.0.0/0</code> — IPv6: <code>::/0</code>.</p>
+    </div>
+    <div class="rt-card float">
+      <div class="rc-title">Floating Static Route</div>
+      <p>Backup route — configured with a higher AD than the primary route. Hidden while the primary route is active. Activates automatically when the primary route disappears.</p>
+    </div>
+    <div class="rt-card host">
+      <div class="rc-title">Summary Static Route</div>
+      <p>Combines multiple specific routes into one less-specific route. Example: one <code>10.0.0.0/22</code> instead of four <code>/24</code> routes. Reduces routing table size.</p>
+    </div>
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">15.1.2</span> Three Next-Hop Options</h3>
+  <p>When configuring a static route, the next hop is identified in one of three ways — each creates a different type of static route entry:</p>
+  <div class="rt-grid">
+    <div class="rt-card nexthop">
+      <div class="rc-title">Next-Hop Route — IP address only</div>
+      <span class="rc-cmd">ip route 192.168.2.0 255.255.255.0 172.16.2.2</span>
+      <p>Only the next-hop IP is specified. Router performs a <strong>recursive lookup</strong> to find the exit interface. Routing table shows: <code>via 172.16.2.2</code></p>
+    </div>
+    <div class="rt-card direct">
+      <div class="rc-title">Directly Connected — exit interface only</div>
+      <span class="rc-cmd">ip route 192.168.2.0 255.255.255.0 s0/1/0</span>
+      <p><strong>Only for point-to-point serial interfaces.</strong> Routing table shows: <code>is directly connected, Serial0/1/0</code>. Do NOT use on Ethernet.</p>
+    </div>
+    <div class="rt-card full">
+      <div class="rc-title">Fully Specified — both interface AND IP</div>
+      <span class="rc-cmd">ip route 192.168.2.0 255.255.255.0 g0/0/1 172.16.2.2</span>
+      <p><strong>Required on Ethernet (multi-access) networks.</strong> Routing table shows both: <code>via 172.16.2.2, GigabitEthernet0/0/1</code>. Also required when using link-local next-hop for IPv6.</p>
+    </div>
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">15.1.3</span> IPv4 Static Route Command Syntax</h3>
+  <div class="cw"><div class="cl">ip route command — full syntax</div>
+  <pre><code>Router(config)# ip route network-address subnet-mask { ip-address | exit-intf [ip-address] } [distance]</code></pre></div>
+  <div class="tw"><table>
+    <tr><th>Parameter</th><th>Description</th></tr>
+    <tr><td><code>network-address</code></td><td>Destination IPv4 network address to add to the routing table</td></tr>
+    <tr><td><code>subnet-mask</code></td><td>Subnet mask of the destination network</td></tr>
+    <tr><td><code>ip-address</code></td><td>Next-hop router IPv4 address — use on Ethernet/multi-access networks</td></tr>
+    <tr><td><code>exit-intf</code></td><td>Exit interface — use only on point-to-point serial links</td></tr>
+    <tr><td><code>exit-intf ip-address</code></td><td>Fully specified — both interface and next-hop IP; required on multi-access Ethernet</td></tr>
+    <tr><td><code>distance</code></td><td>Optional AD value (1–255). Default = 1. Set higher to create a floating static route.</td></tr>
+  </table></div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">15.1.4</span> IPv6 Static Route Command Syntax</h3>
+  <div class="cw"><div class="cl">ipv6 route command — full syntax</div>
+  <pre><code>Router(config)# ipv6 route ipv6-prefix/prefix-length { ipv6-address | exit-intf [ipv6-address] } [distance]</code></pre></div>
+  <p>Same parameter structure as IPv4 — uses prefix/length notation instead of network + mask.</p>
+  <div class="ca danger">
+    <span class="ic">🚨</span>
+    <div><strong><code>ipv6 unicast-routing</code> must be configured globally</strong> before any IPv6 static routes will work. Without it, the router will not forward IPv6 packets regardless of how many <code>ipv6 route</code> commands are entered. This is the #1 IPv6 lab error.</div>
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">15.1.5</span> Starting State — Before Any Static Routes</h3>
+  <p>Reference topology: R1 ← serial → R2 ← serial → R3. Each router only knows its directly connected networks:</p>
+  <div class="cw"><div class="cl">R1 routing table — before static routes <button class="cpb" onclick="copyCode(this)">Copy</button></div>
+  <pre><code>R1# show ip route | begin Gateway
+Gateway of last resort is not set
+      172.16.0.0/16 is variably subnetted, 4 subnets, 2 masks
+C        172.16.2.0/24 is directly connected, Serial0/1/0
+L        172.16.2.1/32 is directly connected, Serial0/1/0
+C        172.16.3.0/24 is directly connected, GigabitEthernet0/0/0
+L        172.16.3.1/32 is directly connected, GigabitEthernet0/0/0
+
+! R1 can ping R2's serial (directly connected) ✅
+! R1 CANNOT ping R3's LAN 192.168.2.0/24 — no route exists ❌</code></pre></div>
+  </div>
+
+</div></div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- SECTION 15.2 — CONFIGURE IP STATIC ROUTES -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div class="sec" id="s2">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">15.2</span><span class="ttl">Configure IP Static Routes</span></span><button class="sec-check" id="sch-s2" onclick="event.stopPropagation();toggleSection('s2',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb">
+
+  <div class="sub">
+  <h3><span class="sn">15.2.1–15.2.2</span> Next-Hop Static Routes — IPv4 and IPv6</h3>
+  <p>Only the next-hop IP address is specified. The router performs a recursive lookup to determine the exit interface from the next-hop address.</p>
+  <div class="dual">
+    <div class="dual-card v4">
+      <div class="dc-hdr">🔵 IPv4 — Next-Hop</div>
+      <div class="dc-body">R1(config)# ip route 172.16.1.0 255.255.255.0 172.16.2.2
+R1(config)# ip route 192.168.1.0 255.255.255.0 172.16.2.2
+R1(config)# ip route 192.168.2.0 255.255.255.0 172.16.2.2
+
+R1# show ip route static
+S    172.16.1.0/24 [1/0] via 172.16.2.2
+S    192.168.1.0/24 [1/0] via 172.16.2.2
+S    192.168.2.0/24 [1/0] via 172.16.2.2</div>
+    </div>
+    <div class="dual-card v6">
+      <div class="dc-hdr">🟣 IPv6 — Next-Hop</div>
+      <div class="dc-body">R1(config)# ipv6 unicast-routing
+R1(config)# ipv6 route 2001:db8:acad:1::/64 2001:db8:acad:2::2
+R1(config)# ipv6 route 2001:db8:cafe:1::/64 2001:db8:acad:2::2
+R1(config)# ipv6 route 2001:db8:cafe:2::/64 2001:db8:acad:2::2
+
+R1# show ipv6 route static
+S   2001:DB8:ACAD:1::/64 [1/0]
+     via 2001:DB8:ACAD:2::2
+S   2001:DB8:CAFE:2::/64 [1/0]
+     via 2001:DB8:ACAD:2::2</div>
+    </div>
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">15.2.3–15.2.4</span> Directly Connected Static Routes — IPv4 and IPv6</h3>
+  <p>Only the exit interface is specified — no next-hop IP. The routing table shows "directly connected" even though the destination is remote.</p>
+  <div class="ca warn">
+    <span class="ic">⚠️</span>
+    <div><strong>Only use directly connected static routes on point-to-point serial interfaces.</strong> On Ethernet multi-access networks, using an exit interface without a next-hop causes ARP proxy issues — the router ARPs for every destination address on that network. Always use a next-hop IP or a fully specified route on Ethernet.</div>
+  </div>
+  <div class="dual">
+    <div class="dual-card v4">
+      <div class="dc-hdr">🔵 IPv4 — Directly Connected</div>
+      <div class="dc-body">R1(config)# ip route 172.16.1.0 255.255.255.0 s0/1/0
+R1(config)# ip route 192.168.1.0 255.255.255.0 s0/1/0
+R1(config)# ip route 192.168.2.0 255.255.255.0 s0/1/0
+
+! Table shows "directly connected" — no via:
+S    172.16.1.0/24 is directly connected, Serial0/1/0
+S    192.168.2.0/24 is directly connected, Serial0/1/0</div>
+    </div>
+    <div class="dual-card v6">
+      <div class="dc-hdr">🟣 IPv6 — Directly Connected</div>
+      <div class="dc-body">R1(config)# ipv6 route 2001:db8:acad:1::/64 s0/1/0
+R1(config)# ipv6 route 2001:db8:cafe:1::/64 s0/1/0
+R1(config)# ipv6 route 2001:db8:cafe:2::/64 s0/1/0
+
+! Table shows "directly connected":
+S   2001:DB8:ACAD:1::/64 [1/0]
+     via Serial0/1/0, directly connected
+S   2001:DB8:CAFE:2::/64 [1/0]
+     via Serial0/1/0, directly connected</div>
+    </div>
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">15.2.5</span> IPv4 Fully Specified Static Route</h3>
+  <p>Both exit interface AND next-hop IP are specified. <strong>Required when the exit interface is an Ethernet (multi-access) network</strong> — multiple devices may share the segment, so the router needs to know which specific device to ARP for.</p>
+  <div class="cw"><div class="cl">IPv4 fully specified — Ethernet exit interface + next-hop IP <button class="cpb" onclick="copyCode(this)">Copy</button></div>
+  <pre><code>! Link between R1 and R2 is Ethernet — G0/0/1:
+R1(config)# ip route 172.16.1.0 255.255.255.0 GigabitEthernet 0/0/1 172.16.2.2
+R1(config)# ip route 192.168.1.0 255.255.255.0 GigabitEthernet 0/0/1 172.16.2.2
+R1(config)# ip route 192.168.2.0 255.255.255.0 GigabitEthernet 0/0/1 172.16.2.2
+
+! Routing table shows BOTH interface AND next-hop:
+R1# show ip route | begin Gateway
+S        172.16.1.0/24 [1/0] via 172.16.2.2, GigabitEthernet0/0/1
+S     192.168.1.0/24 [1/0] via 172.16.2.2, GigabitEthernet0/0/1
+S     192.168.2.0/24 [1/0] via 172.16.2.2, GigabitEthernet0/0/1</code></pre></div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">15.2.6</span> IPv6 Fully Specified — Link-Local Next-Hop</h3>
+  <p>A fully specified IPv6 static route is <strong>required</strong> when the next-hop is a link-local address (FE80::). Link-local addresses are not globally unique — the same FE80:: address could exist on multiple interfaces. The exit interface tells IOS which link the FE80:: address belongs to.</p>
+  <div class="cw"><div class="cl">IPv6 link-local next-hop — MUST specify exit interface <button class="cpb" onclick="copyCode(this)">Copy</button></div>
+  <pre><code>! This FAILS — IOS rejects link-local without exit interface:
+R1(config)# ipv6 route 2001:db8:acad:1::/64 fe80::2
+%Interface has to be specified for a link-local nexthop
+
+! CORRECT — specify exit interface with link-local next-hop:
+R1(config)# ipv6 route 2001:db8:acad:1::/64 s0/1/0 fe80::2
+
+! Routing table shows both link-local address AND exit interface:
+R1# show ipv6 route static
+S   2001:DB8:ACAD:1::/64 [1/0]
+    via FE80::2, Serial0/1/0      ← link-local + exit interface both shown</code></pre></div>
+  <div class="ca danger">
+    <span class="ic">🚨</span>
+    <div><strong>Link-local next-hop = fully specified route is MANDATORY.</strong> IOS explicitly rejects <code>ipv6 route prefix fe80::x</code> without an interface. This error message is tested directly — know both the error and the fix.</div>
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">15.2.7</span> Verify Static Routes</h3>
+  <div class="tw"><table>
+    <tr><th>Command</th><th>What It Shows</th></tr>
+    <tr><td><code>show ip route static</code></td><td>Only static routes currently in the IPv4 routing table</td></tr>
+    <tr><td><code>show ip route 192.168.2.1</code></td><td>Detailed entry for one specific IPv4 network — shows "Known via static", metric, routing descriptor</td></tr>
+    <tr><td><code>show running-config | section ip route</code></td><td>All <code>ip route</code> statements in config — including floating routes not currently in table</td></tr>
+    <tr><td><code>show ipv6 route static</code></td><td>Only static routes currently in the IPv6 routing table</td></tr>
+    <tr><td><code>show ipv6 route 2001:db8:cafe:2::</code></td><td>Detailed entry for one specific IPv6 prefix</td></tr>
+    <tr><td><code>show running-config | section ipv6 route</code></td><td>All <code>ipv6 route</code> statements in config</td></tr>
+  </table></div>
+  <div class="cw"><div class="cl">Verification examples <button class="cpb" onclick="copyCode(this)">Copy</button></div>
+  <pre><code>! Show only static routes:
+R1# show ip route static | begin Gateway
+S        172.16.1.0/24 [1/0] via 172.16.2.2
+S     192.168.1.0/24 [1/0] via 172.16.2.2
+
+! Detailed entry for one network — confirms route source and next-hop:
+R1# show ip route 192.168.2.1
+Routing entry for 192.168.2.0/24
+  Known via "static", distance 1, metric 0
+  Routing Descriptor Blocks:
+  * 172.16.2.2
+      Route metric is 0, traffic share count is 1
+
+! Filter running config — see what is configured:
+R1# show running-config | section ip route
+ip route 172.16.1.0 255.255.255.0 172.16.2.2
+ip route 192.168.1.0 255.255.255.0 172.16.2.2
+ip route 192.168.2.0 255.255.255.0 172.16.2.2</code></pre></div>
+  </div>
+
+  <!-- SYNTAX CHECKER: 15.4.4 -->
+  <div style="margin:20px 0 6px;padding:16px;background:#0d1117;border:1px solid #30363d;border-left:3px solid #bc8cff;border-radius:8px">
+    <div style="font-size:.7em;font-weight:800;text-transform:uppercase;letter-spacing:.8px;color:#bc8cff;margin-bottom:6px">&#x1F5A5; Syntax Checker &mdash; 15.4.4</div>
+    <div style="font-size:.92em;font-weight:600;color:#e6edf3;margin-bottom:12px">Configure IP Static Routes</div>
+    <div style="font-size:.82em;color:#8b949e;margin-bottom:14px">Type each command exactly as shown. Press Enter to submit. The checker validates your syntax step by step.</div>
+    <div class="tool-links" style="display:flex;flex-wrap:wrap;gap:14px">
+      <div style="flex:1 1 220px;min-width:0">
+        <a href="../../syntax-checker-simple/ccna2_syntax_checker.html?lab=15.4.4" target="_blank" rel="noopener" title="Quick, guided drill: type the exact commands for this NetAcad lab, step by step. Opens straight to lab 15.4.4." style="display:inline-flex;align-items:center;gap:8px;color:#fff;text-decoration:none;padding:8px 18px;border-radius:6px;font-size:.85em;font-weight:700;background:#238636;border:1px solid #2ea043">&#x25B6; Open Syntax Checker</a>
+        <div style="font-size:.75em;color:#8b949e;margin-top:6px">Quick, guided drill: type the exact commands for this NetAcad lab, step by step. Opens straight to lab 15.4.4.</div>
+      </div>
+      <div style="flex:1 1 220px;min-width:0">
+        <a class="cli-engine-link" href="../../cli-engine/ccna-cli-engine.html" target="_blank" rel="noopener" title="Full simulated Cisco IOS terminal: Tab completion, device state, Free Practice, Home Labs and Subnetting. In its exercise menu, pick “Course 2 · 15.4 — Configure IP Static Routes”." style="display:inline-flex;align-items:center;gap:8px;color:#fff;text-decoration:none;padding:8px 18px;border-radius:6px;font-size:.85em;font-weight:700;background:#1f6feb;border:1px solid #388bfd">&#x1F4BB; Open CLI Engine</a>
+        <div style="font-size:.75em;color:#8b949e;margin-top:6px">Full simulated Cisco IOS terminal: Tab completion, device state, Free Practice, Home Labs and Subnetting. In its exercise menu, pick “Course 2 · 15.4 — Configure IP Static Routes”.</div>
+      </div>
+    </div>
+    <div style="margin-top:12px;font-size:.75em"><a href="../../index.html" style="color:#58a6ff;text-decoration:none">&#x1F3E0; All study tools (home)</a></div>
+  </div>
+
+</div></div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- SECTION 15.3 — DEFAULT STATIC ROUTES -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div class="sec" id="s3">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">15.3</span><span class="ttl">Configure IP Default Static Routes</span></span><button class="sec-check" id="sch-s3" onclick="event.stopPropagation();toggleSection('s3',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb">
+
+  <div class="sub">
+  <h3><span class="sn">15.3.1</span> Default Static Route — The Quad-Zero Route</h3>
+  <p>A default static route matches <strong>all packets</strong> that have no more-specific match in the routing table. Zero bits need to match — it is the gateway of last resort.</p>
+  <div class="dual">
+    <div class="dual-card v4">
+      <div class="dc-hdr">🔵 IPv4 Default Route</div>
+      <div class="dc-body">Network:  0.0.0.0
+Mask:     0.0.0.0
+Also called: "quad-zero route"
+Zero bits must match = everything matches
+Gateway of last resort</div>
+    </div>
+    <div class="dual-card v6">
+      <div class="dc-hdr">🟣 IPv6 Default Route</div>
+      <div class="dc-body">Prefix:   ::/0
+Zero bits must match = everything matches
+Equivalent to IPv4's 0.0.0.0/0
+Gateway of last resort</div>
+    </div>
+  </div>
+  <h4>When to use a default static route:</h4>
+  <ul>
+    <li><strong>Stub router</strong> — has only one upstream neighbor; all non-local traffic goes to that one router</li>
+    <li><strong>Edge router to ISP</strong> — the edge router doesn't need to know all internet routes; one default route sends everything to the ISP</li>
+  </ul>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">15.3.2</span> Configure a Default Static Route</h3>
+  <div class="dual">
+    <div class="dual-card v4">
+      <div class="dc-hdr">🔵 IPv4 Default Static Route</div>
+      <div class="dc-body">R1(config)# ip route 0.0.0.0 0.0.0.0 172.16.2.2
+
+! All unmatched IPv4 traffic → R2 at 172.16.2.2</div>
+    </div>
+    <div class="dual-card v6">
+      <div class="dc-hdr">🟣 IPv6 Default Static Route</div>
+      <div class="dc-body">R1(config)# ipv6 route ::/0 2001:db8:acad:2::2
+
+! All unmatched IPv6 traffic → R2 at 2001:db8:acad:2::2</div>
+    </div>
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">15.3.3</span> Verify a Default Static Route</h3>
+  <div class="cw"><div class="cl">Verify IPv4 and IPv6 default static routes <button class="cpb" onclick="copyCode(this)">Copy</button></div>
+  <pre><code>R1# show ip route static
+Gateway of last resort is 172.16.2.2 to network 0.0.0.0
+
+S*    0.0.0.0/0 [1/0] via 172.16.2.2
+!     ↑ S* = static candidate default route = gateway of last resort
+
+R1# show ipv6 route static
+S    ::/0 [1/0]
+      via 2001:DB8:ACAD:2::2</code></pre></div>
+  <div class="ca info">
+    <span class="ic">💡</span>
+    <div><strong><code>S*</code> = static candidate default route.</strong> The asterisk marks this as the active gateway of last resort. The routing table header line "Gateway of last resort is 172.16.2.2 to network 0.0.0.0" confirms the default route is active.</div>
+  </div>
+  </div>
+
+</div></div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- SECTION 15.4 — FLOATING STATIC ROUTES -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div class="sec" id="s4">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">15.4</span><span class="ttl">Configure Floating Static Routes</span></span><button class="sec-check" id="sch-s4" onclick="event.stopPropagation();toggleSection('s4',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb">
+
+  <div class="sub">
+  <h3><span class="sn">15.4.1</span> How Floating Static Routes Work</h3>
+  <p>A <strong>floating static route</strong> is a backup route with a <strong>higher AD than the primary route</strong>. When the primary is active, the floating route is hidden — it only appears in the routing table when the primary disappears.</p>
+
+  <div class="float-diagram">
+    <div class="fd-title">🔄 Floating Static Route — State Machine</div>
+    <div class="fd-row"><div class="fd-badge active">NORMAL</div><div>Primary route (e.g., EIGRP AD=90) is in routing table. Floating static (AD=95) is NOT visible in <code>show ip route</code> — but IS visible in <code>show running-config</code>. Traffic flows through primary path.</div></div>
+    <div class="fd-row"><div class="fd-badge fail">FAILURE</div><div>Primary link goes down → EIGRP route removed from table → floating static route (AD=95) is now the best available path → router installs it in the routing table automatically.</div></div>
+    <div class="fd-row"><div class="fd-badge active">RECOVERY</div><div>Primary link restored → EIGRP re-learns the route (AD=90) → floating static (AD=95) is removed from table → traffic returns to primary path automatically.</div></div>
+  </div>
+
+  <h4>AD values to beat for common protocols:</h4>
+  <div class="tw"><table>
+    <tr><th>Primary Route</th><th>Primary AD</th><th>Floating Static AD Must Be</th></tr>
+    <tr><td>Normal static route</td><td>1</td><td>≥ 2</td></tr>
+    <tr><td>Internal EIGRP</td><td>90</td><td>≥ 91</td></tr>
+    <tr><td>OSPF</td><td>110</td><td>≥ 111</td></tr>
+    <tr><td>RIP</td><td>120</td><td>≥ 121</td></tr>
+  </table></div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">15.4.2</span> Configure Floating Static Routes</h3>
+  <p>The <code>distance</code> parameter at the end of the command sets the AD. No distance = default AD of 1.</p>
+  <div class="cw"><div class="cl">Primary + floating default static routes — IPv4 and IPv6 <button class="cpb" onclick="copyCode(this)">Copy</button></div>
+  <pre><code>! Primary default routes → R2 (AD=1, default — preferred):
+R1(config)# ip route 0.0.0.0 0.0.0.0 172.16.2.2
+R1(config)# ipv6 route ::/0 2001:db8:acad:2::2
+
+! Floating backup default routes → R3 (AD=5 — higher than 1, hidden until needed):
+R1(config)# ip route 0.0.0.0 0.0.0.0 10.10.10.2 5
+R1(config)# ipv6 route ::/0 2001:db8:feed:10::2 5</code></pre></div>
+
+  <div class="cw"><div class="cl">Verify — only primary routes appear in show ip route <button class="cpb" onclick="copyCode(this)">Copy</button></div>
+  <pre><code>! Only the primary (AD=1) appears in the routing table:
+R1# show ip route static | begin Gateway
+Gateway of last resort is 172.16.2.2 to network 0.0.0.0
+S*    0.0.0.0/0 [1/0] via 172.16.2.2   ← primary active
+
+! But running-config shows BOTH routes are configured:
+R1# show run | include ipv6 route
+ipv6 route ::/0 2001:db8:feed:10::2 5  ← floating (AD=5) — in config, not in table
+ipv6 route ::/0 2001:db8:acad:2::2     ← primary (AD=1) — in config AND in table</code></pre></div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">15.4.3</span> Test the Floating Static Route</h3>
+  <p>Simulate failure by shutting R2's interfaces. R1 automatically detects the link down and installs the floating route:</p>
+  <div class="cw"><div class="cl">After R2 failure — floating routes activate automatically <button class="cpb" onclick="copyCode(this)">Copy</button></div>
+  <pre><code>! After R2 fails — floating routes now in table with AD=5:
+R1# show ip route static | begin Gateway
+Gateway of last resort is 10.10.10.2 to network 0.0.0.0
+S*    0.0.0.0/0 [5/0] via 10.10.10.2   ← floating now active — note [AD=5]
+
+R1# show ipv6 route static | begin ::
+S    ::/0 [5/0]
+      via 2001:DB8:FEED:10::2           ← floating IPv6 now active — note [AD=5]</code></pre></div>
+  <div class="ca tip">
+    <span class="ic">✅</span>
+    <div>The AD value in brackets changes from <code>[1/0]</code> to <code>[5/0]</code> when the floating route activates — this is the clearest indicator that the backup path is in use. When R2 recovers, traffic automatically switches back to the primary (AD=1) path.</div>
+  </div>
+  </div>
+
+</div></div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- SECTION 15.5 — STATIC HOST ROUTES -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div class="sec" id="s5">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">15.5</span><span class="ttl">Configure Static Host Routes</span></span><button class="sec-check" id="sch-s5" onclick="event.stopPropagation();toggleSection('s5',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb">
+
+  <div class="sub">
+  <h3><span class="sn">15.5.1</span> Host Routes — /32 and /128</h3>
+  <p>A host route matches exactly one IP address — not a network:</p>
+  <div class="host-grid">
+    <div class="host-card v4">
+      <div class="hc-label">IPv4 Host Route</div>
+      <div class="hc-mask">/32</div>
+      <div class="hc-alt">255.255.255.255</div>
+      <p>Matches exactly one IPv4 address. The longest possible prefix for IPv4.</p>
+    </div>
+    <div class="host-card v6">
+      <div class="hc-label">IPv6 Host Route</div>
+      <div class="hc-mask">/128</div>
+      <div class="hc-alt">(no dotted-decimal equivalent)</div>
+      <p>Matches exactly one IPv6 address. The longest possible prefix for IPv6.</p>
+    </div>
+  </div>
+  <p><strong>Three ways host routes appear in the routing table:</strong></p>
+  <ol>
+    <li><strong>Automatically installed (L routes)</strong> — IOS adds /32 or /128 for every IP address configured on the router itself</li>
+    <li><strong>Static host route</strong> — manually configured to reach a specific server or device</li>
+    <li><strong>Automatically obtained</strong> — through other methods covered in later courses</li>
+  </ol>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">15.5.2</span> Automatically Installed Host Routes (L Routes)</h3>
+  <p>When an IP address is configured on an interface and the interface becomes active, IOS automatically adds two routes — a C route for the network and an L route for the router's own interface address:</p>
+  <div class="cw"><div class="cl">Automatically installed C and L routes <button class="cpb" onclick="copyCode(this)">Copy</button></div>
+  <pre><code>Branch# show ip route | begin Gateway
+      198.51.100.0/24 is variably subnetted, 2 subnets, 2 masks
+C        198.51.100.0/30 is directly connected, Serial0/1/0   ← C = connected network
+L        198.51.100.1/32 is directly connected, Serial0/1/0   ← L = router's own /32
+
+Branch# show ipv6 route | begin ::
+C   2001:DB8:ACAD:1::/64 [0/0]
+     via Serial0/1/0, directly connected          ← C = connected network
+L   2001:DB8:ACAD:1::1/128 [0/0]                 ← L = router's own /128
+     via Serial0/1/0, receive
+L   FF00::/8 [0/0]                                ← L = multicast (always present)
+     via Null0, receive</code></pre></div>
+  <div class="ca info">
+    <span class="ic">💡</span>
+    <div>The L route (/32 or /128) allows the router to quickly recognize packets addressed to <strong>itself</strong> — so it processes them locally instead of trying to forward them. Without the L route, the router would have to do a full routing table lookup for every packet addressed to its own interface.</div>
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">15.5.4–15.5.5</span> Configure and Verify Static Host Routes</h3>
+  <p>Static host routes direct traffic to a specific single device — commonly a known server:</p>
+  <div class="cw"><div class="cl">Static host routes to a server at 209.165.200.238 <button class="cpb" onclick="copyCode(this)">Copy</button></div>
+  <pre><code>! IPv4 static host route (/32):
+Branch(config)# ip route 209.165.200.238 255.255.255.255 198.51.100.2
+
+! IPv6 static host route (/128):
+Branch(config)# ipv6 route 2001:db8:acad:2::238/128 2001:db8:acad:1::2
+
+! Verify:
+Branch# show ip route | begin Gateway
+      209.165.200.0/32 is subnetted, 1 subnets
+S        209.165.200.238 [1/0] via 198.51.100.2   ← /32 host route
+
+Branch# show ipv6 route
+S    2001:DB8:ACAD:2::238/128 [1/0]               ← /128 host route
+      via 2001:DB8:ACAD:1::2</code></pre></div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">15.5.6</span> IPv6 Static Host Route with Link-Local Next-Hop</h3>
+  <p>Same rule as any IPv6 route with a link-local next-hop — the exit interface is mandatory:</p>
+  <div class="cw"><div class="cl">IPv6 host route with link-local next-hop — fully specified <button class="cpb" onclick="copyCode(this)">Copy</button></div>
+  <pre><code>! Remove old route first:
+Branch(config)# no ipv6 route 2001:db8:acad:2::238/128 2001:db8:acad:1::2
+
+! Replace with fully specified — link-local next-hop requires exit interface:
+Branch(config)# ipv6 route 2001:db8:acad:2::238/128 serial 0/1/0 fe80::2
+
+! Verify — table shows both link-local AND exit interface:
+Branch# show ipv6 route | begin ::
+S   2001:DB8:ACAD:2::238/128 [1/0]
+     via FE80::2, Serial0/1/0     ← link-local + exit interface both displayed</code></pre></div>
+  </div>
+
+</div></div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- SECTION 15.6 — COMMAND REFERENCE -->
+<!-- ═══════════════════════════════════════════════════════ -->
+
+<div class="sec" id="s-pt-15-6">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">15.6</span><span class="ttl">Packet Tracer — Configure IPv4 and IPv6 Static Routes</span></span><button class="sec-check" id="sch-s-pt-15-6" onclick="event.stopPropagation();toggleSection('s-pt-15-6',this)">○ Mark done</button>
+</div>
+<div class="sb">
+  <div style="padding:14px 16px;background:#0d1117;border:1px solid #30363d;border-left:3px solid #1f6feb;border-radius:6px">
+    <div style="font-size:.72em;font-weight:800;text-transform:uppercase;letter-spacing:.8px;color:#1f6feb;margin-bottom:10px">&#x1F4E6; Packet Tracer Activities</div>
+    <div style="font-size:.82em;color:#6e7681;margin-bottom:10px">Open in Cisco Packet Tracer via your NetAcad course.</div>
+      <div style="display:flex;align-items:baseline;gap:10px;padding:6px 0;border-bottom:1px solid #21262d"><span style="font-family:monospace;font-size:.85em;color:#79c0ff;white-space:nowrap;flex-shrink:0;min-width:52px">15.6.1</span><span style="font-size:.88em;color:#c9d1d9">Configure IPv4 and IPv6 Static and Default Routes</span></div>
+    <div style="margin-top:12px;font-size:.78em;color:#6e7681">Full list: <a href="https://itexamanswers.net/ccna-2-packet-tracer-labs-answers-srwe-v7-02.html" target="_blank" rel="noopener" style="color:#58a6ff;word-break:break-all">https://itexamanswers.net/ccna-2-packet-tracer-labs-answers-srwe-v7-02.html</a></div>
+  </div>
+</div>
+</div>
+<div class="sec" id="s6">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">CMD</span><span class="ttl">Complete Static Route Command Reference</span></span><button class="sec-check" id="sch-s6" onclick="event.stopPropagation();toggleSection('s6',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb">
+
+  <div class="sub">
+  <h4>IPv4 Static Route Forms</h4>
+  <div class="tw"><table>
+    <tr><th>Route Type</th><th>Command</th></tr>
+    <tr><td>Next-hop</td><td><code>ip route 192.168.2.0 255.255.255.0 172.16.2.2</code></td></tr>
+    <tr><td>Directly connected (serial only)</td><td><code>ip route 192.168.2.0 255.255.255.0 s0/1/0</code></td></tr>
+    <tr><td>Fully specified (Ethernet)</td><td><code>ip route 192.168.2.0 255.255.255.0 g0/0/1 172.16.2.2</code></td></tr>
+    <tr><td>Default route</td><td><code>ip route 0.0.0.0 0.0.0.0 172.16.2.2</code></td></tr>
+    <tr><td>Floating (backup to EIGRP)</td><td><code>ip route 0.0.0.0 0.0.0.0 10.10.10.2 95</code></td></tr>
+    <tr><td>Host route</td><td><code>ip route 209.165.200.238 255.255.255.255 198.51.100.2</code></td></tr>
+    <tr><td>Remove a static route</td><td><code>no ip route 192.168.2.0 255.255.255.0 172.16.2.2</code></td></tr>
+  </table></div>
+
+  <h4>IPv6 Static Route Forms</h4>
+  <div class="tw"><table>
+    <tr><th>Route Type</th><th>Command</th></tr>
+    <tr><td>Next-hop (global unicast)</td><td><code>ipv6 route 2001:db8:cafe:2::/64 2001:db8:acad:2::2</code></td></tr>
+    <tr><td>Directly connected (serial only)</td><td><code>ipv6 route 2001:db8:cafe:2::/64 s0/1/0</code></td></tr>
+    <tr><td>Fully specified (global next-hop)</td><td><code>ipv6 route 2001:db8:cafe:2::/64 g0/0/1 2001:db8:acad:2::2</code></td></tr>
+    <tr><td>Fully specified (link-local next-hop)</td><td><code>ipv6 route 2001:db8:cafe:2::/64 s0/1/0 fe80::2</code></td></tr>
+    <tr><td>Default route</td><td><code>ipv6 route ::/0 2001:db8:acad:2::2</code></td></tr>
+    <tr><td>Floating (AD=5)</td><td><code>ipv6 route ::/0 2001:db8:feed:10::2 5</code></td></tr>
+    <tr><td>Host route (/128)</td><td><code>ipv6 route 2001:db8:acad:2::238/128 2001:db8:acad:1::2</code></td></tr>
+    <tr><td>Remove a static route</td><td><code>no ipv6 route 2001:db8:cafe:2::/64 2001:db8:acad:2::2</code></td></tr>
+  </table></div>
+
+  <h4>Verification Commands</h4>
+  <div class="cw"><div class="cl">All verification commands for static routing <button class="cpb" onclick="copyCode(this)">Copy</button></div>
+  <pre><code>! Show only static routes in table:
+R1# show ip route static
+R1# show ipv6 route static
+
+! Show only currently active static routes (| begin Gateway removes codes):
+R1# show ip route static | begin Gateway
+R1# show ipv6 route static | begin S :
+
+! Detailed entry for one specific network:
+R1# show ip route 192.168.2.0
+R1# show ipv6 route 2001:db8:cafe:2::
+
+! Show all static routes in running config (includes floating routes not in table):
+R1# show running-config | section ip route
+R1# show running-config | section ipv6 route
+
+! Full routing table (all sources):
+R1# show ip route
+R1# show ipv6 route
+
+! Test reachability:
+R1# ping 192.168.2.1
+R1# ping 2001:db8:cafe:2::1</code></pre></div>
+  </div>
+
+</div></div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- SECTION 15.7 — EXAM TRAPS -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div class="sec" id="s7">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">🎯</span><span class="ttl">Common Exam Traps — Module 15</span></span><button class="sec-check" id="sch-s7" onclick="event.stopPropagation();toggleSection('s7',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb">
+
+  <div class="ca danger"><span class="ic">❌</span><div><strong>Trap 1: Directly connected static routes — serial only, not Ethernet.</strong><br>Using only an exit interface on Ethernet causes ARP proxy problems — the router ARPs for every destination. On Ethernet multi-access networks, always use a next-hop IP address or a fully specified route (interface + IP).</div></div>
+
+  <div class="ca danger"><span class="ic">❌</span><div><strong>Trap 2: IPv6 link-local next-hop requires fully specified route.</strong><br><code>ipv6 route prefix fe80::2</code> is rejected by IOS with the message: <code>%Interface has to be specified for a link-local nexthop</code>. Correct: <code>ipv6 route prefix s0/1/0 fe80::2</code>. This is tested directly in labs and quizzes.</div></div>
+
+  <div class="ca danger"><span class="ic">❌</span><div><strong>Trap 3: Floating static route is NOT visible in show ip route while primary is active.</strong><br>The floating route only appears in the routing table after the preferred route disappears. To verify it is configured, use <code>show running-config | section ip route</code> — it appears there regardless of table state.</div></div>
+
+  <div class="ca danger"><span class="ic">❌</span><div><strong>Trap 4: Floating static AD must be HIGHER than the route it backs up.</strong><br>To back up EIGRP (AD=90): use AD ≥ 91. OSPF (AD=110): use AD ≥ 111. Normal static (AD=1): use AD ≥ 2. If you set a lower AD, the floating route becomes the preferred route — defeating its entire purpose.</div></div>
+
+  <div class="ca danger"><span class="ic">❌</span><div><strong>Trap 5: ipv6 unicast-routing is always required for IPv6 routing.</strong><br>Without this global command, no IPv6 static routes will forward traffic — even if every <code>ipv6 route</code> command is correct. Always configure <code>ipv6 unicast-routing</code> first on any router that needs to forward IPv6 packets.</div></div>
+
+  <div class="ca danger"><span class="ic">❌</span><div><strong>Trap 6: Default static route — 0.0.0.0 0.0.0.0 for IPv4, ::/0 for IPv6.</strong><br>IPv4 quad-zero route: <code>ip route 0.0.0.0 0.0.0.0 [next-hop]</code>. IPv6: <code>ipv6 route ::/0 [next-hop]</code>. S* in the routing table = static candidate default = gateway of last resort is set.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 7: show run | section ip route vs show ip route static.</strong><br><code>show ip route static</code> only shows routes currently in the table. <code>show running-config | section ip route</code> shows everything configured — including floating routes that aren't active. Always use both for complete verification.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 8: Host routes — IPv4 = /32 (255.255.255.255), IPv6 = /128.</strong><br>These match exactly one IP address. L routes in the table are automatically installed /32 or /128 for the router's own interface addresses. Static host routes use the same mask but are manually configured to reach a specific external device.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 9: Recursive lookup happens with next-hop-only static routes.</strong><br>When only the next-hop IP is given, the router must do a second lookup to find the exit interface for that next-hop address. Fully specified routes eliminate this second lookup. Both work correctly — the difference is efficiency.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 10: Removing a static route requires exact match of parameters.</strong><br><code>no ip route 192.168.2.0 255.255.255.0 172.16.2.2</code> — all parameters must match the original command exactly. If the original used an interface, the no command must also specify the interface.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 11: "Directly connected" in routing table for static route ≠ actually connected.</strong><br>When you configure a static route with only an exit interface (no next-hop IP), the routing table displays "is directly connected, Serial0/1/0" — even though the destination network is remote. This is just how IOS displays exit-interface-only static routes.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 12: AD of floating route activates — look for [5/0] instead of [1/0].</strong><br>When the floating route activates, <code>show ip route static</code> shows the AD value in brackets changing from <code>[1/0]</code> to <code>[5/0]</code> (or whatever AD was configured). This is the exam-tested indicator that the backup path is in use.</div></div>
+
+  <div class="ca tip"><span class="ic">✅</span><div><strong>Module 15 quick-reference — all static route command patterns:</strong><br><br>
+  Next-hop: <code>ip route net mask next-hop-ip</code><br>
+  Serial P2P: <code>ip route net mask s0/1/0</code><br>
+  Ethernet: <code>ip route net mask g0/0/1 next-hop-ip</code> (fully specified)<br>
+  Default IPv4: <code>ip route 0.0.0.0 0.0.0.0 next-hop-ip</code><br>
+  Default IPv6: <code>ipv6 route ::/0 next-hop-ip</code><br>
+  Floating: append <code>AD</code> (e.g., <code>95</code>) to the end of any static route command<br>
+  Host IPv4: <code>ip route x.x.x.x 255.255.255.255 next-hop-ip</code><br>
+  Host IPv6: <code>ipv6 route prefix/128 next-hop-ip</code><br>
+  Link-local next-hop: <code>ipv6 route prefix exit-intf fe80::x</code> (exit-intf REQUIRED)<br>
+  Verify table: <code>show ip route static</code> / <code>show ipv6 route static</code><br>
+  Verify config: <code>show run | section ip route</code> / <code>show run | section ipv6 route</code></div></div>
+
+</div></div>
+
+</div><!-- end .wrap -->
+
+<div class="ft">
+  CCNA 2 SRWE v7.02 — Module 15: IP Static Routing v2.2<br>
+  Based on Cisco NetAcad curriculum · Study guide for personal use
+</div>
+
+<button class="tb" id="topb" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+
+<!-- MODULE NAVIGATION BAR -->
+<div class="mod-nav">
+  <a class="mn-hub" href="index.html">🏠 Hub</a>
+  <div class="mn-divider"></div>
+  <a class="mn-prev" href="ccna2_module14_routing_concepts_v2.2.html">‹</a>
+  <span class="mn-label">M15 of 16</span>
+  <a class="mn-next" href="ccna2_module16_troubleshoot_static_default_routes_v2.2.html">›</a>
+</div>
+
+<script>
+var MOD_KEY="ccna2-module15-ip-static-routing";
+var SECS=["s1","s2","s3","s4","s5","s-pt-15-6","s6","s7"];
+var checked={};
+function loadState(){
+  try{var s=localStorage.getItem(MOD_KEY);if(s)checked=JSON.parse(s);}catch(e){}
+  SECS.forEach(function(id){
+    var pill=document.getElementById('pill-'+id);
+    var row=document.getElementById('row-'+id);
+    var st=document.getElementById('st-'+id);
+    var sch=document.getElementById('sch-'+id);
+    if(checked[id]){
+      if(pill){pill.classList.add('checked');pill.querySelector('.pill-check').textContent='✓';}
+      if(row)row.classList.add('done');
+      if(st)st.textContent='✓';
+      if(sch){sch.classList.add('checked');sch.textContent='✓ Done';}
+    } else {
+      if(pill){pill.classList.remove('checked');pill.querySelector('.pill-check').textContent='○';}
+      if(row)row.classList.remove('done');
+      if(st)st.textContent='○';
+      if(sch){sch.classList.remove('checked');sch.textContent='○ Mark done';}
+    }
+  });
+}
+function toggleSection(id,btn){checked[id]=!checked[id];try{localStorage.setItem(MOD_KEY,JSON.stringify(checked));}catch(e){}loadState();}
+function toggleStudyPanel(){
+  var hdr=document.getElementById('sp-hdr');
+  var body=document.getElementById('sp-body');
+  var arr=document.getElementById('sp-arr');
+  hdr.classList.toggle('open');body.classList.toggle('open');
+  if(arr)arr.textContent=body.classList.contains('open')?'▲':'▼';
+}
+function goTo(id){var el=document.getElementById(id);if(!el)return;var h=el.querySelector('.sh,.section-header'),b=el.querySelector('.sb,.section-body');if(h&&b&&!b.classList.contains('open')){h.classList.add('open');b.classList.add('open');}setTimeout(function(){window.scrollTo({top:el.getBoundingClientRect().top+window.pageYOffset-60,behavior:'smooth'});},50);}
+function setFs(size,btn){document.documentElement.style.setProperty('--base-fs',size);document.querySelectorAll('.fs-btn').forEach(function(b){b.classList.remove('active');});btn.classList.add('active');try{localStorage.setItem('ccna-fs',size);}catch(e){}}
+(function(){try{var s=localStorage.getItem('ccna-fs');if(s){document.documentElement.style.setProperty('--base-fs',s);document.querySelectorAll('.fs-btn').forEach(function(b){b.classList.remove('active');if((b.textContent==='S'&&s==='14px')||(b.textContent==='M'&&s==='16px')||(b.textContent==='L'&&s==='18px')||(b.textContent==='XL'&&s==='20px'))b.classList.add('active');});}}catch(e){}loadState();})();
+function copyCode(b){var t=b.closest('.cw').querySelector('pre').innerText;if(navigator.clipboard){navigator.clipboard.writeText(t).then(function(){b.textContent='Copied!';setTimeout(function(){b.textContent='Copy';},1500);}).catch(function(){fb(t,b);});}else{fb(t,b);}}
+function fb(t,b){var a=document.createElement('textarea');a.value=t;a.style.position='fixed';a.style.opacity='0';document.body.appendChild(a);a.focus();a.select();document.execCommand('copy');document.body.removeChild(a);b.textContent='Copied!';setTimeout(function(){b.textContent='Copy';},1500);}
+</script>
+<script src="../../site-config.js"></script>
+</body>
+</html>

@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CCNA 1 Syntax Checker</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#1a1a2e;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;color:#c9d1d9;min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:14px}
+.page{width:100%;max-width:780px;display:flex;flex-direction:column;gap:10px}
+.hdr{text-align:center;padding:6px 0 2px}
+.hdr h1{font-size:1.05em;font-weight:700;color:#f0f6fc}
+.hdr p{font-size:.75em;color:#6e7681;margin-top:3px}
+.lab-row{display:flex;align-items:center;gap:8px;font-size:.8em;color:#6e7681}
+.lab-row select{background:#161b22;border:1px solid #30363d;border-radius:6px;color:#c9d1d9;padding:5px 10px;font-size:.875em;cursor:pointer;outline:none;flex:1}
+.prog-wrap{display:flex;align-items:center;gap:10px}
+.prog-track{flex:1;height:6px;background:#21262d;border-radius:10px;overflow:hidden}
+.prog-fill{height:100%;background:linear-gradient(90deg,#238636,#3fb950);border-radius:10px;transition:width .4s ease;width:0%}
+.prog-lbl{font-size:.72em;font-weight:700;color:#6e7681;white-space:nowrap;min-width:56px;text-align:right}
+.instr-card{background:#161b22;border:1px solid #30363d;border-radius:8px;padding:12px 16px}
+.instr-lbl{font-size:.68em;font-weight:800;text-transform:uppercase;letter-spacing:.8px;color:#58a6ff;margin-bottom:5px}
+.instr-text{font-size:.92em;color:#e6edf3;line-height:1.55}
+.instr-text code{background:#21262d;border:1px solid #30363d;border-radius:4px;padding:1px 6px;font-family:'Courier New',monospace;font-size:.88em;color:#79c0ff}
+.terminal{background:#010409;border:1px solid #30363d;border-radius:8px;overflow:hidden}
+.term-bar{background:#161b22;border-bottom:1px solid #21262d;padding:6px 12px;display:flex;align-items:center;gap:6px}
+.dot{width:11px;height:11px;border-radius:50%}
+.d1{background:#ff5f57}.d2{background:#ffbd2e}.d3{background:#28c840}
+.term-ttl{margin-left:6px;font-size:.7em;color:#6e7681;font-weight:600}
+#term-out{padding:10px 14px 4px;font-family:'Courier New',Courier,monospace;font-size:13px;line-height:1.7;min-height:160px;max-height:340px;overflow-y:auto}
+.t-row{display:flex;gap:0}
+.t-prompt{white-space:nowrap;flex-shrink:0}
+.t-cmd{color:#e6edf3}
+.t-out{display:block;white-space:pre-wrap}
+.t-out.ok{color:#3fb950}.t-out.err{color:#f85149}.t-out.info{color:#58a6ff}.t-out.dim{color:#484f58}.t-out.warn{color:#e3b341}
+.term-input{display:flex;align-items:center;border-top:1px solid #161b22;padding:5px 14px 9px;gap:0}
+#cur-prompt{font-family:'Courier New',Courier,monospace;font-size:13px;white-space:nowrap;flex-shrink:0;color:#58a6ff;transition:color .2s;user-select:none}
+#cur-input{background:transparent;border:none;outline:none;color:#e6edf3;font-family:'Courier New',Courier,monospace;font-size:13px;flex:1;padding:0 4px;caret-color:#3fb950}
+.feedback{display:flex;align-items:center;gap:10px;padding:8px 14px;background:#161b22;border:1px solid #30363d;border-radius:8px;font-size:.8em;min-height:36px}
+.fb-icon{font-size:.8em;font-weight:800;font-family:monospace;flex-shrink:0;min-width:28px;text-align:center;padding:2px 4px;border-radius:4px;background:#21262d;color:#c9d1d9}
+.fb-text{flex:1;color:#8b949e}
+.fb-text.ok{color:#3fb950}.fb-text.err{color:#f85149}.fb-text.warn{color:#e3b341}
+.btn-row{display:flex;gap:8px;flex-wrap:wrap}
+.btn{border:1px solid #30363d;border-radius:6px;padding:6px 14px;font-size:.8em;font-weight:600;cursor:pointer;transition:all .15s;-webkit-tap-highlight-color:transparent}
+.btn-hint{background:#161b22;color:#8b949e}
+.btn-hint:hover{background:#21262d;color:#c9d1d9}
+.btn-reset{background:#161b22;color:#6e7681;margin-left:auto}
+.btn-reset:hover{background:#21262d;color:#f85149}
+.success{display:none;background:#161b22;border:1px solid #238636;border-radius:8px;padding:24px 20px;text-align:center}
+.success.show{display:block}
+.s-icon{font-size:2.2em;margin-bottom:8px}
+.s-title{font-size:1.1em;font-weight:800;color:#3fb950;margin-bottom:6px}
+.s-msg{font-size:.82em;color:#8b949e;line-height:1.6}
+.btn-again{background:#238636;color:#fff;border-color:#2ea043;margin-top:14px;padding:8px 22px;font-size:.88em}
+.btn-again:hover{background:#2ea043}
+</style>
+</head>
+<body>
+<div class="page">
+
+<a href="../index.html" style="align-self:flex-start;color:#58a6ff;text-decoration:none;font-size:.85em;font-weight:600">&#x1F3E0; Home</a>
+<div class="hdr">
+  <h1>CCNA 1 — Syntax Checker Activities</h1>
+  <p>Type each command exactly. Press Enter to submit.</p>
+</div>
+
+<div class="lab-row">
+  <span>Lab:</span>
+  <select id="lab-picker" onchange="loadLab(this.value)">
+    <option value="0">2.2.7 Navigate Between IOS Modes (Switch)</option>
+    <option value="1">2.4.7 Basic Device Configuration (Switch)</option>
+    <option value="2">2.7.5 Configure a Switch Virtual Interface</option>
+    <option value="3">10.1.2 Configure Initial Router Settings</option>
+    <option value="4">10.2.5 Configure Router Interfaces</option>
+    <option value="5">12.6.5 Configure IPv6 Addressing</option>
+    <option value="6">16.4.5 Configure Secure Passwords and SSH</option>
+    <option value="7">17.5.7 Verify Directly Connected Networks</option>
+  </select>
+</div>
+
+<div class="prog-wrap">
+  <div class="prog-track"><div class="prog-fill" id="prog-fill"></div></div>
+  <div class="prog-lbl" id="prog-lbl">Step 0/0</div>
+</div>
+
+<div class="instr-card">
+  <div class="instr-lbl">Instruction</div>
+  <div class="instr-text" id="instr-text">Loading...</div>
+</div>
+
+<div class="terminal">
+  <div class="term-bar">
+    <div class="dot d1"></div><div class="dot d2"></div><div class="dot d3"></div>
+    <span class="term-ttl" id="term-ttl">Cisco IOS Console</span>
+  </div>
+  <div id="term-out"></div>
+  <div class="term-input">
+    <span id="cur-prompt">Switch&gt;&nbsp;</span>
+    <input id="cur-input" type="text" autocomplete="off" autocorrect="off"
+           autocapitalize="off" spellcheck="false" autofocus
+           placeholder="Type command here...">
+  </div>
+</div>
+
+<div class="feedback" id="feedback">
+  <span class="fb-icon">💡</span>
+  <span class="fb-text" id="fb-text">Type the command shown in the instruction, then press Enter.</span>
+</div>
+
+<div class="btn-row">
+  <button class="btn btn-hint" onclick="showHint()">Show Hint</button>
+  <button class="btn btn-reset" onclick="resetLab()">Restart Lab</button>
+</div>
+
+<div class="success" id="success">
+  <div class="s-icon">🎉</div>
+  <div class="s-title">Lab Complete!</div>
+  <div class="s-msg" id="s-msg"></div>
+  <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:14px">
+    <button class="btn btn-again" onclick="resetLab()">Restart This Lab</button>
+    <button class="btn btn-again" onclick="pickAnother()" style="background:#1f6feb;border-color:#388bfd">Try Another Lab</button>
+  </div>
+</div>
+
+</div>
+<script>
+var PC={
+  '>':'#58a6ff','#':'#bc8cff',
+  '(config)#':'#e3b341','(config-if)#':'#ffa657',
+  '(config-line)#':'#ffa657','(config-router)#':'#ffa657',
+  '(config-subif)#':'#ffa657','(config-dhcp)#':'#ffa657'
+};
+function pc(p){for(var k in PC){if(p.indexOf(k)>=0)return PC[k];}return '#58a6ff';}
+
+var LABS=[
+
+// 0 -- 2.2.7 Navigate Between IOS Modes
+{title:'2.2.7 Navigate Between IOS Modes',
+done:'You successfully navigated between the various IOS command line modes. You can now move between User EXEC, Privileged EXEC, Global Configuration, and subconfiguration modes.',
+steps:[
+{i:'Enter privileged EXEC mode using the <code>enable</code> command.',p:'Switch>',c:'enable',h:'Type: enable',ok:'Correct! The > prompt changes to # indicating privileged EXEC mode.',no:'Type the full command: enable',o:[]},
+{i:'Return to user EXEC mode using the <code>disable</code> command.',p:'Switch#',c:'disable',h:'Type: disable',ok:'Correct! # returns to > -- you are back in user EXEC mode.',no:'Type: disable',o:[]},
+{i:'Re-enter privileged EXEC mode.',p:'Switch>',c:'enable',h:'Type: enable',ok:'Correct! Back in privileged EXEC mode.',no:'Type: enable',o:[]},
+{i:'Enter global configuration mode using <code>configure terminal</code>.',p:'Switch#',c:'configure terminal',h:'Type: configure terminal',ok:'Correct! The prompt shows (config)# -- global configuration mode.',no:'Type: configure terminal',o:[{t:'Enter configuration commands, one per line.  End with CNTL/Z.',c:'dim'}]},
+{i:'Exit global configuration mode using <code>exit</code>.',p:'Switch(config)#',c:'exit',h:'Type: exit',ok:'Correct! exit returns you one level up -- back to privileged EXEC.',no:'Type: exit',o:[]},
+{i:'Re-enter global configuration mode.',p:'Switch#',c:'configure terminal',h:'Type: configure terminal',ok:'Correct! Back in global config.',no:'Type: configure terminal',o:[{t:'Enter configuration commands, one per line.  End with CNTL/Z.',c:'dim'}]},
+{i:'Enter line subconfiguration mode for the console port using <code>line console 0</code>.',p:'Switch(config)#',c:'line console 0',h:'Type: line console 0',ok:'Correct! Prompt changes to (config-line)# -- line configuration mode.',no:'Type: line console 0',o:[]},
+{i:'Return to global configuration mode using <code>exit</code>.',p:'Switch(config-line)#',c:'exit',h:'Type: exit',ok:'Correct! exit moves up one level -- from line config to global config.',no:'Type: exit',o:[]},
+{i:'Enter VTY line subconfiguration mode using <code>line vty 0 15</code>.',p:'Switch(config)#',c:'line vty 0 15',h:'Type: line vty 0 15',ok:'Correct! VTY lines 0-15 are the virtual terminal lines used for SSH/Telnet.',no:'Type: line vty 0 15',o:[]},
+{i:'Return to global configuration mode using <code>exit</code>.',p:'Switch(config-line)#',c:'exit',h:'Type: exit',ok:'Correct! Back in global config.',no:'Type: exit',o:[]},
+{i:'Enter VLAN 1 interface subconfiguration mode using <code>interface vlan 1</code>.',p:'Switch(config)#',c:'interface vlan 1',h:'Type: interface vlan 1',ok:'Correct! Prompt changes to (config-if)# -- interface configuration mode.',no:'Type: interface vlan 1',o:[]},
+{i:'From interface mode, jump directly to line console using <code>line console 0</code>.',p:'Switch(config-if)#',c:'line console 0',h:'Type: line console 0',ok:'Correct! You can jump directly between subconfiguration modes.',no:'Type: line console 0',o:[]},
+{i:'Return to privileged EXEC mode using the <code>end</code> command.',p:'Switch(config-line)#',c:'end',h:'Type: end',ok:'Correct! end (or Ctrl+Z) returns to privileged EXEC from any config mode.',no:'Type: end',o:[]}
+]},
+
+// 1 -- 2.4.7 Basic Device Configuration
+{title:'2.4.7 Basic Device Configuration',
+done:'You successfully completed basic device configuration: assigned a hostname, secured console and VTY access, set an enable secret, encrypted passwords, and configured a MOTD banner.',
+steps:[
+{i:'Enter global configuration mode.',p:'Switch#',c:'configure terminal',h:'Type: configure terminal',ok:'Correct! Now in global configuration mode.',no:'Type: configure terminal',o:[{t:'Enter configuration commands, one per line.  End with CNTL/Z.',c:'dim'}]},
+{i:'Name the switch <code>Sw-Floor-1</code>.',p:'Switch(config)#',c:'hostname Sw-Floor-1',h:'Type: hostname Sw-Floor-1',ok:'Correct! The prompt immediately changes to reflect the new hostname.',no:'Type: hostname Sw-Floor-1',o:[]},
+{i:'Enter line console 0 subconfiguration mode.',p:'Sw-Floor-1(config)#',c:'line console 0',h:'Type: line console 0',ok:'Correct! Now configuring the console port.',no:'Type: line console 0',o:[]},
+{i:'Assign the password <code>cisco</code> to the console line.',p:'Sw-Floor-1(config-line)#',c:'password cisco',h:'Type: password cisco',ok:'Correct! Console password set.',no:'Type: password cisco',o:[]},
+{i:'Enable login on the console line.',p:'Sw-Floor-1(config-line)#',c:'login',h:'Type: login',ok:'Correct! Without login, the password would not be required.',no:'Type: login',o:[]},
+{i:'Return to global configuration mode.',p:'Sw-Floor-1(config-line)#',c:'exit',h:'Type: exit',ok:'Correct! Back in global config.',no:'Type: exit',o:[]},
+{i:'Set the privileged EXEC enable secret to <code>class</code>.',p:'Sw-Floor-1(config)#',c:'enable secret class',h:'Type: enable secret class',ok:'Correct! enable secret uses MD5 -- stronger than enable password.',no:'Type: enable secret class',o:[]},
+{i:'Enter VTY line configuration for lines 0 through 15.',p:'Sw-Floor-1(config)#',c:'line vty 0 15',h:'Type: line vty 0 15',ok:'Correct! VTY lines are used for SSH/Telnet remote access.',no:'Type: line vty 0 15',o:[]},
+{i:'Assign the password <code>cisco</code> to the VTY lines.',p:'Sw-Floor-1(config-line)#',c:'password cisco',h:'Type: password cisco',ok:'Correct! VTY password set.',no:'Type: password cisco',o:[]},
+{i:'Enable login on the VTY lines.',p:'Sw-Floor-1(config-line)#',c:'login',h:'Type: login',ok:'Correct! Remote connections now require this password.',no:'Type: login',o:[]},
+{i:'Return to global configuration mode.',p:'Sw-Floor-1(config-line)#',c:'exit',h:'Type: exit',ok:'Correct!',no:'Type: exit',o:[]},
+{i:'Encrypt all plaintext passwords.',p:'Sw-Floor-1(config)#',c:'service password-encryption',h:'Type: service password-encryption',ok:'Correct! Passwords now appear encrypted in the config file.',no:'Type: service password-encryption',o:[]},
+{i:'Create a MOTD banner using <code>#</code> as delimiter. Message must read: <code>Warning! Authorized access only!</code>',p:'Sw-Floor-1(config)#',c:'banner motd #Warning! Authorized access only!#',h:'Type: banner motd #Warning! Authorized access only!#',ok:'Correct! This banner displays to anyone connecting to the device.',no:'Include the # delimiters and exact message text.',o:[]}
+]},
+
+// 2 -- 2.7.5 Configure Switch Virtual Interface
+{title:'2.7.5 Configure a Switch Virtual Interface',
+done:'You successfully configured the Switch Virtual Interface (SVI) for VLAN 1. The switch can now be remotely accessed over the network using IP address 192.168.1.20.',
+steps:[
+{i:'Enter global configuration mode.',p:'Switch#',c:'configure terminal',h:'Type: configure terminal',ok:'Correct! Now in global configuration mode.',no:'Type: configure terminal',o:[{t:'Enter configuration commands, one per line.  End with CNTL/Z.',c:'dim'}]},
+{i:'Enter interface configuration mode for VLAN 1.',p:'Switch(config)#',c:'interface vlan 1',h:'Type: interface vlan 1',ok:'Correct! VLAN 1 is the default management SVI on a switch.',no:'Type: interface vlan 1',o:[]},
+{i:'Assign IPv4 address <code>192.168.1.20</code> with mask <code>255.255.255.0</code>.',p:'Switch(config-if)#',c:'ip address 192.168.1.20 255.255.255.0',h:'Type: ip address 192.168.1.20 255.255.255.0',ok:'Correct! IP address assigned to the SVI.',no:'Type: ip address 192.168.1.20 255.255.255.0',o:[]},
+{i:'Enable the interface with <code>no shutdown</code>.',p:'Switch(config-if)#',c:'no shutdown',h:'Type: no shutdown',ok:'Correct! Interface is now up and reachable.',no:'Type: no shutdown',o:[{t:'%LINK-5-CHANGED: Interface Vlan1, changed state to up',c:'ok'}]}
+]},
+
+// 3 -- 10.1.2 Configure Initial Router Settings
+{title:'10.1.2 Configure Initial Router Settings',
+done:'You successfully configured initial router settings: hostname, enable secret, console and VTY security, DNS lookup disabled, password encryption, and MOTD banner. The running configuration was saved to NVRAM.',
+steps:[
+{i:'Enter privileged EXEC mode.',p:'Router>',c:'enable',h:'Type: enable',ok:'Correct! Now in privileged EXEC mode.',no:'Type: enable',o:[]},
+{i:'Enter global configuration mode.',p:'Router#',c:'configure terminal',h:'Type: configure terminal',ok:'Correct! Now in global configuration mode.',no:'Type: configure terminal',o:[{t:'Enter configuration commands, one per line.  End with CNTL/Z.',c:'dim'}]},
+{i:'Set the hostname to <code>R1</code>.',p:'Router(config)#',c:'hostname R1',h:'Type: hostname R1',ok:'Correct! The prompt immediately changes to R1(config)#.',no:'Type: hostname R1',o:[]},
+{i:'Disable DNS lookup to prevent delays on mistyped commands.',p:'R1(config)#',c:'no ip domain-lookup',h:'Type: no ip domain-lookup',ok:'Correct! Without this, mistyped commands cause long DNS timeout delays.',no:'Type: no ip domain-lookup',o:[]},
+{i:'Set the privileged EXEC enable secret to <code>class</code>.',p:'R1(config)#',c:'enable secret class',h:'Type: enable secret class',ok:'Correct! This MD5-hashed secret protects privileged EXEC access.',no:'Type: enable secret class',o:[]},
+{i:'Enter console line 0 configuration mode.',p:'R1(config)#',c:'line console 0',h:'Type: line console 0',ok:'Correct! Configuring the physical console port.',no:'Type: line console 0',o:[]},
+{i:'Set the console password to <code>cisco</code>.',p:'R1(config-line)#',c:'password cisco',h:'Type: password cisco',ok:'Correct! Console password set.',no:'Type: password cisco',o:[]},
+{i:'Enable login on the console line.',p:'R1(config-line)#',c:'login',h:'Type: login',ok:'Correct! Password will be required on console connection.',no:'Type: login',o:[]},
+{i:'Enable <code>logging synchronous</code> to prevent log messages interrupting typed commands.',p:'R1(config-line)#',c:'logging synchronous',h:'Type: logging synchronous',ok:'Correct! Keeps the prompt clean when syslog messages appear.',no:'Type: logging synchronous',o:[]},
+{i:'Set idle timeout to 0 minutes 0 seconds (never timeout in lab).',p:'R1(config-line)#',c:'exec-timeout 0 0',h:'Type: exec-timeout 0 0',ok:'Correct! In production you would use a real timeout for security.',no:'Type: exec-timeout 0 0',o:[]},
+{i:'Return to global configuration mode.',p:'R1(config-line)#',c:'exit',h:'Type: exit',ok:'Correct!',no:'Type: exit',o:[]},
+{i:'Enter VTY lines 0 through 4.',p:'R1(config)#',c:'line vty 0 4',h:'Type: line vty 0 4',ok:'Correct! Routers typically have 5 VTY lines (0-4) vs switches which have 16.',no:'Type: line vty 0 4',o:[]},
+{i:'Set the VTY password to <code>cisco</code>.',p:'R1(config-line)#',c:'password cisco',h:'Type: password cisco',ok:'Correct!',no:'Type: password cisco',o:[]},
+{i:'Enable login on the VTY lines.',p:'R1(config-line)#',c:'login',h:'Type: login',ok:'Correct!',no:'Type: login',o:[]},
+{i:'Enable logging synchronous on VTY lines.',p:'R1(config-line)#',c:'logging synchronous',h:'Type: logging synchronous',ok:'Correct!',no:'Type: logging synchronous',o:[]},
+{i:'Set idle timeout to 0 minutes 0 seconds.',p:'R1(config-line)#',c:'exec-timeout 0 0',h:'Type: exec-timeout 0 0',ok:'Correct!',no:'Type: exec-timeout 0 0',o:[]},
+{i:'Return to global configuration mode.',p:'R1(config-line)#',c:'exit',h:'Type: exit',ok:'Correct!',no:'Type: exit',o:[]},
+{i:'Encrypt all plaintext passwords.',p:'R1(config)#',c:'service password-encryption',h:'Type: service password-encryption',ok:'Correct! Passwords appear encrypted in show running-config.',no:'Type: service password-encryption',o:[]},
+{i:'Create a MOTD banner. Use <code>#</code> as delimiter with message: <code>Authorized Access Only!</code>',p:'R1(config)#',c:'banner motd #Authorized Access Only!#',h:'Type: banner motd #Authorized Access Only!#',ok:'Correct! Banner will display on all connections to this device.',no:'Include the # delimiters and exact message.',o:[]},
+{i:'Return to privileged EXEC mode using <code>end</code>.',p:'R1(config)#',c:'end',h:'Type: end',ok:'Correct! end jumps directly to privileged EXEC from any config mode.',no:'Type: end',o:[]},
+{i:'Save the configuration to NVRAM.',p:'R1#',c:'copy running-config startup-config',h:'Type: copy running-config startup-config',ok:'Correct! Configuration saved and will survive a reload.',no:'Type: copy running-config startup-config',o:[{t:'Destination filename [startup-config]? ',c:'dim'},{t:'Building configuration...',c:'dim'},{t:'[OK]',c:'ok'}]}
+]},
+
+// 4 -- 10.2.5 Configure Router Interfaces
+{title:'10.2.5 Configure Router Interfaces',
+done:'You successfully configured two router interfaces with IP addresses, descriptions, and brought them up with no shutdown. Use show ip interface brief to verify.',
+steps:[
+{i:'Enter global configuration mode.',p:'R1#',c:'configure terminal',h:'Type: configure terminal',ok:'Correct!',no:'Type: configure terminal',o:[{t:'Enter configuration commands, one per line.  End with CNTL/Z.',c:'dim'}]},
+{i:'Enter interface GigabitEthernet 0/0/0 configuration mode.',p:'R1(config)#',c:'interface GigabitEthernet 0/0/0',h:'Type: interface GigabitEthernet 0/0/0',ok:'Correct! Now configuring G0/0/0.',no:'Type: interface GigabitEthernet 0/0/0',o:[]},
+{i:'Assign IP address <code>192.168.10.1</code> mask <code>255.255.255.0</code>.',p:'R1(config-if)#',c:'ip address 192.168.10.1 255.255.255.0',h:'Type: ip address 192.168.10.1 255.255.255.0',ok:'Correct! IP address assigned.',no:'Type: ip address 192.168.10.1 255.255.255.0',o:[]},
+{i:'Add a description: <code>Link to LAN 1</code>.',p:'R1(config-if)#',c:'description Link to LAN 1',h:'Type: description Link to LAN 1',ok:'Correct! Descriptions help document the purpose of each interface.',no:'Type: description Link to LAN 1',o:[]},
+{i:'Enable the interface with <code>no shutdown</code>.',p:'R1(config-if)#',c:'no shutdown',h:'Type: no shutdown',ok:'Correct! Interface is now administratively up.',no:'Type: no shutdown',o:[{t:'%LINK-5-CHANGED: Interface GigabitEthernet0/0/0, changed state to up',c:'ok'},{t:'%LINEPROTO-5-UPDOWN: Line protocol on Interface GigabitEthernet0/0/0, changed state to up',c:'ok'}]},
+{i:'Enter interface GigabitEthernet 0/0/1 configuration mode.',p:'R1(config-if)#',c:'interface GigabitEthernet 0/0/1',h:'Type: interface GigabitEthernet 0/0/1',ok:'Correct! Now configuring G0/0/1.',no:'Type: interface GigabitEthernet 0/0/1',o:[]},
+{i:'Assign IP address <code>192.168.11.1</code> mask <code>255.255.255.0</code>.',p:'R1(config-if)#',c:'ip address 192.168.11.1 255.255.255.0',h:'Type: ip address 192.168.11.1 255.255.255.0',ok:'Correct!',no:'Type: ip address 192.168.11.1 255.255.255.0',o:[]},
+{i:'Add a description: <code>Link to LAN 2</code>.',p:'R1(config-if)#',c:'description Link to LAN 2',h:'Type: description Link to LAN 2',ok:'Correct!',no:'Type: description Link to LAN 2',o:[]},
+{i:'Enable the interface with <code>no shutdown</code>.',p:'R1(config-if)#',c:'no shutdown',h:'Type: no shutdown',ok:'Correct! Both interfaces are now up.',no:'Type: no shutdown',o:[{t:'%LINK-5-CHANGED: Interface GigabitEthernet0/0/1, changed state to up',c:'ok'},{t:'%LINEPROTO-5-UPDOWN: Line protocol on Interface GigabitEthernet0/0/1, changed state to up',c:'ok'}]},
+{i:'Return to privileged EXEC mode using <code>end</code>.',p:'R1(config-if)#',c:'end',h:'Type: end',ok:'Correct!',no:'Type: end',o:[]},
+{i:'Verify interface status with <code>show ip interface brief</code>.',p:'R1#',c:'show ip interface brief',h:'Type: show ip interface brief',ok:'Correct! This command shows IP addresses, OK status, and up/down state for all interfaces.',no:'Type: show ip interface brief',o:[{t:'Interface                  IP-Address      OK? Method Status                Protocol',c:'info'},{t:'GigabitEthernet0/0/0       192.168.10.1    YES manual up                    up',c:''},{t:'GigabitEthernet0/0/1       192.168.11.1    YES manual up                    up',c:''},{t:'Serial0/1/0                unassigned      NO  unset  down                  down',c:''}]}
+]},
+
+// 5 -- 12.6.5 Configure IPv6 Addressing
+{title:'12.6.5 Configure IPv6 Addressing',
+done:'You successfully configured IPv6 addresses on router interfaces and enabled IPv6 unicast routing. IPv6 uses 128-bit addresses in hexadecimal, separated by colons.',
+steps:[
+{i:'Enter global configuration mode.',p:'R1#',c:'configure terminal',h:'Type: configure terminal',ok:'Correct!',no:'Type: configure terminal',o:[{t:'Enter configuration commands, one per line.  End with CNTL/Z.',c:'dim'}]},
+{i:'Enable IPv6 unicast routing on the router.',p:'R1(config)#',c:'ipv6 unicast-routing',h:'Type: ipv6 unicast-routing',ok:'Correct! IPv6 routing is disabled by default and must be explicitly enabled.',no:'Type: ipv6 unicast-routing',o:[]},
+{i:'Enter interface GigabitEthernet 0/0/0 configuration mode.',p:'R1(config)#',c:'interface GigabitEthernet 0/0/0',h:'Type: interface GigabitEthernet 0/0/0',ok:'Correct!',no:'Type: interface GigabitEthernet 0/0/0',o:[]},
+{i:'Assign the IPv6 address <code>2001:db8:acad:1::1/64</code>.',p:'R1(config-if)#',c:'ipv6 address 2001:db8:acad:1::1/64',h:'Type: ipv6 address 2001:db8:acad:1::1/64',ok:'Correct! /64 is the standard prefix length for IPv6 LAN segments.',no:'Type: ipv6 address 2001:db8:acad:1::1/64',o:[]},
+{i:'Assign a link-local address <code>fe80::1:1</code>.',p:'R1(config-if)#',c:'ipv6 address fe80::1:1 link-local',h:'Type: ipv6 address fe80::1:1 link-local',ok:'Correct! Link-local addresses (fe80::/10) are used for on-link communication only.',no:'Type: ipv6 address fe80::1:1 link-local',o:[]},
+{i:'Enable the interface.',p:'R1(config-if)#',c:'no shutdown',h:'Type: no shutdown',ok:'Correct!',no:'Type: no shutdown',o:[{t:'%LINK-5-CHANGED: Interface GigabitEthernet0/0/0, changed state to up',c:'ok'}]},
+{i:'Enter interface GigabitEthernet 0/0/1 configuration mode.',p:'R1(config-if)#',c:'interface GigabitEthernet 0/0/1',h:'Type: interface GigabitEthernet 0/0/1',ok:'Correct!',no:'Type: interface GigabitEthernet 0/0/1',o:[]},
+{i:'Assign the IPv6 address <code>2001:db8:acad:2::1/64</code>.',p:'R1(config-if)#',c:'ipv6 address 2001:db8:acad:2::1/64',h:'Type: ipv6 address 2001:db8:acad:2::1/64',ok:'Correct! Each subnet gets a unique /64 prefix.',no:'Type: ipv6 address 2001:db8:acad:2::1/64',o:[]},
+{i:'Assign a link-local address <code>fe80::2:1</code>.',p:'R1(config-if)#',c:'ipv6 address fe80::2:1 link-local',h:'Type: ipv6 address fe80::2:1 link-local',ok:'Correct!',no:'Type: ipv6 address fe80::2:1 link-local',o:[]},
+{i:'Enable the interface.',p:'R1(config-if)#',c:'no shutdown',h:'Type: no shutdown',ok:'Correct! Both interfaces now have IPv6 addresses.',no:'Type: no shutdown',o:[{t:'%LINK-5-CHANGED: Interface GigabitEthernet0/0/1, changed state to up',c:'ok'}]},
+{i:'Return to privileged EXEC mode.',p:'R1(config-if)#',c:'end',h:'Type: end',ok:'Correct!',no:'Type: end',o:[]},
+{i:'Verify with <code>show ipv6 interface brief</code>.',p:'R1#',c:'show ipv6 interface brief',h:'Type: show ipv6 interface brief',ok:'Correct! Shows IPv6 address assignments and interface status.',no:'Type: show ipv6 interface brief',o:[{t:'GigabitEthernet0/0/0       [up/up]',c:'info'},{t:'    FE80::1:1',c:''},{t:'    2001:DB8:ACAD:1::1',c:''},{t:'GigabitEthernet0/0/1       [up/up]',c:'info'},{t:'    FE80::2:1',c:''},{t:'    2001:DB8:ACAD:2::1',c:''}]}
+]},
+
+// 6 -- 16.4.5 Configure Secure Passwords and SSH
+{title:'16.4.5 Configure Secure Passwords and SSH',
+done:'You successfully configured SSH on the router. SSH requires a hostname, domain name, RSA keys, a local user, and VTY lines set to login local with transport input ssh. Telnet is now disabled.',
+steps:[
+{i:'Enter global configuration mode.',p:'R1#',c:'configure terminal',h:'Type: configure terminal',ok:'Correct!',no:'Type: configure terminal',o:[{t:'Enter configuration commands, one per line.  End with CNTL/Z.',c:'dim'}]},
+{i:'Set a minimum password length of <code>10</code> characters.',p:'R1(config)#',c:'security passwords min-length 10',h:'Type: security passwords min-length 10',ok:'Correct! Passwords shorter than 10 characters will be rejected.',no:'Type: security passwords min-length 10',o:[]},
+{i:'Set the enable secret to <code>class12345</code>.',p:'R1(config)#',c:'enable secret class12345',h:'Type: enable secret class12345',ok:'Correct! Meets the 10-character minimum requirement.',no:'Type: enable secret class12345',o:[]},
+{i:'Set the domain name to <code>cisco.com</code>.',p:'R1(config)#',c:'ip domain-name cisco.com',h:'Type: ip domain-name cisco.com',ok:'Correct! A domain name is required before generating RSA keys.',no:'Type: ip domain-name cisco.com',o:[]},
+{i:'Create local user <code>admin</code> with secret <code>cisco12345</code>.',p:'R1(config)#',c:'username admin secret cisco12345',h:'Type: username admin secret cisco12345',ok:'Correct! Local user created. This account will be used for SSH login.',no:'Type: username admin secret cisco12345',o:[]},
+{i:'Generate RSA keys with modulus size <code>1024</code>.',p:'R1(config)#',c:'crypto key generate rsa modulus 1024',h:'Type: crypto key generate rsa modulus 1024',ok:'Correct! RSA keys generated -- SSH is now enabled.',no:'Type: crypto key generate rsa modulus 1024',o:[{t:'The name for the keys will be: R1.cisco.com',c:'dim'},{t:'% The key modulus size is 1024 bits',c:'dim'},{t:'Generating 1024 bit RSA keys, keys will be non-exportable...',c:'dim'},{t:'[OK] (elapsed time was 1 seconds)',c:'ok'},{t:'R1(config)#%SSH-5-ENABLED: SSH 1.99 has been enabled',c:'ok'}]},
+{i:'Set SSH to version 2 only.',p:'R1(config)#',c:'ip ssh version 2',h:'Type: ip ssh version 2',ok:'Correct! SSHv2 is more secure than SSHv1.',no:'Type: ip ssh version 2',o:[]},
+{i:'Enter VTY line configuration for lines 0 through 4.',p:'R1(config)#',c:'line vty 0 4',h:'Type: line vty 0 4',ok:'Correct!',no:'Type: line vty 0 4',o:[]},
+{i:'Set VTY login to use the local username database.',p:'R1(config-line)#',c:'login local',h:'Type: login local',ok:'Correct! login local requires username/password from the local database.',no:'Type: login local',o:[]},
+{i:'Restrict VTY to SSH only -- disable Telnet.',p:'R1(config-line)#',c:'transport input ssh',h:'Type: transport input ssh',ok:'Correct! Telnet is now disabled. Only SSH connections are accepted.',no:'Type: transport input ssh',o:[]},
+{i:'Return to privileged EXEC and save the configuration.',p:'R1(config-line)#',c:'end',h:'Type: end',ok:'Correct!',no:'Type: end',o:[]},
+{i:'Save to NVRAM.',p:'R1#',c:'copy running-config startup-config',h:'Type: copy running-config startup-config',ok:'Correct! SSH configuration saved.',no:'Type: copy running-config startup-config',o:[{t:'Destination filename [startup-config]? ',c:'dim'},{t:'Building configuration...',c:'dim'},{t:'[OK]',c:'ok'}]}
+]},
+
+// 7 -- 17.5.7 Verify Directly Connected Networks
+{title:'17.5.7 Verify Directly Connected Networks',
+done:'You successfully used show commands to verify directly connected networks. These commands are essential troubleshooting tools -- you will use them constantly as a network engineer.',
+steps:[
+{i:'Verify all interface IP addresses and status with <code>show ip interface brief</code>.',p:'R1#',c:'show ip interface brief',h:'Type: show ip interface brief',ok:'Correct! This is the most used verification command -- shows all interfaces at a glance.',no:'Type: show ip interface brief',o:[{t:'Interface                  IP-Address      OK? Method Status                Protocol',c:'info'},{t:'GigabitEthernet0/0/0       192.168.10.1    YES manual up                    up',c:''},{t:'GigabitEthernet0/0/1       192.168.11.1    YES manual up                    up',c:''},{t:'Serial0/1/0                unassigned      NO  unset  down                  down',c:'dim'}]},
+{i:'View detailed status of GigabitEthernet 0/0/0 using <code>show interfaces GigabitEthernet 0/0/0</code>.',p:'R1#',c:'show interfaces GigabitEthernet 0/0/0',h:'Type: show interfaces GigabitEthernet 0/0/0',ok:'Correct! Shows full detail: errors, bandwidth, MTU, duplex, speed.',no:'Type: show interfaces GigabitEthernet 0/0/0',o:[{t:'GigabitEthernet0/0/0 is up, line protocol is up',c:'ok'},{t:'  Hardware is ISR4451-X-4x1GE, address is 0071.8580.a401',c:''},{t:'  Description: Link to LAN 1',c:''},{t:'  Internet address is 192.168.10.1/24',c:'info'},{t:'  MTU 1500 bytes, BW 1000000 Kbit/sec, DLY 10 usec',c:'dim'}]},
+{i:'View the IP routing table using <code>show ip route</code>.',p:'R1#',c:'show ip route',h:'Type: show ip route',ok:'Correct! The routing table shows all networks the router knows how to reach.',no:'Type: show ip route',o:[{t:'Codes: L - local, C - connected, S - static',c:'dim'},{t:'',c:''},{t:'      192.168.10.0/24 is variably subnetted, 2 subnets, 2 masks',c:''},{t:'C        192.168.10.0/24 is directly connected, GigabitEthernet0/0/0',c:'ok'},{t:'L        192.168.10.1/32 is directly connected, GigabitEthernet0/0/0',c:'ok'},{t:'      192.168.11.0/24 is variably subnetted, 2 subnets, 2 masks',c:''},{t:'C        192.168.11.0/24 is directly connected, GigabitEthernet0/0/1',c:'ok'},{t:'L        192.168.11.1/32 is directly connected, GigabitEthernet0/0/1',c:'ok'}]},
+{i:'View the running configuration with <code>show running-config</code>.',p:'R1#',c:'show running-config',h:'Type: show running-config',ok:'Correct! Shows the complete active configuration in RAM.',no:'Type: show running-config',o:[{t:'Building configuration...',c:'dim'},{t:'',c:''},{t:'Current configuration : 1 lines',c:'dim'},{t:'!',c:'dim'},{t:'hostname R1',c:''},{t:'!',c:'dim'},{t:'interface GigabitEthernet0/0/0',c:''},{t:' description Link to LAN 1',c:''},{t:' ip address 192.168.10.1 255.255.255.0',c:'info'},{t:' no shutdown',c:''},{t:'!',c:'dim'},{t:'interface GigabitEthernet0/0/1',c:''},{t:' description Link to LAN 2',c:''},{t:' ip address 192.168.11.1 255.255.255.0',c:'info'},{t:' no shutdown',c:''},{t:'!',c:'dim'},{t:'end',c:''}]}
+]}
+
+]; // end LABS
+
+var lab=null,step=0;
+
+function loadLab(idx){
+  lab=LABS[parseInt(idx)];
+  step=0;
+  document.getElementById('term-out').innerHTML='';
+  document.getElementById('success').classList.remove('show');
+  document.getElementById('term-ttl').textContent=lab.title;
+  setFB('[>]','Type the command shown in the instruction, then press Enter.','');
+  render();
+  document.getElementById('cur-input').focus();
+}
+
+function render(){
+  var s=lab.steps[step],n=lab.steps.length;
+  document.getElementById('instr-text').innerHTML=s.i;
+  document.getElementById('cur-prompt').textContent=s.p+'\u00a0';
+  document.getElementById('cur-prompt').style.color=pc(s.p);
+  var pct=Math.round(step/n*100);
+  document.getElementById('prog-fill').style.width=pct+'%';
+  document.getElementById('prog-lbl').textContent='Step '+step+'/'+n;
+  document.getElementById('cur-input').value='';
+}
+
+function submit(raw){
+  var typed=raw.trim();
+  if(!typed)return;
+  var s=lab.steps[step];
+  addRow(s.p,typed);
+  if(typed.toLowerCase()===s.c.toLowerCase()){
+    (s.o||[]).forEach(function(l){addOut(l.t,l.c);});
+    setFB('[+]',s.ok,'ok');
+    step++;
+    if(step>=lab.steps.length){finish();}
+    else{render();}
+  } else {
+    setFB('[x]',s.no,'err');
+  }
+  document.getElementById('cur-input').value='';
+  scroll();
+}
+
+function finish(){
+  document.getElementById('prog-fill').style.width='100%';
+  document.getElementById('prog-lbl').textContent='Complete!';
+  document.getElementById('instr-text').innerHTML='<strong>All steps complete!</strong>';
+  document.querySelector('.terminal').style.display='none';
+  document.getElementById('feedback').style.display='none';
+  document.querySelector('.btn-row').style.display='none';
+  document.getElementById('s-msg').textContent=lab.done;
+  document.getElementById('success').classList.add('show');
+}
+
+function resetLab(){
+  document.querySelector('.terminal').style.display='';
+  document.getElementById('feedback').style.display='';
+  document.querySelector('.btn-row').style.display='';
+  document.getElementById('success').classList.remove('show');
+  loadLab(document.getElementById('lab-picker').value);
+}
+
+function pickAnother(){
+  document.getElementById('success').classList.remove('show');
+  document.querySelector('.terminal').style.display='';
+  document.getElementById('feedback').style.display='';
+  document.querySelector('.btn-row').style.display='';
+  // Scroll lab picker into view so user can select
+  var picker = document.getElementById('lab-picker');
+  picker.focus();
+  picker.scrollIntoView({behavior:'smooth', block:'center'});
+}
+
+function showHint(){setFB('[?]',lab.steps[step].h,'warn');}
+
+function setFB(icon,text,cls){
+  document.querySelector('.fb-icon').textContent=icon;
+  var el=document.getElementById('fb-text');
+  el.textContent=text;
+  el.className='fb-text'+(cls?' '+cls:'');
+}
+
+function addRow(p,cmd){
+  var out=document.getElementById('term-out');
+  var row=document.createElement('div');
+  row.className='t-row';
+  var ps=document.createElement('span');
+  ps.className='t-prompt';
+  ps.style.color=pc(p);
+  ps.textContent=p+' ';
+  var cs=document.createElement('span');
+  cs.className='t-cmd';
+  cs.textContent=cmd;
+  row.appendChild(ps);row.appendChild(cs);
+  out.appendChild(row);
+}
+
+function addOut(text,cls){
+  var out=document.getElementById('term-out');
+  var d=document.createElement('span');
+  d.className='t-out'+(cls?' '+cls:'');
+  d.textContent=text;
+  out.appendChild(d);
+}
+
+function scroll(){
+  var o=document.getElementById('term-out');
+  o.scrollTop=o.scrollHeight;
+}
+
+document.getElementById('cur-input').addEventListener('keydown',function(e){
+  if(e.key==='Enter'){e.preventDefault();submit(this.value);}
+});
+
+document.querySelector('.terminal').addEventListener('click',function(){
+  document.getElementById('cur-input').focus();
+});
+
+// Check for ?lab= URL param to auto-load a specific lab
+(function(){
+  var m=window.location.search.match(/lab=([^&]+)/);
+  if(m){
+    var opts=document.getElementById('lab-picker').options;
+    for(var i=0;i<opts.length;i++){
+      if(opts[i].text.indexOf(m[1])>=0){
+        document.getElementById('lab-picker').value=i;
+        break;
+      }
+    }
+  }
+  loadLab(document.getElementById('lab-picker').value);
+})();
+</script>
+</body>
+</html>

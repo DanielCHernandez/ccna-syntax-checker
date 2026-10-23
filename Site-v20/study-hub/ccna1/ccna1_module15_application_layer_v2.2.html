@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=2.0">
+<title>CCNA 1 Module 15: Application Layer v2.2</title>
+<style>
+:root{
+  --nt:#0a6e4e;--ntd:#4ade80;--nt2:#052e1e;--nt3:#021710;
+  --bg:#f4f6f8;--card:#fff;--text:#1a1a2e;--muted:#5a6a7a;
+  --cbg:#0d1117;--ctxt:#c9d1d9;--r:12px;--sh:0 2px 12px rgba(0,0,0,.08);
+  --base-fs:20px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);font-size:var(--base-fs);line-height:1.7}
+.bc{background:#0d1117;padding:8px 16px;display:flex;align-items:center;flex-wrap:wrap;gap:4px;font-size:.75em;overflow-x:auto;white-space:nowrap;-webkit-overflow-scrolling:touch;border-bottom:1px solid #21262d}
+.bc a{color:#8b949e;text-decoration:none;font-weight:600;flex-shrink:0}
+.bc .sep{color:#6e7681;flex-shrink:0}
+.bc .cur{color:var(--ntd);font-weight:700;flex-shrink:0}
+.fs-bar{position:sticky;top:0;z-index:200;background:#1a1a2e;display:flex;align-items:center;justify-content:flex-end;padding:6px 14px;gap:6px;box-shadow:0 2px 8px rgba(0,0,0,.3)}
+.fs-label{color:#8b949e;font-size:.72em;font-weight:700;letter-spacing:.5px;text-transform:uppercase;margin-right:4px}
+.fs-btn{background:#30363d;color:#c9d1d9;border:2px solid transparent;border-radius:6px;padding:4px 12px;font-size:.75em;font-weight:700;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:all .2s;line-height:1.4}
+.fs-btn:active,.fs-btn.active{background:var(--nt);color:#fff;border-color:var(--ntd)}
+.hdr{background:linear-gradient(135deg,var(--nt3),var(--nt2),var(--nt));color:#fff;padding:32px 20px 24px;text-align:center}
+.hdr .badge{display:inline-block;background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.4);border-radius:20px;padding:4px 14px;font-size:.81em;margin-bottom:12px}
+.hdr h1{font-size:1.5em;font-weight:700;margin-bottom:6px}
+.hdr p{font-size:.94em;opacity:.85}
+.hdr .obj{display:inline-block;background:rgba(255,255,255,.15);border-radius:8px;padding:7px 16px;margin-top:12px;font-size:.875em;font-style:italic}
+/* Study progress panel */
+.sp-wrap{background:var(--card);margin:16px 16px 0;border-radius:var(--r);box-shadow:var(--sh);overflow:hidden}
+.sp-hdr{background:var(--nt);color:#fff;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;user-select:none;-webkit-tap-highlight-color:transparent;gap:10px}
+.sp-hdr .sp-title{font-weight:700;font-size:.875em;flex-shrink:0}
+.sp-hdr .sp-arr{transition:transform .3s;flex-shrink:0}
+.sp-hdr.open .sp-arr{transform:rotate(180deg)}
+.sp-body{display:none;padding:12px 14px}
+.sp-body.open{display:block}
+.sp-row{display:flex;align-items:center;gap:10px;padding:6px 4px;border-bottom:1px solid #f0f4f8;font-size:.81em}
+.sp-row:last-child{border-bottom:none}
+.sp-row .sr-status{font-size:1em;flex-shrink:0;width:20px;text-align:center}
+.sp-row .sr-nb{font-weight:800;color:var(--nt);min-width:36px;flex-shrink:0;font-size:.875em}
+.sp-row .sr-ttl{color:var(--text);flex:1}
+.sp-row.done .sr-ttl{color:var(--muted);text-decoration:line-through}
+/* Section check pills in fs-bar */
+.sc-pills{display:flex;align-items:center;gap:4px;overflow-x:auto;-webkit-overflow-scrolling:touch;flex:1;padding:0 4px}
+.sc-pill{background:#30363d;color:#8b949e;border:2px solid transparent;border-radius:6px;padding:3px 8px;font-size:.72em;font-weight:700;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:all .15s;white-space:nowrap;flex-shrink:0;line-height:1.4;display:flex;align-items:center;gap:3px}
+.sc-pill.checked{background:var(--nt);color:#fff;border-color:var(--ntd)}
+.sc-pill .pill-check{font-size:.875em}
+.toc{background:var(--card);margin:16px;border-radius:var(--r);box-shadow:var(--sh);overflow:hidden}
+.toch{background:var(--nt);color:#fff;padding:14px 18px;font-weight:700;font-size:.94em;display:flex;justify-content:space-between;align-items:center;cursor:pointer;user-select:none}
+.toch .arr{transition:transform .3s}
+.toch.open .arr{transform:rotate(180deg)}
+.tocb{display:none;padding:10px 0}
+.tocb.open{display:block}
+.tocg{font-size:.69em;font-weight:800;letter-spacing:.8px;color:var(--nt);text-transform:uppercase;padding:8px 20px 2px}
+.tocb a{display:block;padding:9px 20px 9px 28px;color:var(--text);text-decoration:none;font-size:.875em;border-left:3px solid transparent;transition:all .2s}
+.tocb a:active{background:#f0fdf4;border-left-color:var(--ntd)}
+.tocb a .n{display:inline-block;background:var(--nt);color:#fff;border-radius:5px;padding:1px 8px;font-size:.75em;font-weight:700;margin-right:8px}
+.wrap{padding:0 16px 100px}
+.sec{background:var(--card);border-radius:var(--r);box-shadow:var(--sh);margin-bottom:16px;overflow:hidden}
+.sh{background:linear-gradient(90deg,var(--nt3),var(--nt));color:#fff;padding:16px 18px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;user-select:none;-webkit-tap-highlight-color:transparent}
+.sh .ttl{font-weight:700;font-size:1em}
+.sh .nb{background:rgba(255,255,255,.25);border-radius:6px;padding:3px 10px;font-size:.81em;font-weight:700;margin-right:10px;white-space:nowrap}
+.sh .ch{font-size:1.125em;transition:transform .3s}
+.sh.open .ch{transform:rotate(180deg)}
+.sb{display:none;padding:18px}
+.sb.open{display:block}
+.sub{margin-bottom:24px}
+.sub:last-child{margin-bottom:0}
+.sub h3{font-size:.94em;font-weight:700;color:var(--nt);margin-bottom:10px;padding-bottom:6px;border-bottom:2px solid #f0fdf4;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.sub h3 .sn{background:var(--nt);color:#fff;border-radius:5px;padding:2px 8px;font-size:.75em;white-space:nowrap}
+.sub h4{font-size:.875em;font-weight:700;color:var(--nt);margin:14px 0 6px}
+.sub p{margin-bottom:10px;font-size:.94em}
+.sub ul,.sub ol{padding-left:20px;margin:8px 0;font-size:.94em}
+.sub li{margin-bottom:5px}
+.cw{background:var(--cbg);border-radius:10px;margin:12px 0;overflow:hidden}
+.cl{background:#21262d;color:#c9d1d9;font-size:.78em;font-weight:700;padding:6px 14px;letter-spacing:.5px;text-transform:uppercase}
+pre{margin:0;padding:14px;overflow-x:auto;-webkit-overflow-scrolling:touch}
+code{font-family:'Courier New',monospace;font-size:.81em;color:var(--ctxt);line-height:1.6}
+.ca{border-radius:8px;padding:12px 14px;margin:12px 0;font-size:.875em;line-height:1.6;display:flex;gap:10px;align-items:flex-start}
+.ca .ic{font-size:1.125em;flex-shrink:0;margin-top:1px}
+.ca.warn  {background:#fff3cd;border-left:4px solid #b38600;color:#3d2c00}
+.ca.tip   {background:#d4edda;border-left:4px solid #28a745;color:#0d3318}
+.ca.danger{background:#f8d7da;border-left:4px solid #dc3545;color:#3d0010}
+.ca.info  {background:#f0fdf4;border-left:4px solid var(--nt);color:#052e1e}
+.ca code{color:inherit!important;background:rgba(0,0,0,.1)!important;border:1px solid rgba(0,0,0,.15)}
+.et{background:linear-gradient(135deg,#1a1a2e,var(--nt3));color:#fff;border-radius:10px;padding:14px 16px;margin:14px 0;font-size:.875em;line-height:1.6}
+.et .lbl{font-size:.69em;font-weight:800;letter-spacing:1px;color:var(--ntd);margin-bottom:6px}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:12px 0;border-radius:8px}
+table{width:100%;border-collapse:collapse;font-size:.875em}
+th{background:var(--nt);color:#fff;padding:10px 12px;text-align:left;font-weight:700;font-size:.81em}
+td{padding:9px 12px;border-bottom:1px solid #e8ecf0;vertical-align:top;color:#1a1a2e}
+tr:nth-child(even) td{background:#f0fdf4;color:#052e1e}
+tr:last-child td{border-bottom:none}
+p code,li code,td code,.ca code{background:#f0fdf4;color:#052e1e;border-radius:4px;padding:1px 5px;font-size:.81em;font-family:'Courier New',monospace;font-weight:600}
+
+/* OSI vs TCP/IP layer map */
+.layer-map{display:grid;gap:4px;margin:12px 0}
+.layer-row{display:flex;gap:8px;align-items:stretch;font-size:.81em}
+.lr-osi{flex:1;padding:8px 12px;border-radius:6px;font-weight:700;text-align:center}
+.lr-tcpip{flex:1;padding:8px 12px;border-radius:6px;font-weight:700;text-align:center}
+.lr-app {background:#1a3a5c;color:#fff}
+.lr-pres{background:#1e4d85;color:#fff}
+.lr-sess{background:#7b2d8b;color:#fff}
+.lr-tcpapp{background:var(--nt);color:#fff;display:flex;align-items:center;justify-content:center}
+.lr-arrow{color:#374151;font-size:.875em;flex-shrink:0;align-self:center}
+
+/* Presentation layer functions */
+.pres-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:12px 0}
+@media(max-width:480px){.pres-cards{grid-template-columns:1fr}}
+.pres-card{border-radius:8px;padding:10px 12px;font-size:.81em;text-align:center;line-height:1.5}
+.pres-card.fmt{background:#e0f2fe;border:2px solid #1a3a5c}
+.pres-card.cmp{background:#f0fdf4;border:2px solid var(--nt)}
+.pres-card.enc{background:#f3e8ff;border:2px solid #7b2d8b}
+.pres-card .pc-icon{font-size:1.5em;margin-bottom:4px}
+.pres-card .pc-name{font-weight:800;display:block;margin-bottom:3px}
+.pres-card.fmt .pc-name{color:#1a3a5c}
+.pres-card.cmp .pc-name{color:var(--nt)}
+.pres-card.enc .pc-name{color:#7b2d8b}
+
+/* Email protocol compare */
+.email-cards{display:grid;gap:8px;margin:12px 0}
+.email-card{border-radius:8px;padding:11px 14px;font-size:.81em;border-left:5px solid;line-height:1.6}
+.email-card.smtp{border-left-color:#1a3a5c;background:#e0f2fe}
+.email-card.pop {border-left-color:#b38600;background:#fffbeb}
+.email-card.imap{border-left-color:var(--nt);background:#f0fdf4}
+.email-card .ec-name{font-weight:800;margin-bottom:4px}
+.email-card.smtp .ec-name{color:#1a3a5c}
+.email-card.pop  .ec-name{color:#b38600}
+.email-card.imap .ec-name{color:var(--nt)}
+
+/* HTTP methods */
+.http-methods{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:12px 0}
+@media(max-width:480px){.http-methods{grid-template-columns:1fr}}
+.http-method{border-radius:8px;padding:10px 12px;font-size:.81em;text-align:center;border:2px solid}
+.http-method.get {background:#f0fdf4;border-color:var(--nt)}
+.http-method.post{background:#fffbeb;border-color:#b38600}
+.http-method.put {background:#f3e8ff;border-color:#7b2d8b}
+.http-method .hm-verb{font-family:'Courier New',monospace;font-weight:900;font-size:1em;display:block;margin-bottom:3px}
+.http-method.get  .hm-verb{color:var(--nt)}
+.http-method.post .hm-verb{color:#b38600}
+.http-method.put  .hm-verb{color:#7b2d8b}
+
+/* DNS steps */
+.dns-steps{display:grid;gap:5px;margin:12px 0}
+.dns-step{display:flex;gap:10px;align-items:flex-start;padding:8px 12px;border-radius:8px;font-size:.81em;border-left:3px solid var(--nt);background:#f0fdf4;line-height:1.5}
+.dns-step .ds-num{font-weight:900;color:var(--nt);flex-shrink:0;min-width:20px}
+
+/* DNS record types */
+.dns-records{display:grid;grid-template-columns:repeat(2,1fr);gap:6px;margin:12px 0}
+@media(max-width:400px){.dns-records{grid-template-columns:1fr}}
+.dns-rec{border-radius:8px;padding:9px 12px;font-size:.81em;border-left:4px solid var(--nt);background:#f0fdf4;line-height:1.5}
+.dns-rec .dr-type{font-family:'Courier New',monospace;font-weight:900;color:var(--nt);font-size:.94em;display:block;margin-bottom:2px}
+
+/* DHCP DORA */
+.dora-steps{display:grid;gap:6px;margin:12px 0}
+.dora-step{display:flex;gap:10px;align-items:flex-start;padding:9px 12px;border-radius:8px;font-size:.81em;line-height:1.6;border-left:4px solid}
+.dora-step.d{border-left-color:#1a3a5c;background:#e0f2fe}
+.dora-step.o{border-left-color:#b38600;background:#fffbeb}
+.dora-step.r{border-left-color:#7b2d8b;background:#f3e8ff}
+.dora-step.a{border-left-color:var(--nt);background:#f0fdf4}
+.dora-step .dora-lbl{font-family:'Courier New',monospace;font-weight:900;flex-shrink:0;min-width:20px;font-size:.94em}
+.dora-step.d .dora-lbl{color:#1a3a5c}
+.dora-step.o .dora-lbl{color:#b38600}
+.dora-step.r .dora-lbl{color:#7b2d8b}
+.dora-step.a .dora-lbl{color:var(--nt)}
+
+/* FTP ports */
+.ftp-ports{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:12px 0}
+@media(max-width:400px){.ftp-ports{grid-template-columns:1fr}}
+.ftp-port{border-radius:8px;padding:10px 14px;font-size:.81em;border-left:5px solid;line-height:1.6}
+.ftp-port.ctrl{border-left-color:#1a3a5c;background:#e0f2fe}
+.ftp-port.data{border-left-color:var(--nt);background:#f0fdf4}
+.ftp-port .fp-port{font-family:'Courier New',monospace;font-weight:900;font-size:1em;display:block;margin-bottom:3px}
+.ftp-port.ctrl .fp-port{color:#1a3a5c}
+.ftp-port.data .fp-port{color:var(--nt)}
+
+/* P2P vs Client-Server */
+.model-compare{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:12px 0}
+@media(max-width:480px){.model-compare{grid-template-columns:1fr}}
+.model-card{border-radius:10px;padding:12px 14px;font-size:.81em;line-height:1.7}
+.model-card.cs{background:#e0f2fe;border:2px solid #1a3a5c}
+.model-card.p2p{background:#f3e8ff;border:2px solid #7b2d8b}
+.model-card .mc-title{font-weight:800;margin-bottom:5px;font-size:.94em}
+.model-card.cs  .mc-title{color:#1a3a5c}
+.model-card.p2p .mc-title{color:#7b2d8b}
+.model-card ul{padding-left:16px}
+.model-card li{margin-bottom:2px}
+
+.tb-btn{position:fixed;bottom:80px;right:16px;background:var(--nt);color:#fff;border:none;border-radius:50%;width:44px;height:44px;font-size:1.25em;box-shadow:0 4px 14px rgba(0,0,0,.25);cursor:pointer;display:none;align-items:center;justify-content:center;z-index:100}
+.tb-btn.show{display:flex}
+.ft{text-align:center;padding:24px 16px;color:var(--muted);font-size:.81em}
+.mod-nav{position:fixed;bottom:0;left:0;right:0;z-index:300;background:#1a1a2e;border-top:1px solid #30363d;display:flex;align-items:center;height:52px;padding:0 8px;gap:6px}
+.mn-hub{background:#1ba0d7;color:#fff;border:none;border-radius:8px;padding:6px 12px;font-size:.75em;font-weight:700;cursor:pointer;text-decoration:none;display:flex;align-items:center;gap:4px;white-space:nowrap;-webkit-tap-highlight-color:transparent;flex-shrink:0}
+.mn-hub:active{opacity:.8}
+.mn-divider{width:1px;height:28px;background:#30363d;flex-shrink:0}
+.mn-label{flex:1;text-align:center;font-size:.69em;color:#8b949e;font-weight:600;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding:0 4px}
+.mn-prev,.mn-next{background:#30363d;color:#c9d1d9;border:none;border-radius:8px;padding:6px 10px;font-size:.875em;font-weight:700;cursor:pointer;text-decoration:none;display:flex;align-items:center;-webkit-tap-highlight-color:transparent;flex-shrink:0}
+.mn-prev:active,.mn-next:active{background:var(--nt);color:#fff}
+
+/* v2.1 — In-section check button */
+.sh{position:relative}
+.sec-check{position:absolute;right:40px;top:50%;transform:translateY(-50%);background:rgba(255,255,255,.15);border:2px solid rgba(255,255,255,.4);border-radius:6px;padding:2px 10px;font-size:.72em;font-weight:800;color:#fff;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:all .2s;white-space:nowrap;z-index:10;line-height:1.5}
+.sec-check.checked{background:var(--ntd);border-color:var(--ntd);color:#052e1e}
+.sec-check:active{opacity:.75}
+</style>
+</head>
+<body>
+<nav class="bc">
+  <a href="../../index.html">🏠 Home</a><span class="sep">›</span>
+  <a href="index.html">CCNA 1 — ITN</a><span class="sep">›</span>
+  <span class="cur">M15: Application Layer</span>
+</nav>
+<div class="fs-bar">
+  <div class="sc-pills" id="sc-pills">
+  <button class="sc-pill" id="pill-s1" onclick="toggleSection('s1',this)"><span class="pill-check">○</span>15.1</button>
+  <button class="sc-pill" id="pill-s2" onclick="toggleSection('s2',this)"><span class="pill-check">○</span>15.2</button>
+  <button class="sc-pill" id="pill-s3" onclick="toggleSection('s3',this)"><span class="pill-check">○</span>15.3</button>
+  <button class="sc-pill" id="pill-s4" onclick="toggleSection('s4',this)"><span class="pill-check">○</span>15.4</button>
+  <button class="sc-pill" id="pill-s5" onclick="toggleSection('s5',this)"><span class="pill-check">○</span>15.5</button>
+  <button class="sc-pill" id="pill-s6" onclick="toggleSection('s6',this)"><span class="pill-check">○</span>🎯</button>
+  </div>
+  <span class="fs-label" style="flex-shrink:0;margin-left:6px">Size</span>
+  <button class="fs-btn" onclick="setFs('14px',this)">S</button>
+  <button class="fs-btn" onclick="setFs('16px',this)">M</button>
+  <button class="fs-btn" onclick="setFs('18px',this)">L</button>
+  <button class="fs-btn active" onclick="setFs('20px',this)">XL</button>
+</div>
+<div class="hdr">
+  <div class="badge">CCNA 1 — ITN v7.02 · Module 15</div>
+  <h1>🌐 Application Layer</h1>
+  <p>Introduction to Networks · NetAcad Study Guide</p>
+  <div class="obj">Module Objective: Explain the operation of application layer protocols in providing support to end-user applications</div>
+</div>
+<div class="sp-wrap">
+  <div class="sp-hdr" id="sp-hdr" onclick="toggleStudyPanel()">
+    <span class="sp-title">📚 Sections</span>
+    <span class="sp-arr" id="sp-arr">▼</span>
+  </div>
+  <div class="sp-body" id="sp-body">
+    <div class="sp-row" id="row-s1"><span class="sr-status" id="st-s1">○</span><span class="sr-nb">15.1</span><span class="sr-ttl">Application, Presentation, and Session</span></div>
+    <div class="sp-row" id="row-s2"><span class="sr-status" id="st-s2">○</span><span class="sr-nb">15.2</span><span class="sr-ttl">Peer-to-Peer</span></div>
+    <div class="sp-row" id="row-s3"><span class="sr-status" id="st-s3">○</span><span class="sr-nb">15.3</span><span class="sr-ttl">Web and Email Protocols</span></div>
+    <div class="sp-row" id="row-s4"><span class="sr-status" id="st-s4">○</span><span class="sr-nb">15.4</span><span class="sr-ttl">IP Addressing Services</span></div>
+    <div class="sp-row" id="row-s5"><span class="sr-status" id="st-s5">○</span><span class="sr-nb">15.5</span><span class="sr-ttl">File Sharing Services</span></div>
+    <div class="sp-row" id="row-s6"><span class="sr-status" id="st-s6">○</span><span class="sr-nb">🎯</span><span class="sr-ttl">Common Exam Traps — Module 15</span></div>
+  </div>
+</div>
+
+<div class="toc">
+  <div class="toch open" onclick="this.classList.toggle('open');document.getElementById('tocb').classList.toggle('open')">
+    📋 Table of Contents — Tap to expand <span class="arr">▼</span>
+  </div>
+  <div class="tocb open" id="tocb">
+    <div class="tocg">15.1 — Application, Presentation, and Session</div>
+    <a href="javascript:void(0)" onclick="goTo('s1')"><span class="n">15.1.1</span> Application Layer — Closest to End User</a>
+    <a href="javascript:void(0)" onclick="goTo('s1')"><span class="n">15.1.2</span> Presentation Layer — Format · Compress · Encrypt</a>
+    <a href="javascript:void(0)" onclick="goTo('s1')"><span class="n">15.1.2</span> Session Layer — Create · Maintain · Restart Dialogs</a>
+    <a href="javascript:void(0)" onclick="goTo('s1')"><span class="n">15.1.3</span> TCP/IP Application Layer Protocol Table</a>
+    <div class="tocg">15.2 — Peer-to-Peer</div>
+    <a href="javascript:void(0)" onclick="goTo('s2')"><span class="n">15.2.1</span> Client-Server Model</a>
+    <a href="javascript:void(0)" onclick="goTo('s2')"><span class="n">15.2.2</span> P2P Networks — Every Peer = Client AND Server</a>
+    <a href="javascript:void(0)" onclick="goTo('s2')"><span class="n">15.2.4</span> BitTorrent — Torrent File · Tracker · Swarm</a>
+    <div class="tocg">15.3 — Web and Email Protocols</div>
+    <a href="javascript:void(0)" onclick="goTo('s3')"><span class="n">15.3.1</span> HTTP — URL Structure · 4-Step Operation</a>
+    <a href="javascript:void(0)" onclick="goTo('s3')"><span class="n">15.3.2</span> HTTP Methods — GET · POST · PUT</a>
+    <a href="javascript:void(0)" onclick="goTo('s3')"><span class="n">15.3.2</span> HTTPS — SSL/TLS Encryption · Port 443</a>
+    <a href="javascript:void(0)" onclick="goTo('s3')"><span class="n">15.3.3</span> Email — SMTP · POP3 · IMAP</a>
+    <div class="tocg">15.4 — IP Addressing Services</div>
+    <a href="javascript:void(0)" onclick="goTo('s4')"><span class="n">15.4.1</span> DNS — FQDN to IP · 5-Step Operation</a>
+    <a href="javascript:void(0)" onclick="goTo('s4')"><span class="n">15.4.2</span> DNS Record Types — A · AAAA · NS · MX</a>
+    <a href="javascript:void(0)" onclick="goTo('s4')"><span class="n">15.4.3</span> DNS Hierarchy · Top-Level Domains</a>
+    <a href="javascript:void(0)" onclick="goTo('s4')"><span class="n">15.4.4</span> nslookup · ipconfig /displaydns</a>
+    <a href="javascript:void(0)" onclick="goTo('s4')"><span class="n">15.4.6</span> DHCP — Lease · Pool · DORA Process</a>
+    <a href="javascript:void(0)" onclick="goTo('s4')"><span class="n">15.4.7</span> DHCPv6 — No Default Gateway</a>
+    <div class="tocg">15.5 — File Sharing Services</div>
+    <a href="javascript:void(0)" onclick="goTo('s5')"><span class="n">15.5.1</span> FTP — Port 21 (Control) · Port 20 (Data)</a>
+    <a href="javascript:void(0)" onclick="goTo('s5')"><span class="n">15.5.2</span> SMB — Long-Term Connection · SAMBA</a>
+    <div class="tocg">Reference</div>
+    <a href="javascript:void(0)" onclick="goTo('s6')"><span class="n">🎯</span> Common Exam Traps</a>
+  </div>
+</div>
+
+<div class="wrap">
+
+<!-- 15.1 APP/PRES/SESSION -->
+<div class="sec" id="s1">
+<div class="sh open" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">15.1</span><span class="ttl">Application, Presentation, and Session</span></span><button class="sec-check" id="sch-s1" onclick="event.stopPropagation();toggleSection('s1',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb open">
+  <div class="sub">
+  <h3><span class="sn">15.1.1</span> Application Layer</h3>
+  <p>The application layer is the <strong>closest layer to the end user</strong> in both the OSI and TCP/IP models. It provides the interface between the applications used to communicate and the underlying network.</p>
+  <div class="et"><div class="lbl">🎯 OSI vs TCP/IP LAYER MAPPING</div>
+  In the TCP/IP model, the upper three OSI layers all collapse into ONE layer:<br><br>
+  OSI: Application + Presentation + Session = TCP/IP: <strong>Application Layer</strong><br><br>
+  Common application layer protocols: HTTP · FTP · TFTP · IMAP · DNS
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">15.1.2</span> Presentation Layer — Three Primary Functions</h3>
+  <div class="pres-cards">
+    <div class="pres-card fmt"><div class="pc-icon">📄</div><span class="pc-name">Format / Present</span>Converts data from source format to a compatible format for the destination device</div>
+    <div class="pres-card cmp"><div class="pc-icon">🗜️</div><span class="pc-name">Compress</span>Compresses data so it can be decompressed by the destination device</div>
+    <div class="pres-card enc"><div class="pc-icon">🔐</div><span class="pc-name">Encrypt / Decrypt</span>Encrypts data for transmission; decrypts upon receipt at destination</div>
+  </div>
+  <p><strong>Common format standards at the presentation layer:</strong></p>
+  <div class="tw"><table>
+    <tr><th>Type</th><th>Formats</th></tr>
+    <tr><td><strong>Video</strong></td><td>MKV (Matroska), MPG (MPEG), MOV (QuickTime)</td></tr>
+    <tr><td><strong>Images</strong></td><td>GIF, JPG/JPEG, PNG</td></tr>
+  </table></div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">15.1.2</span> Session Layer</h3>
+  <p>The session layer creates and maintains <strong>dialogs</strong> between source and destination applications. It handles:</p>
+  <ul>
+    <li>Initiating dialogs between applications</li>
+    <li>Keeping active sessions alive</li>
+    <li>Restarting sessions that are disrupted or idle for a long period</li>
+  </ul>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">15.1.3</span> TCP/IP Application Layer Protocols</h3>
+  <p>Both source and destination hosts must implement <strong>compatible application layer protocols</strong> for communication to succeed.</p>
+  <div class="tw"><table>
+    <tr><th>Category</th><th>Protocol</th><th>Port</th><th>Transport</th><th>Function</th></tr>
+    <tr><td><strong>Name System</strong></td><td>DNS</td><td>53</td><td>UDP/TCP</td><td>Translates domain names to IP addresses</td></tr>
+    <tr><td><strong>Host Config</strong></td><td>DHCP</td><td>Server:67 Client:68</td><td>UDP</td><td>Dynamically assigns IP addresses and network config</td></tr>
+    <tr><td><strong>Host Config</strong></td><td>BOOTP</td><td>Server:67 Client:68</td><td>UDP</td><td>Legacy predecessor to DHCP — diskless workstation boot</td></tr>
+    <tr><td><strong>Email</strong></td><td>SMTP</td><td>25</td><td>TCP</td><td>Sends email client→server and server→server</td></tr>
+    <tr><td><strong>Email</strong></td><td>POP3</td><td>110</td><td>TCP</td><td>Downloads email to client; deletes from server</td></tr>
+    <tr><td><strong>Email</strong></td><td>IMAP</td><td>143</td><td>TCP</td><td>Accesses email on server; originals kept on server</td></tr>
+    <tr><td><strong>File Transfer</strong></td><td>FTP</td><td>20 (data) / 21 (ctrl)</td><td>TCP</td><td>Reliable, acknowledged file transfer (two connections)</td></tr>
+    <tr><td><strong>File Transfer</strong></td><td>TFTP</td><td>69</td><td>UDP</td><td>Simple, connectionless, best-effort file transfer</td></tr>
+    <tr><td><strong>Web</strong></td><td>HTTP</td><td>80 / 8080</td><td>TCP</td><td>Web page transfer — plaintext</td></tr>
+    <tr><td><strong>Web</strong></td><td>HTTPS</td><td>443</td><td>TCP</td><td>Encrypted web traffic — SSL/TLS</td></tr>
+  </table></div>
+  </div>
+</div></div>
+
+<!-- 15.2 P2P -->
+<div class="sec" id="s2">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">15.2</span><span class="ttl">Peer-to-Peer</span></span><button class="sec-check" id="sch-s2" onclick="event.stopPropagation();toggleSection('s2',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb">
+  <div class="sub">
+  <h3><span class="sn">15.2.1–15.2.3</span> Client-Server vs P2P</h3>
+  <div class="model-compare">
+    <div class="model-card cs">
+      <div class="mc-title">🖥️ Client-Server Model</div>
+      <ul>
+        <li>Dedicated server holds resources</li>
+        <li>Client requests; server responds</li>
+        <li>Roles are fixed</li>
+        <li>Upload = client → server</li>
+        <li>Download = server → client</li>
+        <li>Centralized resource management</li>
+      </ul>
+    </div>
+    <div class="model-card p2p">
+      <div class="mc-title">↔️ Peer-to-Peer (P2P)</div>
+      <ul>
+        <li>No dedicated server</li>
+        <li><strong>Every peer = client AND server simultaneously</strong></li>
+        <li>Roles set per-request</li>
+        <li>Resources shared directly between peers</li>
+        <li>Requires: user interface + background service on each device</li>
+      </ul>
+    </div>
+  </div>
+  <div class="ca info"><span class="ic">💡</span><div><strong>Hybrid P2P:</strong> Resource sharing is decentralized, but an index server stores the locations of resources. Peers query the index to find where a file is, then connect directly to the peer that has it. Used by some early P2P networks.</div></div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">15.2.4</span> BitTorrent — How It Works</h3>
+  <ul>
+    <li><strong>Torrent file</strong> — small file that identifies pieces needed and tracker server locations</li>
+    <li><strong>Tracker</strong> — server that tracks which users have which pieces of a file</li>
+    <li><strong>Swarm</strong> — group of users simultaneously sharing a file; clients download different pieces from multiple users at the same time</li>
+    <li>Common P2P networks: BitTorrent, Direct Connect, eDonkey, Freenet</li>
+    <li>Common clients: μTorrent, BitComet, DC++, Deluge, qBittorrent, emule</li>
+  </ul>
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Copyright warning:</strong> Many P2P-shared files are copyrighted. Downloading or distributing copyrighted material without permission is illegal and can result in criminal charges and civil lawsuits.</div></div>
+  </div>
+</div></div>
+
+<!-- 15.3 WEB AND EMAIL -->
+<div class="sec" id="s3">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">15.3</span><span class="ttl">Web and Email Protocols</span></span><button class="sec-check" id="sch-s3" onclick="event.stopPropagation();toggleSection('s3',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb">
+  <div class="sub">
+  <h3><span class="sn">15.3.1</span> HTTP — URL Structure and Operation</h3>
+  <p>A URL (Uniform Resource Locator) has three parts:</p>
+  <div class="cw"><div class="cl">URL Breakdown — http://www.cisco.com/index.html</div>
+  <pre><code>http          ← Protocol/scheme
+www.cisco.com ← Server hostname
+/index.html   ← Specific file requested</code></pre></div>
+  <p><strong>HTTP operation — 4 steps:</strong></p>
+  <ol>
+    <li>Browser interprets the three URL parts</li>
+    <li>DNS lookup converts hostname (www.cisco.com) to IP address → browser sends HTTP GET request</li>
+    <li>Server responds with HTML code for the page</li>
+    <li>Browser deciphers HTML and renders the page in the window</li>
+  </ol>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">15.3.2</span> Three HTTP Message Types</h3>
+  <div class="http-methods">
+    <div class="http-method get"><span class="hm-verb">GET</span>Requests data from server (e.g., load a web page)</div>
+    <div class="http-method post"><span class="hm-verb">POST</span>Uploads form data to server (e.g., submit a login form)</div>
+    <div class="http-method put"><span class="hm-verb">PUT</span>Uploads a resource or content file to server (e.g., an image)</div>
+  </div>
+  <h4>HTTP vs HTTPS</h4>
+  <div class="tw"><table>
+    <tr><th>Feature</th><th>HTTP</th><th>HTTPS</th></tr>
+    <tr><td>Port</td><td>80 (also 8080)</td><td><strong>443</strong></td></tr>
+    <tr><td>Encryption</td><td>None — <strong>plaintext</strong></td><td><strong>SSL/TLS</strong> encrypted</td></tr>
+    <tr><td>Authentication</td><td>No</td><td>Yes — verifies server identity via certificate</td></tr>
+    <tr><td>Security</td><td>Vulnerable to interception</td><td>Secure — data cannot be read in transit</td></tr>
+    <tr><td>Use case</td><td>Public info (non-sensitive)</td><td>Login, banking, any sensitive data</td></tr>
+  </table></div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">15.3.3–15.3.4</span> Email Protocols — SMTP · POP3 · IMAP</h3>
+  <div class="ca danger"><span class="ic">🚨</span><div><strong>Email clients do NOT communicate directly with each other.</strong> All email flows through mail servers. Client sends via SMTP → server routes to recipient's server → recipient retrieves via POP3 or IMAP.</div></div>
+  <div class="email-cards">
+    <div class="email-card smtp">
+      <div class="ec-name">📤 SMTP — Simple Mail Transfer Protocol · Port 25 · TCP</div>
+      <strong>Sends</strong> email from client to server AND between servers.<br>
+      Requires: properly formatted recipient address + sender address in header.<br>
+      If destination server unavailable → <strong>spools message</strong> and retries later.<br>
+      If undeliverable after expiration → returned to sender as <strong>undeliverable</strong>.
+    </div>
+    <div class="email-card pop">
+      <div class="ec-name">📥 POP3 — Post Office Protocol v3 · Port 110 · TCP</div>
+      <strong>Downloads</strong> email from server to client → <strong>deletes from server</strong> by default.<br>
+      No centralized storage — email exists only on the local device after download.<br>
+      Not recommended for businesses needing centralized backup.<br>
+      Access from one device only (email is removed from server).
+    </div>
+    <div class="email-card imap">
+      <div class="ec-name">📨 IMAP — Internet Message Access Protocol · Port 143 · TCP</div>
+      Downloads <strong>copies</strong> of messages to client → <strong>originals kept on server</strong>.<br>
+      Users can create folder hierarchy on server; synchronized to client.<br>
+      When message deleted on client → <strong>server synchronizes</strong> and deletes too.<br>
+      Best for accessing email from <strong>multiple devices</strong>.
+    </div>
+  </div>
+  </div>
+</div></div>
+
+<!-- 15.4 IP ADDRESSING SERVICES -->
+<div class="sec" id="s4">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">15.4</span><span class="ttl">IP Addressing Services</span></span><button class="sec-check" id="sch-s4" onclick="event.stopPropagation();toggleSection('s4',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb">
+  <div class="sub">
+  <h3><span class="sn">15.4.1</span> DNS — Domain Name System</h3>
+  <p>DNS translates <strong>FQDNs</strong> (Fully Qualified Domain Names) like <code>www.cisco.com</code> into IP addresses like <code>198.133.219.25</code>. If Cisco changes its IP address, the domain name stays the same — transparent to the user.</p>
+  <p><strong>DNS operation — 5 steps:</strong></p>
+  <div class="dns-steps">
+    <div class="dns-step"><div class="ds-num">1</div><div>User types FQDN into browser address bar</div></div>
+    <div class="dns-step"><div class="ds-num">2</div><div>DNS query sent to the configured DNS server for the client</div></div>
+    <div class="dns-step"><div class="ds-num">3</div><div>DNS server matches FQDN to IP address in its database (or forwards to another server)</div></div>
+    <div class="dns-step"><div class="ds-num">4</div><div>DNS response with the resolved IP address returned to the client</div></div>
+    <div class="dns-step"><div class="ds-num">5</div><div>Client uses the IP address to connect to the server and request the page</div></div>
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">15.4.2</span> DNS Record Types</h3>
+  <div class="dns-records">
+    <div class="dns-rec"><span class="dr-type">A</span>IPv4 address of an end device. Most common DNS lookup.</div>
+    <div class="dns-rec"><span class="dr-type">AAAA (quad-A)</span>IPv6 address of an end device. "Quad-A" = 4× IPv4 = 128 bits.</div>
+    <div class="dns-rec"><span class="dr-type">NS</span>Authoritative name server for a domain.</div>
+    <div class="dns-rec"><span class="dr-type">MX</span>Mail exchange record — identifies the mail server for a domain.</div>
+  </div>
+  <p><strong>DNS message sections:</strong> Question · Answer · Authority · Additional</p>
+  <div class="ca info"><span class="ic">💡</span><div><strong>DNS caching:</strong> After resolving a name, the DNS server temporarily stores the result. The local DNS client on Windows also caches results.<br><code>ipconfig /displaydns</code> — displays all cached DNS entries on Windows.</div></div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">15.4.3</span> DNS Hierarchy</h3>
+  <p>DNS is a hierarchical database split into <strong>zones</strong>. Each DNS server only manages name-to-IP mappings for its own zone. If it can't resolve a name, it forwards the request to another server in the correct zone. This makes DNS <strong>scalable</strong>.</p>
+  <p><strong>Common top-level domains:</strong> <code>.com</code> (business) · <code>.org</code> (non-profit) · <code>.au</code> (Australia) · <code>.co</code> (Colombia)</p>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">15.4.4</span> nslookup Command</h3>
+  <p><code>nslookup</code> — manually queries DNS servers to resolve host names and troubleshoot name resolution. Works on Windows and Linux.</p>
+  <div class="cw"><div class="cl">nslookup — Windows and Linux</div>
+  <pre><code>C:\> nslookup
+Default Server: dns-sj.cisco.com
+Address: 171.70.168.183
+> www.cisco.com
+Name:    origin-www.cisco.com
+Addresses: 2001:420:1101:1::a    ← IPv6 address
+           173.37.145.84         ← IPv4 address
+Aliases: www.cisco.com
+
+> cisco.netacad.net
+Name:    cisco.netacad.net
+Address: 72.163.6.223
+> exit
+
+C:\> nslookup www.google.com     ← Direct query without entering nslookup mode</code></pre></div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">15.4.6–15.4.7</span> DHCP — Dynamic Host Configuration Protocol</h3>
+  <p>DHCPv4 automates assignment of: IPv4 address, subnet mask, default gateway, DNS server address.</p>
+  <p><strong>Key DHCP concepts:</strong></p>
+  <ul>
+    <li><strong>Pool</strong> — configured range of addresses the server can assign</li>
+    <li><strong>Lease</strong> — time-limited assignment; address returns to pool when lease expires</li>
+    <li><strong>DHCPRELEASE</strong> — message client sends to voluntarily return an address</li>
+    <li>DHCP for end user devices; static for routers, switches, servers, printers</li>
+    <li>DHCP server location: dedicated server (medium/large networks) or router (home networks)</li>
+  </ul>
+  <h4>DHCP DORA Process — Four Messages</h4>
+  <div class="dora-steps">
+    <div class="dora-step d"><span class="dora-lbl">D</span><div><strong>DHCPDISCOVER</strong> — Client broadcasts to find any available DHCP server on the network</div></div>
+    <div class="dora-step o"><span class="dora-lbl">O</span><div><strong>DHCPOFFER</strong> — Server offers a lease: IP address, subnet mask, default gateway, DNS server, lease duration</div></div>
+    <div class="dora-step r"><span class="dora-lbl">R</span><div><strong>DHCPREQUEST</strong> — Client broadcasts to accept a specific server's offer (identifies chosen server; also used to renew leases)</div></div>
+    <div class="dora-step a"><span class="dora-lbl">A</span><div><strong>DHCPACK</strong> — Server confirms the lease; client can now use the address. If address no longer available → <strong>DHCPNAK</strong> (restart with DISCOVER)</div></div>
+  </div>
+  <div class="ca danger"><span class="ic">🚨</span><div><strong>DHCPv6 does NOT provide a default gateway.</strong> DHCPv6 provides: IPv6 address (stateful), DNS server, domain name. The default gateway (router's LLA) can ONLY be obtained from the ICMPv6 Router Advertisement (RA) message.<br><br><strong>DHCPv6 message names:</strong> SOLICIT · ADVERTISE · INFORMATION REQUEST · REPLY</div></div>
+  </div>
+</div></div>
+
+<!-- 15.5 FILE SHARING -->
+<div class="sec" id="s5">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">15.5</span><span class="ttl">File Sharing Services</span></span><button class="sec-check" id="sch-s5" onclick="event.stopPropagation();toggleSection('s5',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb">
+  <div class="sub">
+  <h3><span class="sn">15.5.1</span> FTP — File Transfer Protocol</h3>
+  <p>FTP uses <strong>two separate TCP connections</strong>:</p>
+  <div class="ftp-ports">
+    <div class="ftp-port ctrl"><span class="fp-port">TCP Port 21 — Control</span>Established FIRST. Carries client commands and server replies. Maintained throughout the entire session.</div>
+    <div class="ftp-port data"><span class="fp-port">TCP Port 20 — Data</span>Created for each file transfer. Carries actual file data. Can transfer in either direction: download (pull) or upload (push).</div>
+  </div>
+  <div class="ca tip"><span class="ic">✅</span><div><strong>FTP characteristics:</strong> Reliable · Connection-oriented · Acknowledged delivery · Two separate TCP connections · Client can both upload and download · Authentication required (username/password)</div></div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">15.5.2</span> SMB — Server Message Block</h3>
+  <p>SMB is a client/server <strong>request-response</strong> protocol for sharing directories, files, printers, and serial ports on Microsoft networks.</p>
+  <p><strong>Three SMB message functions:</strong></p>
+  <ol>
+    <li>Start, authenticate, and terminate sessions</li>
+    <li>Control file and printer access</li>
+    <li>Allow application-to-application messaging between devices</li>
+  </ol>
+  <div class="tw"><table>
+    <tr><th>Feature</th><th>FTP</th><th>SMB</th></tr>
+    <tr><td>Connection type</td><td>New connection per transfer</td><td><strong>Long-term persistent connection</strong></td></tr>
+    <tr><td>Resource appearance</td><td>Remote server</td><td>Resources appear <strong>local to the client</strong></td></tr>
+    <tr><td>Protocol</td><td>TCP (ports 20/21)</td><td>TCP/IP with DNS (Windows 2000+)</td></tr>
+    <tr><td>Authentication</td><td>Username/password</td><td>Windows credentials / domain authentication</td></tr>
+  </table></div>
+  <div class="ca info"><span class="ic">💡</span><div><strong>SAMBA</strong> = Linux/Unix implementation of SMB — allows Linux systems to share files with Microsoft Windows networks.<br><strong>Apple Macintosh</strong> also supports SMB resource sharing.<br><strong>Windows 2000+</strong> uses DNS naming with TCP/IP (older versions used non-TCP/IP protocols for SMB).</div></div>
+  </div>
+</div></div>
+
+<!-- EXAM TRAPS -->
+<div class="sec" id="s6">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">🎯</span><span class="ttl">Common Exam Traps — Module 15</span></span><button class="sec-check" id="sch-s6" onclick="event.stopPropagation();toggleSection('s6',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb">
+
+  <div class="ca danger"><span class="ic">❌</span><div><strong>Trap 1: TCP/IP Application Layer = OSI Application + Presentation + Session (three OSI layers → one TCP/IP layer).</strong><br>In the OSI model there are three separate upper layers. In TCP/IP, all three functions collapse into one Application Layer. Don't list Presentation or Session as separate TCP/IP layers.</div></div>
+
+  <div class="ca danger"><span class="ic">❌</span><div><strong>Trap 2: Presentation = Format/Compress/Encrypt. Session = Create/Maintain/Restart dialogs. Keep these separate.</strong><br>Presentation handles data format conversion (MKV, JPG, PNG), compression, and encryption. Session handles the dialog (conversation) lifecycle. Students frequently mix these two layer functions.</div></div>
+
+  <div class="ca danger"><span class="ic">❌</span><div><strong>Trap 3: Email clients do NOT communicate directly — all email flows through mail servers.</strong><br>SMTP sends from client to server and between servers. POP3 or IMAP then retrieves from the server. There is no direct client-to-client email path.</div></div>
+
+  <div class="ca danger"><span class="ic">❌</span><div><strong>Trap 4: POP3 downloads and DELETES from server. IMAP keeps originals on server (downloads copies).</strong><br>POP3 = one device, offline, no centralized backup. IMAP = multiple devices, synchronized, server is the master copy. SMTP is always the sending protocol regardless of which retrieval protocol is used.</div></div>
+
+  <div class="ca danger"><span class="ic">❌</span><div><strong>Trap 5: FTP uses TWO TCP connections — port 21 (control, established first) and port 20 (data, per transfer).</strong><br>Control connection (21) carries commands and is maintained throughout. Data connection (20) is created and torn down for each file transfer. Both are TCP. TFTP uses UDP port 69 — completely different.</div></div>
+
+  <div class="ca danger"><span class="ic">❌</span><div><strong>Trap 6: DHCP DORA — Discover → Offer → Request → Acknowledge. DHCPNAK = negative acknowledgment (restart).</strong><br>Client broadcasts DISCOVER to find servers. Server(s) respond with OFFER. Client broadcasts REQUEST to select one server's offer. Server sends ACK to finalize lease. If DHCPNAK → restart entire process with DISCOVER.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 7: DHCPv6 does NOT provide a default gateway — only RA provides it.</strong><br>This is tested directly. Even in stateful DHCPv6, the default gateway (router LLA) can only be learned from the ICMPv6 Router Advertisement. DHCPv6 message names: SOLICIT, ADVERTISE, INFORMATION REQUEST, REPLY.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 8: DNS AAAA = IPv6 address (quad-A). A = IPv4. NS = name server. MX = mail server.</strong><br>AAAA is called quad-A because IPv6 is 4× the bit length of IPv4 (128 vs 32 bits). These four record types appear in matching questions on every exam.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 9: HTTP GET = request a page. POST = upload form data. PUT = upload a resource/file.</strong><br>GET is the most common — every time you load a web page. POST is form submission (login, contact form). PUT is resource upload. These appear in matching/multiple-choice questions.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 10: HTTPS uses SSL/TLS and port 443. HTTP is plaintext and uses port 80.</strong><br>HTTPS encrypts the data stream before transport. HTTPS also authenticates the server via a certificate. HTTP sends everything — including passwords and form data — in cleartext.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 11: P2P — every peer is simultaneously client AND server. Roles are per-request.</strong><br>Unlike client-server where roles are fixed, in P2P a single device can be downloading (client role) while uploading to others (server role) at the same time. This is how BitTorrent swarms work.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 12: nslookup = manually query DNS. ipconfig /displaydns = show cached DNS entries.</strong><br>Different commands, different purposes. nslookup actively queries DNS servers. ipconfig /displaydns shows what's already cached locally in the DNS client cache. Both are Windows commands.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 13: SMB uses long-term connections; server resources appear local. FTP uses per-transfer connections.</strong><br>SMB (Windows file sharing, SAMBA) maintains a persistent connection and maps network shares as local drives. FTP opens and closes the data connection for each file transfer — the control connection persists but the data connection does not.</div></div>
+
+  <div class="ca tip"><span class="ic">✅</span><div><strong>Module 15 quick-reference summary:</strong><br><br>
+  <strong>TCP/IP Application Layer:</strong> Combines OSI Application + Presentation + Session<br>
+  <strong>Application layer:</strong> Closest to end user · interface between apps and network<br>
+  <strong>Presentation layer:</strong> Format · Compress · Encrypt/Decrypt · video/image formats<br>
+  <strong>Session layer:</strong> Create · maintain · restart application dialogs<br>
+  <strong>Both hosts must run compatible application layer protocols</strong><br>
+  <strong>Client-server:</strong> Fixed roles · dedicated server · upload (client→server) · download (server→client)<br>
+  <strong>P2P:</strong> Every peer = client AND server simultaneously · no dedicated server · roles per-request<br>
+  <strong>BitTorrent:</strong> Torrent file + tracker + swarm (pieces from multiple peers)<br>
+  <strong>URL:</strong> protocol + server name + filename<br>
+  <strong>HTTP:</strong> Port 80 · request-response · GET(request) · POST(form upload) · PUT(resource upload) · plaintext<br>
+  <strong>HTTPS:</strong> Port 443 · SSL/TLS encrypted · authenticates server · secure<br>
+  <strong>Email flow:</strong> Client→SMTP server→recipient SMTP server→POP3/IMAP→recipient client<br>
+  <strong>SMTP:</strong> Port 25 · TCP · sends email · spools if server unavailable<br>
+  <strong>POP3:</strong> Port 110 · TCP · downloads+deletes from server · one device only<br>
+  <strong>IMAP:</strong> Port 143 · TCP · keeps originals on server · multiple devices · synchronized<br>
+  <strong>DNS:</strong> FQDN→IP · 5-step process · uses zones · hierarchical · scalable<br>
+  <strong>DNS records:</strong> A (IPv4) · AAAA (IPv6, quad-A) · NS (name server) · MX (mail server)<br>
+  <strong>DNS message sections:</strong> Question · Answer · Authority · Additional<br>
+  <strong>DNS caching:</strong> Server caches resolved names · ipconfig /displaydns (Windows)<br>
+  <strong>nslookup:</strong> Manual DNS query tool (Windows and Linux)<br>
+  <strong>DHCP:</strong> Automates IPv4 addr + mask + gateway + DNS server<br>
+  <strong>DHCP DORA:</strong> Discover(broadcast) → Offer → Request(broadcast) → Ack · DHCPNAK = restart<br>
+  <strong>DHCP lease:</strong> Time-limited assignment · address returns to pool on expiry<br>
+  <strong>DHCPv6:</strong> No default gateway (only from RA) · messages: SOLICIT · ADVERTISE · INFO REQUEST · REPLY<br>
+  <strong>BOOTP:</strong> Legacy predecessor to DHCP · ports 67/68 UDP<br>
+  <strong>FTP:</strong> TCP port 21 (control, persistent) + port 20 (data, per-transfer) · reliable · authenticated<br>
+  <strong>TFTP:</strong> UDP port 69 · simple · no authentication · best-effort<br>
+  <strong>SMB:</strong> Windows file/printer sharing · long-term connection · resources appear local · request-response<br>
+  <strong>SAMBA:</strong> Linux/Unix SMB implementation · interoperates with Windows networks</div></div>
+
+</div></div>
+
+</div>
+<div class="ft">CCNA 1 ITN v7.02 — Module 15: Application Layer v2.2<br>Based on Cisco NetAcad curriculum · Study guide for personal use</div>
+<button class="tb-btn" id="topb" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+<div class="mod-nav">
+  <a class="mn-hub" href="index.html">🏠 Hub</a>
+  <div class="mn-divider"></div>
+  <a class="mn-prev" href="ccna1_module14_transport_layer_v2.2.html">‹</a>
+  <span class="mn-label">M15 of 17</span>
+  <a class="mn-next" href="ccna1_module16_network_security_fundamentals_v2.2.html">›</a>
+</div>
+<script>
+var MOD_KEY="ccna1-module15-application-layer";
+var SECS=["s1","s2","s3","s4","s5","s6"];
+var checked={};
+function loadState(){
+  try{var s=localStorage.getItem(MOD_KEY);if(s)checked=JSON.parse(s);}catch(e){}
+  SECS.forEach(function(id){
+    var pill=document.getElementById('pill-'+id);
+    var row=document.getElementById('row-'+id);
+    var st=document.getElementById('st-'+id);
+    var sch=document.getElementById('sch-'+id);
+    if(checked[id]){
+      if(pill){pill.classList.add('checked');pill.querySelector('.pill-check').textContent='✓';}
+      if(row)row.classList.add('done');
+      if(st)st.textContent='✓';
+      if(sch){sch.classList.add('checked');sch.textContent='✓ Done';}
+    } else {
+      if(pill){pill.classList.remove('checked');pill.querySelector('.pill-check').textContent='○';}
+      if(row)row.classList.remove('done');
+      if(st)st.textContent='○';
+      if(sch){sch.classList.remove('checked');sch.textContent='○ Mark done';}
+    }
+  });
+}
+function toggleSection(id,btn){checked[id]=!checked[id];try{localStorage.setItem(MOD_KEY,JSON.stringify(checked));}catch(e){}loadState();}
+function toggleStudyPanel(){
+  var hdr=document.getElementById('sp-hdr');
+  var body=document.getElementById('sp-body');
+  var arr=document.getElementById('sp-arr');
+  hdr.classList.toggle('open');body.classList.toggle('open');
+  if(arr)arr.textContent=body.classList.contains('open')?'▲':'▼';
+}
+function goTo(id){var el=document.getElementById(id);if(!el)return;var h=el.querySelector('.sh'),b=el.querySelector('.sb');if(h&&b&&!b.classList.contains('open')){h.classList.add('open');b.classList.add('open');}setTimeout(function(){window.scrollTo({top:el.getBoundingClientRect().top+window.pageYOffset-60,behavior:'smooth'});},50);}
+function setFs(size,btn){document.documentElement.style.setProperty('--base-fs',size);document.querySelectorAll('.fs-btn').forEach(function(b){b.classList.remove('active');});btn.classList.add('active');try{localStorage.setItem('ccna-fs',size);}catch(e){}}
+(function(){try{var s=localStorage.getItem('ccna-fs');if(s){document.documentElement.style.setProperty('--base-fs',s);document.querySelectorAll('.fs-btn').forEach(function(b){b.classList.remove('active');if((b.textContent==='S'&&s==='14px')||(b.textContent==='M'&&s==='16px')||(b.textContent==='L'&&s==='18px')||(b.textContent==='XL'&&s==='20px'))b.classList.add('active');});}}catch(e){}loadState();})();
+function copyCode(btn){var pre=btn.closest('.cw').querySelector('pre');navigator.clipboard.writeText(pre.innerText||pre.textContent).then(function(){btn.textContent='Copied!';setTimeout(function(){btn.textContent='Copy';},1500);});}
+</script>
+<script src="../../site-config.js"></script>
+</body>
+</html>

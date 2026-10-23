@@ -1,0 +1,909 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=2.0">
+<title>CCNA 2 Module 16: Troubleshoot Static and Default Routes v2.2</title>
+<style>
+:root{
+  --blue:#1ba0d7;--dark:#005073;--green:#6cc24a;
+  --rtr:#c45200;--rtrd:#fb923c;
+  --bg:#f4f6f8;--card:#fff;--text:#1a1a2e;--muted:#5a6a7a;
+  --cbg:#0d1117;--ctxt:#c9d1d9;--r:12px;--sh:0 2px 12px rgba(0,0,0,.08);
+  --base-fs:16px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);font-size:var(--base-fs);line-height:1.7}
+
+/* ── Font size toggle ── */
+.fs-bar{position:sticky;top:0;z-index:200;background:#1a1a2e;display:flex;align-items:center;justify-content:flex-end;padding:6px 14px;gap:6px;box-shadow:0 2px 8px rgba(0,0,0,.3)}
+.fs-label{color:#8b949e;font-size:.72em;font-weight:700;letter-spacing:.5px;text-transform:uppercase;margin-right:4px}
+.fs-btn{background:#30363d;color:#c9d1d9;border:2px solid transparent;border-radius:6px;padding:4px 12px;font-size:.75em;font-weight:700;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:all .2s;line-height:1.4}
+.fs-btn:active,.fs-btn.active{background:var(--rtr);color:#fff;border-color:var(--rtr)}
+
+/* ── Header ── */
+.hdr{background:linear-gradient(135deg,#7c2d00,var(--rtr));color:#fff;padding:32px 20px 24px;text-align:center}
+.hdr .badge{display:inline-block;background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.4);border-radius:20px;padding:4px 14px;font-size:.81em;margin-bottom:12px}
+.hdr .final-badge{display:inline-block;background:var(--green);color:#1a1a2e;border-radius:20px;padding:4px 14px;font-size:.81em;font-weight:800;margin-left:8px;margin-bottom:12px}
+.hdr h1{font-size:1.625em;font-weight:700;margin-bottom:6px}
+.hdr p{font-size:.94em;opacity:.85}
+.hdr .obj{display:inline-block;background:rgba(255,255,255,.15);border-radius:8px;padding:7px 16px;margin-top:12px;font-size:.875em;font-style:italic}
+
+/* ── Progress bar ── */
+.pb{background:var(--card);padding:14px 16px;margin:16px 16px 0;border-radius:var(--r);box-shadow:var(--sh)}
+.pbl{font-size:.81em;color:var(--muted);margin-bottom:6px;font-weight:600}
+.pbt{background:#e0e7ef;border-radius:10px;height:8px;overflow:hidden}
+.pbf{background:linear-gradient(90deg,var(--rtr),var(--rtrd));height:100%;border-radius:10px;width:0;transition:width 1s ease}
+
+/* ── TOC ── */
+.toc{background:var(--card);margin:16px;border-radius:var(--r);box-shadow:var(--sh);overflow:hidden}
+.toch{background:var(--rtr);color:#fff;padding:14px 18px;font-weight:700;font-size:.94em;display:flex;justify-content:space-between;align-items:center;cursor:pointer;user-select:none}
+.toch .arr{transition:transform .3s}
+.toch.open .arr{transform:rotate(180deg)}
+.tocb{display:none;padding:10px 0}
+.tocb.open{display:block}
+.tocg{font-size:.69em;font-weight:800;letter-spacing:.8px;color:var(--rtr);text-transform:uppercase;padding:8px 20px 2px}
+.tocb a{display:block;padding:9px 20px 9px 28px;color:var(--text);text-decoration:none;font-size:.875em;border-left:3px solid transparent;transition:all .2s}
+.tocb a:hover,.tocb a:active{background:#fff3ea;border-left-color:var(--rtrd)}
+.tocb a .n{display:inline-block;background:var(--rtr);color:#fff;border-radius:5px;padding:1px 8px;font-size:.75em;font-weight:700;margin-right:8px}
+
+/* ── Main wrap ── */
+.wrap{padding:0 16px 100px}
+
+/* ── Section cards ── */
+.sec{background:var(--card);border-radius:var(--r);box-shadow:var(--sh);margin-bottom:16px;overflow:hidden}
+.sh{background:linear-gradient(90deg,#7c2d00,var(--rtr));color:#fff;padding:16px 18px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;user-select:none;-webkit-tap-highlight-color:transparent}
+.sh .ttl{font-weight:700;font-size:1em}
+.sh .nb{background:rgba(255,255,255,.25);border-radius:6px;padding:3px 10px;font-size:.81em;font-weight:700;margin-right:10px;white-space:nowrap}
+.sh .ch{font-size:1.125em;transition:transform .3s}
+.sh.open .ch{transform:rotate(180deg)}
+.sb{display:none;padding:18px}
+.sb.open{display:block}
+
+/* ── Subsections ── */
+.sub{margin-bottom:24px}
+.sub:last-child{margin-bottom:0}
+.sub h3{font-size:.94em;font-weight:700;color:var(--rtr);margin-bottom:10px;padding-bottom:6px;border-bottom:2px solid #fff3ea;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.sub h3 .sn{background:var(--rtr);color:#fff;border-radius:5px;padding:2px 8px;font-size:.75em;white-space:nowrap}
+.sub h4{font-size:.875em;font-weight:700;color:var(--rtr);margin:14px 0 6px}
+.sub p{margin-bottom:10px;font-size:.94em}
+.sub ul,.sub ol{padding-left:20px;margin:8px 0;font-size:.94em}
+.sub li{margin-bottom:5px}
+
+/* ── Code blocks ── */
+.cw{background:var(--cbg);border-radius:10px;margin:12px 0;overflow:hidden}
+.cl{background:#21262d;color:#c9d1d9;font-size:.78em;font-weight:700;padding:6px 14px;letter-spacing:.5px;text-transform:uppercase;display:flex;justify-content:space-between;align-items:center}
+.cpb{background:#30363d;color:#c9d1d9;border:none;border-radius:5px;padding:3px 10px;font-size:.69em;cursor:pointer}
+.cpb:active{background:var(--rtr);color:#fff}
+pre{margin:0;padding:14px;overflow-x:auto;-webkit-overflow-scrolling:touch}
+code{font-family:'Courier New',monospace;font-size:.81em;color:var(--ctxt);line-height:1.6}
+p code,li code,td code,.ca code,.cc-body code,.is-meaning code,.prob-card code,.ws-body code{background:#fff3ea;color:#7c2d00;border-radius:4px;padding:1px 5px;font-size:.81em;font-family:'Courier New',monospace;font-weight:600}
+
+/* ── Callout boxes ── */
+.ca{border-radius:8px;padding:12px 14px;margin:12px 0;font-size:.875em;line-height:1.6;display:flex;gap:10px;align-items:flex-start}
+.ca .ic{font-size:1.125em;flex-shrink:0;margin-top:1px}
+.ca.warn  {background:#fff3cd;border-left:4px solid #b38600;color:#3d2c00}
+.ca.tip   {background:#d4edda;border-left:4px solid #28a745;color:#0d3318}
+.ca.danger{background:#f8d7da;border-left:4px solid #dc3545;color:#3d0010}
+.ca.info  {background:#fff3ea;border-left:4px solid var(--rtr);color:#7c2d00}
+
+/* ── Exam tip dark box ── */
+.et{background:linear-gradient(135deg,#1a1a2e,#7c2d00);color:#fff;border-radius:10px;padding:14px 16px;margin:14px 0;font-size:.875em;line-height:1.6}
+.et .lbl{font-size:.69em;font-weight:800;letter-spacing:1px;color:var(--rtrd);margin-bottom:6px}
+.et ul{padding-left:18px;margin-top:6px}
+.et li{margin-bottom:4px}
+
+/* ── Tables ── */
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:12px 0;border-radius:8px}
+table{width:100%;border-collapse:collapse;font-size:.875em}
+th{background:var(--rtr);color:#fff;padding:10px 12px;text-align:left;font-weight:700;font-size:.81em}
+td{padding:9px 12px;border-bottom:1px solid #e8ecf0;vertical-align:top;color:#1a1a2e}
+tr:nth-child(even) td{background:#fff3ea;color:#7c2d00}
+tr:last-child td{border-bottom:none}
+
+/* ── Numbered steps ── */
+.steps{counter-reset:step;list-style:none;padding:0;margin:12px 0}
+.steps li{counter-increment:step;display:flex;gap:12px;align-items:flex-start;padding:10px 0;border-bottom:1px solid #eef0f3;font-size:.875em;line-height:1.6}
+.steps li:last-child{border-bottom:none}
+.steps li::before{content:counter(step);background:var(--rtr);color:#fff;border-radius:50%;min-width:26px;height:26px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.81em;flex-shrink:0;margin-top:2px}
+
+/* ── Packet forwarding steps ── */
+.pf-flow{background:#0d1117;border:2px solid var(--rtrd);border-radius:10px;padding:16px;margin:14px 0}
+.pf-title{font-size:.75em;font-weight:800;letter-spacing:.8px;color:var(--rtrd);text-transform:uppercase;margin-bottom:10px}
+.pf-step{display:flex;gap:10px;align-items:flex-start;padding:7px 0;border-bottom:1px solid #21262d;font-size:.81em;color:#c9d1d9;line-height:1.6}
+.pf-step:last-child{border-bottom:none}
+.pf-num{background:var(--rtr);color:#fff;border-radius:50%;min-width:24px;height:24px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.75em;flex-shrink:0;margin-top:1px}
+.pf-key{color:var(--rtrd);font-weight:700;font-size:.75em;white-space:nowrap;flex-shrink:0;min-width:60px}
+
+/* ── Troubleshooting command cards ── */
+.cmd-cards{display:grid;gap:12px;margin:12px 0}
+.cmd-card{border-radius:10px;overflow:hidden;border:2px solid #e8ecf0}
+.cmd-card .cc-hdr{padding:10px 14px;font-size:.875em;font-weight:800;color:#fff;display:flex;align-items:center;gap:8px}
+.cmd-card .cc-cmd{font-family:'Courier New',monospace;font-size:.875em}
+.cmd-card.ping .cc-hdr{background:#1a472a}
+.cmd-card.trace .cc-hdr{background:#1a3a5c}
+.cmd-card.route .cc-hdr{background:var(--rtr)}
+.cmd-card.intf .cc-hdr{background:#7b2d8b}
+.cmd-card.cdp .cc-hdr{background:#0e7490}
+.cmd-card .cc-body{padding:12px 14px;font-size:.81em;color:#1a1a2e;line-height:1.7;background:#f9fafb}
+.cmd-card .cc-validates{font-size:.75em;font-weight:700;padding:2px 8px;border-radius:4px;display:inline-block;margin-top:4px;color:#fff}
+.cmd-card.ping .cc-validates{background:#1a472a}
+.cmd-card.trace .cc-validates{background:#1a3a5c}
+.cmd-card.route .cc-validates{background:var(--rtr)}
+.cmd-card.intf .cc-validates{background:#7b2d8b}
+.cmd-card.cdp .cc-validates{background:#0e7490}
+
+/* ── Walkthrough steps ── */
+.walk{display:grid;gap:10px;margin:12px 0}
+.walk-step{border-radius:10px;overflow:hidden;border-left:5px solid}
+.walk-step.investigate{border-left-color:#b38600;background:#fffbf0}
+.walk-step.test{border-left-color:var(--blue);background:#e8f4fb}
+.walk-step.found{border-left-color:#dc3545;background:#fff5f5}
+.walk-step.fix{border-left-color:#27ae60;background:#f0fff4}
+.walk-step.verify{border-left-color:#9333ea;background:#f3e8ff}
+.walk-step .ws-hdr{padding:8px 12px;font-size:.81em;font-weight:800;display:flex;align-items:center;gap:8px}
+.walk-step.investigate .ws-hdr{color:#b38600}
+.walk-step.test .ws-hdr{color:var(--dark)}
+.walk-step.found .ws-hdr{color:#c0392b}
+.walk-step.fix .ws-hdr{color:#1e8449}
+.walk-step.verify .ws-hdr{color:#9333ea}
+.walk-step .ws-body{padding:0 12px 12px;font-size:.81em;color:#1a1a2e;line-height:1.7}
+
+/* ── Interface status table ── */
+.intf-status{display:grid;gap:8px;margin:12px 0}
+.is-row{display:flex;gap:10px;align-items:center;padding:10px 12px;border-radius:8px;font-size:.81em}
+.is-status{font-family:'Courier New',monospace;font-weight:700;font-size:.875em;min-width:160px;flex-shrink:0}
+.is-row.ok{background:#f0fff4} .is-row.ok .is-status{color:#1a472a}
+.is-row.l2{background:#e8f4fb} .is-row.l2 .is-status{color:var(--dark)}
+.is-row.l1{background:#fff5f5} .is-row.l1 .is-status{color:#c0392b}
+.is-row.shut{background:#fff3ea} .is-row.shut .is-status{color:#7c2d00}
+.is-row .is-meaning{flex:1;color:#1a1a2e;line-height:1.5}
+
+/* ── Problem pattern cards ── */
+.prob-grid{display:grid;gap:10px;margin:12px 0}
+.prob-card{border-radius:10px;padding:14px;border-left:5px solid #dc3545;background:#fff5f5}
+.prob-card .pc-title{font-weight:800;font-size:.875em;color:#c0392b;margin-bottom:6px;display:flex;align-items:center;gap:8px}
+.prob-card .pc-badge{font-size:.69em;font-weight:700;background:#dc3545;color:#fff;padding:2px 8px;border-radius:4px}
+.prob-card dl{font-size:.81em;color:#1a1a2e;line-height:1.7}
+.prob-card dt{font-weight:700;color:#7c2d00;margin-top:4px}
+.prob-card dd{margin-left:12px}
+
+/* ── Methodology phases ── */
+.phase-grid{display:grid;gap:10px;margin:12px 0}
+.phase{border-radius:10px;overflow:hidden}
+.phase .ph-hdr{padding:10px 14px;font-size:.81em;font-weight:800;color:#fff}
+.phase.p1 .ph-hdr{background:#1a472a}
+.phase.p2 .ph-hdr{background:var(--dark)}
+.phase.p3 .ph-hdr{background:var(--rtr)}
+.phase.p4 .ph-hdr{background:#27ae60}
+.phase .ph-body{padding:12px 14px;font-size:.81em;color:#1a1a2e;line-height:1.8;background:#f9fafb}
+.phase .ph-body ol{padding-left:18px}
+.phase .ph-body li{margin-bottom:3px}
+
+/* ── Scroll to top ── */
+.tb{position:fixed;bottom:80px;right:16px;background:var(--rtr);color:#fff;border:none;border-radius:50%;width:44px;height:44px;font-size:1.25em;box-shadow:0 4px 14px rgba(0,0,0,.25);cursor:pointer;display:none;align-items:center;justify-content:center;z-index:100}
+.tb.show{display:flex}
+.ft{text-align:center;padding:24px 16px;color:var(--muted);font-size:.81em}
+
+/* ── Complete banner ── */
+.complete-banner{background:linear-gradient(135deg,#1a472a,#27ae60);color:#fff;border-radius:var(--r);padding:20px;margin:0 16px 16px;text-align:center;box-shadow:var(--sh)}
+.complete-banner h2{font-size:1.125em;margin-bottom:6px}
+.complete-banner p{font-size:.875em;opacity:.9}
+
+/* ── Module nav bar ── */
+.mod-nav{position:fixed;bottom:0;left:0;right:0;z-index:300;background:#1a1a2e;border-top:1px solid #30363d;display:flex;align-items:center;height:52px;padding:0 8px;gap:6px}
+.mn-hub{background:var(--blue);color:#fff;border:none;border-radius:8px;padding:6px 12px;font-size:.75em;font-weight:700;cursor:pointer;text-decoration:none;display:flex;align-items:center;gap:4px;white-space:nowrap;-webkit-tap-highlight-color:transparent;flex-shrink:0}
+.mn-hub:active{opacity:.8}
+.mn-divider{width:1px;height:28px;background:#30363d;flex-shrink:0}
+.mn-label{flex:1;text-align:center;font-size:.69em;color:#8b949e;font-weight:600;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding:0 4px}
+.mn-prev,.mn-next{background:#30363d;color:#c9d1d9;border:none;border-radius:8px;padding:6px 10px;font-size:.875em;font-weight:700;cursor:pointer;text-decoration:none;display:flex;align-items:center;-webkit-tap-highlight-color:transparent;flex-shrink:0}
+.mn-prev:active{background:var(--rtr);color:#fff}
+.mn-next{opacity:.3;pointer-events:none}
+/* Study progress panel */
+.sp-wrap{background:var(--card);margin:16px 16px 0;border-radius:var(--r);box-shadow:var(--sh);overflow:hidden}
+.sp-hdr{background:var(--nt);color:#fff;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;user-select:none;-webkit-tap-highlight-color:transparent;gap:10px}
+.sp-hdr .sp-title{font-weight:700;font-size:.875em;flex-shrink:0}
+.sp-hdr .sp-arr{transition:transform .3s;flex-shrink:0}
+.sp-hdr.open .sp-arr{transform:rotate(180deg)}
+.sp-body{display:none;padding:12px 14px}
+.sp-body.open{display:block}
+.sp-row{display:flex;align-items:center;gap:10px;padding:6px 4px;border-bottom:1px solid #f0f4f8;font-size:.81em}
+.sp-row:last-child{border-bottom:none}
+.sp-row .sr-status{font-size:1em;flex-shrink:0;width:20px;text-align:center}
+.sp-row .sr-nb{font-weight:800;color:var(--nt);min-width:36px;flex-shrink:0;font-size:.875em}
+.sp-row .sr-ttl{color:var(--text);flex:1}
+.sp-row.done .sr-ttl{color:var(--muted);text-decoration:line-through}
+.sc-pills{display:flex;align-items:center;gap:4px;overflow-x:auto;-webkit-overflow-scrolling:touch;flex:1;padding:0 4px}
+.sc-pill{background:#30363d;color:#8b949e;border:2px solid transparent;border-radius:6px;padding:3px 8px;font-size:.72em;font-weight:700;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:all .15s;white-space:nowrap;flex-shrink:0;line-height:1.4;display:flex;align-items:center;gap:3px}
+.sc-pill.checked{background:var(--nt);color:#fff;border-color:var(--ntd)}
+.sc-pill .pill-check{font-size:.875em}
+
+/* v2.1 — In-section check button */
+.sh{position:relative}
+.sec-check{position:absolute;right:40px;top:50%;transform:translateY(-50%);background:rgba(255,255,255,.15);border:2px solid rgba(255,255,255,.4);border-radius:6px;padding:2px 10px;font-size:.72em;font-weight:800;color:#fff;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:all .2s;white-space:nowrap;z-index:10;line-height:1.5}
+.sec-check.checked{background:var(--ntd);border-color:var(--ntd);color:#052e1e}
+.sec-check:active{opacity:.75}
+/* Sections panel + tick colours (these pages never defined --nt/--ntd, so the panel header was invisible) */
+:root{--nt:var(--rtr);--ntd:#4ade80}
+</style>
+<style>.bc{background:#0d1117;padding:8px 16px;display:flex;align-items:center;flex-wrap:wrap;gap:4px;font-size:.75em;overflow-x:auto;white-space:nowrap;-webkit-overflow-scrolling:touch;border-bottom:1px solid #21262d}.bc a{color:#8b949e;text-decoration:none;font-weight:600;flex-shrink:0}.bc a:active{color:#c9d1d9}.bc .sep{color:#6e7681;flex-shrink:0}.bc .cur{color:#1ba0d7;font-weight:700;flex-shrink:0}</style>
+</head>
+<body>
+<nav class="bc"><a href="../../index.html">🏠 Home</a><span class="sep">›</span><a href="index.html">CCNA 2 — SRWE</a><span class="sep">›</span><span class="cur">M16: Troubleshoot</span></nav>
+
+<!-- FONT SIZE TOGGLE -->
+<div class="fs-bar">
+  <div class="sc-pills" id="sc-pills">
+  <button class="sc-pill" id="pill-s1" onclick="toggleSection('s1',this)"><span class="pill-check">○</span>16.1</button>
+  <button class="sc-pill" id="pill-s2" onclick="toggleSection('s2',this)"><span class="pill-check">○</span>16.2</button>
+  <button class="sc-pill" id="pill-s3" onclick="toggleSection('s3',this)"><span class="pill-check">○</span>16.2.3</button>
+  <button class="sc-pill" id="pill-s4" onclick="toggleSection('s4',this)"><span class="pill-check">○</span>PAT</button>
+  <button class="sc-pill" id="pill-s5" onclick="toggleSection('s5',this)"><span class="pill-check">○</span>MET</button>
+  <button class="sc-pill" id="pill-s-pt-16-3" onclick="toggleSection('s-pt-16-3',this)"><span class="pill-check">○</span>PT 16.3</button>
+  <button class="sc-pill" id="pill-s6" onclick="toggleSection('s6',this)"><span class="pill-check">○</span>CMD</button>
+  <button class="sc-pill" id="pill-s7" onclick="toggleSection('s7',this)"><span class="pill-check">○</span>🎯</button>
+  </div>
+  <span class="fs-label" style="flex-shrink:0;margin-left:6px">Size</span>
+  <button class="fs-btn" onclick="setFs('14px',this)">S</button>
+  <button class="fs-btn active" onclick="setFs('16px',this)">M</button>
+  <button class="fs-btn" onclick="setFs('18px',this)">L</button>
+  <button class="fs-btn" onclick="setFs('20px',this)">XL</button>
+</div>
+
+<!-- HEADER -->
+<div class="hdr">
+  <div>
+    <div class="badge">CCNA 2 — SRWE v7.02</div>
+    <div class="final-badge">🏁 FINAL MODULE</div>
+  </div>
+  <h1>🔧 Module 16: Troubleshoot Static &amp; Default Routes</h1>
+  <p>Switching, Routing &amp; Wireless Essentials · NetAcad Study Guide</p>
+  <div class="obj">Module Objective: Troubleshoot static and default route configurations</div>
+</div>
+
+<div class="sp-wrap">
+  <div class="sp-hdr" id="sp-hdr" onclick="toggleStudyPanel()">
+    <span class="sp-title">📚 Sections</span>
+    <span class="sp-arr" id="sp-arr">▼</span>
+  </div>
+  <div class="sp-body" id="sp-body">
+    <div class="sp-row" id="row-s1"><span class="sr-status" id="st-s1">○</span><span class="sr-nb">16.1</span><span class="sr-ttl">Packet Processing with Static Routes</span></div>
+    <div class="sp-row" id="row-s2"><span class="sr-status" id="st-s2">○</span><span class="sr-nb">16.2</span><span class="sr-ttl">Common Troubleshooting Commands</span></div>
+    <div class="sp-row" id="row-s3"><span class="sr-status" id="st-s3">○</span><span class="sr-nb">16.2.3</span><span class="sr-ttl">Complete Walkthrough — Solve a Connectivity Problem</span></div>
+    <div class="sp-row" id="row-s4"><span class="sr-status" id="st-s4">○</span><span class="sr-nb">PAT</span><span class="sr-ttl">Six Common Static Route Problem Patterns</span></div>
+    <div class="sp-row" id="row-s5"><span class="sr-status" id="st-s5">○</span><span class="sr-nb">MET</span><span class="sr-ttl">Systematic Troubleshooting Methodology</span></div>
+    <div class="sp-row" id="row-s-pt-16-3"><span class="sr-status" id="st-s-pt-16-3">○</span><span class="sr-nb">PT 16.3</span><span class="sr-ttl">Packet Tracer — Troubleshoot Static and Default Routes</span></div>
+    <div class="sp-row" id="row-s6"><span class="sr-status" id="st-s6">○</span><span class="sr-nb">CMD</span><span class="sr-ttl">Command Quick-Reference Table</span></div>
+    <div class="sp-row" id="row-s7"><span class="sr-status" id="st-s7">○</span><span class="sr-nb">🎯</span><span class="sr-ttl">Common Exam Traps — Module 16</span></div>
+  </div>
+</div>
+
+<!-- TABLE OF CONTENTS -->
+<div class="toc">
+  <div class="toch open" onclick="this.classList.toggle('open');document.getElementById('tocb').classList.toggle('open')">
+    📋 Table of Contents — Tap to expand <span class="arr">▼</span>
+  </div>
+  <div class="tocb open" id="tocb">
+    <div class="tocg">16.1 — Packet Processing with Static Routes</div>
+    <a href="javascript:void(0)" onclick="goTo('s1')"><span class="n">16.1.1</span> 11-Step Packet Forwarding Walkthrough</a>
+    <div class="tocg">16.2 — Troubleshoot IPv4 Static and Default Routes</div>
+    <a href="javascript:void(0)" onclick="goTo('s2')"><span class="n">16.2.1</span> Why Networks Break</a>
+    <a href="javascript:void(0)" onclick="goTo('s2')"><span class="n">CMD</span> Five Troubleshooting Commands</a>
+    <a href="javascript:void(0)" onclick="goTo('s2')"><span class="n">INT</span> Interface Status — All Four Combinations</a>
+    <a href="javascript:void(0)" onclick="goTo('s3')"><span class="n">16.2.3</span> Complete Walkthrough — Solve a Connectivity Problem</a>
+    <div class="tocg">Problem Patterns &amp; Methodology</div>
+    <a href="javascript:void(0)" onclick="goTo('s4')"><span class="n">PAT</span> Six Common Problem Patterns</a>
+    <a href="javascript:void(0)" onclick="goTo('s5')"><span class="n">MET</span> Systematic Troubleshooting Methodology</a>
+    <div class="tocg">Reference</div>
+    <a href="javascript:void(0)" onclick="goTo('s6')"><span class="n">CMD</span> Command Quick-Reference Table</a>
+    <a href="javascript:void(0)" onclick="goTo('s7')"><span class="n">🎯</span> Common Exam Traps</a>
+  </div>
+</div>
+
+<div class="wrap">
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- SECTION 16.1 — PACKET PROCESSING WITH STATIC ROUTES -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div class="sec" id="s1">
+<div class="sh open" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">16.1</span><span class="ttl">Packet Processing with Static Routes</span></span><button class="sec-check" id="sch-s1" onclick="event.stopPropagation();toggleSection('s1',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb open">
+
+  <div class="sub">
+  <h3><span class="sn">16.1.1</span> 11-Step Packet Forwarding Walkthrough</h3>
+  <p>Topology: PC1 → R1 → R2 → R3 → PC3. R1 uses a <strong>default static route</strong>. R2 uses a <strong>specific static route</strong>. R3 has a <strong>connected route</strong> to PC3's LAN.</p>
+
+  <div class="pf-flow">
+    <div class="pf-title">📦 PC1 → PC3 — Complete Packet Journey</div>
+    <div class="pf-step"><div class="pf-num">1</div><div class="pf-key">ARRIVE</div><div>Packet arrives on R1's <strong>GigabitEthernet 0/0/0</strong> from PC1. R1 strips the Ethernet frame and examines the destination IP.</div></div>
+    <div class="pf-step"><div class="pf-num">2</div><div class="pf-key">LOOKUP</div><div>R1 has <strong>no specific route</strong> to 192.168.2.0/24. Uses the <strong>default static route</strong> (0.0.0.0/0) → next-hop R2.</div></div>
+    <div class="pf-step"><div class="pf-num">3</div><div class="pf-key">ENCAP</div><div>R1 encapsulates in new frame for Serial link. Point-to-point → R1 adds <strong>"all 1s" L2 destination address</strong>. No ARP needed on P2P links.</div></div>
+    <div class="pf-step"><div class="pf-num">4</div><div class="pf-key">TRANSIT</div><div>Frame exits R1's <strong>Serial 0/1/0</strong> → arrives on R2's <strong>Serial 0/1/0</strong>. R2 strips the frame.</div></div>
+    <div class="pf-step"><div class="pf-num">5</div><div class="pf-key">LOOKUP</div><div>R2 finds a <strong>specific static route</strong> to 192.168.2.0/24 out <strong>Serial 0/1/1</strong> via R3.</div></div>
+    <div class="pf-step"><div class="pf-num">6</div><div class="pf-key">ENCAP</div><div>R2 encapsulates in new frame for Serial link to R3. Point-to-point → <strong>"all 1s" L2 address again</strong>. No ARP.</div></div>
+    <div class="pf-step"><div class="pf-num">7</div><div class="pf-key">TRANSIT</div><div>Frame exits R2's <strong>Serial 0/1/1</strong> → arrives on R3's <strong>Serial 0/1/1</strong>. R3 strips the frame.</div></div>
+    <div class="pf-step"><div class="pf-num">8</div><div class="pf-key">LOOKUP</div><div>R3 finds a <strong>connected route</strong> to 192.168.2.0/24 on its <strong>GigabitEthernet 0/0/0</strong>. No static route needed — R3 owns this network.</div></div>
+    <div class="pf-step"><div class="pf-num">9</div><div class="pf-key">ARP</div><div>R3 checks ARP table for PC3's MAC (192.168.2.10). If not found → R3 sends <strong>ARP request</strong> on G0/0/0 → PC3 replies with its MAC address.</div></div>
+    <div class="pf-step"><div class="pf-num">10</div><div class="pf-key">ENCAP</div><div>R3 builds Ethernet frame: <strong>src = R3's G0/0/0 MAC</strong>, <strong>dst = PC3's MAC</strong>. This is the first Ethernet hop since the source LAN.</div></div>
+    <div class="pf-step"><div class="pf-num">11</div><div class="pf-key">DELIVER</div><div>Frame exits R3's <strong>GigabitEthernet 0/0/0</strong> → arrives at PC3's NIC. End-to-end delivery complete. ✅</div></div>
+  </div>
+
+  <div class="et">
+    <div class="lbl">🎯 KEY TAKEAWAYS FROM THE FORWARDING WALKTHROUGH</div>
+    <ul>
+      <li><strong>Point-to-point serial links = "all 1s" L2 address, no ARP</strong> — only two devices on the link; router always knows who the other end is</li>
+      <li><strong>Ethernet links = ARP required</strong> — multiple devices may share the segment; MAC must be resolved</li>
+      <li><strong>The IP packet's source and destination IPs never change</strong> — only the L2 frame is rebuilt at each hop</li>
+      <li><strong>Default route on stub router (R1)</strong> — no specific routes needed; everything goes to R2</li>
+      <li><strong>Connected route on the last router (R3)</strong> — no static route configured; R3 directly owns the destination LAN</li>
+    </ul>
+  </div>
+  </div>
+
+</div></div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- SECTION 16.2 — TROUBLESHOOTING COMMANDS -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div class="sec" id="s2">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">16.2</span><span class="ttl">Common Troubleshooting Commands</span></span><button class="sec-check" id="sch-s2" onclick="event.stopPropagation();toggleSection('s2',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb">
+
+  <div class="sub">
+  <h3><span class="sn">16.2.1</span> Why Networks Break</h3>
+  <p>Static routes do not adapt to topology changes. Any of these events can break connectivity that was previously working:</p>
+  <ul>
+    <li>Interface failure (physical cable, transceiver, hardware)</li>
+    <li>Service provider drops a WAN connection</li>
+    <li>Link becomes oversaturated (congestion)</li>
+    <li><strong>Administrator enters wrong configuration</strong> — the most common cause of static route problems</li>
+  </ul>
+  <p>When connectivity fails, isolate the problem using the five standard troubleshooting commands in a methodical order.</p>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">CMD</span> Five Troubleshooting Commands</h3>
+
+  <div class="cmd-cards">
+
+    <div class="cmd-card ping">
+      <div class="cc-hdr"><span class="cc-cmd">ping</span> / <span class="cc-cmd">ping [ip] source [intf]</span></div>
+      <div class="cc-body">
+        Tests IP reachability end-to-end. Tests both the <strong>forward path AND the return path</strong> — if either direction is broken, ping fails.<br><br>
+        <strong>Extended ping</strong> — specifies the source interface. Critical for simulating what PC users actually experience:<br>
+        <div class="cc-validates">✅ Validates Layer 3 — IP routing and reachability</div>
+      </div>
+    </div>
+
+    <div class="cmd-card trace">
+      <div class="cc-hdr"><span class="cc-cmd">traceroute [ip]</span></div>
+      <div class="cc-body">
+        Traces the actual hop-by-hop path. Shows exactly which router is the last to respond — that is where to look next.<br><br>
+        <strong>Reading output:</strong> Each row = one hop. Three values = three probes (RTT in ms). <code>*</code> = no reply.<br>
+        <strong>Routing loop indicator:</strong> same two IPs repeating indefinitely = routing loop between those two routers.<br>
+        <div class="cc-validates">✅ Validates Layer 3 path — reveals exactly where packets stop or loop</div>
+      </div>
+    </div>
+
+    <div class="cmd-card route">
+      <div class="cc-hdr"><span class="cc-cmd">show ip route</span></div>
+      <div class="cc-body">
+        Displays the routing table. Use this to:<br>
+        • Verify a static route is present (look for <code>S</code> entries)<br>
+        • Verify the next-hop IP is correct (look at <code>via x.x.x.x</code>)<br>
+        • Check for missing routes (destination not in table)<br>
+        • Identify wrong next-hop (route installed but pointing to wrong router)<br>
+        <div class="cc-validates">✅ Validates Layer 3 routing — route presence and correctness</div>
+      </div>
+    </div>
+
+    <div class="cmd-card intf">
+      <div class="cc-hdr"><span class="cc-cmd">show ip interface brief</span></div>
+      <div class="cc-body">
+        Quick status of all interfaces — Status and Protocol columns tell you which OSI layer has a problem.<br><br>
+        <strong>Critical for static routes:</strong> IOS will NOT install a static route in the routing table if the exit interface or next-hop is unreachable. A correctly configured route that is missing from the table = interface is down.<br>
+        <div class="cc-validates">✅ Validates Layer 1 and Layer 2 — physical and data link status</div>
+      </div>
+    </div>
+
+    <div class="cmd-card cdp">
+      <div class="cc-hdr"><span class="cc-cmd">show cdp neighbors</span> / <span class="cc-cmd">show cdp neighbors detail</span></div>
+      <div class="cc-body">
+        Lists directly connected Cisco devices. Validates L1/L2 connectivity <strong>without needing a working IP address</strong>.<br><br>
+        • Neighbor in CDP table but can't ping → <strong>Layer 3 problem</strong> (IP/routing)<br>
+        • Neighbor NOT in CDP table → <strong>Layer 1/2 problem</strong> (cable, encapsulation, hardware)<br>
+        • <code>detail</code> version also shows neighbor's IP address — useful for verifying next-hop<br>
+        <div class="cc-validates">✅ Validates Layer 1 and Layer 2 — physical connectivity without needing IP</div>
+      </div>
+    </div>
+
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">INT</span> Interface Status — All Four Combinations</h3>
+  <div class="intf-status">
+    <div class="is-row ok">
+      <div class="is-status">up / up</div>
+      <div class="is-meaning"><strong>Fully operational.</strong> ✅ Physical and data link layers working. Static routes using this interface will be installed.</div>
+    </div>
+    <div class="is-row l2">
+      <div class="is-status">up / down</div>
+      <div class="is-meaning"><strong>Layer 2 problem.</strong> Physical connection exists but data link failed. Check: encapsulation mismatch (HDLC vs PPP), keepalive settings, clocking on serial links.</div>
+    </div>
+    <div class="is-row l1">
+      <div class="is-status">down / down</div>
+      <div class="is-meaning"><strong>Layer 1 problem.</strong> No physical signal. Check: cable connected?, interface not shut down?, hardware failure? The interface may need <code>no shutdown</code>.</div>
+    </div>
+    <div class="is-row shut">
+      <div class="is-status">admin down / down</div>
+      <div class="is-meaning"><strong>Manually disabled.</strong> Admin ran <code>shutdown</code> on this interface. Fix: <code>no shutdown</code>. Static routes using this interface will NOT be in routing table.</div>
+    </div>
+  </div>
+
+  <div class="cw"><div class="cl">show ip interface brief — sample output <button class="cpb" onclick="copyCode(this)">Copy</button></div>
+  <pre><code>R1# show ip interface brief
+Interface              IP-Address      OK? Method Status           Protocol
+GigabitEthernet0/0/0   172.16.3.1      YES manual up               up      ← ✅ up/up
+GigabitEthernet0/0/1   unassigned      YES unset  up               up
+Serial0/1/0            172.16.2.1      YES manual up               up      ← ✅ up/up
+Serial0/1/1            unassigned      YES unset  up               up</code></pre></div>
+  </div>
+
+  <!-- SYNTAX CHECKER: 16.2.4 -->
+  <div style="margin:20px 0 6px;padding:16px;background:#0d1117;border:1px solid #30363d;border-left:3px solid #bc8cff;border-radius:8px">
+    <div style="font-size:.7em;font-weight:800;text-transform:uppercase;letter-spacing:.8px;color:#bc8cff;margin-bottom:6px">&#x1F5A5; Syntax Checker &mdash; 16.2.4</div>
+    <div style="font-size:.92em;font-weight:600;color:#e6edf3;margin-bottom:12px">Configure Floating Static Routes</div>
+    <div style="font-size:.82em;color:#8b949e;margin-bottom:14px">Type each command exactly as shown. Press Enter to submit. The checker validates your syntax step by step.</div>
+    <div class="tool-links" style="display:flex;flex-wrap:wrap;gap:14px">
+      <div style="flex:1 1 220px;min-width:0">
+        <a href="../../syntax-checker-simple/ccna2_syntax_checker.html?lab=16.2.4" target="_blank" rel="noopener" title="Quick, guided drill: type the exact commands for this NetAcad lab, step by step. Opens straight to lab 16.2.4." style="display:inline-flex;align-items:center;gap:8px;color:#fff;text-decoration:none;padding:8px 18px;border-radius:6px;font-size:.85em;font-weight:700;background:#238636;border:1px solid #2ea043">&#x25B6; Open Syntax Checker</a>
+        <div style="font-size:.75em;color:#8b949e;margin-top:6px">Quick, guided drill: type the exact commands for this NetAcad lab, step by step. Opens straight to lab 16.2.4.</div>
+      </div>
+      <div style="flex:1 1 220px;min-width:0">
+        <a class="cli-engine-link" href="../../cli-engine/ccna-cli-engine.html" target="_blank" rel="noopener" title="Full simulated Cisco IOS terminal: Tab completion, device state, Free Practice, Home Labs and Subnetting. In its exercise menu, pick “Course 2 · 16.2 — Configure Floating Static Routes”." style="display:inline-flex;align-items:center;gap:8px;color:#fff;text-decoration:none;padding:8px 18px;border-radius:6px;font-size:.85em;font-weight:700;background:#1f6feb;border:1px solid #388bfd">&#x1F4BB; Open CLI Engine</a>
+        <div style="font-size:.75em;color:#8b949e;margin-top:6px">Full simulated Cisco IOS terminal: Tab completion, device state, Free Practice, Home Labs and Subnetting. In its exercise menu, pick “Course 2 · 16.2 — Configure Floating Static Routes”.</div>
+      </div>
+    </div>
+    <div style="margin-top:12px;font-size:.75em"><a href="../../index.html" style="color:#58a6ff;text-decoration:none">&#x1F3E0; All study tools (home)</a></div>
+  </div>
+
+</div></div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- SECTION 16.3 — COMPLETE WALKTHROUGH -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div class="sec" id="s3">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">16.2.3</span><span class="ttl">Complete Walkthrough — Solve a Connectivity Problem</span></span><button class="sec-check" id="sch-s3" onclick="event.stopPropagation();toggleSection('s3',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb">
+
+  <div class="sub">
+  <h3><span class="sn">SCENARIO</span> PC1 Cannot Reach PC3's LAN</h3>
+  <p><strong>Topology:</strong> PC1 (172.16.3.x) → R1 (G0/0/0: 172.16.3.1, S0/1/0: 172.16.2.1) ← serial → R2 (S0/1/0: 172.16.2.2, S0/1/1: 192.168.1.2) ← serial → R3 (S0/1/1: 192.168.1.1, G0/0/0: 192.168.2.1) → PC3 (192.168.2.x)</p>
+
+  <div class="walk">
+
+    <div class="walk-step investigate">
+      <div class="ws-hdr">🔎 Step 1 — Confirm the problem with extended ping</div>
+      <div class="ws-body">
+        <div class="cw" style="margin:0 0 8px"><div class="cl">Extended ping — sourced from R1's LAN interface (simulates PC1)</div>
+        <pre><code>R1# ping 192.168.2.1 source g0/0/0
+Packet sent with a source address of 172.16.3.1
+.....
+Success rate is 0 percent (0/5)    ! Confirmed — LAN cannot reach R3's LAN</code></pre></div>
+        Use <strong>extended ping with source g0/0/0</strong> — this simulates what PC1 experiences. The LAN interface is the source for all user traffic.
+      </div>
+    </div>
+
+    <div class="walk-step test">
+      <div class="ws-hdr">🔗 Step 2 — Test the next-hop router (R2)</div>
+      <div class="ws-body">
+        <div class="cw" style="margin:0 0 8px"><div class="cl">Ping R2's serial interface — tests R1 ↔ R2 link</div>
+        <pre><code>R1# ping 172.16.2.2
+!!!!!
+Success rate is 100 percent (5/5)    ! R1 ↔ R2 is fine</code></pre></div>
+        R1 can reach R2. The problem is <strong>beyond R2</strong> — something further in the path.
+      </div>
+    </div>
+
+    <div class="walk-step test">
+      <div class="ws-hdr">🔗 Step 3 — Ping R3's LAN from R1's serial interface (not LAN)</div>
+      <div class="ws-body">
+        <div class="cw" style="margin:0 0 8px"><div class="cl">Standard ping — sourced from R1's serial interface (172.16.2.1)</div>
+        <pre><code>R1# ping 192.168.2.1
+!!!!!
+Success rate is 100 percent (5/5)    ! Works from serial source</code></pre></div>
+        <strong>This is the key diagnostic clue:</strong> Ping works from R1's serial interface but NOT from R1's LAN interface (Step 1). This means R3 has a return route for 172.16.2.0/24 (serial link) but NOT for 172.16.3.0/24 (R1's LAN). The problem is the <strong>return route for R1's LAN subnet</strong> — it's missing or wrong on R2 or R3.
+      </div>
+    </div>
+
+    <div class="walk-step found">
+      <div class="ws-hdr">❌ Step 4 — Inspect R2's routing table — find the wrong route</div>
+      <div class="ws-body">
+        <div class="cw" style="margin:0 0 8px"><div class="cl">show ip route on R2 — spot the misconfigured next-hop</div>
+        <pre><code>R2# show ip route | begin Gateway
+Gateway of last resort is not set
+      172.16.0.0/16 is variably subnetted, 5 subnets, 2 masks
+C        172.16.1.0/24 is directly connected, GigabitEthernet0/0/0
+L        172.16.1.1/32 is directly connected, GigabitEthernet0/0/0
+C        172.16.2.0/24 is directly connected, Serial0/1/0
+L        172.16.2.2/32 is directly connected, Serial0/1/0
+S        172.16.3.0/24 [1/0] via 192.168.1.1   ! ← WRONG! 192.168.1.1 = R3, should be R1
+      192.168.1.0/24 is variably subnetted, 2 subnets, 2 masks
+C        192.168.1.0/24 is directly connected, Serial0/1/1
+L        192.168.1.2/32 is directly connected, Serial0/1/1
+S     192.168.2.0/24 [1/0] via 192.168.1.1</code></pre></div>
+        R2's route to 172.16.3.0/24 (R1's LAN) points to <strong>192.168.1.1 = R3</strong> instead of <strong>172.16.2.1 = R1</strong>. Return traffic goes R2 → R3 → R2 → R3 in an endless loop.
+      </div>
+    </div>
+
+    <div class="walk-step found">
+      <div class="ws-hdr">❌ Step 5 — Confirm with show running-config</div>
+      <div class="ws-body">
+        <div class="cw" style="margin:0 0 8px"><div class="cl">show running-config | include ip route — see the bad command</div>
+        <pre><code>R2# show running-config | include ip route
+ip route 172.16.3.0 255.255.255.0 192.168.1.1    ! ← wrong next-hop
+ip route 192.168.2.0 255.255.255.0 192.168.1.1</code></pre></div>
+        Confirmed — the static route command has the wrong next-hop. Time to fix it.
+      </div>
+    </div>
+
+    <div class="walk-step fix">
+      <div class="ws-hdr">✅ Step 6 — Fix the misconfigured route</div>
+      <div class="ws-body">
+        <div class="cw" style="margin:0 0 8px"><div class="cl">Remove wrong route, add correct route</div>
+        <pre><code>R2(config)# no ip route 172.16.3.0 255.255.255.0 192.168.1.1   ! Remove wrong
+R2(config)# ip route 172.16.3.0 255.255.255.0 172.16.2.1       ! Add correct → R1</code></pre></div>
+        <strong>Important:</strong> The <code>no ip route</code> command must exactly match the original command's parameters. If any parameter differs, IOS will not recognize it as the same route and the bad route remains.
+      </div>
+    </div>
+
+    <div class="walk-step verify">
+      <div class="ws-hdr">🔍 Step 7 — Verify the corrected routing table</div>
+      <div class="ws-body">
+        <div class="cw" style="margin:0 0 8px"><div class="cl">show ip route on R2 — confirm correct next-hop</div>
+        <pre><code>R2# show ip route | begin Gateway
+S        172.16.3.0/24 [1/0] via 172.16.2.1    ! ✅ Now pointing to R1 (172.16.2.1)
+S     192.168.2.0/24 [1/0] via 192.168.1.1     ! ✅ Still correct for R3's LAN</code></pre></div>
+      </div>
+    </div>
+
+    <div class="walk-step verify">
+      <div class="ws-hdr">✅ Step 8 — Confirm with extended ping — connectivity restored</div>
+      <div class="ws-body">
+        <div class="cw" style="margin:0 0 8px"><div class="cl">Extended ping from R1's LAN interface — same test as Step 1</div>
+        <pre><code>R1# ping 192.168.2.1 source g0/0/0
+Packet sent with a source address of 172.16.3.1
+!!!!!
+Success rate is 100 percent (5/5)    ! ✅ PC1 ↔ PC3 connectivity restored</code></pre></div>
+        <strong>Final step:</strong> Have PC1 also ping PC3 directly to confirm end-to-end user connectivity — not just router-to-router.
+      </div>
+    </div>
+
+  </div>
+  </div>
+
+</div></div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- SECTION 16.4 — PROBLEM PATTERNS -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div class="sec" id="s4">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">PAT</span><span class="ttl">Six Common Static Route Problem Patterns</span></span><button class="sec-check" id="sch-s4" onclick="event.stopPropagation();toggleSection('s4',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb">
+
+  <div class="prob-grid">
+
+    <div class="prob-card">
+      <div class="pc-title"><span class="pc-badge">1</span> Missing Route</div>
+      <dl>
+        <dt>Symptom</dt><dd>Ping fails. <code>show ip route</code> has no entry for the destination.</dd>
+        <dt>Cause</dt><dd>Static route was never configured, was accidentally deleted, or never saved after configuration.</dd>
+        <dt>Diagnose</dt><dd><code>show ip route</code> — no S entry for the destination network.</dd>
+        <dt>Fix</dt><dd>Add the missing <code>ip route</code> command.</dd>
+      </dl>
+    </div>
+
+    <div class="prob-card">
+      <div class="pc-title"><span class="pc-badge">2</span> Wrong Next-Hop</div>
+      <dl>
+        <dt>Symptom</dt><dd>Ping fails. Route IS in the table but traffic goes the wrong direction or loops.</dd>
+        <dt>Cause</dt><dd>Admin typed the wrong next-hop IP — the most common static route misconfiguration.</dd>
+        <dt>Diagnose</dt><dd><code>show ip route</code> — route present but <code>via [wrong-ip]</code>. Compare against topology.</dd>
+        <dt>Fix</dt><dd><code>no ip route [net] [mask] [wrong-ip]</code> then <code>ip route [net] [mask] [correct-ip]</code>.</dd>
+      </dl>
+    </div>
+
+    <div class="prob-card">
+      <div class="pc-title"><span class="pc-badge">3</span> Wrong Network or Mask</div>
+      <dl>
+        <dt>Symptom</dt><dd>Ping to specific hosts fails. Route exists but doesn't match the actual destination.</dd>
+        <dt>Cause</dt><dd>Typo in the network address or subnet mask when entering the static route.</dd>
+        <dt>Diagnose</dt><dd><code>show running-config | include ip route</code> — compare configured network/mask against actual topology.</dd>
+        <dt>Fix</dt><dd>Remove wrong route, add correct one with right network and mask.</dd>
+      </dl>
+    </div>
+
+    <div class="prob-card">
+      <div class="pc-title"><span class="pc-badge">4</span> Exit Interface Down</div>
+      <dl>
+        <dt>Symptom</dt><dd>Static route is configured but MISSING from routing table. Route exists in running-config but not in <code>show ip route</code>.</dd>
+        <dt>Cause</dt><dd>IOS automatically removes a static route from the routing table when the exit interface or next-hop becomes unreachable.</dd>
+        <dt>Diagnose</dt><dd><code>show ip interface brief</code> — look for down/down or admin down on the exit interface.</dd>
+        <dt>Fix</dt><dd>Restore the interface (<code>no shutdown</code>) or fix the physical issue. Route re-installs automatically.</dd>
+      </dl>
+    </div>
+
+    <div class="prob-card">
+      <div class="pc-title"><span class="pc-badge">5</span> Routing Loop</div>
+      <dl>
+        <dt>Symptom</dt><dd>Ping fails. Traceroute shows the same two hops repeating indefinitely. Packets never reach destination.</dd>
+        <dt>Cause</dt><dd>Two routers have static routes pointing to each other for the same destination — R2 sends to R3, R3 sends back to R2.</dd>
+        <dt>Diagnose</dt><dd><code>traceroute</code> — same two IPs alternating. <code>show ip route</code> on both routers — one has the wrong next-hop.</dd>
+        <dt>Fix</dt><dd>Identify which router has the wrong next-hop, correct it.</dd>
+      </dl>
+    </div>
+
+    <div class="prob-card">
+      <div class="pc-title"><span class="pc-badge">6</span> Asymmetric Routing (Return Path Missing)</div>
+      <dl>
+        <dt>Symptom</dt><dd>Ping from router's serial interface works. Ping from LAN interface fails. Traceroute stops at intermediate router.</dd>
+        <dt>Cause</dt><dd>Return route exists for the serial subnet but not for the LAN subnet. The static route on an intermediate router is missing or wrong for the return direction.</dd>
+        <dt>Diagnose</dt><dd>Compare: <code>ping [dest]</code> vs <code>ping [dest] source g0/0/0</code>. If one works and one doesn't — check routing tables on ALL routers for both forward AND return paths.</dd>
+        <dt>Fix</dt><dd>Add or correct the missing return-direction static route on the intermediate router.</dd>
+      </dl>
+    </div>
+
+  </div>
+
+</div></div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- SECTION 16.5 — METHODOLOGY -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div class="sec" id="s5">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">MET</span><span class="ttl">Systematic Troubleshooting Methodology</span></span><button class="sec-check" id="sch-s5" onclick="event.stopPropagation();toggleSection('s5',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb">
+
+  <div class="sub">
+  <p>Apply these four phases in order. Process of elimination — eliminate one layer/possibility at a time.</p>
+  <div class="phase-grid">
+
+    <div class="phase p1">
+      <div class="ph-hdr">Phase 1 — Identify the Scope</div>
+      <div class="ph-body">
+        <ol>
+          <li>Can the end user reach <em>anything</em>? Or only this specific destination fails?</li>
+          <li>Is only one device affected or all devices on the LAN?</li>
+          <li>Is the problem one-directional or total (ping fails both ways)?</li>
+          <li>What recently changed? (new config, interface bounce, ISP issue)</li>
+        </ol>
+      </div>
+    </div>
+
+    <div class="phase p2">
+      <div class="ph-hdr">Phase 2 — Test Connectivity Layer by Layer</div>
+      <div class="ph-body">
+        <ol>
+          <li><code>ping [next-hop-ip]</code> — can you reach the directly connected next-hop? If no → check interface and physical</li>
+          <li>Ping progressively farther destinations — find exactly where packets stop</li>
+          <li><code>ping [dest] source [LAN-intf]</code> — compare with standard ping from serial interface</li>
+          <li><code>traceroute [dest]</code> — identify the last responding hop; look for loops</li>
+          <li><code>show cdp neighbors</code> — verify L1/L2 to directly connected devices</li>
+        </ol>
+      </div>
+    </div>
+
+    <div class="phase p3">
+      <div class="ph-hdr">Phase 3 — Examine Routing Tables</div>
+      <div class="ph-body">
+        <ol>
+          <li><code>show ip route</code> on the router where traceroute stopped — look for missing or wrong next-hop</li>
+          <li><code>show ip route</code> on ALL routers in the path — verify <strong>both forward AND return routes</strong></li>
+          <li><code>show running-config | include ip route</code> — confirm what is actually configured (reveals floating routes and typos)</li>
+          <li><code>show ip interface brief</code> — verify exit interfaces are up/up</li>
+        </ol>
+      </div>
+    </div>
+
+    <div class="phase p4">
+      <div class="ph-hdr">Phase 4 — Fix and Verify</div>
+      <div class="ph-body">
+        <ol>
+          <li>Remove incorrect route: <code>no ip route [net] [mask] [wrong-next-hop]</code></li>
+          <li>Add correct route: <code>ip route [net] [mask] [correct-next-hop]</code></li>
+          <li>Verify: <code>show ip route</code> — confirm correct entry is installed</li>
+          <li>Re-run extended ping from LAN interface — confirm connectivity restored</li>
+          <li>Verify from end user device — PC1 pings PC3 directly</li>
+        </ol>
+      </div>
+    </div>
+
+  </div>
+  </div>
+
+</div></div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- SECTION 16.6 — COMMAND REFERENCE -->
+<!-- ═══════════════════════════════════════════════════════ -->
+
+<div class="sec" id="s-pt-16-3">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">16.3</span><span class="ttl">Packet Tracer — Troubleshoot Static and Default Routes</span></span><button class="sec-check" id="sch-s-pt-16-3" onclick="event.stopPropagation();toggleSection('s-pt-16-3',this)">○ Mark done</button>
+</div>
+<div class="sb">
+  <div style="padding:14px 16px;background:#0d1117;border:1px solid #30363d;border-left:3px solid #1f6feb;border-radius:6px">
+    <div style="font-size:.72em;font-weight:800;text-transform:uppercase;letter-spacing:.8px;color:#1f6feb;margin-bottom:10px">&#x1F4E6; Packet Tracer Activities</div>
+    <div style="font-size:.82em;color:#6e7681;margin-bottom:10px">Open in Cisco Packet Tracer via your NetAcad course.</div>
+      <div style="display:flex;align-items:baseline;gap:10px;padding:6px 0;border-bottom:1px solid #21262d"><span style="font-family:monospace;font-size:.85em;color:#79c0ff;white-space:nowrap;flex-shrink:0;min-width:52px">16.3.1</span><span style="font-size:.88em;color:#c9d1d9">Troubleshoot Static and Default Routes</span></div>
+      <div style="display:flex;align-items:baseline;gap:10px;padding:6px 0;border-bottom:1px solid #21262d"><span style="font-family:monospace;font-size:.85em;color:#79c0ff;white-space:nowrap;flex-shrink:0;min-width:52px">16.3.2</span><span style="font-size:.88em;color:#c9d1d9">Troubleshoot IPv4 and IPv6 Static Routes (Physical Mode)</span></div>
+    <div style="margin-top:12px;font-size:.78em;color:#6e7681">Full list: <a href="https://itexamanswers.net/ccna-2-packet-tracer-labs-answers-srwe-v7-02.html" target="_blank" rel="noopener" style="color:#58a6ff;word-break:break-all">https://itexamanswers.net/ccna-2-packet-tracer-labs-answers-srwe-v7-02.html</a></div>
+  </div>
+</div>
+</div>
+<div class="sec" id="s6">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">CMD</span><span class="ttl">Command Quick-Reference Table</span></span><button class="sec-check" id="sch-s6" onclick="event.stopPropagation();toggleSection('s6',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb">
+
+  <div class="sub">
+  <div class="tw"><table>
+    <tr><th>Command</th><th>Purpose</th><th>Layer Validated</th><th>Key Use</th></tr>
+    <tr><td><code>ping [ip]</code></td><td>Test reachability</td><td>Layer 3</td><td>Confirm connectivity; tests forward AND return path</td></tr>
+    <tr><td><code>ping [ip] source [intf]</code></td><td>Extended ping</td><td>Layer 3</td><td>Simulate user LAN traffic; use g0/0/0 as source</td></tr>
+    <tr><td><code>traceroute [ip]</code></td><td>Trace hop path</td><td>Layer 3</td><td>Find where packets stop; detect routing loops</td></tr>
+    <tr><td><code>show ip route</code></td><td>Full routing table</td><td>Layer 3</td><td>Verify routes exist; check next-hop; spot wrong via address</td></tr>
+    <tr><td><code>show ip route static</code></td><td>Only static routes</td><td>Layer 3</td><td>Quickly review all static entries without C/L entries</td></tr>
+    <tr><td><code>show ip route [network]</code></td><td>One route detail</td><td>Layer 3</td><td>Shows "Known via static", exact next-hop, metric</td></tr>
+    <tr><td><code>show running-config | include ip route</code></td><td>Configured routes</td><td>Config</td><td>See what's actually typed — including floating routes not in table</td></tr>
+    <tr><td><code>show ip interface brief</code></td><td>Interface status</td><td>L1 / L2</td><td>Verify exit interface is up/up; diagnose why route not in table</td></tr>
+    <tr><td><code>show cdp neighbors</code></td><td>Adjacent Cisco devices</td><td>L1 / L2</td><td>Confirm physical connectivity without needing working IP</td></tr>
+    <tr><td><code>show cdp neighbors detail</code></td><td>CDP with IP addresses</td><td>L1 / L2 / L3</td><td>Shows neighbor's IP — verify next-hop address is reachable</td></tr>
+  </table></div>
+
+  <div class="cw"><div class="cl">All troubleshooting commands — full reference <button class="cpb" onclick="copyCode(this)">Copy</button></div>
+  <pre><code>! Connectivity tests:
+R1# ping 192.168.2.1                        ! Standard ping (uses best source)
+R1# ping 192.168.2.1 source g0/0/0          ! Extended ping — simulate LAN user
+R1# ping 192.168.2.1 source 172.16.3.1      ! Extended ping — specify by IP
+R1# traceroute 192.168.2.1                  ! Trace path hop by hop
+
+! Routing table inspection:
+R1# show ip route                           ! Full routing table
+R1# show ip route static                    ! Only static routes currently in table
+R1# show ip route | begin Gateway           ! Table without codes legend
+R1# show ip route 192.168.2.0              ! Detailed entry for one network
+R1# show running-config | include ip route  ! All configured ip route statements
+
+! Interface status:
+R1# show ip interface brief                 ! All interfaces — IP, status, protocol
+R1# show interfaces serial 0/1/0            ! Full physical details for one interface
+
+! Neighbor discovery:
+R1# show cdp neighbors                      ! Adjacent Cisco devices — L1/L2 validation
+R1# show cdp neighbors detail               ! Same + neighbor IP addresses</code></pre></div>
+  </div>
+
+</div></div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- SECTION 16.7 — EXAM TRAPS -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div class="sec" id="s7">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">🎯</span><span class="ttl">Common Exam Traps — Module 16</span></span><button class="sec-check" id="sch-s7" onclick="event.stopPropagation();toggleSection('s7',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb">
+
+  <div class="ca danger"><span class="ic">❌</span><div><strong>Trap 1: Extended ping is essential — always specify the source LAN interface.</strong><br>A standard ping from a router uses the router's best-source IP (often the serial interface). Return routes may exist for that serial subnet but not for the LAN subnet. Use <code>ping [dest] source g0/0/0</code> to simulate what PC users actually experience. This exact pattern appears in the M14–16 exam.</div></div>
+
+  <div class="ca danger"><span class="ic">❌</span><div><strong>Trap 2: A correctly configured static route disappears from show ip route when the exit interface goes down.</strong><br>IOS automatically removes a static route from the routing table if the exit interface or next-hop becomes unreachable. The route remains in the running config. To verify: <code>show running-config | include ip route</code> shows it's there; <code>show ip route static</code> shows it's missing. Fix the interface to restore the route.</div></div>
+
+  <div class="ca danger"><span class="ic">❌</span><div><strong>Trap 3: Traceroute reveals routing loops — look for repeating hops.</strong><br>If traceroute shows the same two IP addresses alternating indefinitely, a routing loop exists between those two routers. One has a wrong next-hop pointing back to the other. Examine <code>show ip route</code> on both routers and find the incorrect <code>via</code> address.</div></div>
+
+  <div class="ca danger"><span class="ic">❌</span><div><strong>Trap 4: show cdp neighbors validates L1/L2 without needing a working IP address.</strong><br>If a neighbor appears in CDP output but cannot be pinged → Layer 3 problem (IP addressing or routing). If a neighbor does NOT appear in CDP output → Layer 1 or 2 problem (cable disconnected, interface down, hardware). CDP is your first check when you suspect a physical problem.</div></div>
+
+  <div class="ca danger"><span class="ic">❌</span><div><strong>Trap 5: Wrong next-hop is the most common static route misconfiguration.</strong><br>The route exists in the routing table (so it looks configured correctly), but traffic goes the wrong direction because the <code>via</code> address points to the wrong router. Always compare the <code>show ip route</code> next-hop against the actual topology diagram.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 6: Always check routing in BOTH directions — forward AND return.</strong><br>A ping sourced from R1's serial interface may succeed (return route exists for 172.16.2.0/24) while a ping from R1's LAN fails (no return route for 172.16.3.0/24). Check the routing table on EVERY router in the path, not just the source router.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 7: show running-config | include ip route vs show ip route static.</strong><br><code>show ip route static</code> = only routes currently in the active table. <code>show running-config | include ip route</code> = everything configured, including floating routes waiting in the wings and misconfigured routes the admin forgot about. Use both for complete verification.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 8: Interface status combinations — know all four.</strong><br>up/up = working. up/down = Layer 2 problem (encapsulation, keepalive). down/down = Layer 1 problem (cable, hardware, needs no shutdown). admin down/down = manually shut, needs <code>no shutdown</code>. A static route whose exit interface shows anything other than up/up will NOT be installed in the routing table.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 9: Removing a static route requires exact parameter match.</strong><br><code>no ip route 172.16.3.0 255.255.255.0 192.168.1.1</code> — all three parameters must exactly match the original <code>ip route</code> command. If any parameter differs, IOS will not find it as a match and the wrong route remains active. Use <code>show running-config | include ip route</code> to see the exact syntax before running <code>no ip route</code>.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 10: Point-to-point serial links use "all 1s" — no ARP needed.</strong><br>Serial interfaces have no MAC addresses. The L2 destination is the broadcast-equivalent "all 1s" address. Ethernet interfaces require ARP to resolve the next-hop MAC address. This distinction is reviewed in 16.1 and tested in the checkpoint exam.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 11: show cdp neighbors vs show cdp neighbors detail.</strong><br>Basic <code>show cdp neighbors</code> shows device ID, local interface, capability, platform, and port ID — confirms L1/L2. <code>show cdp neighbors detail</code> additionally shows the neighbor's IP address — useful for confirming the next-hop router is reachable at the address configured in the static route.</div></div>
+
+  <div class="ca tip"><span class="ic">✅</span><div><strong>Module 16 — complete quick-reference summary:</strong><br><br>
+  <strong>5 troubleshooting commands:</strong> ping · traceroute · show ip route · show ip interface brief · show cdp neighbors<br><br>
+  <strong>Extended ping syntax:</strong> <code>ping [ip] source [intf]</code> or <code>ping [ip] source [ip]</code><br><br>
+  <strong>Interface status:</strong> up/up=OK · up/down=L2 problem · down/down=L1 · admin down=shutdown<br><br>
+  <strong>Route not in table but in config →</strong> exit interface is down<br>
+  <strong>Route in table with wrong via →</strong> wrong next-hop — no ip route + correct ip route<br>
+  <strong>Traceroute loops →</strong> routing loop — check both routers' tables<br>
+  <strong>Serial ping works, LAN ping fails →</strong> missing return route for LAN subnet<br>
+  <strong>CDP neighbor missing →</strong> physical/L2 problem<br>
+  <strong>CDP neighbor present but no ping →</strong> Layer 3 problem</div></div>
+
+</div></div>
+
+</div><!-- end .wrap -->
+
+<!-- COURSE COMPLETE BANNER -->
+<div class="complete-banner">
+  <h2>🎓 CCNA 2 SRWE v7.02 — Course Complete!</h2>
+  <p>All 16 modules of Switching, Routing, and Wireless Essentials are now in your study guide.</p>
+</div>
+
+<div class="ft">
+  CCNA 2 SRWE v7.02 — Module 16: Troubleshoot Static and Default Routes v2.2<br>
+  Based on Cisco NetAcad curriculum · Study guide for personal use
+</div>
+
+<button class="tb" id="topb" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+
+<!-- MODULE NAVIGATION BAR -->
+<div class="mod-nav">
+  <a class="mn-hub" href="index.html">🏠 Hub</a>
+  <div class="mn-divider"></div>
+  <a class="mn-prev" href="ccna2_module15_ip_static_routing_v2.2.html">‹</a>
+  <span class="mn-label">M16 of 16 — FINAL</span>
+  <a class="mn-next" style="opacity:.3;pointer-events:none">›</a>
+</div>
+
+<script>
+var MOD_KEY="ccna2-module16-troubleshoot-static-default-routes";
+var SECS=["s1","s2","s3","s4","s5","s-pt-16-3","s6","s7"];
+var checked={};
+function loadState(){
+  try{var s=localStorage.getItem(MOD_KEY);if(s)checked=JSON.parse(s);}catch(e){}
+  SECS.forEach(function(id){
+    var pill=document.getElementById('pill-'+id);
+    var row=document.getElementById('row-'+id);
+    var st=document.getElementById('st-'+id);
+    var sch=document.getElementById('sch-'+id);
+    if(checked[id]){
+      if(pill){pill.classList.add('checked');pill.querySelector('.pill-check').textContent='✓';}
+      if(row)row.classList.add('done');
+      if(st)st.textContent='✓';
+      if(sch){sch.classList.add('checked');sch.textContent='✓ Done';}
+    } else {
+      if(pill){pill.classList.remove('checked');pill.querySelector('.pill-check').textContent='○';}
+      if(row)row.classList.remove('done');
+      if(st)st.textContent='○';
+      if(sch){sch.classList.remove('checked');sch.textContent='○ Mark done';}
+    }
+  });
+}
+function toggleSection(id,btn){checked[id]=!checked[id];try{localStorage.setItem(MOD_KEY,JSON.stringify(checked));}catch(e){}loadState();}
+function toggleStudyPanel(){
+  var hdr=document.getElementById('sp-hdr');
+  var body=document.getElementById('sp-body');
+  var arr=document.getElementById('sp-arr');
+  hdr.classList.toggle('open');body.classList.toggle('open');
+  if(arr)arr.textContent=body.classList.contains('open')?'▲':'▼';
+}
+function goTo(id){var el=document.getElementById(id);if(!el)return;var h=el.querySelector('.sh,.section-header'),b=el.querySelector('.sb,.section-body');if(h&&b&&!b.classList.contains('open')){h.classList.add('open');b.classList.add('open');}setTimeout(function(){window.scrollTo({top:el.getBoundingClientRect().top+window.pageYOffset-60,behavior:'smooth'});},50);}
+function setFs(size,btn){document.documentElement.style.setProperty('--base-fs',size);document.querySelectorAll('.fs-btn').forEach(function(b){b.classList.remove('active');});btn.classList.add('active');try{localStorage.setItem('ccna-fs',size);}catch(e){}}
+(function(){try{var s=localStorage.getItem('ccna-fs');if(s){document.documentElement.style.setProperty('--base-fs',s);document.querySelectorAll('.fs-btn').forEach(function(b){b.classList.remove('active');if((b.textContent==='S'&&s==='14px')||(b.textContent==='M'&&s==='16px')||(b.textContent==='L'&&s==='18px')||(b.textContent==='XL'&&s==='20px'))b.classList.add('active');});}}catch(e){}loadState();})();
+function copyCode(b){var t=b.closest('.cw').querySelector('pre').innerText;if(navigator.clipboard){navigator.clipboard.writeText(t).then(function(){b.textContent='Copied!';setTimeout(function(){b.textContent='Copy';},1500);}).catch(function(){fb(t,b);});}else{fb(t,b);}}
+function fb(t,b){var a=document.createElement('textarea');a.value=t;a.style.position='fixed';a.style.opacity='0';document.body.appendChild(a);a.focus();a.select();document.execCommand('copy');document.body.removeChild(a);b.textContent='Copied!';setTimeout(function(){b.textContent='Copy';},1500);}
+</script>
+<script src="../../site-config.js"></script>
+</body>
+</html>

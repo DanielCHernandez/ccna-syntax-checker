@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=2.0">
+<title>CCNA 1 — Introduction to Networks (ITN v7.02)</title>
+<style>
+:root{
+  --nt:#0a6e4e;--ntd:#4ade80;--nt2:#052e1e;
+  --blue:#1ba0d7;--bg:#f4f6f8;--card:#fff;--text:#1a1a2e;--muted:#5a6a7a;
+  --r:12px;--sh:0 2px 12px rgba(0,0,0,.08);--base-fs:20px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);font-size:var(--base-fs);line-height:1.6;padding-bottom:40px}
+.bc{background:#0d1117;padding:8px 16px;display:flex;align-items:center;flex-wrap:wrap;gap:4px;font-size:.75em;overflow-x:auto;white-space:nowrap;border-bottom:1px solid #21262d}
+.bc a{color:#8b949e;text-decoration:none;font-weight:600}
+.bc .sep{color:#6e7681}
+.bc .cur{color:var(--ntd);font-weight:700}
+.hdr{background:linear-gradient(135deg,var(--nt2),#073d2a,var(--nt));color:#fff;padding:28px 20px 22px;text-align:center}
+.hdr .badge{display:inline-block;background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.3);border-radius:20px;padding:3px 14px;font-size:.75em;font-weight:700;margin-bottom:10px}
+.hdr h1{font-size:1.5em;font-weight:800;margin-bottom:4px}
+.hdr p{font-size:.875em;opacity:.85}
+.sec-title{font-size:.69em;font-weight:800;letter-spacing:.8px;text-transform:uppercase;color:var(--muted);padding:16px 16px 6px}
+.grid{padding:0 14px;display:grid;gap:8px}
+.card{background:var(--card);border-radius:var(--r);box-shadow:var(--sh);text-decoration:none;color:var(--text);display:flex;align-items:center;gap:14px;padding:13px 16px;border-left:4px solid;overflow:hidden;-webkit-tap-highlight-color:transparent;transition:box-shadow .2s}
+.card:active{box-shadow:0 1px 4px rgba(0,0,0,.08)}
+.card.ready{border-left-color:var(--nt)}
+.card.coming{border-left-color:#e0e7ef;opacity:.65}
+.num{min-width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:.875em;color:#fff;flex-shrink:0}
+.card.ready .num{background:var(--nt)}
+.card.coming .num{background:#b0bac6}
+.info{flex:1;min-width:0}
+.mod-title{font-weight:700;font-size:.875em;line-height:1.3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mod-sub{font-size:.75em;color:var(--muted);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.status{font-size:.69em;font-weight:800;padding:3px 9px;border-radius:10px;white-space:nowrap;flex-shrink:0}
+.card.ready .status{background:#f0fdf4;color:var(--nt)}
+.card.coming .status{background:#f0f4f8;color:#9ca3af}
+.arrow{color:#b0bac6;font-size:1.125em;flex-shrink:0}
+.card.ready .arrow{color:var(--nt)}
+.ft{text-align:center;padding:24px 16px;color:var(--muted);font-size:.75em}
+
+
+.card .status{display:none}
+</style>
+</head>
+<body>
+<nav class="bc">
+  <a href="../../index.html">🏠 Home</a>
+  <span class="sep">›</span>
+  <span class="cur">CCNA 1 — ITN v7.02</span>
+</nav>
+
+<div class="hdr">
+  <div class="badge">CCNA 1 · ITN v7.02</div>
+  <h1>🌐 Introduction to Networks</h1>
+  <p>17 modules · Architectures · Models · Protocols · IP Addressing · Ethernet</p>
+</div>
+
+
+<div class="sec-title">Group 1 — Basic Network Connectivity (M1–3)</div>
+<div class="grid">
+  <a class="card ready" href="ccna1_module1_networking_today_v2.2.html">
+    <div class="num">1</div>
+    <div class="info">
+      <div class="mod-title">Networking Today</div>
+      <div class="mod-sub">Hosts · Media · LAN/WAN · Fault Tolerance · CIA Triad · Trends</div>
+    </div>
+    <span class="arrow">›</span>
+  </a>
+  <a class="card ready" href="ccna1_module2_basic_switch_end_device_config_v2.2.html">
+    <div class="num">2</div>
+    <div class="info">
+      <div class="mod-title">Basic Switch and End Device Configuration</div>
+      <div class="mod-sub">IOS CLI · Modes · Passwords · SVI · DHCP · ping · show ip interface brief</div>
+    </div>
+    <span class="arrow">›</span>
+  </a>
+  <a class="card ready" href="ccna1_module3_protocols_and_models_v2.2.html">
+    <div class="num">3</div>
+    <div class="info">
+      <div class="mod-title">Protocols and Models</div>
+      <div class="mod-sub">OSI 7-layer · TCP/IP 4-layer · PDUs · Encapsulation · Standards orgs · L2 vs L3 addressing</div>
+    </div>
+    <span class="arrow">›</span>
+  </a>
+</div>
+
+<div class="sec-title">Group 2 — Ethernet Concepts (M4–7)</div>
+<div class="grid">
+  <a class="card ready" href="ccna1_module4_physical_layer_v2.2.html">
+    <div class="num">4</div>
+    <div class="info">
+      <div class="mod-title">Physical Layer</div>
+      <div class="mod-sub">UTP/STP/Coax · Fiber SMF/MMF · Wireless 802.11 · Bandwidth/Throughput/Goodput</div>
+    </div>
+    <span class="arrow">›</span>
+  </a>
+  <a class="card ready" href="ccna1_module5_number_systems_v2.2.html">
+    <div class="num">5</div>
+    <div class="info">
+      <div class="mod-title">Number Systems</div>
+      <div class="mod-sub">Binary↔Decimal · Decimal↔Hex · IPv4/IPv6 · Subnet mask values · Interactive converter</div>
+    </div>
+    <span class="arrow">›</span>
+  </a>
+  <a class="card ready" href="ccna1_module6_data_link_layer_v2.2.html">
+    <div class="num">6</div>
+    <div class="info">
+      <div class="mod-title">Data Link Layer</div>
+      <div class="mod-sub">LLC/MAC sublayers · Topologies · CSMA/CD vs CA · Frame fields · FCS/CRC · Hop-by-hop MAC</div>
+    </div>
+    <span class="arrow">›</span>
+  </a>
+  <a class="card ready" href="ccna1_module7_ethernet_switching_v2.2.html">
+    <div class="num">7</div>
+    <div class="info">
+      <div class="mod-title">Ethernet Switching</div>
+      <div class="mod-sub">Ethernet frame fields · MAC address · CAM table · Store-and-forward vs Cut-through · Auto-MDIX</div>
+    </div>
+    <span class="arrow">›</span>
+  </a>
+</div>
+
+<div class="sec-title">Group 3 — Communicating Between Networks (M8–10)</div>
+<div class="grid">
+  <a class="card ready" href="ccna1_module8_network_layer_v2.2.html">
+    <div class="num">8</div>
+    <div class="info">
+      <div class="mod-title">Network Layer</div>
+      <div class="mod-sub">IP characteristics · IPv4/IPv6 headers · Host routing · show ip route · Static vs Dynamic</div>
+    </div>
+    <span class="arrow">›</span>
+  </a>
+  <a class="card ready" href="ccna1_module9_address_resolution_v2.2.html">
+    <div class="num">9</div>
+    <div class="info">
+      <div class="mod-title">Address Resolution</div>
+      <div class="mod-sub">ARP · ARP spoofing · show ip arp · arp -a · IPv6 ND · NS/NA/RS/RA</div>
+    </div>
+    <span class="arrow">›</span>
+  </a>
+  <a class="card ready" href="ccna1_module10_basic_router_configuration_v2.2.html">
+    <div class="num">10</div>
+    <div class="info">
+      <div class="mod-title">Basic Router Configuration</div>
+      <div class="mod-sub">7 init steps · no shutdown · show ip interface brief · ip default-gateway · C/L routes</div>
+    </div>
+    <span class="arrow">›</span>
+  </a>
+</div>
+
+<div class="sec-title">Group 4 — IP Addressing (M11–13)</div>
+<div class="grid">
+  <a class="card ready" href="ccna1_module11_ipv4_addressing_v2.2.html">
+    <div class="num">11</div>
+    <div class="info">
+      <div class="mod-title">IPv4 Addressing</div>
+      <div class="mod-sub">AND operation · /24 /16 /8 subnetting · VLSM · RFC 1918 · Classful · IANA/RIRs</div>
+    </div>
+    <span class="arrow">›</span>
+  </a>
+  <a class="card ready" href="ccna1_module12_ipv6_addressing_v2.2.html">
+    <div class="num">12</div>
+    <div class="info">
+      <div class="mod-title">IPv6 Addressing</div>
+      <div class="mod-sub">GUA · LLA · :: compression · SLAAC · DHCPv6 · EUI-64 · Multicast · IPv6 subnetting</div>
+    </div>
+    <span class="arrow">›</span>
+  </a>
+  <a class="card ready" href="ccna1_module13_icmp_v2.2.html">
+    <div class="num">13</div>
+    <div class="info">
+      <div class="mod-title">ICMP</div>
+      <div class="mod-sub">Echo Req/Reply · Destination Unreachable codes · Time Exceeded · Ping tests · Traceroute TTL</div>
+    </div>
+    <span class="arrow">›</span>
+  </a>
+</div>
+
+<div class="sec-title">Group 5 — Network Application Communications (M14–15)</div>
+<div class="grid">
+  <a class="card ready" href="ccna1_module14_transport_layer_v2.2.html">
+    <div class="num">14</div>
+    <div class="info">
+      <div class="mod-title">Transport Layer</div>
+      <div class="mod-sub">TCP vs UDP · Port numbers · 3-way handshake · Window size · MSS · SACK · Well-known ports</div>
+    </div>
+    <span class="arrow">›</span>
+  </a>
+  <a class="card ready" href="ccna1_module15_application_layer_v2.2.html">
+    <div class="num">15</div>
+    <div class="info">
+      <div class="mod-title">Application Layer</div>
+      <div class="mod-sub">DNS · DHCP DORA · HTTP/HTTPS · SMTP/POP3/IMAP · FTP ports · SMB · P2P · nslookup</div>
+    </div>
+    <span class="arrow">›</span>
+  </a>
+</div>
+
+<div class="sec-title">Group 6 — Building and Securing a Small Network (M16–17)</div>
+<div class="grid">
+  <a class="card ready" href="ccna1_module16_network_security_fundamentals_v2.2.html">
+    <div class="num">16</div>
+    <div class="info">
+      <div class="mod-title">Network Security Fundamentals</div>
+      <div class="mod-sub">Threats · Malware · DoS/DDoS · Defense-in-depth · SSH config · Passwords · Firewall · AAA</div>
+    </div>
+    <span class="arrow">›</span>
+  </a>
+  <a class="card ready" href="ccna1_module17_build_small_network_v2.2.html">
+    <div class="num">17</div>
+    <div class="info">
+      <div class="mod-title">Build a Small Network</div>
+      <div class="mod-sub">Device selection · QoS · Ping/Traceroute · show commands · CDP · 6-step troubleshooting · APIPA · debug</div>
+    </div>
+    <span class="arrow">›</span>
+  </a>
+</div>
+
+<div class="ft">CCNA 1 — Introduction to Networks (ITN v7.02)<br>Based on Cisco NetAcad curriculum · Study guide for personal use</div>
+</body>
+</html>

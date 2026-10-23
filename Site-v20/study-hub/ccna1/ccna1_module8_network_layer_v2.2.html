@@ -1,0 +1,769 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=2.0">
+<title>CCNA 1 Module 8: Network Layer v2.2</title>
+<style>
+:root{
+  --nt:#0a6e4e;--ntd:#4ade80;--nt2:#052e1e;--nt3:#021710;
+  --bg:#f4f6f8;--card:#fff;--text:#1a1a2e;--muted:#5a6a7a;
+  --cbg:#0d1117;--ctxt:#c9d1d9;--r:12px;--sh:0 2px 12px rgba(0,0,0,.08);
+  --base-fs:20px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);font-size:var(--base-fs);line-height:1.7}
+.bc{background:#0d1117;padding:8px 16px;display:flex;align-items:center;flex-wrap:wrap;gap:4px;font-size:.75em;overflow-x:auto;white-space:nowrap;-webkit-overflow-scrolling:touch;border-bottom:1px solid #21262d}
+.bc a{color:#8b949e;text-decoration:none;font-weight:600;flex-shrink:0}
+.bc .sep{color:#6e7681;flex-shrink:0}
+.bc .cur{color:var(--ntd);font-weight:700;flex-shrink:0}
+.fs-bar{position:sticky;top:0;z-index:200;background:#1a1a2e;display:flex;align-items:center;justify-content:flex-end;padding:6px 14px;gap:6px;box-shadow:0 2px 8px rgba(0,0,0,.3)}
+.fs-label{color:#8b949e;font-size:.72em;font-weight:700;letter-spacing:.5px;text-transform:uppercase;margin-right:4px}
+.fs-btn{background:#30363d;color:#c9d1d9;border:2px solid transparent;border-radius:6px;padding:4px 12px;font-size:.75em;font-weight:700;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:all .2s;line-height:1.4}
+.fs-btn:active,.fs-btn.active{background:var(--nt);color:#fff;border-color:var(--ntd)}
+.hdr{background:linear-gradient(135deg,var(--nt3),var(--nt2),var(--nt));color:#fff;padding:32px 20px 24px;text-align:center}
+.hdr .badge{display:inline-block;background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.4);border-radius:20px;padding:4px 14px;font-size:.81em;margin-bottom:12px}
+.hdr h1{font-size:1.5em;font-weight:700;margin-bottom:6px}
+.hdr p{font-size:.94em;opacity:.85}
+.hdr .obj{display:inline-block;background:rgba(255,255,255,.15);border-radius:8px;padding:7px 16px;margin-top:12px;font-size:.875em;font-style:italic}
+/* Study progress panel */
+.sp-wrap{background:var(--card);margin:16px 16px 0;border-radius:var(--r);box-shadow:var(--sh);overflow:hidden}
+.sp-hdr{background:var(--nt);color:#fff;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;user-select:none;-webkit-tap-highlight-color:transparent;gap:10px}
+.sp-hdr .sp-title{font-weight:700;font-size:.875em;flex-shrink:0}
+.sp-hdr .sp-arr{transition:transform .3s;flex-shrink:0}
+.sp-hdr.open .sp-arr{transform:rotate(180deg)}
+.sp-body{display:none;padding:12px 14px}
+.sp-body.open{display:block}
+.sp-row{display:flex;align-items:center;gap:10px;padding:6px 4px;border-bottom:1px solid #f0f4f8;font-size:.81em}
+.sp-row:last-child{border-bottom:none}
+.sp-row .sr-status{font-size:1em;flex-shrink:0;width:20px;text-align:center}
+.sp-row .sr-nb{font-weight:800;color:var(--nt);min-width:36px;flex-shrink:0;font-size:.875em}
+.sp-row .sr-ttl{color:var(--text);flex:1}
+.sp-row.done .sr-ttl{color:var(--muted);text-decoration:line-through}
+/* Section check pills in fs-bar */
+.sc-pills{display:flex;align-items:center;gap:4px;overflow-x:auto;-webkit-overflow-scrolling:touch;flex:1;padding:0 4px}
+.sc-pill{background:#30363d;color:#8b949e;border:2px solid transparent;border-radius:6px;padding:3px 8px;font-size:.72em;font-weight:700;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:all .15s;white-space:nowrap;flex-shrink:0;line-height:1.4;display:flex;align-items:center;gap:3px}
+.sc-pill.checked{background:var(--nt);color:#fff;border-color:var(--ntd)}
+.sc-pill .pill-check{font-size:.875em}
+.toc{background:var(--card);margin:16px;border-radius:var(--r);box-shadow:var(--sh);overflow:hidden}
+.toch{background:var(--nt);color:#fff;padding:14px 18px;font-weight:700;font-size:.94em;display:flex;justify-content:space-between;align-items:center;cursor:pointer;user-select:none}
+.toch .arr{transition:transform .3s}
+.toch.open .arr{transform:rotate(180deg)}
+.tocb{display:none;padding:10px 0}
+.tocb.open{display:block}
+.tocg{font-size:.69em;font-weight:800;letter-spacing:.8px;color:var(--nt);text-transform:uppercase;padding:8px 20px 2px}
+.tocb a{display:block;padding:9px 20px 9px 28px;color:var(--text);text-decoration:none;font-size:.875em;border-left:3px solid transparent;transition:all .2s}
+.tocb a:active{background:#f0fdf4;border-left-color:var(--ntd)}
+.tocb a .n{display:inline-block;background:var(--nt);color:#fff;border-radius:5px;padding:1px 8px;font-size:.75em;font-weight:700;margin-right:8px}
+.wrap{padding:0 16px 100px}
+.sec{background:var(--card);border-radius:var(--r);box-shadow:var(--sh);margin-bottom:16px;overflow:hidden}
+.sh{background:linear-gradient(90deg,var(--nt3),var(--nt));color:#fff;padding:16px 18px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;user-select:none;-webkit-tap-highlight-color:transparent}
+.sh .ttl{font-weight:700;font-size:1em}
+.sh .nb{background:rgba(255,255,255,.25);border-radius:6px;padding:3px 10px;font-size:.81em;font-weight:700;margin-right:10px;white-space:nowrap}
+.sh .ch{font-size:1.125em;transition:transform .3s}
+.sh.open .ch{transform:rotate(180deg)}
+.sb{display:none;padding:18px}
+.sb.open{display:block}
+.sub{margin-bottom:24px}
+.sub:last-child{margin-bottom:0}
+.sub h3{font-size:.94em;font-weight:700;color:var(--nt);margin-bottom:10px;padding-bottom:6px;border-bottom:2px solid #f0fdf4;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.sub h3 .sn{background:var(--nt);color:#fff;border-radius:5px;padding:2px 8px;font-size:.75em;white-space:nowrap}
+.sub h4{font-size:.875em;font-weight:700;color:var(--nt);margin:14px 0 6px}
+.sub p{margin-bottom:10px;font-size:.94em}
+.sub ul,.sub ol{padding-left:20px;margin:8px 0;font-size:.94em}
+.sub li{margin-bottom:5px}
+.cw{background:var(--cbg);border-radius:10px;margin:12px 0;overflow:hidden}
+.cl{background:#21262d;color:#c9d1d9;font-size:.78em;font-weight:700;padding:6px 14px;letter-spacing:.5px;text-transform:uppercase}
+pre{margin:0;padding:14px;overflow-x:auto;-webkit-overflow-scrolling:touch}
+code{font-family:'Courier New',monospace;font-size:.81em;color:var(--ctxt);line-height:1.6}
+.ca{border-radius:8px;padding:12px 14px;margin:12px 0;font-size:.875em;line-height:1.6;display:flex;gap:10px;align-items:flex-start}
+.ca .ic{font-size:1.125em;flex-shrink:0;margin-top:1px}
+.ca.warn  {background:#fff3cd;border-left:4px solid #b38600;color:#3d2c00}
+.ca.tip   {background:#d4edda;border-left:4px solid #28a745;color:#0d3318}
+.ca.danger{background:#f8d7da;border-left:4px solid #dc3545;color:#3d0010}
+.ca.info  {background:#f0fdf4;border-left:4px solid var(--nt);color:#052e1e}
+.ca code{color:inherit!important;background:rgba(0,0,0,.1)!important;border:1px solid rgba(0,0,0,.15)}
+.et{background:linear-gradient(135deg,#1a1a2e,var(--nt3));color:#fff;border-radius:10px;padding:14px 16px;margin:14px 0;font-size:.875em;line-height:1.6}
+.et .lbl{font-size:.69em;font-weight:800;letter-spacing:1px;color:var(--ntd);margin-bottom:6px}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:12px 0;border-radius:8px}
+table{width:100%;border-collapse:collapse;font-size:.875em}
+th{background:var(--nt);color:#fff;padding:10px 12px;text-align:left;font-weight:700;font-size:.81em}
+td{padding:9px 12px;border-bottom:1px solid #e8ecf0;vertical-align:top;color:#1a1a2e}
+tr:nth-child(even) td{background:#f0fdf4;color:#052e1e}
+tr:last-child td{border-bottom:none}
+p code,li code,td code,.ca code,.dest-card code,.route-card code{background:#f0fdf4;color:#052e1e;border-radius:4px;padding:1px 5px;font-size:.81em;font-family:'Courier New',monospace;font-weight:600}
+
+/* IP characteristics cards */
+.ip-chars{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:12px 0}
+@media(max-width:480px){.ip-chars{grid-template-columns:1fr}}
+.ip-char{color:#1a1a2e;border-radius:10px;padding:12px 14px;text-align:center;font-size:.81em;line-height:1.6}
+.ip-char.cl{background:#e0f2fe;border:2px solid #1a3a5c}
+.ip-char.be{background:#fff3cd;border:2px solid #b38600}
+.ip-char.mi{background:#f0fdf4;border:2px solid var(--nt)}
+.ip-char .ic-icon{font-size:1.75em;margin-bottom:6px}
+.ip-char .ic-name{font-weight:800;margin-bottom:4px}
+.ip-char.cl .ic-name{color:#1a3a5c}
+.ip-char.be .ic-name{color:#b38600}
+.ip-char.mi .ic-name{color:var(--nt)}
+
+/* IPv4 header visual */
+.ipv4-hdr{display:grid;gap:2px;margin:12px 0;border-radius:8px;overflow:hidden}
+.ih-field{padding:8px 12px;font-size:.75em;display:flex;justify-content:space-between;align-items:center;font-weight:700}
+.ih-field .if-name{color:#fff;flex:1}
+.ih-field .if-size{background:rgba(255,255,255,.2);border-radius:4px;padding:2px 8px;font-family:'Courier New',monospace;font-size:.875em;color:#fff;white-space:nowrap;flex-shrink:0}
+.ih-field .if-note{color:rgba(255,255,255,.7);font-size:.75em;font-weight:400;margin-left:8px;flex:2}
+.if-ver{background:#374151}
+.if-ds {background:#5c3d00}
+.if-ttl{background:#7c1e1e}
+.if-pro{background:#1a3a5c}
+.if-chk{background:#4b5563}
+.if-src{background:var(--nt)}
+.if-dst{background:#1a4731}
+.if-oth{background:#374151;opacity:.7}
+
+/* Protocol numbers */
+.proto-nums{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin:10px 0}
+@media(max-width:480px){.proto-nums{grid-template-columns:1fr}}
+.pn-card{background:#0d1117;border-radius:6px;padding:8px 12px;text-align:center;font-size:.81em}
+.pn-card .pn-num{font-family:'Courier New',monospace;font-size:1.25em;font-weight:900;color:#fbbf24}
+.pn-card .pn-name{color:#c9d1d9;margin-top:3px;font-weight:700}
+
+/* IPv4 vs IPv6 comparison */
+.v4v6-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:12px 0}
+@media(max-width:480px){.v4v6-grid{grid-template-columns:1fr}}
+.v4v6-card{border-radius:10px;padding:12px 14px;font-size:.81em;line-height:1.7}
+.v4v6-card.v4{background:#e0f2fe;border:2px solid #1a3a5c}
+.v4v6-card.v6{background:#f0fdf4;border:2px solid var(--nt)}
+.v4v6-card .vc-title{font-weight:800;margin-bottom:6px;font-size:.875em}
+.v4v6-card.v4 .vc-title{color:#1a3a5c}
+.v4v6-card.v6 .vc-title{color:var(--nt)}
+.v4v6-card ul{padding-left:16px}
+.v4v6-card li{margin-bottom:3px}
+
+/* IPv6 header visual */
+.ipv6-hdr{display:grid;gap:2px;margin:12px 0;border-radius:8px;overflow:hidden}
+.iv6-field{padding:8px 12px;font-size:.75em;display:flex;justify-content:space-between;align-items:center;font-weight:700}
+.iv6-field .i6-name{color:#fff;flex:1}
+.iv6-field .i6-size{background:rgba(255,255,255,.2);border-radius:4px;padding:2px 8px;font-family:'Courier New',monospace;font-size:.875em;color:#fff;white-space:nowrap;flex-shrink:0}
+.iv6-field .i6-equiv{color:rgba(255,255,255,.65);font-size:.75em;font-weight:400;margin-left:8px}
+.i6-ver{background:#374151}
+.i6-tc {background:#5c3d00}
+.i6-fl {background:#7b2d8b}
+.i6-pl {background:#4b5563}
+.i6-nh {background:#1a3a5c}
+.i6-hl {background:#7c1e1e}
+.i6-src{background:var(--nt)}
+.i6-dst{background:#1a4731}
+
+/* Host routing destinations */
+.dest-grid{display:grid;gap:8px;margin:12px 0}
+.dest-card{border-radius:8px;padding:10px 14px;font-size:.81em;border-left:4px solid;line-height:1.6}
+.dest-card.loop{border-left-color:#374151;background:#f9fafb}
+.dest-card.local{border-left-color:var(--nt);background:#f0fdf4}
+.dest-card.remote{border-left-color:#1a3a5c;background:#e0f2fe}
+.dest-card .dc-name{font-weight:800;margin-bottom:3px}
+.dest-card.loop  .dc-name{color:#374151}
+.dest-card.local .dc-name{color:var(--nt)}
+.dest-card.remote .dc-name{color:#1a3a5c}
+
+/* Route type cards */
+.route-grid{display:grid;gap:8px;margin:12px 0}
+.route-card{border-radius:8px;padding:10px 14px;font-size:.81em;border-left:5px solid;line-height:1.6;display:flex;gap:10px;align-items:flex-start}
+.route-card.conn  {border-left-color:var(--nt);background:#f0fdf4}
+.route-card.remote{border-left-color:#1a3a5c;background:#e0f2fe}
+.route-card.defrt {border-left-color:#7b2d8b;background:#f3e8ff}
+.route-card .rc-code{font-family:'Courier New',monospace;font-weight:900;font-size:1.125em;flex-shrink:0;min-width:28px}
+.route-card.conn   .rc-code{color:var(--nt)}
+.route-card.remote .rc-code{color:#1a3a5c}
+.route-card.defrt  .rc-code{color:#7b2d8b}
+
+/* Route code quick ref */
+.code-grid{display:grid;gap:4px;margin:10px 0}
+.code-row{display:flex;gap:8px;align-items:center;padding:6px 12px;border-radius:6px;font-size:.81em;background:#0d1117}
+.code-row .cr-code{font-family:'Courier New',monospace;font-weight:900;font-size:1em;min-width:28px;color:#fbbf24;flex-shrink:0}
+.code-row .cr-mean{color:#c9d1d9}
+
+/* Static vs Dynamic */
+.routing-compare{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:12px 0}
+@media(max-width:480px){.routing-compare{grid-template-columns:1fr}}
+.rc-card{border-radius:10px;padding:12px 14px;font-size:.81em;line-height:1.7}
+.rc-card.stat{background:#fff3cd;border:2px solid #b38600}
+.rc-card.dyn{background:#f0fdf4;border:2px solid var(--nt)}
+.rc-card .rcc-title{font-weight:800;margin-bottom:6px;font-size:.875em}
+.rc-card.stat .rcc-title{color:#b38600}
+.rc-card.dyn  .rcc-title{color:var(--nt)}
+.rc-card ul{padding-left:16px}
+.rc-card li{margin-bottom:3px}
+
+.tb-btn{position:fixed;bottom:80px;right:16px;background:var(--nt);color:#fff;border:none;border-radius:50%;width:44px;height:44px;font-size:1.25em;box-shadow:0 4px 14px rgba(0,0,0,.25);cursor:pointer;display:none;align-items:center;justify-content:center;z-index:100}
+.tb-btn.show{display:flex}
+.ft{text-align:center;padding:24px 16px;color:var(--muted);font-size:.81em}
+.mod-nav{position:fixed;bottom:0;left:0;right:0;z-index:300;background:#1a1a2e;border-top:1px solid #30363d;display:flex;align-items:center;height:52px;padding:0 8px;gap:6px}
+.mn-hub{background:#1ba0d7;color:#fff;border:none;border-radius:8px;padding:6px 12px;font-size:.75em;font-weight:700;cursor:pointer;text-decoration:none;display:flex;align-items:center;gap:4px;white-space:nowrap;-webkit-tap-highlight-color:transparent;flex-shrink:0}
+.mn-hub:active{opacity:.8}
+.mn-divider{width:1px;height:28px;background:#30363d;flex-shrink:0}
+.mn-label{flex:1;text-align:center;font-size:.69em;color:#8b949e;font-weight:600;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding:0 4px}
+.mn-prev,.mn-next{background:#30363d;color:#c9d1d9;border:none;border-radius:8px;padding:6px 10px;font-size:.875em;font-weight:700;cursor:pointer;text-decoration:none;display:flex;align-items:center;-webkit-tap-highlight-color:transparent;flex-shrink:0}
+.mn-prev:active,.mn-next:active{background:var(--nt);color:#fff}
+
+/* v2.1 — In-section check button */
+.sh{position:relative}
+.sec-check{position:absolute;right:40px;top:50%;transform:translateY(-50%);background:rgba(255,255,255,.15);border:2px solid rgba(255,255,255,.4);border-radius:6px;padding:2px 10px;font-size:.72em;font-weight:800;color:#fff;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:all .2s;white-space:nowrap;z-index:10;line-height:1.5}
+.sec-check.checked{background:var(--ntd);border-color:var(--ntd);color:#052e1e}
+.sec-check:active{opacity:.75}
+</style>
+</head>
+<body>
+<nav class="bc">
+  <a href="../../index.html">🏠 Home</a><span class="sep">›</span>
+  <a href="index.html">CCNA 1 — ITN</a><span class="sep">›</span>
+  <span class="cur">M8: Network Layer</span>
+</nav>
+<div class="fs-bar">
+  <div class="sc-pills" id="sc-pills">
+  <button class="sc-pill" id="pill-s1" onclick="toggleSection('s1',this)"><span class="pill-check">○</span>8.1</button>
+  <button class="sc-pill" id="pill-s2" onclick="toggleSection('s2',this)"><span class="pill-check">○</span>8.2</button>
+  <button class="sc-pill" id="pill-s3" onclick="toggleSection('s3',this)"><span class="pill-check">○</span>8.3</button>
+  <button class="sc-pill" id="pill-s4" onclick="toggleSection('s4',this)"><span class="pill-check">○</span>8.4</button>
+  <button class="sc-pill" id="pill-s5" onclick="toggleSection('s5',this)"><span class="pill-check">○</span>8.5</button>
+  <button class="sc-pill" id="pill-s6" onclick="toggleSection('s6',this)"><span class="pill-check">○</span>🎯</button>
+  </div>
+  <span class="fs-label" style="flex-shrink:0;margin-left:6px">Size</span>
+  <button class="fs-btn" onclick="setFs('14px',this)">S</button>
+  <button class="fs-btn" onclick="setFs('16px',this)">M</button>
+  <button class="fs-btn" onclick="setFs('18px',this)">L</button>
+  <button class="fs-btn active" onclick="setFs('20px',this)">XL</button>
+</div>
+<div class="hdr">
+  <div class="badge">CCNA 1 — ITN v7.02 · Module 8</div>
+  <h1>🌐 Network Layer</h1>
+  <p>Introduction to Networks · NetAcad Study Guide</p>
+  <div class="obj">Module Objective: Explain how routers use network layer protocols and services to enable end-to-end connectivity</div>
+</div>
+<div class="sp-wrap">
+  <div class="sp-hdr" id="sp-hdr" onclick="toggleStudyPanel()">
+    <span class="sp-title">📚 Sections</span>
+    <span class="sp-arr" id="sp-arr">▼</span>
+  </div>
+  <div class="sp-body" id="sp-body">
+    <div class="sp-row" id="row-s1"><span class="sr-status" id="st-s1">○</span><span class="sr-nb">8.1</span><span class="sr-ttl">Network Layer Characteristics</span></div>
+    <div class="sp-row" id="row-s2"><span class="sr-status" id="st-s2">○</span><span class="sr-nb">8.2</span><span class="sr-ttl">IPv4 Packet</span></div>
+    <div class="sp-row" id="row-s3"><span class="sr-status" id="st-s3">○</span><span class="sr-nb">8.3</span><span class="sr-ttl">IPv6 Packet</span></div>
+    <div class="sp-row" id="row-s4"><span class="sr-status" id="st-s4">○</span><span class="sr-nb">8.4</span><span class="sr-ttl">How a Host Routes</span></div>
+    <div class="sp-row" id="row-s5"><span class="sr-status" id="st-s5">○</span><span class="sr-nb">8.5</span><span class="sr-ttl">Introduction to Routing</span></div>
+    <div class="sp-row" id="row-s6"><span class="sr-status" id="st-s6">○</span><span class="sr-nb">🎯</span><span class="sr-ttl">Common Exam Traps — Module 8</span></div>
+  </div>
+</div>
+
+<div class="toc">
+  <div class="toch open" onclick="this.classList.toggle('open');document.getElementById('tocb').classList.toggle('open')">
+    📋 Table of Contents — Tap to expand <span class="arr">▼</span>
+  </div>
+  <div class="tocb open" id="tocb">
+    <div class="tocg">8.1 — Network Layer Characteristics</div>
+    <a href="javascript:void(0)" onclick="goTo('s1')"><span class="n">8.1.1</span> Four Network Layer Operations</a>
+    <a href="javascript:void(0)" onclick="goTo('s1')"><span class="n">8.1.2</span> IP Encapsulation</a>
+    <a href="javascript:void(0)" onclick="goTo('s1')"><span class="n">8.1.3</span> Three Characteristics of IP — Connectionless, Best Effort, Media Independent</a>
+    <a href="javascript:void(0)" onclick="goTo('s1')"><span class="n">8.1.6</span> MTU and Fragmentation — IPv4 vs IPv6</a>
+    <div class="tocg">8.2 — IPv4 Packet</div>
+    <a href="javascript:void(0)" onclick="goTo('s2')"><span class="n">8.2.2</span> IPv4 Header Fields — All Fields with Sizes</a>
+    <a href="javascript:void(0)" onclick="goTo('s2')"><span class="n">8.2.2</span> Protocol Field Values — ICMP=1, TCP=6, UDP=17</a>
+    <div class="tocg">8.3 — IPv6 Packet</div>
+    <a href="javascript:void(0)" onclick="goTo('s3')"><span class="n">8.3.1</span> Three IPv4 Limitations</a>
+    <a href="javascript:void(0)" onclick="goTo('s3')"><span class="n">8.3.2</span> IPv6 Improvements — Address Space, Header, No NAT</a>
+    <a href="javascript:void(0)" onclick="goTo('s3')"><span class="n">8.3.4</span> IPv6 Header Fields — Fixed 40 Bytes</a>
+    <a href="javascript:void(0)" onclick="goTo('s3')"><span class="n">8.3.4</span> IPv4 vs IPv6 Header Comparison</a>
+    <div class="tocg">8.4 — How a Host Routes</div>
+    <a href="javascript:void(0)" onclick="goTo('s4')"><span class="n">8.4.1</span> Host Forwarding Decision — Loopback, Local, Remote</a>
+    <a href="javascript:void(0)" onclick="goTo('s4')"><span class="n">8.4.2</span> Default Gateway — Role and Requirements</a>
+    <a href="javascript:void(0)" onclick="goTo('s4')"><span class="n">8.4.4</span> Windows Routing Table — route print / netstat -r</a>
+    <div class="tocg">8.5 — Introduction to Routing</div>
+    <a href="javascript:void(0)" onclick="goTo('s5')"><span class="n">8.5.1</span> Router Packet Forwarding — Step by Step</a>
+    <a href="javascript:void(0)" onclick="goTo('s5')"><span class="n">8.5.2</span> Three Routing Table Entry Types</a>
+    <a href="javascript:void(0)" onclick="goTo('s5')"><span class="n">8.5.3</span> Static Routing — Manual, No Auto-Update</a>
+    <a href="javascript:void(0)" onclick="goTo('s5')"><span class="n">8.5.4</span> Dynamic Routing — OSPF, EIGRP</a>
+    <a href="javascript:void(0)" onclick="goTo('s5')"><span class="n">8.5.6</span> show ip route — Route Codes and Table Reading</a>
+    <div class="tocg">Reference</div>
+    <a href="javascript:void(0)" onclick="goTo('s6')"><span class="n">🎯</span> Common Exam Traps</a>
+  </div>
+</div>
+
+<div class="wrap">
+
+<!-- 8.1 NETWORK LAYER CHARACTERISTICS -->
+<div class="sec" id="s1">
+<div class="sh open" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">8.1</span><span class="ttl">Network Layer Characteristics</span></span><button class="sec-check" id="sch-s1" onclick="event.stopPropagation();toggleSection('s1',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb open">
+
+  <div class="sub">
+  <h3><span class="sn">8.1.1</span> The Network Layer — Four Operations</h3>
+  <p>OSI Layer 3 provides services to allow end devices to exchange data across networks. The two principal protocols are <strong>IPv4</strong> and <strong>IPv6</strong>. Other Layer 3 protocols: <strong>OSPF</strong> (routing) and <strong>ICMP</strong> (messaging).</p>
+  <div class="tw"><table>
+    <tr><th>Operation</th><th>Who Performs It</th><th>Description</th></tr>
+    <tr><td><strong>Addressing</strong></td><td>Configuration</td><td>End devices must have a unique IP address for identification on the network</td></tr>
+    <tr><td><strong>Encapsulation</strong></td><td><strong>Source host</strong></td><td>Wraps the transport layer PDU in an IP packet by adding source and destination IP addresses in the IP header</td></tr>
+    <tr><td><strong>Routing</strong></td><td><strong>Routers</strong></td><td>Selects the best path and forwards packets toward the destination host. Each router the packet crosses = one <strong>hop</strong>.</td></tr>
+    <tr><td><strong>De-encapsulation</strong></td><td><strong>Destination host</strong></td><td>Checks destination IP address in header. If match → removes IP header → passes Layer 4 PDU up to transport layer</td></tr>
+  </table></div>
+  <div class="ca info"><span class="ic">💡</span><div>Unlike Layer 4 (which manages data transport between processes on each host), the network layer specifies the packet structure and processing used to carry data from one host to another — without regard to what data is being carried. This allows IP to carry packets for many different types of communications.</div></div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">8.1.2</span> IP Encapsulation</h3>
+  <p>IP encapsulates the transport layer segment by adding an IP header. The IP header is used to deliver the packet to the destination host.</p>
+  <ul>
+    <li>IP addressing information remains <strong>the same from source to destination</strong> — except when translated by NAT (Network Address Translation)</li>
+    <li>The data portion of the packet (encapsulated transport PDU) remains <strong>unchanged during network layer processing</strong></li>
+    <li>This separation allows transport protocols (TCP, UDP) to be packaged by IPv4, IPv6, or any future protocol without change</li>
+    <li>The IP header is examined by Layer 3 devices (routers and Layer 3 switches) as the packet travels across the network</li>
+  </ul>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">8.1.3</span> Three Characteristics of IP</h3>
+  <div class="ip-chars">
+    <div class="ip-char cl">
+      <div class="ic-icon">✉️</div>
+      <div class="ic-name">Connectionless</div>
+      No dedicated end-to-end connection created before data is sent. Like mailing a letter without calling first. No prior setup — packets just go.
+    </div>
+    <div class="ip-char be">
+      <div class="ic-icon">🎯</div>
+      <div class="ic-name">Best Effort</div>
+      Packet delivery is NOT guaranteed. IP is inherently unreliable. No mechanism to track packets or confirm delivery. Reliability handled by TCP (Layer 4).
+    </div>
+    <div class="ip-char mi">
+      <div class="ic-icon">🔌</div>
+      <div class="ic-name">Media Independent</div>
+      Operates independently of the medium below it — copper, fiber, or wireless. Packets can travel over different media types on the same journey.
+    </div>
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">8.1.6</span> MTU and Fragmentation — IPv4 vs IPv6</h3>
+  <p>IP operates independently of the media. However, the data link layer imposes a <strong>MTU (Maximum Transmission Unit)</strong> — the maximum size PDU the medium can transport. The data link layer passes the MTU value up to the network layer.</p>
+  <div class="tw"><table>
+    <tr><th>Feature</th><th>IPv4</th><th>IPv6</th></tr>
+    <tr><td><strong>Who can fragment?</strong></td><td>Routers AND source host can fragment</td><td><strong>Only the source host</strong> can fragment — routers CANNOT</td></tr>
+    <tr><td><strong>If packet too large at router?</strong></td><td>Router fragments and forwards pieces</td><td>Router discards packet + sends ICMPv6 "Packet Too Big" to source</td></tr>
+    <tr><td><strong>Effect of fragmentation</strong></td><td>Causes latency</td><td>Source must fragment before sending</td></tr>
+  </table></div>
+  </div>
+
+</div></div>
+
+<!-- 8.2 IPv4 PACKET -->
+<div class="sec" id="s2">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">8.2</span><span class="ttl">IPv4 Packet</span></span><button class="sec-check" id="sch-s2" onclick="event.stopPropagation();toggleSection('s2',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb">
+
+  <div class="sub">
+  <h3><span class="sn">8.2.2</span> IPv4 Header Fields</h3>
+  <p>The IPv4 header is <strong>variable length</strong> — minimum <strong>20 bytes</strong>, up to <strong>60 bytes</strong> if the Options field is used. Contains 12 basic fields.</p>
+  <div class="ipv4-hdr">
+    <div class="ih-field if-ver"><span class="if-name">Version<span class="if-note">— 4-bit value · 0100 = identifies as IPv4</span></span><span class="if-size">4 bits</span></div>
+    <div class="ih-field if-ds"><span class="if-name">Differentiated Services (DS)<span class="if-note">— Formerly ToS · Determines packet priority · Contains DSCP (6 bits) + ECN (2 bits)</span></span><span class="if-size">8 bits</span></div>
+    <div class="ih-field if-oth"><span class="if-name">IHL · Total Length · Identification · Flags · Fragment Offset<span class="if-note">— Header length, packet length, fragmentation tracking</span></span><span class="if-size">various</span></div>
+    <div class="ih-field if-ttl"><span class="if-name">Time to Live (TTL)<span class="if-note">— Decremented by 1 at each router · When 0 → router discards + sends ICMP Time Exceeded to source</span></span><span class="if-size">8 bits</span></div>
+    <div class="ih-field if-pro"><span class="if-name">Protocol<span class="if-note">— Identifies Layer 4 protocol in payload · ICMP=1 · TCP=6 · UDP=17</span></span><span class="if-size">8 bits</span></div>
+    <div class="ih-field if-chk"><span class="if-name">Header Checksum<span class="if-note">— Detects corruption in IPv4 header only · Recalculated by every router (after TTL decrement)</span></span><span class="if-size">16 bits</span></div>
+    <div class="ih-field if-src"><span class="if-name">Source IPv4 Address<span class="if-note">— Always a unicast address · 32-bit dotted decimal</span></span><span class="if-size">32 bits</span></div>
+    <div class="ih-field if-dst"><span class="if-name">Destination IPv4 Address<span class="if-note">— Can be unicast, multicast, or broadcast · 32-bit dotted decimal</span></span><span class="if-size">32 bits</span></div>
+    <div class="ih-field if-oth"><span class="if-name">Options + Padding<span class="if-note">— Rarely used · Beyond scope of module</span></span><span class="if-size">variable</span></div>
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">8.2.2</span> Protocol Field — Layer 4 Identifier</h3>
+  <p>The Protocol field tells the receiving device which Layer 4 protocol gets the payload. These values are directly tested:</p>
+  <div class="proto-nums">
+    <div class="pn-card"><div class="pn-num">1</div><div class="pn-name">ICMP</div></div>
+    <div class="pn-card"><div class="pn-num">6</div><div class="pn-name">TCP</div></div>
+    <div class="pn-card"><div class="pn-num">17</div><div class="pn-name">UDP</div></div>
+  </div>
+  <div class="et"><div class="lbl">🎯 KEY IPv4 HEADER FACTS</div>
+  · <strong>TTL</strong>: decremented by 1 per hop → protects against routing loops → router MUST also recalculate Header Checksum after decrementing TTL<br>
+  · <strong>Source IP</strong>: always unicast · <strong>Destination IP</strong>: unicast, multicast, or broadcast<br>
+  · <strong>Fragmentation fields</strong> (Identification, Flags, Fragment Offset): track and reassemble fragmented IPv4 packets<br>
+  · <strong>Two most referenced fields</strong>: Source and Destination IPv4 addresses
+  </div>
+  </div>
+
+</div></div>
+
+<!-- 8.3 IPv6 PACKET -->
+<div class="sec" id="s3">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">8.3</span><span class="ttl">IPv6 Packet</span></span><button class="sec-check" id="sch-s3" onclick="event.stopPropagation();toggleSection('s3',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb">
+
+  <div class="sub">
+  <h3><span class="sn">8.3.1</span> Three Limitations of IPv4</h3>
+  <div class="tw"><table>
+    <tr><th>Limitation</th><th>Description</th></tr>
+    <tr><td><strong>IPv4 address depletion</strong></td><td>Only ~4.3 billion (2³²) addresses. Not enough for all IP-enabled devices, always-on connections, and growing regions worldwide.</td></tr>
+    <tr><td><strong>Lack of end-to-end connectivity</strong></td><td>NAT hides internal host IPs behind a shared public address. Technologies requiring direct end-to-end connectivity (VoIP, P2P) are broken by NAT.</td></tr>
+    <tr><td><strong>Increased network complexity</strong></td><td>NAT was intended only as a temporary fix. It adds complexity, latency, and makes troubleshooting significantly harder. Multiple NAT layers = major headaches.</td></tr>
+  </table></div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">8.3.2</span> IPv6 Improvements</h3>
+  <div class="tw"><table>
+    <tr><th>Improvement</th><th>Detail</th></tr>
+    <tr><td><strong>Increased address space</strong></td><td>128-bit addressing → <strong>340 undecillion (3.4 × 10³⁸) addresses</strong>. Roughly one address per grain of sand on Earth. Compared to IPv4's ~4.3 billion (2³²).</td></tr>
+    <tr><td><strong>Improved packet handling</strong></td><td>Simplified header with <strong>fewer fields</strong> and <strong>fixed 40-byte size</strong>. No variable-length Options field. Faster, more efficient router processing.</td></tr>
+    <tr><td><strong>Eliminates NAT</strong></td><td>Enough public IPv6 addresses for every device. No need for NAT between private and public addresses. Restores true end-to-end connectivity.</td></tr>
+  </table></div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">8.3.4</span> IPv6 Header Fields — Fixed 40 Bytes</h3>
+  <p>The IPv6 header is always <strong>exactly 40 bytes</strong>. Fewer fields than IPv4 = more efficient processing. No header checksum field.</p>
+  <div class="ipv6-hdr">
+    <div class="iv6-field i6-ver"><span class="i6-name">Version<span class="i6-equiv">≈ IPv4 Version</span></span><span class="i6-size">4 bits</span></div>
+    <div class="iv6-field i6-tc"><span class="i6-name">Traffic Class<span class="i6-equiv">≈ IPv4 DS (DiffServ)</span></span><span class="i6-size">8 bits</span></div>
+    <div class="iv6-field i6-fl"><span class="i6-name">Flow Label<span class="i6-equiv">★ NEW — No IPv4 equivalent · Same flow label = same handling by routers</span></span><span class="i6-size">20 bits</span></div>
+    <div class="iv6-field i6-pl"><span class="i6-name">Payload Length<span class="i6-equiv">≈ IPv4 Total Length (data only, NOT the 40-byte header)</span></span><span class="i6-size">16 bits</span></div>
+    <div class="iv6-field i6-nh"><span class="i6-name">Next Header<span class="i6-equiv">≈ IPv4 Protocol field · Same values (ICMP=58, TCP=6, UDP=17) · Also points to extension headers</span></span><span class="i6-size">8 bits</span></div>
+    <div class="iv6-field i6-hl"><span class="i6-name">Hop Limit<span class="i6-equiv">≈ IPv4 TTL · Decremented by 1 per hop · 0 → discard + ICMPv6 Time Exceeded</span></span><span class="i6-size">8 bits</span></div>
+    <div class="iv6-field i6-src"><span class="i6-name">Source IPv6 Address</span><span class="i6-size">128 bits</span></div>
+    <div class="iv6-field i6-dst"><span class="i6-name">Destination IPv6 Address</span><span class="i6-size">128 bits</span></div>
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">8.3.3</span> IPv4 vs IPv6 Header Comparison</h3>
+  <div class="v4v6-grid">
+    <div class="v4v6-card v4">
+      <div class="vc-title">IPv4 Header</div>
+      <ul>
+        <li><strong>Variable length</strong>: 20–60 bytes</li>
+        <li>12 basic fields</li>
+        <li>Has <strong>Header Checksum</strong> (recalculated per hop)</li>
+        <li>Has fragmentation fields</li>
+        <li><strong>Routers CAN fragment</strong></li>
+        <li>No Flow Label</li>
+      </ul>
+    </div>
+    <div class="v4v6-card v6">
+      <div class="vc-title">IPv6 Header</div>
+      <ul>
+        <li><strong>Fixed 40 bytes</strong> always</li>
+        <li>8 basic fields (simpler)</li>
+        <li><strong>NO Header Checksum</strong> (handled by L2/L4)</li>
+        <li>Fragmentation via extension headers</li>
+        <li><strong>Routers CANNOT fragment</strong></li>
+        <li>Has <strong>Flow Label</strong> (new)</li>
+      </ul>
+    </div>
+  </div>
+  <div class="ca info"><span class="ic">💡</span><div><strong>Why no IPv6 header checksum?</strong> The checksum function is already performed at both lower layers (Ethernet FCS) and upper layers (TCP/UDP checksums). Removing it from IPv6 means routers don't need to recalculate it at every hop → significant performance improvement.<br><br><strong>Extension headers (EH):</strong> Optional headers placed between the IPv6 header and the payload. Used for fragmentation, security (IPSec), mobility, and more. The Next Header field points to them.</div></div>
+  </div>
+
+</div></div>
+
+<!-- 8.4 HOW A HOST ROUTES -->
+<div class="sec" id="s4">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">8.4</span><span class="ttl">How a Host Routes</span></span><button class="sec-check" id="sch-s4" onclick="event.stopPropagation();toggleSection('s4',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb">
+
+  <div class="sub">
+  <h3><span class="sn">8.4.1</span> Host Forwarding Decision — Three Destinations</h3>
+  <div class="dest-grid">
+    <div class="dest-card loop">
+      <div class="dc-name">🔄 Loopback (Self)</div>
+      Tests the local TCP/IP protocol stack without sending traffic onto the network.<br>
+      IPv4 loopback = <code>127.0.0.1</code> · IPv6 loopback = <code>::1</code>
+    </div>
+    <div class="dest-card local">
+      <div class="dc-name">🏠 Local Host (Same Network)</div>
+      Source and destination share the same <strong>network address portion</strong>.<br>
+      Frame sent <strong>directly</strong> through the local switch to the destination — no router needed.
+    </div>
+    <div class="dest-card remote">
+      <div class="dc-name">🌐 Remote Host (Different Network)</div>
+      Source and destination have <strong>different network addresses</strong>.<br>
+      Packet must be sent to the <strong>default gateway (router)</strong> first — router handles the rest.
+    </div>
+  </div>
+  <p><strong>How a host determines local vs remote:</strong></p>
+  <ul>
+    <li><strong>IPv4</strong> — source device uses its own <strong>subnet mask</strong> + own IP address + destination IP address to determine if they share the same network</li>
+    <li><strong>IPv6</strong> — the local router <strong>advertises the local network prefix</strong> to all devices on the network</li>
+  </ul>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">8.4.2</span> Default Gateway</h3>
+  <p>The <strong>default gateway</strong> = the network device (router or Layer 3 switch) that routes traffic to other networks. Like a doorway to leave the room (local network).</p>
+  <p><strong>Default gateway requirements:</strong></p>
+  <ul>
+    <li>Has a local IP address in the <strong>same address range</strong> as other hosts on the local network</li>
+    <li>Can <strong>accept data into</strong> and <strong>forward data out</strong> of the local network</li>
+    <li>Routes traffic to other networks</li>
+  </ul>
+  <div class="ca danger"><span class="ic">🚨</span><div><strong>Without a default gateway:</strong> Traffic cannot leave the local network at all. If no default gateway is configured, the default gateway address is wrong, or the gateway device is down → the host can still communicate with local hosts but CANNOT reach any device on remote networks (including the internet).</div></div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">8.4.3–8.4.4</span> Host Routing Table and Windows Commands</h3>
+  <div class="tw"><table>
+    <tr><th>Command</th><th>Platform</th><th>Purpose</th></tr>
+    <tr><td><code>route print</code></td><td>Windows</td><td>Displays full host routing table (IPv4 + IPv6)</td></tr>
+    <tr><td><code>netstat -r</code></td><td>Windows</td><td>Same output as <code>route print</code></td></tr>
+  </table></div>
+  <p><strong>Three sections in the output:</strong></p>
+  <ol>
+    <li><strong>Interface List</strong> — MAC address and assigned number for each network interface (Ethernet, Wi-Fi, Bluetooth)</li>
+    <li><strong>IPv4 Route Table</strong> — All known IPv4 routes (direct connections, local network, default route)</li>
+    <li><strong>IPv6 Route Table</strong> — All known IPv6 routes</li>
+  </ol>
+  <div class="cw"><div class="cl">Sample IPv4 Route Table entry — Default Route</div>
+  <pre><code>Network Destination    Netmask         Gateway         Interface    Metric
+          0.0.0.0        0.0.0.0    192.168.10.1   192.168.10.10       25
+                    ↑                      ↑
+              Matches ANY destination   Default gateway (router IP)
+              = the default route</code></pre></div>
+  <div class="ca info"><span class="ic">💡</span><div>A <strong>default route</strong> (0.0.0.0 / 0.0.0.0 in IPv4) is created automatically in the host routing table when a default gateway is configured. Any packet destined for an unknown network follows this default route to the default gateway (router).</div></div>
+  </div>
+
+</div></div>
+
+<!-- 8.5 INTRODUCTION TO ROUTING -->
+<div class="sec" id="s5">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">8.5</span><span class="ttl">Introduction to Routing</span></span><button class="sec-check" id="sch-s5" onclick="event.stopPropagation();toggleSection('s5',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb">
+
+  <div class="sub">
+  <h3><span class="sn">8.5.1</span> Router Packet Forwarding — Step by Step</h3>
+  <p>When a packet arrives on a router interface:</p>
+  <ol>
+    <li>Router <strong>de-encapsulates</strong> the Layer 2 header and trailer (removes Ethernet frame)</li>
+    <li>Router <strong>examines the destination IP address</strong> of the IP packet</li>
+    <li>Router <strong>searches its routing table</strong> for the best (longest) matching route entry</li>
+    <li>Router <strong>re-encapsulates</strong> the packet into a new Layer 2 frame appropriate for the next segment's media type</li>
+    <li>Router <strong>forwards</strong> the new frame out the matching exit interface</li>
+  </ol>
+  <div class="ca info"><span class="ic">💡</span><div>The router uses the <strong>best (longest) matching route</strong> — the most specific route that matches the destination IP address. A /30 route is preferred over a /24 route is preferred over the default route /0. More specific = preferred.</div></div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">8.5.2</span> Three Types of Routing Table Entries</h3>
+  <div class="route-grid">
+    <div class="route-card conn">
+      <div class="rc-code">C / L</div>
+      <div>
+        <strong>Directly-Connected Networks</strong><br>
+        Added automatically when a router interface is configured with an IP address and activated. <code>C</code> = the connected network. <code>L</code> = the local interface IP address of that network. Two entries per interface.
+      </div>
+    </div>
+    <div class="route-card remote">
+      <div class="rc-code">O/D/S</div>
+      <div>
+        <strong>Remote Networks</strong><br>
+        Networks not directly attached to the router. Learned either <strong>statically</strong> (manually configured by admin) or <strong>dynamically</strong> (via a routing protocol like OSPF or EIGRP).
+      </div>
+    </div>
+    <div class="route-card defrt">
+      <div class="rc-code">S*</div>
+      <div>
+        <strong>Default Route</strong><br>
+        Gateway of last resort. Network address = <code>0.0.0.0/0</code> (IPv4). Used when no better (more specific) matching route exists. Matches EVERYTHING but is always the least preferred option.
+      </div>
+    </div>
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">8.5.3–8.5.4</span> Static vs Dynamic Routing</h3>
+  <div class="routing-compare">
+    <div class="rc-card stat">
+      <div class="rcc-title">📌 Static Routing</div>
+      <ul>
+        <li>Routes <strong>manually configured</strong> by administrator</li>
+        <li><strong>Does NOT adapt</strong> to topology changes automatically</li>
+        <li>Admin must manually reconfigure if path changes</li>
+        <li>Appropriate for <strong>small networks</strong> with few/no redundant links</li>
+        <li>Commonly used with dynamic routing to configure the <strong>default route</strong></li>
+      </ul>
+    </div>
+    <div class="rc-card dyn">
+      <div class="rcc-title">🔄 Dynamic Routing</div>
+      <ul>
+        <li>Routers <strong>automatically learn</strong> remote networks from each other</li>
+        <li><strong>Automatically adapts</strong> to topology changes</li>
+        <li>Admin only configures directly connected networks</li>
+        <li>Examples: <strong>OSPF</strong> (open standard), <strong>EIGRP</strong> (Cisco proprietary)</li>
+        <li>Routers automatically find new best path if current path fails</li>
+      </ul>
+    </div>
+  </div>
+  <div class="ca info"><span class="ic">💡</span><div>Many routers use a <strong>combination</strong> of both static routes (for the default route and specific stable paths) and dynamic routing protocols (for automatically learning all other remote networks).</div></div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">8.5.6</span> show ip route — Reading the Routing Table</h3>
+  <p><strong>Command:</strong> <code>show ip route</code> (privileged EXEC mode) — displays the IPv4 routing table on a Cisco router.</p>
+  <h4>Route Source Codes</h4>
+  <div class="code-grid">
+    <div class="code-row"><span class="cr-code">L</span><span class="cr-mean">Local — directly connected local interface IP address</span></div>
+    <div class="code-row"><span class="cr-code">C</span><span class="cr-mean">Connected — directly connected network</span></div>
+    <div class="code-row"><span class="cr-code">S</span><span class="cr-mean">Static — manually configured by administrator</span></div>
+    <div class="code-row"><span class="cr-code">O</span><span class="cr-mean">OSPF — learned via Open Shortest Path First</span></div>
+    <div class="code-row"><span class="cr-code">D</span><span class="cr-mean">EIGRP — learned via Enhanced Interior Gateway Routing Protocol</span></div>
+    <div class="code-row"><span class="cr-code">S*</span><span class="cr-mean">Static default route — the gateway of last resort</span></div>
+  </div>
+  <div class="cw"><div class="cl">Sample: show ip route output (R1)</div>
+  <pre><code>R1# show ip route
+Gateway of last resort is 209.165.200.226 to network 0.0.0.0
+
+S*    0.0.0.0/0 [1/0] via 209.165.200.226, GigabitEthernet0/0/1
+      10.0.0.0/24 is subnetted, 1 subnets
+O        10.1.1.0 [110/2] via 209.165.200.226, 00:02:45, GigabitEthernet0/0/1
+      192.168.10.0/24 is variably subnetted, 2 subnets, 2 masks
+C        192.168.10.0/24 is directly connected, GigabitEthernet0/0/0
+L        192.168.10.1/32 is directly connected, GigabitEthernet0/0/0
+      209.165.200.0/24 is variably subnetted, 2 subnets, 2 masks
+C        209.165.200.224/30 is directly connected, GigabitEthernet0/0/1
+L        209.165.200.225/32 is directly connected, GigabitEthernet0/0/1</code></pre></div>
+  <div class="cw"><div class="cl">Route entry breakdown</div>
+  <pre><code>O    10.1.1.0 [110/2] via 209.165.200.226, 00:02:45, GigabitEthernet0/0/1
+│    │        │        │                   │          └─ Exit interface
+│    │        │        │                   └─ Time since last update
+│    │        │        └─ Next-hop IP address
+│    │        └─ [Admin distance / Metric]
+│    └─ Network / prefix length
+└─ Route source (O = OSPF)</code></pre></div>
+  <div class="ca tip"><span class="ic">✅</span><div><strong>Key observations from the routing table above:</strong><br>
+  · <code>S*</code> = default route (gateway of last resort) → all unmatched traffic goes to 209.165.200.226<br>
+  · <code>O</code> = OSPF route → R1 learned 10.1.1.0/24 from another router via OSPF<br>
+  · <code>C</code> = directly connected → two networks R1 is directly attached to<br>
+  · <code>L</code> = local → the specific IP address of R1's own interface (host route /32)<br>
+  · Each active interface adds BOTH a C and an L entry automatically</div></div>
+  </div>
+
+</div></div>
+
+<!-- EXAM TRAPS -->
+<div class="sec" id="s6">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">🎯</span><span class="ttl">Common Exam Traps — Module 8</span></span><button class="sec-check" id="sch-s6" onclick="event.stopPropagation();toggleSection('s6',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb">
+
+  <div class="ca danger"><span class="ic">❌</span><div><strong>Trap 1: Encapsulation = SOURCE host. De-encapsulation = DESTINATION host. Routing = ROUTERS.</strong><br>These three operations are performed by different devices. Students often mix up who does what. The source creates the packet (encapsulates). Routers forward it (routing). The destination opens it (de-encapsulates).</div></div>
+
+  <div class="ca danger"><span class="ic">❌</span><div><strong>Trap 2: Three IP characteristics — Connectionless (no setup), Best Effort (no guarantee), Media Independent (works anywhere).</strong><br>These three are always tested as a group. IP does NOT provide reliability (that's TCP). IP does NOT establish connections (that's TCP's 3-way handshake). IP does NOT care what media is below it.</div></div>
+
+  <div class="ca danger"><span class="ic">❌</span><div><strong>Trap 3: IPv4 routers CAN fragment. IPv6 routers CANNOT fragment.</strong><br>In IPv6, if a packet is too large for a link, the router discards it and sends ICMPv6 "Packet Too Big" back to the source. The SOURCE must fragment, not the router. This is a critical IPv4 vs IPv6 difference tested directly.</div></div>
+
+  <div class="ca danger"><span class="ic">❌</span><div><strong>Trap 4: Protocol field values — ICMP=1, TCP=6, UDP=17. Must be memorized.</strong><br>These appear in exam questions about IPv4 header analysis and in Wireshark capture interpretation questions. The Protocol field (IPv4) / Next Header field (IPv6) identifies which Layer 4 protocol receives the payload.</div></div>
+
+  <div class="ca danger"><span class="ic">❌</span><div><strong>Trap 5: IPv6 has NO Header Checksum. IPv4 DOES and routers must recalculate it every hop.</strong><br>Every time a router decrements the IPv4 TTL field, it must also recalculate the Header Checksum. This adds processing overhead at every router. IPv6 eliminates this by having no header checksum — error detection is handled by Ethernet FCS (L2) and TCP/UDP checksums (L4).</div></div>
+
+  <div class="ca danger"><span class="ic">❌</span><div><strong>Trap 6: IPv4 header = variable (20–60 bytes). IPv6 header = fixed 40 bytes always.</strong><br>The fixed 40-byte IPv6 header is one of the key improvements over IPv4. No need for an IHL (Internet Header Length) field in IPv6 because the header is always the same size.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 7: TTL (IPv4) = Hop Limit (IPv6). Same function, different name. Both decremented by 1 per router hop. When 0 → discarded + ICMP/ICMPv6 Time Exceeded message sent to source.</strong><br>TTL prevents packets from looping forever in the network. Without TTL/Hop Limit, a routing loop would cause packets to circulate indefinitely, consuming bandwidth.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 8: IPv6 Flow Label (20 bits) is unique to IPv6 — no IPv4 equivalent.</strong><br>The Flow Label suggests that all packets with the same flow label receive the same type of handling by routers. This supports QoS classification without deep packet inspection. Students often overlook this as a unique IPv6 feature.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 9: Loopback = 127.0.0.1 (IPv4) or ::1 (IPv6). Tests local TCP/IP stack only.</strong><br>Pinging the loopback address tests whether the TCP/IP stack on the local host is functioning — it does not send any traffic on the network. If loopback ping fails, the TCP/IP stack is broken, not the network.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 10: Route source codes — L=Local, C=Connected, S=Static, O=OSPF, D=EIGRP, S*=Static default.</strong><br>Each active router interface automatically adds TWO entries: a C (connected network) and an L (local = the interface's own /32 host route). These codes appear at the start of every routing table entry and are directly tested in matching questions.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 11: Static routing does NOT adapt to topology changes — admin must reconfigure manually.</strong><br>If the path used by a static route goes down, the router keeps trying to use it. It does NOT automatically find an alternate path. This is why static routing is only appropriate for small, stable networks. Dynamic routing protocols (OSPF, EIGRP) automatically find new paths.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 12: Default route = 0.0.0.0/0 (IPv4). Matches ANY destination. Always LEAST preferred.</strong><br>The router uses the longest (most specific) matching route. A /30 beats a /24 beats a /16. The default route /0 matches everything but is always used last — only when no more specific route exists. S* in the routing table = the default static route.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 13: show ip route = Cisco IOS (router). route print / netstat -r = Windows (host). Different commands for different devices.</strong><br>Know which command works where. IOS commands like show ip route do not work on Windows PCs. Windows commands like netstat -r do not work in IOS. The exam tests this distinction in troubleshooting scenarios.</div></div>
+
+  <div class="ca tip"><span class="ic">✅</span><div><strong>Module 8 quick-reference summary:</strong><br><br>
+  <strong>Network Layer (L3):</strong> OSI Layer 3 · Protocols: IPv4, IPv6, OSPF, ICMP<br>
+  <strong>4 operations:</strong> Addressing · Encapsulation (source) · Routing (routers, per hop) · De-encapsulation (destination)<br>
+  <strong>3 IP characteristics:</strong> Connectionless (no setup) · Best Effort (no guarantee) · Media Independent<br>
+  <strong>MTU/Fragmentation:</strong> IPv4 routers CAN fragment · IPv6 routers CANNOT (source only)<br>
+  <strong>IPv4 header:</strong> Variable 20–60 bytes · 12 fields<br>
+  <strong>Key IPv4 fields:</strong> Version(4b) · DS(8b) · TTL(8b, per-hop-1) · Protocol(8b: ICMP=1,TCP=6,UDP=17) · Header Checksum(16b, recalculated per hop) · Src IP(32b, always unicast) · Dst IP(32b)<br>
+  <strong>TTL:</strong> Decremented by 1 per hop · 0 = discard + ICMP Time Exceeded<br>
+  <strong>IPv4 limitations:</strong> Address depletion · No end-to-end connectivity (NAT) · Increased complexity<br>
+  <strong>IPv6 improvements:</strong> 128-bit (340 undecillion addresses) · Fixed 40-byte header · No NAT needed<br>
+  <strong>IPv6 header:</strong> Fixed 40 bytes · 8 fields · NO Header Checksum · NO router fragmentation<br>
+  <strong>IPv6 unique field:</strong> Flow Label (20 bits, no IPv4 equivalent)<br>
+  <strong>IPv6 TTL equivalent:</strong> Hop Limit (same function, different name)<br>
+  <strong>IPv6 Protocol equivalent:</strong> Next Header (same values + points to extension headers)<br>
+  <strong>Host forwarding:</strong> Loopback (127.0.0.1/::1) · Local (same network) · Remote (different network → gateway)<br>
+  <strong>IPv4 local/remote:</strong> Uses subnet mask to determine · <strong>IPv6:</strong> Router advertises prefix<br>
+  <strong>Default gateway:</strong> Router on local network · Same IP range · Required to reach remote networks<br>
+  <strong>Windows commands:</strong> route print = netstat -r (same output) · Interface List + IPv4 table + IPv6 table<br>
+  <strong>Default route:</strong> 0.0.0.0/0 = gateway of last resort · Matches any destination · Least specific<br>
+  <strong>Router forwarding:</strong> De-encapsulate L2 → check dst IP → find best route → re-encapsulate → forward<br>
+  <strong>Longest match:</strong> Most specific route always preferred (longer prefix = higher preference)<br>
+  <strong>3 route types:</strong> Directly-connected (C/L, auto) · Remote (S/O/D, static or dynamic) · Default (S*, 0.0.0.0/0)<br>
+  <strong>Static routing:</strong> Manual · No auto-update · Small networks · Use with dynamic for default route<br>
+  <strong>Dynamic routing:</strong> OSPF (open) · EIGRP (Cisco) · Auto-learns · Auto-adapts<br>
+  <strong>Route codes:</strong> L=Local · C=Connected · S=Static · O=OSPF · D=EIGRP · S*=Default static<br>
+  <strong>show ip route:</strong> Cisco IOS privileged EXEC · Displays all IPv4 routes with source codes</div></div>
+
+</div></div>
+
+</div>
+<div class="ft">CCNA 1 ITN v7.02 — Module 8: Network Layer v2.2<br>Based on Cisco NetAcad curriculum · Study guide for personal use</div>
+<button class="tb-btn" id="topb" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+<div class="mod-nav">
+  <a class="mn-hub" href="index.html">🏠 Hub</a>
+  <div class="mn-divider"></div>
+  <a class="mn-prev" href="ccna1_module7_ethernet_switching_v2.2.html">‹</a>
+  <span class="mn-label">M8 of 17</span>
+  <a class="mn-next" href="ccna1_module9_address_resolution_v2.2.html">›</a>
+</div>
+<script>
+var MOD_KEY="ccna1-module8-network-layer";
+var SECS=["s1","s2","s3","s4","s5","s6"];
+var checked={};
+function loadState(){
+  try{var s=localStorage.getItem(MOD_KEY);if(s)checked=JSON.parse(s);}catch(e){}
+  SECS.forEach(function(id){
+    var pill=document.getElementById('pill-'+id);
+    var row=document.getElementById('row-'+id);
+    var st=document.getElementById('st-'+id);
+    var sch=document.getElementById('sch-'+id);
+    if(checked[id]){
+      if(pill){pill.classList.add('checked');pill.querySelector('.pill-check').textContent='✓';}
+      if(row)row.classList.add('done');
+      if(st)st.textContent='✓';
+      if(sch){sch.classList.add('checked');sch.textContent='✓ Done';}
+    } else {
+      if(pill){pill.classList.remove('checked');pill.querySelector('.pill-check').textContent='○';}
+      if(row)row.classList.remove('done');
+      if(st)st.textContent='○';
+      if(sch){sch.classList.remove('checked');sch.textContent='○ Mark done';}
+    }
+  });
+}
+function toggleSection(id,btn){checked[id]=!checked[id];try{localStorage.setItem(MOD_KEY,JSON.stringify(checked));}catch(e){}loadState();}
+function toggleStudyPanel(){
+  var hdr=document.getElementById('sp-hdr');
+  var body=document.getElementById('sp-body');
+  var arr=document.getElementById('sp-arr');
+  hdr.classList.toggle('open');body.classList.toggle('open');
+  if(arr)arr.textContent=body.classList.contains('open')?'▲':'▼';
+}
+function goTo(id){var el=document.getElementById(id);if(!el)return;var h=el.querySelector('.sh'),b=el.querySelector('.sb');if(h&&b&&!b.classList.contains('open')){h.classList.add('open');b.classList.add('open');}setTimeout(function(){window.scrollTo({top:el.getBoundingClientRect().top+window.pageYOffset-60,behavior:'smooth'});},50);}
+function setFs(size,btn){document.documentElement.style.setProperty('--base-fs',size);document.querySelectorAll('.fs-btn').forEach(function(b){b.classList.remove('active');});btn.classList.add('active');try{localStorage.setItem('ccna-fs',size);}catch(e){}}
+(function(){try{var s=localStorage.getItem('ccna-fs');if(s){document.documentElement.style.setProperty('--base-fs',s);document.querySelectorAll('.fs-btn').forEach(function(b){b.classList.remove('active');if((b.textContent==='S'&&s==='14px')||(b.textContent==='M'&&s==='16px')||(b.textContent==='L'&&s==='18px')||(b.textContent==='XL'&&s==='20px'))b.classList.add('active');});}}catch(e){}loadState();})();
+function copyCode(btn){var pre=btn.closest('.cw').querySelector('pre');navigator.clipboard.writeText(pre.innerText||pre.textContent).then(function(){btn.textContent='Copied!';setTimeout(function(){btn.textContent='Copy';},1500);});}
+</script>
+<script src="../../site-config.js"></script>
+</body>
+</html>

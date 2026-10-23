@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CCNA 3 Syntax Checker</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#1a1a2e;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;color:#c9d1d9;min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:14px}
+.page{width:100%;max-width:780px;display:flex;flex-direction:column;gap:10px}
+.hdr{text-align:center;padding:6px 0 2px}
+.hdr h1{font-size:1.05em;font-weight:700;color:#f0f6fc}
+.hdr p{font-size:.75em;color:#6e7681;margin-top:3px}
+.lab-row{display:flex;align-items:center;gap:8px;font-size:.8em;color:#6e7681}
+.lab-row select{background:#161b22;border:1px solid #30363d;border-radius:6px;color:#c9d1d9;padding:5px 10px;font-size:.875em;cursor:pointer;outline:none;flex:1}
+.prog-wrap{display:flex;align-items:center;gap:10px}
+.prog-track{flex:1;height:6px;background:#21262d;border-radius:10px;overflow:hidden}
+.prog-fill{height:100%;background:linear-gradient(90deg,#238636,#3fb950);border-radius:10px;transition:width .4s ease;width:0%}
+.prog-lbl{font-size:.72em;font-weight:700;color:#6e7681;white-space:nowrap;min-width:56px;text-align:right}
+.instr-card{background:#161b22;border:1px solid #30363d;border-radius:8px;padding:12px 16px}
+.instr-lbl{font-size:.68em;font-weight:800;text-transform:uppercase;letter-spacing:.8px;color:#58a6ff;margin-bottom:5px}
+.instr-text{font-size:.92em;color:#e6edf3;line-height:1.55}
+.instr-text code{background:#21262d;border:1px solid #30363d;border-radius:4px;padding:1px 6px;font-family:'Courier New',monospace;font-size:.88em;color:#79c0ff}
+.terminal{background:#010409;border:1px solid #30363d;border-radius:8px;overflow:hidden}
+.term-bar{background:#161b22;border-bottom:1px solid #21262d;padding:6px 12px;display:flex;align-items:center;gap:6px}
+.dot{width:11px;height:11px;border-radius:50%}
+.d1{background:#ff5f57}.d2{background:#ffbd2e}.d3{background:#28c840}
+.term-ttl{margin-left:6px;font-size:.7em;color:#6e7681;font-weight:600}
+#term-out{padding:10px 14px 4px;font-family:'Courier New',Courier,monospace;font-size:13px;line-height:1.7;min-height:160px;max-height:340px;overflow-y:auto}
+.t-row{display:flex;gap:0}
+.t-prompt{white-space:nowrap;flex-shrink:0}
+.t-cmd{color:#e6edf3}
+.t-out{display:block;white-space:pre-wrap}
+.t-out.ok{color:#3fb950}.t-out.err{color:#f85149}.t-out.info{color:#58a6ff}.t-out.dim{color:#484f58}.t-out.warn{color:#e3b341}
+.term-input{display:flex;align-items:center;border-top:1px solid #161b22;padding:5px 14px 9px;gap:0}
+#cur-prompt{font-family:'Courier New',Courier,monospace;font-size:13px;white-space:nowrap;flex-shrink:0;color:#58a6ff;transition:color .2s;user-select:none}
+#cur-input{background:transparent;border:none;outline:none;color:#e6edf3;font-family:'Courier New',Courier,monospace;font-size:13px;flex:1;padding:0 4px;caret-color:#3fb950}
+.feedback{display:flex;align-items:center;gap:10px;padding:8px 14px;background:#161b22;border:1px solid #30363d;border-radius:8px;font-size:.8em;min-height:36px}
+.fb-icon{font-size:.8em;font-weight:800;font-family:monospace;flex-shrink:0;min-width:28px;text-align:center;padding:2px 4px;border-radius:4px;background:#21262d;color:#c9d1d9}
+.fb-text{flex:1;color:#8b949e}
+.fb-text.ok{color:#3fb950}.fb-text.err{color:#f85149}.fb-text.warn{color:#e3b341}
+.btn-row{display:flex;gap:8px;flex-wrap:wrap}
+.btn{border:1px solid #30363d;border-radius:6px;padding:6px 14px;font-size:.8em;font-weight:600;cursor:pointer;transition:all .15s;-webkit-tap-highlight-color:transparent}
+.btn-hint{background:#161b22;color:#8b949e}
+.btn-hint:hover{background:#21262d;color:#c9d1d9}
+.btn-reset{background:#161b22;color:#6e7681;margin-left:auto}
+.btn-reset:hover{background:#21262d;color:#f85149}
+.success{display:none;background:#161b22;border:1px solid #238636;border-radius:8px;padding:24px 20px;text-align:center}
+.success.show{display:block}
+.s-icon{font-size:2.2em;margin-bottom:8px}
+.s-title{font-size:1.1em;font-weight:800;color:#3fb950;margin-bottom:6px}
+.s-msg{font-size:.82em;color:#8b949e;line-height:1.6}
+.btn-again{background:#238636;color:#fff;border-color:#2ea043;margin-top:14px;padding:8px 22px;font-size:.88em}
+.btn-again:hover{background:#2ea043}
+</style>
+</head>
+<body>
+<div class="page">
+
+<a href="../index.html" style="align-self:flex-start;color:#58a6ff;text-decoration:none;font-size:.85em;font-weight:600">&#x1F3E0; Home</a>
+<div class="hdr">
+  <h1>CCNA 3 ENSA -- Syntax Checker Activities</h1>
+  <p>Type each command exactly. Press Enter to submit.</p>
+</div>
+
+<div class="lab-row">
+  <span>Lab:</span>
+  <select id="lab-picker" onchange="loadLab(this.value)">
+    <option value="0">2.1.5 OSPFv2 Point-to-Point Networks</option>
+    <option value="1">2.3.7 OSPFv2 Multiaccess Networks</option>
+    <option value="2">2.4.6 Modify OSPFv2</option>
+    <option value="3">2.6.2 Verify Single-Area OSPFv2</option>
+    <option value="4">5.2.8 Configure Numbered Standard ACLs</option>
+    <option value="5">5.4.13 Configure Extended ACLs</option>
+    <option value="6">6.4.4 Configure Static NAT</option>
+    <option value="7">6.5.7 Configure Dynamic NAT</option>
+    <option value="8">6.6.6 Configure PAT (Address Pool)</option>
+    <option value="9">6.6.7 Configure PAT (Single Address)</option>
+    <option value="10">10.1.5 Configure CDP and LLDP</option>
+    <option value="11">10.2.4 Configure NTP</option>
+    <option value="12">10.3.5 Configure SNMPv2c</option>
+    <option value="13">10.4.7 Configure Syslog</option>
+  </select>
+</div>
+
+<div class="prog-wrap">
+  <div class="prog-track"><div class="prog-fill" id="prog-fill"></div></div>
+  <div class="prog-lbl" id="prog-lbl">Step 0/0</div>
+</div>
+
+<div class="instr-card">
+  <div class="instr-lbl">Instruction</div>
+  <div class="instr-text" id="instr-text">Loading...</div>
+</div>
+
+<div class="terminal">
+  <div class="term-bar">
+    <div class="dot d1"></div><div class="dot d2"></div><div class="dot d3"></div>
+    <span class="term-ttl" id="term-ttl">Cisco IOS Console</span>
+  </div>
+  <div id="term-out"></div>
+  <div class="term-input">
+    <span id="cur-prompt">Router&gt;&nbsp;</span>
+    <input id="cur-input" type="text" autocomplete="off" autocorrect="off"
+           autocapitalize="off" spellcheck="false" autofocus
+           placeholder="Type command here...">
+  </div>
+</div>
+
+<div class="feedback" id="feedback">
+  <span class="fb-icon">💡</span>
+  <span class="fb-text" id="fb-text">Type the command shown in the instruction, then press Enter.</span>
+</div>
+
+<div class="btn-row">
+  <button class="btn btn-hint" onclick="showHint()">Show Hint</button>
+  <button class="btn btn-reset" onclick="resetLab()">Restart Lab</button>
+</div>
+
+<div class="success" id="success">
+  <div class="s-icon">🎉</div>
+  <div class="s-title">Lab Complete!</div>
+  <div class="s-msg" id="s-msg"></div>
+  <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:14px">
+    <button class="btn btn-again" onclick="resetLab()">Restart This Lab</button>
+    <button class="btn btn-again" onclick="pickAnother()" style="background:#1f6feb;border-color:#388bfd">Try Another Lab</button>
+  </div>
+</div>
+
+</div>
+<script>
+var PC={
+  '>':'#58a6ff','#':'#bc8cff',
+  '(config)#':'#e3b341','(config-if)#':'#ffa657',
+  '(config-line)#':'#ffa657','(config-router)#':'#ffa657',
+  '(config-std-nacl)#':'#ffa657','(config-ext-nacl)#':'#ffa657'
+};
+function pc(p){for(var k in PC){if(p.indexOf(k)>=0)return PC[k];}return '#58a6ff';}
+
+var LABS=[
+
+// 0 -- 2.1.5 OSPFv2 Point-to-Point
+{title:'2.1.5 Configure OSPFv2 on Point-to-Point Networks',
+done:'You configured single-area OSPFv2 on point-to-point links. The network command uses a wildcard mask (inverse of subnet mask). The area 0 is the backbone -- all OSPF areas must connect to it.',
+steps:[
+{i:'Enter global configuration mode.',p:'R1#',c:'configure terminal',h:'Type: configure terminal',ok:'Correct!',no:'Type: configure terminal',o:[{t:'Enter configuration commands, one per line.  End with CNTL/Z.',c:'dim'}]},
+{i:'Start OSPF process <code>10</code>.',p:'R1(config)#',c:'router ospf 10',h:'Type: router ospf 10',ok:'Correct! OSPF process 10 started. The process ID is locally significant only.',no:'Type: router ospf 10',o:[]},
+{i:'Set the router ID to <code>1.1.1.1</code>.',p:'R1(config-router)#',c:'router-id 1.1.1.1',h:'Type: router-id 1.1.1.1',ok:'Correct! The router ID uniquely identifies this router in the OSPF domain.',no:'Type: router-id 1.1.1.1',o:[]},
+{i:'Advertise network <code>10.10.1.0</code> with wildcard <code>0.0.0.255</code> in area 0.',p:'R1(config-router)#',c:'network 10.10.1.0 0.0.0.255 area 0',h:'Type: network 10.10.1.0 0.0.0.255 area 0',ok:'Correct! Wildcard mask 0.0.0.255 = /24 subnet. OSPF will run on interfaces in this range.',no:'Type: network 10.10.1.0 0.0.0.255 area 0',o:[]},
+{i:'Advertise network <code>10.10.2.0</code> with wildcard <code>0.0.0.255</code> in area 0.',p:'R1(config-router)#',c:'network 10.10.2.0 0.0.0.255 area 0',h:'Type: network 10.10.2.0 0.0.0.255 area 0',ok:'Correct!',no:'Type: network 10.10.2.0 0.0.0.255 area 0',o:[]},
+{i:'Advertise the loopback network <code>1.1.1.1</code> host route with wildcard <code>0.0.0.0</code> in area 0.',p:'R1(config-router)#',c:'network 1.1.1.1 0.0.0.0 area 0',h:'Type: network 1.1.1.1 0.0.0.0 area 0',ok:'Correct! 0.0.0.0 wildcard matches this exact address only.',no:'Type: network 1.1.1.1 0.0.0.0 area 0',o:[]},
+{i:'Make interface <code>GigabitEthernet 0/0/0</code> passive -- no OSPF hellos sent out.',p:'R1(config-router)#',c:'passive-interface GigabitEthernet 0/0/0',h:'Type: passive-interface GigabitEthernet 0/0/0',ok:'Correct! Passive interfaces advertise the network but do not form adjacencies.',no:'Type: passive-interface GigabitEthernet 0/0/0',o:[]},
+{i:'Return to privileged EXEC mode.',p:'R1(config-router)#',c:'end',h:'Type: end',ok:'Correct!',no:'Type: end',o:[]},
+{i:'Verify OSPF neighbors.',p:'R1#',c:'show ip ospf neighbor',h:'Type: show ip ospf neighbor',ok:'Correct! Shows OSPF neighbor state. Full = fully adjacent and exchanging routes.',no:'Type: show ip ospf neighbor',o:[{t:'Neighbor ID  Pri  State      Dead Time  Address      Interface',c:'info'},{t:'2.2.2.2      1    FULL/DR    00:00:35   10.10.2.2    GigabitEthernet0/0/1',c:'ok'}]},
+{i:'Verify OSPF routes in the routing table.',p:'R1#',c:'show ip route ospf',h:'Type: show ip route ospf',ok:'Correct! O entries are OSPF-learned routes with AD=110.',no:'Type: show ip route ospf',o:[{t:'Codes: O - OSPF',c:'dim'},{t:'',c:''},{t:'O     10.10.3.0/24 [110/2] via 10.10.2.2, 00:00:05, GigabitEthernet0/0/1',c:'ok'},{t:'O     2.2.2.2/32 [110/2] via 10.10.2.2, 00:00:05, GigabitEthernet0/0/1',c:'ok'}]}
+]},
+
+// 1 -- 2.3.7 OSPFv2 Multiaccess
+{title:'2.3.7 Configure OSPFv2 on Multiaccess Networks',
+done:'You configured OSPF on a multiaccess (Ethernet) network. On multiaccess networks OSPF elects a DR and BDR. Higher priority wins. Setting priority 0 prevents a router from being elected DR/BDR.',
+steps:[
+{i:'Enter global configuration mode.',p:'R1#',c:'configure terminal',h:'Type: configure terminal',ok:'Correct!',no:'Type: configure terminal',o:[{t:'Enter configuration commands, one per line.  End with CNTL/Z.',c:'dim'}]},
+{i:'Enter interface GigabitEthernet 0/0/0.',p:'R1(config)#',c:'interface GigabitEthernet 0/0/0',h:'Type: interface GigabitEthernet 0/0/0',ok:'Correct!',no:'Type: interface GigabitEthernet 0/0/0',o:[]},
+{i:'Set OSPF priority to <code>255</code> to ensure R1 becomes the DR.',p:'R1(config-if)#',c:'ip ospf priority 255',h:'Type: ip ospf priority 255',ok:'Correct! Priority range is 0-255. Highest wins the DR election. 0 = never a DR.',no:'Type: ip ospf priority 255',o:[]},
+{i:'Return to global config mode.',p:'R1(config-if)#',c:'exit',h:'Type: exit',ok:'Correct!',no:'Type: exit',o:[]},
+{i:'Start OSPF process <code>10</code>.',p:'R1(config)#',c:'router ospf 10',h:'Type: router ospf 10',ok:'Correct!',no:'Type: router ospf 10',o:[]},
+{i:'Set the router ID to <code>1.1.1.1</code>.',p:'R1(config-router)#',c:'router-id 1.1.1.1',h:'Type: router-id 1.1.1.1',ok:'Correct!',no:'Type: router-id 1.1.1.1',o:[]},
+{i:'Advertise the LAN network <code>192.168.1.0</code> wildcard <code>0.0.0.255</code> area 0.',p:'R1(config-router)#',c:'network 192.168.1.0 0.0.0.255 area 0',h:'Type: network 192.168.1.0 0.0.0.255 area 0',ok:'Correct!',no:'Type: network 192.168.1.0 0.0.0.255 area 0',o:[]},
+{i:'Advertise the loopback <code>1.1.1.1</code> wildcard <code>0.0.0.0</code> area 0.',p:'R1(config-router)#',c:'network 1.1.1.1 0.0.0.0 area 0',h:'Type: network 1.1.1.1 0.0.0.0 area 0',ok:'Correct!',no:'Type: network 1.1.1.1 0.0.0.0 area 0',o:[]},
+{i:'Return to privileged EXEC mode.',p:'R1(config-router)#',c:'end',h:'Type: end',ok:'Correct!',no:'Type: end',o:[]},
+{i:'Verify DR/BDR election on the multiaccess segment.',p:'R1#',c:'show ip ospf interface GigabitEthernet 0/0/0',h:'Type: show ip ospf interface GigabitEthernet 0/0/0',ok:'Correct! Shows DR/BDR state, priority, and hello/dead intervals.',no:'Type: show ip ospf interface GigabitEthernet 0/0/0',o:[{t:'GigabitEthernet0/0/0 is up, line protocol is up',c:'ok'},{t:'  Internet Address 192.168.1.1/24, Area 0, Attached via Network Statement',c:''},{t:'  Network Type BROADCAST, Cost: 1',c:'info'},{t:'  Transmit Delay is 1 sec, State DR, Priority 255',c:'ok'},{t:'  Designated Router (ID) 1.1.1.1, Interface address 192.168.1.1',c:'ok'},{t:'  Timer intervals configured, Hello 10, Dead 40, Wait 40, Retransmit 5',c:'dim'}]}
+]},
+
+// 2 -- 2.4.6 Modify OSPFv2
+{title:'2.4.6 Modify OSPFv2 -- Timers and Authentication',
+done:'You modified OSPF hello/dead timers and configured MD5 authentication. Hello and dead timers must match between OSPF neighbors or adjacency will not form. MD5 authentication prevents unauthorized routers from joining.',
+steps:[
+{i:'Enter global configuration mode.',p:'R1#',c:'configure terminal',h:'Type: configure terminal',ok:'Correct!',no:'Type: configure terminal',o:[{t:'Enter configuration commands, one per line.  End with CNTL/Z.',c:'dim'}]},
+{i:'Enter interface GigabitEthernet 0/0/0.',p:'R1(config)#',c:'interface GigabitEthernet 0/0/0',h:'Type: interface GigabitEthernet 0/0/0',ok:'Correct!',no:'Type: interface GigabitEthernet 0/0/0',o:[]},
+{i:'Set the OSPF hello interval to <code>5</code> seconds.',p:'R1(config-if)#',c:'ip ospf hello-interval 5',h:'Type: ip ospf hello-interval 5',ok:'Correct! Default is 10 sec. Must match the neighbor or adjacency fails.',no:'Type: ip ospf hello-interval 5',o:[]},
+{i:'Set the OSPF dead interval to <code>20</code> seconds.',p:'R1(config-if)#',c:'ip ospf dead-interval 20',h:'Type: ip ospf dead-interval 20',ok:'Correct! Default is 40 sec (4x hello). Must match the neighbor.',no:'Type: ip ospf dead-interval 20',o:[]},
+{i:'Enable OSPF MD5 authentication on this interface using key <code>1</code> and password <code>OSPF_Key</code>.',p:'R1(config-if)#',c:'ip ospf message-digest-key 1 md5 OSPF_Key',h:'Type: ip ospf message-digest-key 1 md5 OSPF_Key',ok:'Correct! Key ID 1 and password must match the neighbor.',no:'Type: ip ospf message-digest-key 1 md5 OSPF_Key',o:[]},
+{i:'Activate MD5 authentication on this interface.',p:'R1(config-if)#',c:'ip ospf authentication message-digest',h:'Type: ip ospf authentication message-digest',ok:'Correct! Authentication is now active on this interface.',no:'Type: ip ospf authentication message-digest',o:[]},
+{i:'Return to OSPF router config mode.',p:'R1(config-if)#',c:'router ospf 10',h:'Type: router ospf 10',ok:'Correct!',no:'Type: router ospf 10',o:[]},
+{i:'Set the reference bandwidth to <code>1000</code> Mbps to account for gigabit and faster links.',p:'R1(config-router)#',c:'auto-cost reference-bandwidth 1000',h:'Type: auto-cost reference-bandwidth 1000',ok:'Correct! Default is 100 Mbps -- set all routers in the domain to the same value.',no:'Type: auto-cost reference-bandwidth 1000',o:[{t:'% OSPF: Reference bandwidth is changed.',c:'warn'},{t:'  Please ensure reference bandwidth is consistent across all routers.',c:'warn'}]},
+{i:'Return to privileged EXEC mode.',p:'R1(config-router)#',c:'end',h:'Type: end',ok:'Correct!',no:'Type: end',o:[]}
+]},
+
+// 3 -- 2.6.2 Verify OSPFv2
+{title:'2.6.2 Verify Single-Area OSPFv2',
+done:'You used all the key OSPF verification commands. In troubleshooting order: show ip ospf neighbor checks adjacency, show ip route ospf checks route learning, show ip ospf interface checks timers and DR/BDR state.',
+steps:[
+{i:'Verify OSPF process information.',p:'R1#',c:'show ip ospf',h:'Type: show ip ospf',ok:'Correct! Shows process ID, router ID, area info, and SPF statistics.',no:'Type: show ip ospf',o:[{t:'Routing Process "ospf 10" with ID 1.1.1.1',c:'info'},{t:' Start time: 00:01:00.000, Time elapsed: 00:05:00.000',c:'dim'},{t:' Supports only single TOS(TOS0) routes',c:'dim'},{t:' Number of areas in this router is 1. 1 normal 0 stub 0 nssa',c:''}]},
+{i:'Verify OSPF neighbor adjacencies.',p:'R1#',c:'show ip ospf neighbor',h:'Type: show ip ospf neighbor',ok:'Correct! State FULL means the neighbor relationship is complete and routes are exchanged.',no:'Type: show ip ospf neighbor',o:[{t:'Neighbor ID  Pri  State      Dead Time  Address      Interface',c:'info'},{t:'2.2.2.2      1    FULL/DR    00:00:36   10.10.1.2    GigabitEthernet0/0/0',c:'ok'},{t:'3.3.3.3      1    FULL/ -    00:00:38   10.10.2.2    GigabitEthernet0/0/1',c:'ok'}]},
+{i:'Verify OSPF interface details on GigabitEthernet 0/0/0.',p:'R1#',c:'show ip ospf interface GigabitEthernet 0/0/0',h:'Type: show ip ospf interface GigabitEthernet 0/0/0',ok:'Correct! Shows cost, network type, DR/BDR, and timer values.',no:'Type: show ip ospf interface GigabitEthernet 0/0/0',o:[{t:'GigabitEthernet0/0/0 is up, line protocol is up',c:'ok'},{t:'  Internet Address 10.10.1.1/30, Area 0',c:''},{t:'  Network Type POINT_TO_POINT, Cost: 1',c:'info'},{t:'  Timer intervals: Hello 10, Dead 40',c:'dim'}]},
+{i:'Verify only OSPF routes in the routing table.',p:'R1#',c:'show ip route ospf',h:'Type: show ip route ospf',ok:'Correct! Shows only OSPF-learned (O) routes -- useful to confirm route propagation.',no:'Type: show ip route ospf',o:[{t:'O     10.10.2.0/30 [110/2] via 10.10.1.2, GigabitEthernet0/0/0',c:'ok'},{t:'O     192.168.2.0/24 [110/2] via 10.10.1.2, GigabitEthernet0/0/0',c:'ok'},{t:'O     192.168.3.0/24 [110/3] via 10.10.1.2, GigabitEthernet0/0/0',c:'ok'}]},
+{i:'View the full routing table for a complete picture.',p:'R1#',c:'show ip route',h:'Type: show ip route',ok:'Correct! C=connected, L=local, O=OSPF. Notice the [110/x] = AD/metric.',no:'Type: show ip route',o:[{t:'Codes: C - connected, L - local, O - OSPF',c:'dim'},{t:'',c:''},{t:'Gateway of last resort is not set',c:''},{t:'',c:''},{t:'C     10.10.1.0/30 is directly connected, GigabitEthernet0/0/0',c:''},{t:'O     10.10.2.0/30 [110/2] via 10.10.1.2',c:'ok'},{t:'C     192.168.1.0/24 is directly connected, GigabitEthernet0/0/2',c:''},{t:'O     192.168.2.0/24 [110/2] via 10.10.1.2',c:'ok'}]}
+]},
+
+// 4 -- 5.2.8 Standard ACLs
+{title:'5.2.8 Configure Numbered Standard ACLs',
+done:'You configured a standard numbered ACL. Standard ACLs filter based on source IP only and should be placed close to the destination. The implicit deny at the end blocks everything not explicitly permitted.',
+steps:[
+{i:'Enter global configuration mode.',p:'R1#',c:'configure terminal',h:'Type: configure terminal',ok:'Correct!',no:'Type: configure terminal',o:[{t:'Enter configuration commands, one per line.  End with CNTL/Z.',c:'dim'}]},
+{i:'Create ACL <code>1</code> permitting host <code>192.168.10.10</code>.',p:'R1(config)#',c:'access-list 1 permit host 192.168.10.10',h:'Type: access-list 1 permit host 192.168.10.10',ok:'Correct! The host keyword is shorthand for wildcard 0.0.0.0 (exact match).',no:'Type: access-list 1 permit host 192.168.10.10',o:[]},
+{i:'Add an entry to ACL <code>1</code> permitting the entire <code>192.168.20.0/24</code> network.',p:'R1(config)#',c:'access-list 1 permit 192.168.20.0 0.0.0.255',h:'Type: access-list 1 permit 192.168.20.0 0.0.0.255',ok:'Correct! Wildcard 0.0.0.255 matches any host in the /24 network.',no:'Type: access-list 1 permit 192.168.20.0 0.0.0.255',o:[]},
+{i:'Enter interface GigabitEthernet 0/0/0 to apply the ACL.',p:'R1(config)#',c:'interface GigabitEthernet 0/0/0',h:'Type: interface GigabitEthernet 0/0/0',ok:'Correct!',no:'Type: interface GigabitEthernet 0/0/0',o:[]},
+{i:'Apply ACL <code>1</code> inbound on this interface.',p:'R1(config-if)#',c:'ip access-group 1 in',h:'Type: ip access-group 1 in',ok:'Correct! Inbound ACLs filter traffic arriving on this interface.',no:'Type: ip access-group 1 in',o:[]},
+{i:'Return to privileged EXEC mode.',p:'R1(config-if)#',c:'end',h:'Type: end',ok:'Correct!',no:'Type: end',o:[]},
+{i:'Verify the ACL.',p:'R1#',c:'show access-lists',h:'Type: show access-lists',ok:'Correct! Shows ACL entries and match counters.',no:'Type: show access-lists',o:[{t:'Standard IP access list 1',c:'info'},{t:'    10 permit host 192.168.10.10',c:'ok'},{t:'    20 permit 192.168.20.0, wildcard bits 0.0.0.255',c:'ok'}]},
+{i:'Verify the ACL is applied to the interface.',p:'R1#',c:'show ip interface GigabitEthernet 0/0/0',h:'Type: show ip interface GigabitEthernet 0/0/0',ok:'Correct! Shows inbound and outbound ACL assignments.',no:'Type: show ip interface GigabitEthernet 0/0/0',o:[{t:'GigabitEthernet0/0/0 is up, line protocol is up',c:'ok'},{t:'  Inbound  access list is 1',c:'ok'},{t:'  Outbound access list is not set',c:'dim'}]}
+]},
+
+// 5 -- 5.4.13 Extended ACLs
+{title:'5.4.13 Configure Extended ACLs',
+done:'You configured a named extended ACL. Extended ACLs filter on source IP, destination IP, protocol, and port -- place them close to the source. Named ACLs can be edited by sequence number.',
+steps:[
+{i:'Enter global configuration mode.',p:'R1#',c:'configure terminal',h:'Type: configure terminal',ok:'Correct!',no:'Type: configure terminal',o:[{t:'Enter configuration commands, one per line.  End with CNTL/Z.',c:'dim'}]},
+{i:'Create named extended ACL <code>SURFING</code>.',p:'R1(config)#',c:'ip access-list extended SURFING',h:'Type: ip access-list extended SURFING',ok:'Correct! Named ACLs are easier to edit and identify than numbered ACLs.',no:'Type: ip access-list extended SURFING',o:[]},
+{i:'Permit TCP from <code>192.168.10.0/24</code> to any destination on port <code>80</code> (HTTP).',p:'R1(config-ext-nacl)#',c:'permit tcp 192.168.10.0 0.0.0.255 any eq 80',h:'Type: permit tcp 192.168.10.0 0.0.0.255 any eq 80',ok:'Correct! Permits HTTP (port 80) traffic from the 192.168.10.0 network.',no:'Type: permit tcp 192.168.10.0 0.0.0.255 any eq 80',o:[]},
+{i:'Permit TCP from <code>192.168.10.0/24</code> to any destination on port <code>443</code> (HTTPS).',p:'R1(config-ext-nacl)#',c:'permit tcp 192.168.10.0 0.0.0.255 any eq 443',h:'Type: permit tcp 192.168.10.0 0.0.0.255 any eq 443',ok:'Correct! All other traffic is implicitly denied.',no:'Type: permit tcp 192.168.10.0 0.0.0.255 any eq 443',o:[]},
+{i:'Return to global config and create ACL <code>BROWSING</code> for return traffic.',p:'R1(config-ext-nacl)#',c:'exit',h:'Type: exit',ok:'Correct!',no:'Type: exit',o:[]},
+{i:'Create named extended ACL <code>BROWSING</code>.',p:'R1(config)#',c:'ip access-list extended BROWSING',h:'Type: ip access-list extended BROWSING',ok:'Correct!',no:'Type: ip access-list extended BROWSING',o:[]},
+{i:'Permit TCP from any source with established flag to <code>192.168.10.0/24</code>.',p:'R1(config-ext-nacl)#',c:'permit tcp any 192.168.10.0 0.0.0.255 established',h:'Type: permit tcp any 192.168.10.0 0.0.0.255 established',ok:'Correct! The established keyword allows return traffic from sessions initiated inside.',no:'Type: permit tcp any 192.168.10.0 0.0.0.255 established',o:[]},
+{i:'Return to global config mode.',p:'R1(config-ext-nacl)#',c:'exit',h:'Type: exit',ok:'Correct!',no:'Type: exit',o:[]},
+{i:'Enter interface GigabitEthernet 0/0/0 (client-facing interface).',p:'R1(config)#',c:'interface GigabitEthernet 0/0/0',h:'Type: interface GigabitEthernet 0/0/0',ok:'Correct!',no:'Type: interface GigabitEthernet 0/0/0',o:[]},
+{i:'Apply SURFING ACL inbound (traffic from clients to internet).',p:'R1(config-if)#',c:'ip access-group SURFING in',h:'Type: ip access-group SURFING in',ok:'Correct!',no:'Type: ip access-group SURFING in',o:[]},
+{i:'Apply BROWSING ACL outbound (return traffic to clients).',p:'R1(config-if)#',c:'ip access-group BROWSING out',h:'Type: ip access-group BROWSING out',ok:'Correct! Extended ACLs placed close to the source reduce unnecessary traffic.',no:'Type: ip access-group BROWSING out',o:[]},
+{i:'Return to privileged EXEC mode.',p:'R1(config-if)#',c:'end',h:'Type: end',ok:'Correct! Extended ACLs configured.',no:'Type: end',o:[]}
+]},
+
+// 6 -- 6.4.4 Static NAT
+{title:'6.4.4 Configure Static NAT',
+done:'You configured static NAT (one-to-one mapping). Static NAT permanently maps a private inside address to a public outside address. Used for servers that need a fixed public IP.',
+steps:[
+{i:'Enter global configuration mode.',p:'R1#',c:'configure terminal',h:'Type: configure terminal',ok:'Correct!',no:'Type: configure terminal',o:[{t:'Enter configuration commands, one per line.  End with CNTL/Z.',c:'dim'}]},
+{i:'Create a static NAT entry mapping inside <code>192.168.1.5</code> to outside <code>209.165.200.225</code>.',p:'R1(config)#',c:'ip nat inside source static 192.168.1.5 209.165.200.225',h:'Type: ip nat inside source static 192.168.1.5 209.165.200.225',ok:'Correct! Every packet from 192.168.1.5 will appear to come from 209.165.200.225.',no:'Type: ip nat inside source static 192.168.1.5 209.165.200.225',o:[]},
+{i:'Enter the inside interface (GigabitEthernet 0/0/0).',p:'R1(config)#',c:'interface GigabitEthernet 0/0/0',h:'Type: interface GigabitEthernet 0/0/0',ok:'Correct!',no:'Type: interface GigabitEthernet 0/0/0',o:[]},
+{i:'Mark this interface as NAT inside.',p:'R1(config-if)#',c:'ip nat inside',h:'Type: ip nat inside',ok:'Correct! NAT translates packets leaving this interface outbound.',no:'Type: ip nat inside',o:[]},
+{i:'Enter the outside interface (GigabitEthernet 0/0/1).',p:'R1(config-if)#',c:'interface GigabitEthernet 0/0/1',h:'Type: interface GigabitEthernet 0/0/1',ok:'Correct!',no:'Type: interface GigabitEthernet 0/0/1',o:[]},
+{i:'Mark this interface as NAT outside.',p:'R1(config-if)#',c:'ip nat outside',h:'Type: ip nat outside',ok:'Correct! NAT translates addresses on packets arriving from the outside.',no:'Type: ip nat outside',o:[]},
+{i:'Return to privileged EXEC mode.',p:'R1(config-if)#',c:'end',h:'Type: end',ok:'Correct!',no:'Type: end',o:[]},
+{i:'Verify NAT translations.',p:'R1#',c:'show ip nat translations',h:'Type: show ip nat translations',ok:'Correct! Shows active NAT translation entries.',no:'Type: show ip nat translations',o:[{t:'Pro  Inside global       Inside local       Outside local    Outside global',c:'info'},{t:'---  209.165.200.225    192.168.1.5        ---              ---',c:'ok'}]}
+]},
+
+// 7 -- 6.5.7 Dynamic NAT
+{title:'6.5.7 Configure Dynamic NAT',
+done:'You configured dynamic NAT with an address pool. Dynamic NAT maps inside private addresses to a pool of public addresses on a first-come first-served basis. When the pool is exhausted, new connections are dropped.',
+steps:[
+{i:'Enter global configuration mode.',p:'R1#',c:'configure terminal',h:'Type: configure terminal',ok:'Correct!',no:'Type: configure terminal',o:[{t:'Enter configuration commands, one per line.  End with CNTL/Z.',c:'dim'}]},
+{i:'Create NAT pool <code>NAT-POOL1</code> with addresses <code>209.165.200.226</code> to <code>209.165.200.240</code> and mask <code>255.255.255.224</code>.',p:'R1(config)#',c:'ip nat pool NAT-POOL1 209.165.200.226 209.165.200.240 netmask 255.255.255.224',h:'Type: ip nat pool NAT-POOL1 209.165.200.226 209.165.200.240 netmask 255.255.255.224',ok:'Correct! This pool has 15 public addresses available for dynamic assignment.',no:'Type: ip nat pool NAT-POOL1 209.165.200.226 209.165.200.240 netmask 255.255.255.224',o:[]},
+{i:'Create ACL <code>1</code> to identify which inside addresses are eligible for NAT.',p:'R1(config)#',c:'access-list 1 permit 192.168.0.0 0.0.255.255',h:'Type: access-list 1 permit 192.168.0.0 0.0.255.255',ok:'Correct! Only addresses matching this ACL will be translated.',no:'Type: access-list 1 permit 192.168.0.0 0.0.255.255',o:[]},
+{i:'Bind the ACL to the NAT pool.',p:'R1(config)#',c:'ip nat inside source list 1 pool NAT-POOL1',h:'Type: ip nat inside source list 1 pool NAT-POOL1',ok:'Correct! Inside addresses matching ACL 1 will be translated using NAT-POOL1.',no:'Type: ip nat inside source list 1 pool NAT-POOL1',o:[]},
+{i:'Enter inside interface GigabitEthernet 0/0/0.',p:'R1(config)#',c:'interface GigabitEthernet 0/0/0',h:'Type: interface GigabitEthernet 0/0/0',ok:'Correct!',no:'Type: interface GigabitEthernet 0/0/0',o:[]},
+{i:'Mark as NAT inside.',p:'R1(config-if)#',c:'ip nat inside',h:'Type: ip nat inside',ok:'Correct!',no:'Type: ip nat inside',o:[]},
+{i:'Enter outside interface GigabitEthernet 0/0/1.',p:'R1(config-if)#',c:'interface GigabitEthernet 0/0/1',h:'Type: interface GigabitEthernet 0/0/1',ok:'Correct!',no:'Type: interface GigabitEthernet 0/0/1',o:[]},
+{i:'Mark as NAT outside.',p:'R1(config-if)#',c:'ip nat outside',h:'Type: ip nat outside',ok:'Correct!',no:'Type: ip nat outside',o:[]},
+{i:'Return to privileged EXEC mode.',p:'R1(config-if)#',c:'end',h:'Type: end',ok:'Correct! Dynamic NAT configured.',no:'Type: end',o:[]},
+{i:'Verify NAT statistics.',p:'R1#',c:'show ip nat statistics',h:'Type: show ip nat statistics',ok:'Correct! Shows total translations, pool usage, and hit/miss counts.',no:'Type: show ip nat statistics',o:[{t:'Total active translations: 0 (0 static, 0 dynamic; 0 extended)',c:''},{t:'Peak translations: 0',c:'dim'},{t:'Outside interfaces: GigabitEthernet0/0/1',c:'info'},{t:'Inside interfaces: GigabitEthernet0/0/0',c:'info'},{t:'Hits: 0  Misses: 0',c:'dim'},{t:'NAT-POOL1 pool :',c:'info'},{t:' start 209.165.200.226 end 209.165.200.240',c:'ok'},{t:' total addresses 15, allocated 0, misses 0',c:'ok'}]}
+]},
+
+// 8 -- 6.6.6 PAT Address Pool
+{title:'6.6.6 Configure PAT Using an Address Pool',
+done:'You configured PAT (Port Address Translation) with an address pool. PAT uses port numbers to multiplex many inside addresses to a few outside addresses. This is how most home routers work -- thousands of users sharing a few IPs.',
+steps:[
+{i:'Enter global configuration mode.',p:'R1#',c:'configure terminal',h:'Type: configure terminal',ok:'Correct!',no:'Type: configure terminal',o:[{t:'Enter configuration commands, one per line.  End with CNTL/Z.',c:'dim'}]},
+{i:'Create NAT pool <code>NAT-POOL2</code> from <code>209.165.200.226</code> to <code>209.165.200.228</code> mask <code>255.255.255.252</code>.',p:'R1(config)#',c:'ip nat pool NAT-POOL2 209.165.200.226 209.165.200.228 netmask 255.255.255.252',h:'Type: ip nat pool NAT-POOL2 209.165.200.226 209.165.200.228 netmask 255.255.255.252',ok:'Correct! Small pool -- PAT will multiplex many inside hosts using port numbers.',no:'Type: ip nat pool NAT-POOL2 209.165.200.226 209.165.200.228 netmask 255.255.255.252',o:[]},
+{i:'Create ACL <code>1</code> to identify inside addresses.',p:'R1(config)#',c:'access-list 1 permit 192.168.0.0 0.0.255.255',h:'Type: access-list 1 permit 192.168.0.0 0.0.255.255',ok:'Correct!',no:'Type: access-list 1 permit 192.168.0.0 0.0.255.255',o:[]},
+{i:'Bind ACL 1 to pool NAT-POOL2 with <code>overload</code> (enables PAT).',p:'R1(config)#',c:'ip nat inside source list 1 pool NAT-POOL2 overload',h:'Type: ip nat inside source list 1 pool NAT-POOL2 overload',ok:'Correct! The overload keyword enables PAT -- multiple inside hosts share pool addresses using port numbers.',no:'Type: ip nat inside source list 1 pool NAT-POOL2 overload',o:[]},
+{i:'Mark GigabitEthernet 0/0/0 as NAT inside.',p:'R1(config)#',c:'interface GigabitEthernet 0/0/0',h:'Type: interface GigabitEthernet 0/0/0',ok:'Correct!',no:'Type: interface GigabitEthernet 0/0/0',o:[]},
+{i:'Apply ip nat inside.',p:'R1(config-if)#',c:'ip nat inside',h:'Type: ip nat inside',ok:'Correct!',no:'Type: ip nat inside',o:[]},
+{i:'Mark GigabitEthernet 0/0/1 as NAT outside.',p:'R1(config-if)#',c:'interface GigabitEthernet 0/0/1',h:'Type: interface GigabitEthernet 0/0/1',ok:'Correct!',no:'Type: interface GigabitEthernet 0/0/1',o:[]},
+{i:'Apply ip nat outside.',p:'R1(config-if)#',c:'ip nat outside',h:'Type: ip nat outside',ok:'Correct!',no:'Type: ip nat outside',o:[]},
+{i:'Return to privileged EXEC mode.',p:'R1(config-if)#',c:'end',h:'Type: end',ok:'Correct! PAT with address pool configured.',no:'Type: end',o:[]}
+]},
+
+// 9 -- 6.6.7 PAT Single Address
+{title:'6.6.7 Configure PAT Using a Single Interface Address',
+done:'You configured PAT using the router interface address. This is the most common NAT configuration in small networks -- all inside hosts share a single public IP address differentiated by port numbers.',
+steps:[
+{i:'Enter global configuration mode.',p:'R1#',c:'configure terminal',h:'Type: configure terminal',ok:'Correct!',no:'Type: configure terminal',o:[{t:'Enter configuration commands, one per line.  End with CNTL/Z.',c:'dim'}]},
+{i:'Create ACL <code>1</code> to match all inside private addresses.',p:'R1(config)#',c:'access-list 1 permit 192.168.0.0 0.0.255.255',h:'Type: access-list 1 permit 192.168.0.0 0.0.255.255',ok:'Correct!',no:'Type: access-list 1 permit 192.168.0.0 0.0.255.255',o:[]},
+{i:'Configure PAT using the outside interface address -- no pool needed.',p:'R1(config)#',c:'ip nat inside source list 1 interface GigabitEthernet 0/0/1 overload',h:'Type: ip nat inside source list 1 interface GigabitEthernet 0/0/1 overload',ok:'Correct! Uses the IP address of G0/0/1 as the single public address for all translations.',no:'Type: ip nat inside source list 1 interface GigabitEthernet 0/0/1 overload',o:[]},
+{i:'Enter inside interface GigabitEthernet 0/0/0.',p:'R1(config)#',c:'interface GigabitEthernet 0/0/0',h:'Type: interface GigabitEthernet 0/0/0',ok:'Correct!',no:'Type: interface GigabitEthernet 0/0/0',o:[]},
+{i:'Mark as NAT inside.',p:'R1(config-if)#',c:'ip nat inside',h:'Type: ip nat inside',ok:'Correct!',no:'Type: ip nat inside',o:[]},
+{i:'Enter outside interface GigabitEthernet 0/0/1.',p:'R1(config-if)#',c:'interface GigabitEthernet 0/0/1',h:'Type: interface GigabitEthernet 0/0/1',ok:'Correct!',no:'Type: interface GigabitEthernet 0/0/1',o:[]},
+{i:'Mark as NAT outside.',p:'R1(config-if)#',c:'ip nat outside',h:'Type: ip nat outside',ok:'Correct!',no:'Type: ip nat outside',o:[]},
+{i:'Return to privileged EXEC mode.',p:'R1(config-if)#',c:'end',h:'Type: end',ok:'Correct! PAT using interface address configured.',no:'Type: end',o:[]},
+{i:'Verify NAT translations after traffic flows.',p:'R1#',c:'show ip nat translations',h:'Type: show ip nat translations',ok:'Correct! Each entry shows the original inside address mapped to the interface IP with a unique port.',no:'Type: show ip nat translations',o:[{t:'Pro  Inside global           Inside local      Outside local    Outside global',c:'info'},{t:'tcp  209.165.200.225:1034   192.168.10.10:    8.8.8.8:53       8.8.8.8:53',c:'ok'},{t:'tcp  209.165.200.225:1035   192.168.10.11:    8.8.8.8:53       8.8.8.8:53',c:'ok'}]}
+]},
+
+// 10 -- 10.1.5 CDP and LLDP
+{title:'10.1.5 Configure CDP and LLDP',
+done:'You configured CDP and LLDP. CDP is Cisco-proprietary. LLDP is the open standard equivalent (IEEE 802.1AB). Both discover directly connected neighbors and their capabilities without requiring IP connectivity.',
+steps:[
+{i:'Enter global configuration mode.',p:'R1#',c:'configure terminal',h:'Type: configure terminal',ok:'Correct!',no:'Type: configure terminal',o:[{t:'Enter configuration commands, one per line.  End with CNTL/Z.',c:'dim'}]},
+{i:'Enable CDP globally (it is on by default, but confirm).',p:'R1(config)#',c:'cdp run',h:'Type: cdp run',ok:'Correct! CDP is enabled globally and per-interface by default on Cisco devices.',no:'Type: cdp run',o:[]},
+{i:'Enable LLDP globally -- disabled by default.',p:'R1(config)#',c:'lldp run',h:'Type: lldp run',ok:'Correct! LLDP must be explicitly enabled. Works with non-Cisco equipment.',no:'Type: lldp run',o:[]},
+{i:'Enter interface GigabitEthernet 0/0/0.',p:'R1(config)#',c:'interface GigabitEthernet 0/0/0',h:'Type: interface GigabitEthernet 0/0/0',ok:'Correct!',no:'Type: interface GigabitEthernet 0/0/0',o:[]},
+{i:'Enable LLDP transmit on this interface.',p:'R1(config-if)#',c:'lldp transmit',h:'Type: lldp transmit',ok:'Correct! Interface will now send LLDP advertisements.',no:'Type: lldp transmit',o:[]},
+{i:'Enable LLDP receive on this interface.',p:'R1(config-if)#',c:'lldp receive',h:'Type: lldp receive',ok:'Correct! Interface will now process received LLDP advertisements.',no:'Type: lldp receive',o:[]},
+{i:'Return to privileged EXEC mode.',p:'R1(config-if)#',c:'end',h:'Type: end',ok:'Correct!',no:'Type: end',o:[]},
+{i:'Verify CDP neighbors.',p:'R1#',c:'show cdp neighbors',h:'Type: show cdp neighbors',ok:'Correct! Shows directly connected Cisco devices with their device IDs and interface info.',no:'Type: show cdp neighbors',o:[{t:'Capability Codes: R - Router, T - Trans Bridge, S - Switch, H - Host',c:'dim'},{t:'',c:''},{t:'Device ID   Local Intrfce  Holdtme  Capability  Platform  Port ID',c:'info'},{t:'S1          Gig 0/0/0      161      S           WS-C2960  Fas 0/5',c:'ok'}]},
+{i:'Verify LLDP neighbors.',p:'R1#',c:'show lldp neighbors',h:'Type: show lldp neighbors',ok:'Correct! LLDP neighbors may include non-Cisco devices that support IEEE 802.1AB.',no:'Type: show lldp neighbors',o:[{t:'Capability codes: (R) Router, (B) Bridge, (T) Telephone',c:'dim'},{t:'',c:''},{t:'Device ID       Local Intf     Hold-time  Capability   Port ID',c:'info'},{t:'S1              Gi0/0/0        120        B            Fa0/5',c:'ok'}]}
+]},
+
+// 11 -- 10.2.4 Configure NTP
+{title:'10.2.4 Configure NTP',
+done:'You configured NTP. Synchronized time is critical for logging, certificate validity, and security audits. The NTP master command makes a router an authoritative time source. Routers/switches should get time from a stratum 1 or 2 server.',
+steps:[
+{i:'Enter global configuration mode on R1 (the NTP master).',p:'R1#',c:'configure terminal',h:'Type: configure terminal',ok:'Correct!',no:'Type: configure terminal',o:[{t:'Enter configuration commands, one per line.  End with CNTL/Z.',c:'dim'}]},
+{i:'Make R1 an NTP master at stratum <code>1</code>.',p:'R1(config)#',c:'ntp master 1',h:'Type: ntp master 1',ok:'Correct! Stratum 1 is the highest accuracy. 1=atomic clock, 2=synced to stratum 1, etc.',no:'Type: ntp master 1',o:[]},
+{i:'Return to privileged EXEC mode.',p:'R1(config)#',c:'end',h:'Type: end',ok:'Correct!',no:'Type: end',o:[]},
+{i:'Verify NTP status on R1.',p:'R1#',c:'show ntp status',h:'Type: show ntp status',ok:'Correct! Shows stratum level, reference, and synchronization state.',no:'Type: show ntp status',o:[{t:'Clock is synchronized, stratum 1, reference is .LOCL.',c:'ok'},{t:'nominal freq is 250.0000 Hz, actual freq is 250.0000 Hz, precision is 2**10',c:'dim'},{t:'ntpuptime is 0 (sec), resolution is 4000',c:'dim'}]},
+{i:'Now configure R2 as an NTP client. Enter global config on R2.',p:'R2#',c:'configure terminal',h:'Type: configure terminal',ok:'Correct! Now configuring R2 to sync from R1.',no:'Type: configure terminal',o:[{t:'Enter configuration commands, one per line.  End with CNTL/Z.',c:'dim'}]},
+{i:'Set R2 to use <code>10.1.1.1</code> (R1) as its NTP server.',p:'R2(config)#',c:'ntp server 10.1.1.1',h:'Type: ntp server 10.1.1.1',ok:'Correct! R2 will synchronize its clock with R1.',no:'Type: ntp server 10.1.1.1',o:[]},
+{i:'Return to privileged EXEC mode on R2.',p:'R2(config)#',c:'end',h:'Type: end',ok:'Correct!',no:'Type: end',o:[]},
+{i:'Verify NTP associations on R2.',p:'R2#',c:'show ntp associations',h:'Type: show ntp associations',ok:'Correct! The * indicates the currently synced server. st = stratum.',no:'Type: show ntp associations',o:[{t:'  address         ref clock       st  when  poll reach  delay  offset   disp',c:'info'},{t:'*~10.1.1.1        .LOCL.          1    10    64   377    1.00    0.000   0.12',c:'ok'},{t:' * sys.peer, # selected, + candidate, - outlyer, x falseticker',c:'dim'}]}
+]},
+
+// 12 -- 10.3.5 SNMPv2c
+{title:'10.3.5 Configure SNMPv2c',
+done:'You configured SNMPv2c. SNMP allows network management systems (NMS) to monitor and manage devices. The community string acts like a password. SNMPv3 is more secure -- v1/v2c send community strings in plaintext.',
+steps:[
+{i:'Enter global configuration mode.',p:'R1#',c:'configure terminal',h:'Type: configure terminal',ok:'Correct!',no:'Type: configure terminal',o:[{t:'Enter configuration commands, one per line.  End with CNTL/Z.',c:'dim'}]},
+{i:'Set the SNMP read-only community string to <code>cisco</code>.',p:'R1(config)#',c:'snmp-server community cisco ro',h:'Type: snmp-server community cisco ro',ok:'Correct! ro = read-only. The NMS can query but not modify the device.',no:'Type: snmp-server community cisco ro',o:[]},
+{i:'Set the SNMP read-write community string to <code>cisco123</code>.',p:'R1(config)#',c:'snmp-server community cisco123 rw',h:'Type: snmp-server community cisco123 rw',ok:'Correct! rw = read-write. The NMS can both query and modify device configuration.',no:'Type: snmp-server community cisco123 rw',o:[]},
+{i:'Set the device location to <code>Cisco NetAcad</code>.',p:'R1(config)#',c:'snmp-server location Cisco NetAcad',h:'Type: snmp-server location Cisco NetAcad',ok:'Correct! Location appears in sysLocation MIB object.',no:'Type: snmp-server location Cisco NetAcad',o:[]},
+{i:'Set the contact information to <code>Admin</code>.',p:'R1(config)#',c:'snmp-server contact Admin',h:'Type: snmp-server contact Admin',ok:'Correct! Contact appears in sysContact MIB object.',no:'Type: snmp-server contact Admin',o:[]},
+{i:'Configure SNMP traps to be sent to NMS at <code>192.168.1.100</code> using community <code>cisco</code>.',p:'R1(config)#',c:'snmp-server host 192.168.1.100 version 2c cisco',h:'Type: snmp-server host 192.168.1.100 version 2c cisco',ok:'Correct! Traps are unsolicited alerts sent from device to NMS.',no:'Type: snmp-server host 192.168.1.100 version 2c cisco',o:[]},
+{i:'Enable all SNMP traps.',p:'R1(config)#',c:'snmp-server enable traps',h:'Type: snmp-server enable traps',ok:'Correct! Device will now send trap notifications for all events.',no:'Type: snmp-server enable traps',o:[]},
+{i:'Return to privileged EXEC mode.',p:'R1(config)#',c:'end',h:'Type: end',ok:'Correct!',no:'Type: end',o:[]},
+{i:'Verify SNMP community strings are configured.',p:'R1#',c:'show snmp community',h:'Type: show snmp community',ok:'Correct! Shows configured community strings and their access levels.',no:'Type: show snmp community',o:[{t:'Community name: cisco',c:'ok'},{t:'Community Index: cisco',c:'dim'},{t:'Security Name: cisco',c:'dim'},{t:'storage-type: nonvolatile    active',c:'dim'},{t:'',c:''},{t:'Community name: cisco123',c:'ok'},{t:'Community Index: cisco123',c:'dim'},{t:'storage-type: nonvolatile    active',c:'dim'}]}
+]},
+
+// 13 -- 10.4.7 Syslog
+{title:'10.4.7 Configure Syslog',
+done:'You configured syslog. Syslog collects and forwards log messages to a central server. Severity levels 0-7 (0=emergency, 3=error, 6=info, 7=debug). Lower number = higher severity. Always use logging source-interface for consistent log source IPs.',
+steps:[
+{i:'Enter global configuration mode.',p:'R1#',c:'configure terminal',h:'Type: configure terminal',ok:'Correct!',no:'Type: configure terminal',o:[{t:'Enter configuration commands, one per line.  End with CNTL/Z.',c:'dim'}]},
+{i:'Set the syslog server address to <code>192.168.1.100</code>.',p:'R1(config)#',c:'logging host 192.168.1.100',h:'Type: logging host 192.168.1.100',ok:'Correct! Log messages will be forwarded to this syslog server.',no:'Type: logging host 192.168.1.100',o:[]},
+{i:'Set the logging severity level to <code>informational</code> (level 6).',p:'R1(config)#',c:'logging trap informational',h:'Type: logging trap informational',ok:'Correct! Logs severities 0-6. Level 7 (debug) messages are excluded.',no:'Type: logging trap informational',o:[]},
+{i:'Set the source interface for log messages to <code>Loopback 0</code>.',p:'R1(config)#',c:'logging source-interface Loopback 0',h:'Type: logging source-interface Loopback 0',ok:'Correct! Using loopback ensures consistent source IP even if other interfaces flap.',no:'Type: logging source-interface Loopback 0',o:[]},
+{i:'Enable service timestamps on log messages.',p:'R1(config)#',c:'service timestamps log datetime msec',h:'Type: service timestamps log datetime msec',ok:'Correct! Timestamps in logs are essential for security forensics and troubleshooting.',no:'Type: service timestamps log datetime msec',o:[]},
+{i:'Return to privileged EXEC mode.',p:'R1(config)#',c:'end',h:'Type: end',ok:'Correct!',no:'Type: end',o:[]},
+{i:'Verify syslog configuration.',p:'R1#',c:'show logging',h:'Type: show logging',ok:'Correct! Shows logging destinations, severity, buffer size, and recent log messages.',no:'Type: show logging',o:[{t:'Syslog logging: enabled (0 messages dropped, 0 flushes, 0 overruns)',c:'ok'},{t:'    Console logging: level debugging, 28 messages logged',c:''},{t:'    Monitor logging: level debugging, 0 messages logged',c:''},{t:'    Buffer logging:  level debugging, 28 messages logged',c:''},{t:'    Logging Exception size (4096 bytes)',c:'dim'},{t:'    Trap logging: level informational, 30 message lines logged',c:'ok'},{t:'        Logging to 192.168.1.100  (udp port 514, audit disabled,',c:'ok'},{t:'              link up), 30 message lines logged',c:'ok'},{t:'Log Buffer (4096 bytes):',c:'dim'}]}
+]}
+
+]; // end LABS
+
+var lab=null,step=0;
+
+function loadLab(idx){
+  lab=LABS[parseInt(idx)];
+  step=0;
+  document.getElementById('term-out').innerHTML='';
+  document.getElementById('success').classList.remove('show');
+  document.querySelector('.terminal').style.display='';
+  document.getElementById('feedback').style.display='';
+  document.querySelector('.btn-row').style.display='';
+  document.getElementById('term-ttl').textContent=lab.title;
+  setFB('[>]','Type the command shown in the instruction, then press Enter.','');
+  render();
+  document.getElementById('cur-input').focus();
+}
+
+function render(){
+  var s=lab.steps[step],n=lab.steps.length;
+  document.getElementById('instr-text').innerHTML=s.i;
+  document.getElementById('cur-prompt').textContent=s.p+'\u00a0';
+  document.getElementById('cur-prompt').style.color=pc(s.p);
+  document.getElementById('prog-fill').style.width=Math.round(step/n*100)+'%';
+  document.getElementById('prog-lbl').textContent='Step '+step+'/'+n;
+  document.getElementById('cur-input').value='';
+}
+
+function submit(raw){
+  var typed=raw.trim();
+  if(!typed)return;
+  var s=lab.steps[step];
+  addRow(s.p,typed);
+  if(typed.toLowerCase()===s.c.toLowerCase()){
+    (s.o||[]).forEach(function(l){addOut(l.t,l.c);});
+    setFB('[+]',s.ok,'ok');
+    step++;
+    if(step>=lab.steps.length)finish();
+    else render();
+  }else{
+    setFB('[x]',s.no,'err');
+  }
+  document.getElementById('cur-input').value='';
+  scroll();
+}
+
+function finish(){
+  document.getElementById('prog-fill').style.width='100%';
+  document.getElementById('prog-lbl').textContent='Complete!';
+  document.getElementById('instr-text').innerHTML='<strong>All steps complete!</strong>';
+  document.querySelector('.terminal').style.display='none';
+  document.getElementById('feedback').style.display='none';
+  document.querySelector('.btn-row').style.display='none';
+  document.getElementById('s-msg').textContent=lab.done;
+  document.getElementById('success').classList.add('show');
+}
+
+function resetLab(){
+  document.querySelector('.terminal').style.display='';
+  document.getElementById('feedback').style.display='';
+  document.querySelector('.btn-row').style.display='';
+  document.getElementById('success').classList.remove('show');
+  loadLab(document.getElementById('lab-picker').value);
+}
+
+function pickAnother(){
+  document.getElementById('success').classList.remove('show');
+  document.querySelector('.terminal').style.display='';
+  document.getElementById('feedback').style.display='';
+  document.querySelector('.btn-row').style.display='';
+  // Scroll lab picker into view so user can select
+  var picker = document.getElementById('lab-picker');
+  picker.focus();
+  picker.scrollIntoView({behavior:'smooth', block:'center'});
+}
+
+function showHint(){setFB('[?]',lab.steps[step].h,'warn');}
+
+function setFB(icon,text,cls){
+  document.querySelector('.fb-icon').textContent=icon;
+  var el=document.getElementById('fb-text');
+  el.textContent=text;
+  el.className='fb-text'+(cls?' '+cls:'');
+}
+
+function addRow(p,cmd){
+  var out=document.getElementById('term-out');
+  var row=document.createElement('div');row.className='t-row';
+  var ps=document.createElement('span');ps.className='t-prompt';ps.style.color=pc(p);ps.textContent=p+' ';
+  var cs=document.createElement('span');cs.className='t-cmd';cs.textContent=cmd;
+  row.appendChild(ps);row.appendChild(cs);out.appendChild(row);
+}
+
+function addOut(text,cls){
+  var out=document.getElementById('term-out');
+  var d=document.createElement('span');d.className='t-out'+(cls?' '+cls:'');d.textContent=text;
+  out.appendChild(d);
+}
+
+function scroll(){var o=document.getElementById('term-out');o.scrollTop=o.scrollHeight;}
+
+document.getElementById('cur-input').addEventListener('keydown',function(e){
+  if(e.key==='Enter'){e.preventDefault();submit(this.value);}
+});
+document.querySelector('.terminal').addEventListener('click',function(){
+  document.getElementById('cur-input').focus();
+});
+
+(function(){
+  var m=window.location.search.match(/lab=([^&]+)/);
+  if(m){
+    var opts=document.getElementById('lab-picker').options;
+    for(var i=0;i<opts.length;i++){if(opts[i].text.indexOf(m[1])>=0){document.getElementById('lab-picker').value=i;break;}}
+  }
+  loadLab(document.getElementById('lab-picker').value);
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,716 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=2.0">
+<title>CCNA 2 Module 2: Switching Concepts v2.2</title>
+<style>
+:root{
+  --blue:#1ba0d7;--dark:#005073;--green:#6cc24a;
+  --bg:#f4f6f8;--card:#fff;--text:#1a1a2e;--muted:#5a6a7a;
+  --cbg:#0d1117;--ctxt:#c9d1d9;--r:12px;--sh:0 2px 12px rgba(0,0,0,.08);
+  --base-fs:16px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);font-size:var(--base-fs);line-height:1.7}
+
+/* ── Font size toggle bar ── */
+.fs-bar{position:sticky;top:0;z-index:200;background:#1a1a2e;display:flex;align-items:center;justify-content:flex-end;padding:6px 14px;gap:6px;box-shadow:0 2px 8px rgba(0,0,0,.3)}
+.fs-label{color:#8b949e;font-size:.72em;font-weight:700;letter-spacing:.5px;text-transform:uppercase;margin-right:4px}
+.fs-btn{background:#30363d;color:#c9d1d9;border:2px solid transparent;border-radius:6px;padding:4px 12px;font-size:.75em;font-weight:700;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:all .2s;line-height:1.4}
+.fs-btn:active,.fs-btn.active{background:var(--blue);color:#fff;border-color:var(--blue)}
+
+/* ── Header ── */
+.hdr{background:linear-gradient(135deg,var(--dark),var(--blue));color:#fff;padding:32px 20px 24px;text-align:center}
+.hdr .badge{display:inline-block;background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.4);border-radius:20px;padding:4px 14px;font-size:.81em;margin-bottom:12px}
+.hdr h1{font-size:1.625em;font-weight:700;margin-bottom:6px}
+.hdr p{font-size:.94em;opacity:.85}
+.hdr .obj{display:inline-block;background:rgba(255,255,255,.15);border-radius:8px;padding:7px 16px;margin-top:12px;font-size:.875em;font-style:italic}
+
+/* ── Progress bar ── */
+.pb{background:var(--card);padding:14px 16px;margin:16px 16px 0;border-radius:var(--r);box-shadow:var(--sh)}
+.pbl{font-size:.81em;color:var(--muted);margin-bottom:6px;font-weight:600}
+.pbt{background:#e0e7ef;border-radius:10px;height:8px;overflow:hidden}
+.pbf{background:linear-gradient(90deg,var(--blue),var(--green));height:100%;border-radius:10px;width:0;transition:width 1s ease}
+
+/* ── TOC ── */
+.toc{background:var(--card);margin:16px;border-radius:var(--r);box-shadow:var(--sh);overflow:hidden}
+.toch{background:var(--dark);color:#fff;padding:14px 18px;font-weight:700;font-size:.94em;display:flex;justify-content:space-between;align-items:center;cursor:pointer;user-select:none}
+.toch .arr{transition:transform .3s}
+.toch.open .arr{transform:rotate(180deg)}
+.tocb{display:none;padding:10px 0}
+.tocb.open{display:block}
+.tocg{font-size:.69em;font-weight:800;letter-spacing:.8px;color:var(--dark);text-transform:uppercase;padding:8px 20px 2px}
+.tocb a{display:block;padding:9px 20px 9px 28px;color:var(--dark);text-decoration:none;font-size:.875em;border-left:3px solid transparent;transition:all .2s}
+.tocb a:hover,.tocb a:active{background:#d0e8f5;border-left-color:var(--blue)}
+.tocb a .n{display:inline-block;background:var(--blue);color:#fff;border-radius:5px;padding:1px 8px;font-size:.75em;font-weight:700;margin-right:8px}
+
+/* ── Main wrap ── */
+.wrap{padding:0 16px 100px}
+
+/* ── Section cards ── */
+.sec{background:var(--card);border-radius:var(--r);box-shadow:var(--sh);margin-bottom:16px;overflow:hidden}
+.sh{background:linear-gradient(90deg,var(--dark),var(--blue));color:#fff;padding:16px 18px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;user-select:none;-webkit-tap-highlight-color:transparent}
+.sh .ttl{font-weight:700;font-size:1em}
+.sh .nb{background:rgba(255,255,255,.25);border-radius:6px;padding:3px 10px;font-size:.81em;font-weight:700;margin-right:10px;white-space:nowrap}
+.sh .ch{font-size:1.125em;transition:transform .3s}
+.sh.open .ch{transform:rotate(180deg)}
+.sb{display:none;padding:18px}
+.sb.open{display:block}
+
+/* ── Subsections ── */
+.sub{margin-bottom:24px}
+.sub:last-child{margin-bottom:0}
+.sub h3{font-size:.94em;font-weight:700;color:var(--dark);margin-bottom:10px;padding-bottom:6px;border-bottom:2px solid #d0e8f5;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.sub h3 .sn{background:var(--blue);color:#fff;border-radius:5px;padding:2px 8px;font-size:.75em;white-space:nowrap}
+.sub p{margin-bottom:10px;font-size:.94em}
+
+/* ── Code blocks ── */
+.cw{background:var(--cbg);border-radius:10px;margin:12px 0;overflow:hidden}
+.cl{background:#21262d;color:#c9d1d9;font-size:.78em;font-weight:700;padding:6px 14px;letter-spacing:.5px;text-transform:uppercase;display:flex;justify-content:space-between;align-items:center}
+.cpb{background:#30363d;color:#c9d1d9;border:none;border-radius:5px;padding:3px 10px;font-size:.69em;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.cpb:active{background:var(--blue);color:#fff}
+pre{margin:0;padding:14px;overflow-x:auto;-webkit-overflow-scrolling:touch}
+code{font-family:'Courier New',monospace;font-size:.81em;color:var(--ctxt);line-height:1.6}
+p code,li code,td code,h3 code,.ca code{background:#c2d9ea;color:#002233;border-radius:4px;padding:1px 5px;font-size:.81em;font-family:'Courier New',monospace;font-weight:600}
+
+/* ── Callout boxes ── */
+.ca{border-radius:8px;padding:12px 14px;margin:12px 0;font-size:.875em;line-height:1.6;display:flex;gap:10px;align-items:flex-start}
+.ca .ic{font-size:1.125em;flex-shrink:0;margin-top:1px}
+.ca.warn  {background:#fff3cd;border-left:4px solid #b38600;color:#3d2c00}
+.ca.tip   {background:#d4edda;border-left:4px solid #28a745;color:#0d3318}
+.ca.danger{background:#f8d7da;border-left:4px solid #dc3545;color:#3d0010}
+.ca.info  {background:#d0e8f5;border-left:4px solid var(--blue);color:#002d44}
+
+/* ── Exam tip dark box ── */
+.et{background:linear-gradient(135deg,#1a1a2e,var(--dark));color:#fff;border-radius:10px;padding:14px 16px;margin:14px 0;font-size:.875em;line-height:1.6}
+.et .lbl{font-size:.69em;font-weight:800;letter-spacing:1px;color:var(--green);margin-bottom:6px}
+.et ol,.et ul{padding-left:18px;margin-top:6px}
+.et li{margin-bottom:4px}
+
+/* ── Tables ── */
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:12px 0;border-radius:8px}
+table{width:100%;border-collapse:collapse;font-size:.875em}
+th{background:var(--dark);color:#fff;padding:10px 12px;text-align:left;font-weight:700;font-size:.81em}
+td{padding:9px 12px;border-bottom:1px solid #e8ecf0;vertical-align:top;color:#1a1a2e}
+tr:nth-child(even) td{background:#d0e8f5;color:#002d44}
+tr:last-child td{border-bottom:none}
+
+/* ── Numbered steps ── */
+.steps{counter-reset:step;list-style:none;padding:0;margin:12px 0}
+.steps li{counter-increment:step;display:flex;gap:12px;align-items:flex-start;padding:10px 0;border-bottom:1px solid #eef0f3;font-size:.875em;line-height:1.6}
+.steps li:last-child{border-bottom:none}
+.steps li::before{content:counter(step);background:var(--blue);color:#fff;border-radius:50%;min-width:26px;height:26px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.81em;flex-shrink:0;margin-top:2px}
+
+/* ── Diagram box ── */
+.dg{background:#0d1117;border-radius:10px;padding:14px;margin:12px 0;overflow-x:auto;-webkit-overflow-scrolling:touch}
+.dg pre{color:#58a6ff;font-family:'Courier New',monospace;font-size:.75em;line-height:1.6}
+
+/* ── Scenario box ── */
+.sc{background:#1a1a2e;color:#c9d1d9;border-radius:8px;padding:14px;margin:12px 0;font-size:.875em;line-height:1.6}
+.sc .scl{font-size:.69em;font-weight:800;letter-spacing:.8px;color:var(--green);margin-bottom:6px}
+
+/* ── Method comparison cards ── */
+.mg{display:grid;gap:12px;margin:12px 0}
+.mc{border-radius:10px;padding:14px;border:2px solid}
+.mc.primary{border-color:#005073;background:#e8f4fb}
+.mc.secondary{border-color:#e07b00;background:#fff8f0}
+.mc.tertiary{border-color:#6c757d;background:#f8f9fa}
+.mct{font-size:.875em;font-weight:800;margin-bottom:8px}
+.mc.primary .mct{color:#005073}
+.mc.secondary .mct{color:#c45200}
+.mc.tertiary .mct{color:#495057}
+.mc ul{padding-left:18px;font-size:.875em;line-height:1.8;color:#1a1a2e}
+
+/* ── Two-step process cards ── */
+.step-card{border-radius:10px;padding:14px;margin:8px 0;border-left:5px solid}
+.step-card.learn{background:#e8f4fb;border-left-color:var(--blue)}
+.step-card.fwd{background:#d4edda;border-left-color:#28a745}
+.step-card .sc-title{font-size:.81em;font-weight:800;letter-spacing:.5px;text-transform:uppercase;margin-bottom:8px}
+.step-card.learn .sc-title{color:#005073}
+.step-card.fwd .sc-title{color:#0d3318}
+.step-card p,.step-card li{font-size:.875em;color:#1a1a2e}
+.step-card ul{padding-left:18px;margin-top:4px}
+.step-card li{margin-bottom:4px}
+
+
+/* ── Module navigation bar ── */
+.mod-nav{position:fixed;bottom:0;left:0;right:0;z-index:300;background:#1a1a2e;border-top:1px solid #30363d;display:flex;align-items:center;height:52px;padding:0 8px;gap:6px}
+.mn-hub{background:#1ba0d7;color:#fff;border:none;border-radius:8px;padding:6px 12px;font-size:.75em;font-weight:700;cursor:pointer;text-decoration:none;display:flex;align-items:center;gap:4px;white-space:nowrap;-webkit-tap-highlight-color:transparent;flex-shrink:0}
+.mn-hub:active{opacity:.8}
+.mn-divider{width:1px;height:28px;background:#30363d;flex-shrink:0}
+.mn-label{flex:1;text-align:center;font-size:.69em;color:#8b949e;font-weight:600;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding:0 4px}
+.mn-prev,.mn-next{background:#30363d;color:#c9d1d9;border:none;border-radius:8px;padding:6px 10px;font-size:.875em;font-weight:700;cursor:pointer;text-decoration:none;display:flex;align-items:center;-webkit-tap-highlight-color:transparent;flex-shrink:0}
+.mn-prev:active,.mn-next:active{background:#1ba0d7;color:#fff}
+.mn-prev.disabled,.mn-next.disabled{opacity:.3;pointer-events:none}
+
+/* ── Scroll to top ── */
+.tb{position:fixed;bottom:80px;right:16px;background:var(--blue);color:#fff;border:none;border-radius:50%;width:44px;height:44px;font-size:1.25em;box-shadow:0 4px 14px rgba(0,0,0,.25);cursor:pointer;display:none;align-items:center;justify-content:center;z-index:100}
+.tb.show{display:flex}
+.ft{text-align:center;padding:24px 16px;color:var(--muted);font-size:.81em}
+/* Study progress panel */
+.sp-wrap{background:var(--card);margin:16px 16px 0;border-radius:var(--r);box-shadow:var(--sh);overflow:hidden}
+.sp-hdr{background:var(--nt);color:#fff;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;user-select:none;-webkit-tap-highlight-color:transparent;gap:10px}
+.sp-hdr .sp-title{font-weight:700;font-size:.875em;flex-shrink:0}
+.sp-hdr .sp-arr{transition:transform .3s;flex-shrink:0}
+.sp-hdr.open .sp-arr{transform:rotate(180deg)}
+.sp-body{display:none;padding:12px 14px}
+.sp-body.open{display:block}
+.sp-row{display:flex;align-items:center;gap:10px;padding:6px 4px;border-bottom:1px solid #f0f4f8;font-size:.81em}
+.sp-row:last-child{border-bottom:none}
+.sp-row .sr-status{font-size:1em;flex-shrink:0;width:20px;text-align:center}
+.sp-row .sr-nb{font-weight:800;color:var(--nt);min-width:36px;flex-shrink:0;font-size:.875em}
+.sp-row .sr-ttl{color:var(--text);flex:1}
+.sp-row.done .sr-ttl{color:var(--muted);text-decoration:line-through}
+.sc-pills{display:flex;align-items:center;gap:4px;overflow-x:auto;-webkit-overflow-scrolling:touch;flex:1;padding:0 4px}
+.sc-pill{background:#30363d;color:#8b949e;border:2px solid transparent;border-radius:6px;padding:3px 8px;font-size:.72em;font-weight:700;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:all .15s;white-space:nowrap;flex-shrink:0;line-height:1.4;display:flex;align-items:center;gap:3px}
+.sc-pill.checked{background:var(--nt);color:#fff;border-color:var(--ntd)}
+.sc-pill .pill-check{font-size:.875em}
+
+/* v2.1 — In-section check button */
+.sh{position:relative}
+.sec-check{position:absolute;right:40px;top:50%;transform:translateY(-50%);background:rgba(255,255,255,.15);border:2px solid rgba(255,255,255,.4);border-radius:6px;padding:2px 10px;font-size:.72em;font-weight:800;color:#fff;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:all .2s;white-space:nowrap;z-index:10;line-height:1.5}
+.sec-check.checked{background:var(--ntd);border-color:var(--ntd);color:#052e1e}
+.sec-check:active{opacity:.75}
+/* Sections panel + tick colours (these pages never defined --nt/--ntd, so the panel header was invisible) */
+:root{--nt:var(--dark);--ntd:#4ade80}
+</style>
+<style>.bc{background:#0d1117;padding:8px 16px;display:flex;align-items:center;flex-wrap:wrap;gap:4px;font-size:.75em;overflow-x:auto;white-space:nowrap;-webkit-overflow-scrolling:touch;border-bottom:1px solid #21262d}.bc a{color:#8b949e;text-decoration:none;font-weight:600;flex-shrink:0}.bc a:active{color:#c9d1d9}.bc .sep{color:#6e7681;flex-shrink:0}.bc .cur{color:#1ba0d7;font-weight:700;flex-shrink:0}</style>
+</head>
+<body>
+<nav class="bc"><a href="../../index.html">🏠 Home</a><span class="sep">›</span><a href="index.html">CCNA 2 — SRWE</a><span class="sep">›</span><span class="cur">M2: Switching</span></nav>
+
+<!-- FONT SIZE TOGGLE -->
+<div class="fs-bar">
+  <div class="sc-pills" id="sc-pills">
+  <button class="sc-pill" id="pill-s1" onclick="toggleSection('s1',this)"><span class="pill-check">○</span>2.1</button>
+  <button class="sc-pill" id="pill-s2" onclick="toggleSection('s2',this)"><span class="pill-check">○</span>2.2</button>
+  <button class="sc-pill" id="pill-s3" onclick="toggleSection('s3',this)"><span class="pill-check">○</span>CMD</button>
+  <button class="sc-pill" id="pill-s4" onclick="toggleSection('s4',this)"><span class="pill-check">○</span>🎯</button>
+  </div>
+  <span class="fs-label" style="flex-shrink:0;margin-left:6px">Size</span>
+  <button class="fs-btn" onclick="setFs('14px',this)">S</button>
+  <button class="fs-btn active" onclick="setFs('16px',this)">M</button>
+  <button class="fs-btn" onclick="setFs('18px',this)">L</button>
+  <button class="fs-btn" onclick="setFs('20px',this)">XL</button>
+</div>
+
+<!-- HEADER -->
+<div class="hdr">
+  <div class="badge">CCNA 2 — SRWE v7.02</div>
+  <h1>🔀 Module 2: Switching Concepts</h1>
+  <p>Switching, Routing &amp; Wireless Essentials · NetAcad Study Guide</p>
+  <div class="obj">Module Objective: Explain how Layer 2 switches forward data</div>
+</div>
+
+<div class="sp-wrap">
+  <div class="sp-hdr" id="sp-hdr" onclick="toggleStudyPanel()">
+    <span class="sp-title">📚 Sections</span>
+    <span class="sp-arr" id="sp-arr">▼</span>
+  </div>
+  <div class="sp-body" id="sp-body">
+    <div class="sp-row" id="row-s1"><span class="sr-status" id="st-s1">○</span><span class="sr-nb">2.1</span><span class="sr-ttl">Frame Forwarding</span></div>
+    <div class="sp-row" id="row-s2"><span class="sr-status" id="st-s2">○</span><span class="sr-nb">2.2</span><span class="sr-ttl">Switching Domains</span></div>
+    <div class="sp-row" id="row-s3"><span class="sr-status" id="st-s3">○</span><span class="sr-nb">CMD</span><span class="sr-ttl">MAC Address Table Commands</span></div>
+    <div class="sp-row" id="row-s4"><span class="sr-status" id="st-s4">○</span><span class="sr-nb">🎯</span><span class="sr-ttl">Common Exam Traps — Module 2</span></div>
+  </div>
+</div>
+
+<!-- TABLE OF CONTENTS -->
+<div class="toc">
+  <div class="toch open" onclick="this.classList.toggle('open');document.getElementById('tocb').classList.toggle('open')">
+    📋 Table of Contents — Tap to expand <span class="arr">▼</span>
+  </div>
+  <div class="tocb open" id="tocb">
+    <div class="tocg">2.1 — Frame Forwarding</div>
+    <a href="javascript:void(0)" onclick="goTo('s1')"><span class="n">2.1.1</span> Switching in Networking</a>
+    <a href="javascript:void(0)" onclick="goTo('s1')"><span class="n">2.1.2</span> The Switch MAC Address Table</a>
+    <a href="javascript:void(0)" onclick="goTo('s1')"><span class="n">2.1.3</span> The Switch Learn and Forward Method</a>
+    <a href="javascript:void(0)" onclick="goTo('s1')"><span class="n">2.1.5</span> Switching Forwarding Methods</a>
+    <a href="javascript:void(0)" onclick="goTo('s1')"><span class="n">2.1.6</span> Store-and-Forward Switching</a>
+    <a href="javascript:void(0)" onclick="goTo('s1')"><span class="n">2.1.7</span> Cut-Through Switching</a>
+    <div class="tocg">2.2 — Switching Domains</div>
+    <a href="javascript:void(0)" onclick="goTo('s2')"><span class="n">2.2.1</span> Collision Domains</a>
+    <a href="javascript:void(0)" onclick="goTo('s2')"><span class="n">2.2.2</span> Broadcast Domains</a>
+    <a href="javascript:void(0)" onclick="goTo('s2')"><span class="n">2.2.3</span> Alleviate Network Congestion</a>
+    <div class="tocg">Reference</div>
+    <a href="javascript:void(0)" onclick="goTo('s3')"><span class="n">CMD</span> MAC Address Table Commands</a>
+    <a href="javascript:void(0)" onclick="goTo('s4')"><span class="n">🎯</span> Common Exam Traps</a>
+  </div>
+</div>
+
+<div class="wrap">
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- SECTION 2.1 — FRAME FORWARDING -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div class="sec" id="s1">
+<div class="sh open" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">2.1</span><span class="ttl">Frame Forwarding</span></span><button class="sec-check" id="sch-s1" onclick="event.stopPropagation();toggleSection('s1',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb open">
+
+  <div class="sub">
+  <h3><span class="sn">2.1.1</span> Switching in Networking</h3>
+  <p>A LAN switch makes forwarding decisions based entirely on <strong>destination MAC addresses</strong>. Before understanding how frames move, you need to know two key terms that describe frame movement through a switch:</p>
+  <div class="tw"><table>
+    <tr><th>Term</th><th>Definition</th><th>Simple Way to Remember</th></tr>
+    <tr><td><strong>Ingress</strong></td><td>The port where a frame <em>enters</em> the switch</td><td>"In" — the frame comes IN on the ingress port</td></tr>
+    <tr><td><strong>Egress</strong></td><td>The port where a frame <em>leaves</em> the switch</td><td>"Exit" — the frame exits on the egress port</td></tr>
+  </table></div>
+  <p>The switch maintains a single master MAC address table — a strict mapping of MAC addresses to ports. A frame with a given destination address always exits the same egress port, regardless of which port it came in on.</p>
+  <div class="ca danger">
+    <span class="ic">🚨</span>
+    <div><strong>Absolute rule — never forgotten:</strong> A frame is <strong>NEVER</strong> forwarded back out the same port it arrived on. This applies in every scenario, including floods. The ingress port is always excluded from forwarding.</div>
+  </div>
+  <div class="dg"><pre>
+  PC1 ──Fa0/1──┐
+  PC2 ──Fa0/2──┤  [Switch S1]  ──Fa0/4── PC4
+  PC3 ──Fa0/3──┘
+
+  Frame from PC1 arrives on Fa0/1 (INGRESS)
+  Switch looks up PC4's MAC → found on Fa0/4
+  Frame sent out Fa0/4 (EGRESS)
+  Fa0/1 is NEVER used as an egress port for this frame</pre></div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">2.1.2</span> The Switch MAC Address Table</h3>
+  <p>A switch learns which devices are on which ports by building a <strong>MAC address table</strong>. This table maps MAC addresses to the switch port they were last seen on.</p>
+  <div class="tw"><table>
+    <tr><th>Term</th><th>Meaning</th></tr>
+    <tr><td><strong>MAC address table</strong></td><td>The table that maps MAC addresses to switch ports — the switch's primary intelligence</td></tr>
+    <tr><td><strong>CAM table</strong></td><td>Same thing — stands for Content Addressable Memory table. CAM is a special high-speed memory type optimized for table lookups</td></tr>
+    <tr><td><strong>Entry aging time</strong></td><td>Default <strong>5 minutes (300 seconds)</strong> — if no frame is received from a MAC address within this window, the entry is removed</td></tr>
+  </table></div>
+  <div class="ca info">
+    <span class="ic">💡</span>
+    <div>The MAC address table is sometimes called the <strong>CAM table</strong> on the exam — both names refer to exactly the same thing. CAM (Content Addressable Memory) is the hardware that enables the switch to perform very fast MAC lookups.</div>
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">2.1.3</span> The Switch Learn and Forward Method</h3>
+  <p>Every frame that enters a switch goes through a strict two-step process. This happens on <strong>every single frame</strong>, in order, every time.</p>
+
+  <div class="step-card learn">
+    <div class="sc-title">⬆️ Step 1 — LEARN (Examine the Source MAC Address)</div>
+    <p>The switch examines the <strong>source MAC address</strong> of the incoming frame and the port it arrived on:</p>
+    <ul>
+      <li>Source MAC <strong>not in table</strong> → add the MAC address and ingress port number as a new entry</li>
+      <li>Source MAC <strong>already in table on the same port</strong> → refresh its 5-minute aging timer</li>
+      <li>Source MAC <strong>in table but on a different port</strong> → update the entry with the new port number (device was moved or reconnected)</li>
+    </ul>
+  </div>
+
+  <div class="step-card fwd">
+    <div class="sc-title">⬇️ Step 2 — FORWARD (Examine the Destination MAC Address)</div>
+    <p>The switch examines the <strong>destination MAC address</strong> of the frame and makes a forwarding decision:</p>
+    <ul>
+      <li>Destination MAC <strong>found in table (known unicast)</strong> → forward out the specific port listed</li>
+      <li>Destination MAC <strong>not in table (unknown unicast)</strong> → <strong>flood</strong> out all ports except the ingress port</li>
+      <li>Destination MAC is a <strong>broadcast (FF:FF:FF:FF:FF:FF)</strong> → flood out all ports except the ingress port</li>
+      <li>Destination MAC is a <strong>multicast</strong> → flood out all ports except the ingress port (unless multicast snooping is configured)</li>
+    </ul>
+  </div>
+
+  <div class="tw"><table>
+    <tr><th>Destination MAC</th><th>In Table?</th><th>Action</th></tr>
+    <tr><td>Known unicast</td><td>✅ Yes</td><td>Forward out the single specific port</td></tr>
+    <tr><td>Unknown unicast</td><td>❌ No</td><td>Flood — forward out ALL ports except ingress</td></tr>
+    <tr><td>Broadcast (FF:FF:FF:FF:FF:FF)</td><td>N/A</td><td>Flood — forward out ALL ports except ingress</td></tr>
+    <tr><td>Multicast</td><td>N/A</td><td>Flood out ALL ports except ingress (default behavior)</td></tr>
+  </table></div>
+
+  <div class="ca warn">
+    <span class="ic">⚠️</span>
+    <div><strong>Unknown unicast = flood, not drop.</strong> Students often assume the switch drops a frame when it doesn't know the destination. It doesn't — it floods. The switch only drops frames in store-and-forward mode when they fail the FCS/CRC check.</div>
+  </div>
+
+  <div class="sc">
+    <div class="scl">🔍 SCENARIO — Watch the MAC Table Build</div>
+    PC1 (MAC: AA) sends a frame to PC3 (MAC: CC). The switch is brand new — empty table.<br><br>
+    <strong>Step 1 — Learn:</strong> Source = AA, arrived on Fa0/1 → add AA:Fa0/1 to table<br>
+    <strong>Step 2 — Forward:</strong> Destination = CC → not in table → FLOOD out Fa0/2, Fa0/3, Fa0/4<br><br>
+    PC3 replies to PC1. Source = CC, arrived on Fa0/3 → add CC:Fa0/3 to table<br>
+    Destination = AA → found in table on Fa0/1 → forward ONLY out Fa0/1<br><br>
+    After two frames, the table has learned two MACs and the next PC1↔PC3 exchange is a direct unicast.
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">2.1.5</span> Switching Forwarding Methods</h3>
+  <p>Switches use <strong>ASICs</strong> (Application-Specific Integrated Circuits) — dedicated hardware chips — to make forwarding decisions extremely fast without involving the CPU. There are two forwarding methods, plus one hybrid:</p>
+  <div class="mg">
+    <div class="mc primary">
+      <div class="mct">✅ Store-and-Forward — Cisco Default</div>
+      <ul>
+        <li>Receives the <strong>entire frame</strong> before making a forwarding decision</li>
+        <li>Performs full <strong>FCS/CRC error check</strong> on every frame</li>
+        <li>Corrupt frames are <strong>dropped</strong> — never forwarded</li>
+        <li>Handles <strong>speed mismatches</strong> between ingress and egress ports</li>
+        <li>Higher latency than cut-through</li>
+      </ul>
+    </div>
+    <div class="mc secondary">
+      <div class="mct">⚡ Cut-Through — Ultra-Low Latency</div>
+      <ul>
+        <li>Reads only the <strong>destination MAC (first 6 bytes)</strong>, then begins forwarding immediately</li>
+        <li><strong>No error checking</strong> — corrupt frames are forwarded</li>
+        <li>Best for <strong>high-performance computing (HPC)</strong> needing latency ≤10 microseconds</li>
+        <li>High network error rates make cut-through <strong>worse</strong>, not better</li>
+      </ul>
+    </div>
+    <div class="mc tertiary">
+      <div class="mct">⚖️ Fragment Free — The Middle Ground</div>
+      <ul>
+        <li>Reads the <strong>first 64 bytes</strong> before forwarding</li>
+        <li>Catches <strong>runt frames</strong> and collision fragments (most errors occur in the first 64 bytes)</li>
+        <li>Does <strong>NOT</strong> catch all errors — full-sized corrupt frames still pass through</li>
+        <li>Lower latency than store-and-forward, better error filtering than cut-through</li>
+      </ul>
+    </div>
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">2.1.6</span> Store-and-Forward Switching</h3>
+  <p>This is Cisco's primary LAN switching method and what you will encounter on all Cisco equipment. It has two defining characteristics:</p>
+
+  <p style="font-weight:700;color:var(--dark);margin:12px 0 4px;">Characteristic 1 — Error Checking (FCS/CRC)</p>
+  <div class="cw">
+    <div class="cl">Store-and-forward error check process <button class="cpb" onclick="copyCode(this)">Copy</button></div>
+    <pre><code>Frame arrives on ingress port
+  ↓
+Switch stores entire frame in ingress buffer
+  ↓
+Switch calculates its own FCS value for the frame
+  ↓
+Compares calculated FCS  vs.  FCS in last field of received frame
+  ↓
+Match?  YES → Forward frame out egress port
+        NO  → Drop frame silently (never forwarded)</code></pre>
+  </div>
+  <p>The <strong>FCS (Frame Check Sequence)</strong> is a 4-byte value in the last field of an Ethernet frame calculated using a <strong>CRC (Cyclic Redundancy Check)</strong> algorithm. If the frame was damaged in transit, the switch's calculated FCS will not match the FCS in the frame.</p>
+
+  <p style="font-weight:700;color:var(--dark);margin:12px 0 4px;">Characteristic 2 — Automatic Buffering (Speed Mismatch Handling)</p>
+  <p>Store-and-forward buffers the entire frame before forwarding. This allows it to handle <strong>speed mismatches</strong> between ingress and egress ports:</p>
+  <div class="dg"><pre>
+  Example: Frame arrives at 1 Gbps, must leave at 100 Mbps
+
+  [Ingress: 1 Gbps port] → frame stored in buffer
+                         → FCS checked
+                         → forwarded out at [Egress: 100 Mbps port]
+
+  Without buffering, the faster ingress rate would overwhelm the slower egress port.
+  The buffer absorbs the speed difference and prevents frame loss.</pre></div>
+  <div class="ca tip">
+    <span class="ic">✅</span>
+    <div><strong>Store-and-forward is the right choice</strong> whenever reliability matters more than raw speed — which is almost every enterprise network. It ensures no corrupt frames ever reach their destination.</div>
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">2.1.7</span> Cut-Through Switching</h3>
+  <p>Cut-through begins forwarding as soon as the <strong>destination MAC address</strong> (just the first 6 bytes of the frame) has been read and the egress port identified. It never waits for the rest of the frame.</p>
+  <div class="dg"><pre>
+  Store-and-Forward: waits for [DEST MAC | SRC MAC | TYPE | DATA | FCS]
+                                                            entire frame ↑
+
+  Cut-Through:       reads [DEST MAC] → starts forwarding immediately
+                            ↑ only 6 bytes needed</pre></div>
+
+  <div class="tw"><table>
+    <tr><th>Comparison</th><th>Store-and-Forward</th><th>Fragment Free</th><th>Cut-Through</th></tr>
+    <tr><td>Reads before forwarding</td><td>Entire frame</td><td>First 64 bytes</td><td>Dest MAC only (6 bytes)</td></tr>
+    <tr><td>Error checking</td><td>Full FCS/CRC</td><td>Catches runts/fragments</td><td>None</td></tr>
+    <tr><td>Latency</td><td>Highest</td><td>Medium</td><td>Lowest</td></tr>
+    <tr><td>Forwards corrupt frames?</td><td>No — dropped</td><td>Partial — full-sized corrupt frames pass</td><td>Yes — always</td></tr>
+    <tr><td>Cisco default?</td><td>✅ Yes</td><td>No</td><td>No</td></tr>
+    <tr><td>Best for</td><td>General enterprise use</td><td>Balance of speed &amp; filtering</td><td>HPC ≤10 µs latency</td></tr>
+  </table></div>
+
+  <div class="et">
+    <div class="lbl">🎯 EXAM TIP — Choosing the Right Method</div>
+    The exam will give you a scenario and ask which forwarding method is appropriate:<br><br>
+    <ul>
+      <li><strong>"Network reliability is critical / minimize corrupt frames"</strong> → Store-and-Forward</li>
+      <li><strong>"Ultra-low latency / high-performance computing / &lt;10 microseconds"</strong> → Cut-Through</li>
+      <li><strong>"Balance between speed and error filtering"</strong> → Fragment Free</li>
+      <li><strong>"High error rate on the network"</strong> → Store-and-Forward (cut-through makes it worse)</li>
+      <li><strong>"Speed mismatch between ports"</strong> → Store-and-Forward (only method that buffers for this)</li>
+    </ul>
+  </div>
+  </div>
+
+</div></div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- SECTION 2.2 — SWITCHING DOMAINS -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div class="sec" id="s2">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">2.2</span><span class="ttl">Switching Domains</span></span><button class="sec-check" id="sch-s2" onclick="event.stopPropagation();toggleSection('s2',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb">
+
+  <div class="sub">
+  <h3><span class="sn">2.2.1</span> Collision Domains</h3>
+  <p>A <strong>collision domain</strong> is a network segment where two or more devices share bandwidth and frames can collide if they transmit at the same time. In legacy hub-based networks, all devices shared one collision domain — traffic from any device competed with traffic from every other device.</p>
+
+  <div class="tw"><table>
+    <tr><th>Device</th><th>Collision Domains Created</th><th>Notes</th></tr>
+    <tr><td><strong>Hub</strong></td><td>1 — shared by ALL ports</td><td>All devices compete for one channel — collisions guaranteed under load</td></tr>
+    <tr><td><strong>Switch (half-duplex port)</strong></td><td>1 per port</td><td>Each port is its own collision domain, but half-duplex means collisions are still possible on that segment</td></tr>
+    <tr><td><strong>Switch (full-duplex port)</strong></td><td>0 — no collision domain</td><td>Full-duplex = simultaneous TX and RX — collision detection circuit disabled, collisions impossible</td></tr>
+    <tr><td><strong>Router</strong></td><td>1 per interface</td><td>Each router interface is its own collision domain</td></tr>
+  </table></div>
+
+  <div class="dg"><pre>
+  Hub-based (1 collision domain — all devices compete):
+  [PC1]──┐
+  [PC2]──┤──[Hub]   ← ONE collision domain for all 4 devices
+  [PC3]──┤
+  [PC4]──┘
+
+  Switch-based full-duplex (separate collision domain per port):
+  [PC1]──[Fa0/1]  ← collision domain 1
+  [PC2]──[Fa0/2]  ← collision domain 2   [Switch S1]
+  [PC3]──[Fa0/3]  ← collision domain 3
+  [PC4]──[Fa0/4]  ← collision domain 4
+  A 24-port full-duplex switch = 24 separate collision domains</pre></div>
+
+  <p>By default, Ethernet switch ports <strong>autonegotiate full-duplex</strong> when the connected device also supports it. If the connected device only supports half-duplex (e.g., a legacy hub), the switch port will match and operate in half-duplex.</p>
+  <div class="ca tip">
+    <span class="ic">✅</span>
+    <div>Full-duplex is selected when both devices support it <strong>AND</strong> can agree on the highest common speed. Full-duplex is required for Gigabit Ethernet (1 Gbps) and higher — these speeds cannot operate in half-duplex.</div>
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">2.2.2</span> Broadcast Domains</h3>
+  <p>A <strong>broadcast domain</strong> is the set of all devices that will receive a broadcast frame sent by any one device. When a switch receives a broadcast frame (destination MAC = FF:FF:FF:FF:FF:FF), it floods it out all ports except the ingress port — reaching every device connected to that switch and every switch connected to it.</p>
+  <p>A collection of <strong>interconnected switches = one single broadcast domain</strong>. Only a <strong>Layer 3 device (router)</strong> divides broadcast domains.</p>
+
+  <div class="dg"><pre>
+  ONE broadcast domain (no router):
+  [PC1]──[PC2]──[S1]──────[S2]──[PC3]──[PC4]
+                            |
+                           [S3]──[PC5]──[PC6]
+  Broadcast from PC1 reaches PC2, PC3, PC4, PC5, PC6 — ALL of them.
+
+  TWO broadcast domains (router between S1 and S2):
+  [PC1]──[PC2]──[S1]──[Router]──[S2]──[PC3]──[PC4]
+  ←── Domain 1 ──→              ←─── Domain 2 ───→
+  Broadcast from PC1 reaches PC2 only — router stops it.</pre></div>
+
+  <div class="tw"><table>
+    <tr><th>Device</th><th>Divides Collision Domains?</th><th>Divides Broadcast Domains?</th></tr>
+    <tr><td><strong>Hub</strong></td><td>❌ No</td><td>❌ No</td></tr>
+    <tr><td><strong>Switch / Bridge</strong></td><td>✅ Yes — one per port</td><td>❌ No</td></tr>
+    <tr><td><strong>Router</strong></td><td>✅ Yes — one per interface</td><td>✅ Yes — one per interface</td></tr>
+  </table></div>
+
+  <div class="ca warn">
+    <span class="ic">⚠️</span>
+    <div><strong>Too many broadcasts = network congestion.</strong> Large flat switched networks with hundreds of devices in one broadcast domain suffer from "broadcast storms" — excessive broadcast traffic that consumes bandwidth and slows all devices. VLANs (Module 3) solve this by creating multiple logical broadcast domains on one physical switch.</div>
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">2.2.3</span> Alleviate Network Congestion</h3>
+  <p>Modern switches have four specific hardware characteristics that reduce network congestion. The exam asks you to name and explain all four:</p>
+
+  <div class="tw"><table>
+    <tr><th>Feature</th><th>How It Reduces Congestion</th><th>Example Specs</th></tr>
+    <tr><td><strong>Fast port speeds</strong></td><td>Higher bandwidth means more data moves faster, reducing backlogs</td><td>Access layer: 100 Mbps / 1 Gbps<br>Distribution: up to 10 Gbps<br>Core / data center: 40–100 Gbps</td></tr>
+    <tr><td><strong>Fast internal switching</strong></td><td>High-speed internal bus or shared memory fabric moves frames through the switch without backplane bottlenecks</td><td>ASICs handle forwarding in hardware — no CPU intervention needed</td></tr>
+    <tr><td><strong>Large frame buffers</strong></td><td>Temporarily holds frames when the egress port is slower than ingress — prevents frame drops during traffic bursts</td><td>Example: 1 Gbps ingress → 100 Mbps egress; buffer absorbs the speed difference</td></tr>
+    <tr><td><strong>High port density</strong></td><td>More ports per switch = fewer switches needed = less inter-switch traffic = more traffic stays local</td><td>Two 48-port switches instead of four 24-port switches reduces cost and keeps traffic on fewer hops</td></tr>
+  </table></div>
+
+  <div class="et">
+    <div class="lbl">🎯 EXAM TIP — The Four Congestion-Relief Features</div>
+    The exam may ask "which switch characteristic helps alleviate congestion?" — know all four by name:<br><br>
+    <ol>
+      <li><strong>Fast port speeds</strong> — raw bandwidth capacity</li>
+      <li><strong>Fast internal switching</strong> — ASIC-based internal bus/shared memory</li>
+      <li><strong>Large frame buffers</strong> — absorbs speed mismatches and burst traffic</li>
+      <li><strong>High port density</strong> — fewer switches, more local traffic, lower cost</li>
+    </ol>
+    <br>Note: large frame buffers handle <strong>speed mismatches and bursts</strong> — they are not for error correction. Error correction is store-and-forward's job.
+  </div>
+  </div>
+
+</div></div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- SECTION 2.3 — COMMANDS -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div class="sec" id="s3">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">CMD</span><span class="ttl">MAC Address Table Commands</span></span><button class="sec-check" id="sch-s3" onclick="event.stopPropagation();toggleSection('s3',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb">
+
+  <p>Module 2 is a <strong>concepts-only module</strong> — there are no new IOS configuration commands. The following verification commands relate to the MAC address table discussed in this module:</p>
+
+  <div class="tw"><table>
+    <tr><th>Command</th><th>What It Shows</th></tr>
+    <tr><td><code>show mac address-table</code></td><td>Full MAC address table — all learned MAC addresses, their VLANs, type (dynamic/static), and associated ports</td></tr>
+    <tr><td><code>show mac address-table dynamic</code></td><td>Only dynamically learned entries — excludes any static entries that were manually configured</td></tr>
+    <tr><td><code>show mac address-table aging-time</code></td><td>Shows the current MAC entry aging timer (default: <strong>300 seconds / 5 minutes</strong>)</td></tr>
+    <tr><td><code>show mac address-table count</code></td><td>Shows how many entries are in the MAC table and how much capacity remains</td></tr>
+    <tr><td><code>clear mac address-table dynamic</code></td><td>Clears all dynamically learned MAC entries — the switch re-learns them as frames arrive</td></tr>
+  </table></div>
+
+  <div class="cw">
+    <div class="cl">show mac address-table — sample output <button class="cpb" onclick="copyCode(this)">Copy</button></div>
+    <pre><code>S1# show mac address-table
+          Mac Address Table
+-------------------------------------------
+Vlan    Mac Address       Type        Ports
+----    -----------       --------    -----
+   1    000a.b7b5.1400    DYNAMIC     Fa0/1
+   1    0010.1122.3344    DYNAMIC     Fa0/4
+   1    000d.bd8e.7690    DYNAMIC     Fa0/3
+   1    0060.5c5b.cd23    DYNAMIC     Fa0/6
+Total Mac Addresses for this criterion: 4</code></pre>
+  </div>
+
+  <div class="ca info">
+    <span class="ic">💡</span>
+    <div><strong>Reading the output:</strong> Each row shows one learned MAC address — the VLAN it was learned on, the MAC address itself, whether it was dynamically learned or statically configured, and the port it was seen on. <strong>DYNAMIC</strong> entries are automatically learned and age out after 5 minutes of inactivity.</div>
+  </div>
+
+</div></div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- SECTION 2.4 — EXAM TRAPS -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div class="sec" id="s4">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">🎯</span><span class="ttl">Common Exam Traps — Module 2</span></span><button class="sec-check" id="sch-s4" onclick="event.stopPropagation();toggleSection('s4',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb">
+
+  <div class="ca danger">
+    <span class="ic">❌</span>
+    <div><strong>Trap 1: A frame is NEVER forwarded out the port it arrived on.</strong><br>
+    This applies in every scenario — unicast, flood, broadcast, everything. The ingress port is always excluded from forwarding. If a frame arrived on Fa0/1, it will never leave on Fa0/1.</div>
+  </div>
+
+  <div class="ca danger">
+    <span class="ic">❌</span>
+    <div><strong>Trap 2: Unknown unicast = FLOOD, not drop.</strong><br>
+    When the destination MAC is not in the MAC address table, the switch floods the frame out all ports except the ingress port. The switch does NOT drop unknown frames. Only store-and-forward drops frames — and only when they fail the FCS check.</div>
+  </div>
+
+  <div class="ca danger">
+    <span class="ic">❌</span>
+    <div><strong>Trap 3: Store-and-forward is Cisco's default — not cut-through.</strong><br>
+    Cut-through has lower latency but no error checking. The exam frequently tries to trick you into choosing cut-through because it's "faster." Unless the scenario specifically calls out ultra-low latency (HPC, &lt;10 microseconds), store-and-forward is the correct answer.</div>
+  </div>
+
+  <div class="ca danger">
+    <span class="ic">❌</span>
+    <div><strong>Trap 4: Switches do NOT divide broadcast domains — routers do.</strong><br>
+    No matter how many switches you chain together, all devices across all those switches are in one single broadcast domain. Only a router (or a Layer 3 device acting as one) creates separate broadcast domains. VLANs also divide broadcast domains, but that's because they create logical Layer 3 separation — not because of the switch hardware itself.</div>
+  </div>
+
+  <div class="ca danger">
+    <span class="ic">❌</span>
+    <div><strong>Trap 5: A 24-port full-duplex switch has 24 collision domains — not 1.</strong><br>
+    Each full-duplex switch port is its own isolated collision domain. A hub has 1 shared collision domain. Students mix these up constantly. Count the ports, not the switches.</div>
+  </div>
+
+  <div class="ca danger">
+    <span class="ic">❌</span>
+    <div><strong>Trap 6: The MAC address table is also called the CAM table.</strong><br>
+    Both terms appear on the exam and refer to identical things. CAM stands for Content Addressable Memory — the high-speed memory type the table is stored in. Don't let the different name confuse you.</div>
+  </div>
+
+  <div class="ca warn">
+    <span class="ic">⚠️</span>
+    <div><strong>Trap 7: MAC entries age out after 5 minutes (300 seconds) by default.</strong><br>
+    If a device stops sending traffic, its MAC entry is eventually removed. The next time that device sends a frame, the switch re-learns it. This aging process is normal behavior — not a problem.</div>
+  </div>
+
+  <div class="ca warn">
+    <span class="ic">⚠️</span>
+    <div><strong>Trap 8: Cut-through makes things worse in high-error environments.</strong><br>
+    Because cut-through has no FCS checking, it forwards every frame — corrupt or not. In a network with high error rates, cut-through floods the network with bad frames, consuming bandwidth unnecessarily. Store-and-forward silently drops corrupt frames, keeping them off the network.</div>
+  </div>
+
+  <div class="ca warn">
+    <span class="ic">⚠️</span>
+    <div><strong>Trap 9: Fragment free does NOT perform a full FCS check.</strong><br>
+    Fragment free reads the first 64 bytes and catches runt frames and collision fragments. However, a full-sized frame with a data corruption error (FCS failure) that occurs beyond byte 64 will still be forwarded. Fragment free is better than cut-through, but it is not equivalent to store-and-forward.</div>
+  </div>
+
+  <div class="ca warn">
+    <span class="ic">⚠️</span>
+    <div><strong>Trap 10: Large frame buffers handle speed mismatches — not errors.</strong><br>
+    Buffers temporarily store frames when the egress port is slower than the ingress port. They prevent frame loss during speed mismatches and burst traffic. They do NOT fix corrupt frames — that is exclusively the job of store-and-forward FCS error checking.</div>
+  </div>
+
+  <div class="ca tip">
+    <span class="ic">✅</span>
+    <div><strong>Quick summary — collision vs broadcast domains:</strong><br><br>
+    <strong>Collision domain:</strong> eliminated by switches (each full-duplex port = 1 domain). Hubs share 1 domain.<br>
+    <strong>Broadcast domain:</strong> only divided by routers. All switches in a chain = 1 broadcast domain.<br><br>
+    <strong>Quick memory trick:</strong> Switches <em>segment</em> collision domains but <em>extend</em> broadcast domains. Routers <em>segment</em> both.</div>
+  </div>
+
+</div></div>
+
+</div><!-- end .wrap -->
+
+<div class="ft">
+  CCNA 2 SRWE v7.02 — Module 2: Switching Concepts v1.3<br>
+  Based on Cisco NetAcad curriculum · Study guide for personal use
+</div>
+
+<button class="tb" id="topb" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+
+<script>
+var MOD_KEY="ccna2-module2-switching-concepts";
+var SECS=["s1","s2","s3","s4"];
+var checked={};
+function loadState(){
+  try{var s=localStorage.getItem(MOD_KEY);if(s)checked=JSON.parse(s);}catch(e){}
+  SECS.forEach(function(id){
+    var pill=document.getElementById('pill-'+id);
+    var row=document.getElementById('row-'+id);
+    var st=document.getElementById('st-'+id);
+    var sch=document.getElementById('sch-'+id);
+    if(checked[id]){
+      if(pill){pill.classList.add('checked');pill.querySelector('.pill-check').textContent='✓';}
+      if(row)row.classList.add('done');
+      if(st)st.textContent='✓';
+      if(sch){sch.classList.add('checked');sch.textContent='✓ Done';}
+    } else {
+      if(pill){pill.classList.remove('checked');pill.querySelector('.pill-check').textContent='○';}
+      if(row)row.classList.remove('done');
+      if(st)st.textContent='○';
+      if(sch){sch.classList.remove('checked');sch.textContent='○ Mark done';}
+    }
+  });
+}
+function toggleSection(id,btn){checked[id]=!checked[id];try{localStorage.setItem(MOD_KEY,JSON.stringify(checked));}catch(e){}loadState();}
+function toggleStudyPanel(){
+  var hdr=document.getElementById('sp-hdr');
+  var body=document.getElementById('sp-body');
+  var arr=document.getElementById('sp-arr');
+  hdr.classList.toggle('open');body.classList.toggle('open');
+  if(arr)arr.textContent=body.classList.contains('open')?'▲':'▼';
+}
+function goTo(id){var el=document.getElementById(id);if(!el)return;var h=el.querySelector('.sh,.section-header'),b=el.querySelector('.sb,.section-body');if(h&&b&&!b.classList.contains('open')){h.classList.add('open');b.classList.add('open');}setTimeout(function(){window.scrollTo({top:el.getBoundingClientRect().top+window.pageYOffset-60,behavior:'smooth'});},50);}
+function setFs(size,btn){document.documentElement.style.setProperty('--base-fs',size);document.querySelectorAll('.fs-btn').forEach(function(b){b.classList.remove('active');});btn.classList.add('active');try{localStorage.setItem('ccna-fs',size);}catch(e){}}
+(function(){try{var s=localStorage.getItem('ccna-fs');if(s){document.documentElement.style.setProperty('--base-fs',s);document.querySelectorAll('.fs-btn').forEach(function(b){b.classList.remove('active');if((b.textContent==='S'&&s==='14px')||(b.textContent==='M'&&s==='16px')||(b.textContent==='L'&&s==='18px')||(b.textContent==='XL'&&s==='20px'))b.classList.add('active');});}}catch(e){}loadState();})();
+function copyCode(b){var t=b.closest('.cw').querySelector('pre').innerText;if(navigator.clipboard){navigator.clipboard.writeText(t).then(function(){b.textContent='Copied!';setTimeout(function(){b.textContent='Copy';},1500);}).catch(function(){fb(t,b);});}else{fb(t,b);}}
+function fb(t,b){var a=document.createElement('textarea');a.value=t;a.style.position='fixed';a.style.opacity='0';document.body.appendChild(a);a.focus();a.select();document.execCommand('copy');document.body.removeChild(a);b.textContent='Copied!';setTimeout(function(){b.textContent='Copy';},1500);}
+</script>
+<script src="../../site-config.js"></script>
+</body>
+</html>

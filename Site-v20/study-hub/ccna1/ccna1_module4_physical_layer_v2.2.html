@@ -1,0 +1,867 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=2.0">
+<title>CCNA 1 Module 4: Physical Layer v2.2</title>
+<style>
+:root{
+  --nt:#0a6e4e;--ntd:#4ade80;--nt2:#052e1e;--nt3:#021710;
+  --bg:#f4f6f8;--card:#fff;--text:#1a1a2e;--muted:#5a6a7a;
+  --cbg:#0d1117;--ctxt:#c9d1d9;--r:12px;--sh:0 2px 12px rgba(0,0,0,.08);
+  --base-fs:20px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);font-size:var(--base-fs);line-height:1.7}
+.bc{background:#0d1117;padding:8px 16px;display:flex;align-items:center;flex-wrap:wrap;gap:4px;font-size:.75em;overflow-x:auto;white-space:nowrap;-webkit-overflow-scrolling:touch;border-bottom:1px solid #21262d}
+.bc a{color:#8b949e;text-decoration:none;font-weight:600;flex-shrink:0}
+.bc .sep{color:#6e7681;flex-shrink:0}
+.bc .cur{color:var(--ntd);font-weight:700;flex-shrink:0}
+.fs-bar{position:sticky;top:0;z-index:200;background:#1a1a2e;display:flex;align-items:center;justify-content:flex-end;padding:6px 14px;gap:6px;box-shadow:0 2px 8px rgba(0,0,0,.3)}
+.fs-label{color:#8b949e;font-size:.72em;font-weight:700;letter-spacing:.5px;text-transform:uppercase;margin-right:4px}
+.fs-btn{background:#30363d;color:#c9d1d9;border:2px solid transparent;border-radius:6px;padding:4px 12px;font-size:.75em;font-weight:700;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:all .2s;line-height:1.4}
+.fs-btn:active,.fs-btn.active{background:var(--nt);color:#fff;border-color:var(--ntd)}
+.hdr{background:linear-gradient(135deg,var(--nt3),var(--nt2),var(--nt));color:#fff;padding:32px 20px 24px;text-align:center}
+.hdr .badge{display:inline-block;background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.4);border-radius:20px;padding:4px 14px;font-size:.81em;margin-bottom:12px}
+.hdr h1{font-size:1.5em;font-weight:700;margin-bottom:6px}
+.hdr p{font-size:.94em;opacity:.85}
+.hdr .obj{display:inline-block;background:rgba(255,255,255,.15);border-radius:8px;padding:7px 16px;margin-top:12px;font-size:.875em;font-style:italic}
+/* Study progress panel */
+.sp-wrap{background:var(--card);margin:16px 16px 0;border-radius:var(--r);box-shadow:var(--sh);overflow:hidden}
+.sp-hdr{background:var(--nt);color:#fff;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;user-select:none;-webkit-tap-highlight-color:transparent;gap:10px}
+.sp-hdr .sp-title{font-weight:700;font-size:.875em;flex-shrink:0}
+.sp-hdr .sp-arr{transition:transform .3s;flex-shrink:0}
+.sp-hdr.open .sp-arr{transform:rotate(180deg)}
+.sp-body{display:none;padding:12px 14px}
+.sp-body.open{display:block}
+.sp-row{display:flex;align-items:center;gap:10px;padding:6px 4px;border-bottom:1px solid #f0f4f8;font-size:.81em}
+.sp-row:last-child{border-bottom:none}
+.sp-row .sr-status{font-size:1em;flex-shrink:0;width:20px;text-align:center}
+.sp-row .sr-nb{font-weight:800;color:var(--nt);min-width:36px;flex-shrink:0;font-size:.875em}
+.sp-row .sr-ttl{color:var(--text);flex:1}
+.sp-row.done .sr-ttl{color:var(--muted);text-decoration:line-through}
+/* Section check pills in fs-bar */
+.sc-pills{display:flex;align-items:center;gap:4px;overflow-x:auto;-webkit-overflow-scrolling:touch;flex:1;padding:0 4px}
+.sc-pill{background:#30363d;color:#8b949e;border:2px solid transparent;border-radius:6px;padding:3px 8px;font-size:.72em;font-weight:700;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:all .15s;white-space:nowrap;flex-shrink:0;line-height:1.4;display:flex;align-items:center;gap:3px}
+.sc-pill.checked{background:var(--nt);color:#fff;border-color:var(--ntd)}
+.sc-pill .pill-check{font-size:.875em}
+.toc{background:var(--card);margin:16px;border-radius:var(--r);box-shadow:var(--sh);overflow:hidden}
+.toch{background:var(--nt);color:#fff;padding:14px 18px;font-weight:700;font-size:.94em;display:flex;justify-content:space-between;align-items:center;cursor:pointer;user-select:none}
+.toch .arr{transition:transform .3s}
+.toch.open .arr{transform:rotate(180deg)}
+.tocb{display:none;padding:10px 0}
+.tocb.open{display:block}
+.tocg{font-size:.69em;font-weight:800;letter-spacing:.8px;color:var(--nt);text-transform:uppercase;padding:8px 20px 2px}
+.tocb a{display:block;padding:9px 20px 9px 28px;color:var(--text);text-decoration:none;font-size:.875em;border-left:3px solid transparent;transition:all .2s}
+.tocb a:active{background:#f0fdf4;border-left-color:var(--ntd)}
+.tocb a .n{display:inline-block;background:var(--nt);color:#fff;border-radius:5px;padding:1px 8px;font-size:.75em;font-weight:700;margin-right:8px}
+.wrap{padding:0 16px 100px}
+.sec{background:var(--card);border-radius:var(--r);box-shadow:var(--sh);margin-bottom:16px;overflow:hidden}
+.sh{background:linear-gradient(90deg,var(--nt3),var(--nt));color:#fff;padding:16px 18px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;user-select:none;-webkit-tap-highlight-color:transparent}
+.sh .ttl{font-weight:700;font-size:1em}
+.sh .nb{background:rgba(255,255,255,.25);border-radius:6px;padding:3px 10px;font-size:.81em;font-weight:700;margin-right:10px;white-space:nowrap}
+.sh .ch{font-size:1.125em;transition:transform .3s}
+.sh.open .ch{transform:rotate(180deg)}
+.sb{display:none;padding:18px}
+.sb.open{display:block}
+.sub{margin-bottom:24px}
+.sub:last-child{margin-bottom:0}
+.sub h3{font-size:.94em;font-weight:700;color:var(--nt);margin-bottom:10px;padding-bottom:6px;border-bottom:2px solid #f0fdf4;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.sub h3 .sn{background:var(--nt);color:#fff;border-radius:5px;padding:2px 8px;font-size:.75em;white-space:nowrap}
+.sub h4{font-size:.875em;font-weight:700;color:var(--nt);margin:14px 0 6px}
+.sub p{margin-bottom:10px;font-size:.94em}
+.sub ul,.sub ol{padding-left:20px;margin:8px 0;font-size:.94em}
+.sub li{margin-bottom:5px}
+.ca{border-radius:8px;padding:12px 14px;margin:12px 0;font-size:.875em;line-height:1.6;display:flex;gap:10px;align-items:flex-start}
+.ca .ic{font-size:1.125em;flex-shrink:0;margin-top:1px}
+.ca.warn  {background:#fff3cd;border-left:4px solid #b38600;color:#3d2c00}
+.ca.tip   {background:#d4edda;border-left:4px solid #28a745;color:#0d3318}
+.ca.danger{background:#f8d7da;border-left:4px solid #dc3545;color:#3d0010}
+.ca.info  {background:#f0fdf4;border-left:4px solid var(--nt);color:#052e1e}
+.ca code{color:inherit!important;background:rgba(0,0,0,.1)!important;border:1px solid rgba(0,0,0,.15)}
+.et{background:linear-gradient(135deg,#1a1a2e,var(--nt3));color:#fff;border-radius:10px;padding:14px 16px;margin:14px 0;font-size:.875em;line-height:1.6}
+.et .lbl{font-size:.69em;font-weight:800;letter-spacing:1px;color:var(--ntd);margin-bottom:6px}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:12px 0;border-radius:8px}
+table{width:100%;border-collapse:collapse;font-size:.875em}
+th{background:var(--nt);color:#fff;padding:10px 12px;text-align:left;font-weight:700;font-size:.81em}
+td{padding:9px 12px;border-bottom:1px solid #e8ecf0;vertical-align:top;color:#1a1a2e}
+tr:nth-child(even) td{background:#f0fdf4;color:#052e1e}
+tr:last-child td{border-bottom:none}
+p code,li code,td code,.ca code{background:#f0fdf4;color:#052e1e;border-radius:4px;padding:1px 5px;font-size:.81em;font-family:'Courier New',monospace;font-weight:600}
+
+/* Signal type cards */
+.sig-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:12px 0}
+@media(max-width:480px){.sig-grid{grid-template-columns:1fr}}
+.sig-card{border-radius:10px;padding:12px 14px;text-align:center;font-size:.81em;line-height:1.6}
+.sig-card.copper  {background:#fffbeb;border:2px solid #b38600}
+.sig-card.fiber   {background:#e0f2fe;border:2px solid #1a3a5c}
+.sig-card.wireless{background:#f0fdf4;border:2px solid var(--nt)}
+.sig-card .sc-icon{font-size:1.75em;margin-bottom:6px}
+.sig-card .sc-name{font-weight:800;margin-bottom:4px}
+.sig-card.copper   .sc-name{color:#b38600}
+.sig-card.fiber    .sc-name{color:#1a3a5c}
+.sig-card.wireless .sc-name{color:var(--nt)}
+
+/* Bandwidth hierarchy */
+.bw-bar{margin:12px 0;display:grid;gap:4px}
+.bw-row{border-radius:8px;padding:9px 14px;font-size:.81em;font-weight:700;color:#fff;display:flex;justify-content:space-between;align-items:center}
+.bw-row.bw{background:linear-gradient(90deg,#1a3a5c,#2563eb)}
+.bw-row.th{background:linear-gradient(90deg,var(--nt),#059669)}
+.bw-row.gp{background:linear-gradient(90deg,#7c1e1e,#dc2626)}
+
+/* Copper cable cards */
+.copper-grid{display:grid;gap:10px;margin:12px 0}
+.copper-card{border-radius:10px;overflow:hidden}
+.copper-card .cc-hdr{padding:10px 14px;font-weight:800;font-size:.875em;color:#fff}
+.copper-card.utp .cc-hdr{background:#b38600}
+.copper-card.stp .cc-hdr{background:#5c3d00}
+.copper-card.coax .cc-hdr{background:#374151}
+.copper-card .cc-body{padding:12px 14px;font-size:.81em;line-height:1.7;background:#f9fafb}
+.copper-card .cc-body ul{padding-left:16px}
+.copper-card .cc-body li{margin-bottom:3px}
+
+/* UTP categories */
+.cat-grid{display:grid;gap:4px;margin:12px 0}
+.cat-row{display:flex;gap:8px;align-items:center;padding:7px 12px;border-radius:6px;font-size:.81em;border-left:4px solid}
+.cat-row.c3  {border-left-color:#374151;background:#f9fafb}
+.cat-row.c5  {border-left-color:#b38600;background:#fffbeb}
+.cat-row.c5e {border-left-color:#d97706;background:#fff7ed}
+.cat-row.c6  {border-left-color:var(--nt);background:#f0fdf4}
+.cat-row.c6a {border-left-color:#059669;background:#ecfdf5}
+.cat-row.c8  {border-left-color:#7b2d8b;background:#f3e8ff}
+.cat-row .cr-cat{font-weight:800;min-width:60px;flex-shrink:0}
+.cat-row .cr-speed{font-family:'Courier New',monospace;font-weight:700;min-width:80px;flex-shrink:0}
+
+/* Cable type cards */
+.cable-type-grid{display:grid;gap:8px;margin:12px 0}
+.cable-card{border-radius:8px;padding:10px 14px;font-size:.81em;border-left:5px solid;line-height:1.6}
+.cable-card.str{border-left-color:var(--nt);background:#f0fdf4}
+.cable-card.xov{border-left-color:#1a3a5c;background:#e0f2fe}
+.cable-card.rol{border-left-color:#374151;background:#f9fafb}
+.cable-card .ct-name{font-weight:800;margin-bottom:3px}
+.cable-card.str .ct-name{color:var(--nt)}
+.cable-card.xov .ct-name{color:#1a3a5c}
+.cable-card.rol .ct-name{color:#374151}
+
+/* Fiber comparison */
+.fiber-compare{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:12px 0}
+@media(max-width:480px){.fiber-compare{grid-template-columns:1fr}}
+.fiber-card{border-radius:10px;padding:12px 14px;font-size:.81em;line-height:1.7}
+.fiber-card.smf{background:#e0f2fe;border:2px solid #1a3a5c}
+.fiber-card.mmf{background:#f0fdf4;border:2px solid var(--nt)}
+.fiber-card .fc-title{font-weight:800;margin-bottom:6px;font-size:.875em}
+.fiber-card.smf .fc-title{color:#1a3a5c}
+.fiber-card.mmf .fc-title{color:var(--nt)}
+.fiber-card ul{padding-left:16px}
+.fiber-card li{margin-bottom:3px}
+
+/* Fiber connectors */
+.conn-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin:12px 0}
+@media(max-width:480px){.conn-grid{grid-template-columns:1fr}}
+.conn-card{border-radius:8px;padding:10px 13px;font-size:.81em;border-left:4px solid;line-height:1.6}
+.conn-card.st{border-left-color:#b38600;background:#fffbeb}
+.conn-card.sc{border-left-color:#1a3a5c;background:#e0f2fe}
+.conn-card.lc{border-left-color:var(--nt);background:#f0fdf4}
+.conn-card.dlc{border-left-color:#7b2d8b;background:#f3e8ff}
+.conn-card .conc-name{font-weight:800;margin-bottom:3px}
+.conn-card.st  .conc-name{color:#b38600}
+.conn-card.sc  .conc-name{color:#1a3a5c}
+.conn-card.lc  .conc-name{color:var(--nt)}
+.conn-card.dlc .conc-name{color:#7b2d8b}
+
+/* Wireless standards */
+.wifi-grid{display:grid;gap:8px;margin:12px 0}
+.wifi-card{border-radius:8px;padding:10px 14px;font-size:.81em;border-left:4px solid;line-height:1.6}
+.wifi-card.wifi{border-left-color:#1a3a5c;background:#e0f2fe}
+.wifi-card.bt  {border-left-color:#7b2d8b;background:#f3e8ff}
+.wifi-card.wmax{border-left-color:#b38600;background:#fffbeb}
+.wifi-card.zig {border-left-color:var(--nt);background:#f0fdf4}
+.wifi-card .wc-name{font-weight:800;margin-bottom:3px}
+.wifi-card.wifi .wc-name{color:#1a3a5c}
+.wifi-card.bt   .wc-name{color:#7b2d8b}
+.wifi-card.wmax .wc-name{color:#b38600}
+.wifi-card.zig  .wc-name{color:var(--nt)}
+
+/* Interference sources */
+.intf-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:12px 0}
+@media(max-width:480px){.intf-grid{grid-template-columns:1fr}}
+.intf-card{border-radius:8px;padding:11px 14px;font-size:.81em;line-height:1.6}
+.intf-card.emi{background:#fff5f5;border:2px solid #dc3545}
+.intf-card.xt {background:#fffbeb;border:2px solid #b38600}
+.intf-card .ic-title{font-weight:800;margin-bottom:4px}
+.intf-card.emi .ic-title{color:#7c1e1e}
+.intf-card.xt  .ic-title{color:#b38600}
+
+.tb-btn{position:fixed;bottom:80px;right:16px;background:var(--nt);color:#fff;border:none;border-radius:50%;width:44px;height:44px;font-size:1.25em;box-shadow:0 4px 14px rgba(0,0,0,.25);cursor:pointer;display:none;align-items:center;justify-content:center;z-index:100}
+.tb-btn.show{display:flex}
+.ft{text-align:center;padding:24px 16px;color:var(--muted);font-size:.81em}
+.mod-nav{position:fixed;bottom:0;left:0;right:0;z-index:300;background:#1a1a2e;border-top:1px solid #30363d;display:flex;align-items:center;height:52px;padding:0 8px;gap:6px}
+.mn-hub{background:#1ba0d7;color:#fff;border:none;border-radius:8px;padding:6px 12px;font-size:.75em;font-weight:700;cursor:pointer;text-decoration:none;display:flex;align-items:center;gap:4px;white-space:nowrap;-webkit-tap-highlight-color:transparent;flex-shrink:0}
+.mn-hub:active{opacity:.8}
+.mn-divider{width:1px;height:28px;background:#30363d;flex-shrink:0}
+.mn-label{flex:1;text-align:center;font-size:.69em;color:#8b949e;font-weight:600;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding:0 4px}
+.mn-prev,.mn-next{background:#30363d;color:#c9d1d9;border:none;border-radius:8px;padding:6px 10px;font-size:.875em;font-weight:700;cursor:pointer;text-decoration:none;display:flex;align-items:center;-webkit-tap-highlight-color:transparent;flex-shrink:0}
+.mn-prev:active,.mn-next:active{background:var(--nt);color:#fff}
+
+/* v2.1 — In-section check button */
+.sh{position:relative}
+.sec-check{position:absolute;right:40px;top:50%;transform:translateY(-50%);background:rgba(255,255,255,.15);border:2px solid rgba(255,255,255,.4);border-radius:6px;padding:2px 10px;font-size:.72em;font-weight:800;color:#fff;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:all .2s;white-space:nowrap;z-index:10;line-height:1.5}
+.sec-check.checked{background:var(--ntd);border-color:var(--ntd);color:#052e1e}
+.sec-check:active{opacity:.75}
+</style>
+</head>
+<body>
+<nav class="bc">
+  <a href="../../index.html">🏠 Home</a><span class="sep">›</span>
+  <a href="index.html">CCNA 1 — ITN</a><span class="sep">›</span>
+  <span class="cur">M4: Physical Layer</span>
+</nav>
+<div class="fs-bar">
+  <div class="sc-pills" id="sc-pills">
+  <button class="sc-pill" id="pill-s1" onclick="toggleSection('s1',this)"><span class="pill-check">○</span>4.1</button>
+  <button class="sc-pill" id="pill-s2" onclick="toggleSection('s2',this)"><span class="pill-check">○</span>4.2</button>
+  <button class="sc-pill" id="pill-s3" onclick="toggleSection('s3',this)"><span class="pill-check">○</span>4.3</button>
+  <button class="sc-pill" id="pill-s4" onclick="toggleSection('s4',this)"><span class="pill-check">○</span>4.4</button>
+  <button class="sc-pill" id="pill-s5" onclick="toggleSection('s5',this)"><span class="pill-check">○</span>4.5</button>
+  <button class="sc-pill" id="pill-s6" onclick="toggleSection('s6',this)"><span class="pill-check">○</span>4.6</button>
+  <button class="sc-pill" id="pill-s-pt-4-7" onclick="toggleSection('s-pt-4-7',this)"><span class="pill-check">○</span>PT 4.7</button>
+  <button class="sc-pill" id="pill-s7" onclick="toggleSection('s7',this)"><span class="pill-check">○</span>🎯</button>
+  </div>
+  <span class="fs-label" style="flex-shrink:0;margin-left:6px">Size</span>
+  <button class="fs-btn" onclick="setFs('14px',this)">S</button>
+  <button class="fs-btn" onclick="setFs('16px',this)">M</button>
+  <button class="fs-btn" onclick="setFs('18px',this)">L</button>
+  <button class="fs-btn active" onclick="setFs('20px',this)">XL</button>
+</div>
+<div class="hdr">
+  <div class="badge">CCNA 1 — ITN v7.02 · Module 4</div>
+  <h1>🔌 Physical Layer</h1>
+  <p>Introduction to Networks · NetAcad Study Guide</p>
+  <div class="obj">Module Objective: Explain how physical layer protocols, services, and network media support communications across data networks</div>
+</div>
+<div class="sp-wrap">
+  <div class="sp-hdr" id="sp-hdr" onclick="toggleStudyPanel()">
+    <span class="sp-title">📚 Sections</span>
+    <span class="sp-arr" id="sp-arr">▼</span>
+  </div>
+  <div class="sp-body" id="sp-body">
+    <div class="sp-row" id="row-s1"><span class="sr-status" id="st-s1">○</span><span class="sr-nb">4.1</span><span class="sr-ttl">Purpose of the Physical Layer</span></div>
+    <div class="sp-row" id="row-s2"><span class="sr-status" id="st-s2">○</span><span class="sr-nb">4.2</span><span class="sr-ttl">Physical Layer Characteristics</span></div>
+    <div class="sp-row" id="row-s3"><span class="sr-status" id="st-s3">○</span><span class="sr-nb">4.3</span><span class="sr-ttl">Copper Cabling</span></div>
+    <div class="sp-row" id="row-s4"><span class="sr-status" id="st-s4">○</span><span class="sr-nb">4.4</span><span class="sr-ttl">UTP Cabling</span></div>
+    <div class="sp-row" id="row-s5"><span class="sr-status" id="st-s5">○</span><span class="sr-nb">4.5</span><span class="sr-ttl">Fiber-Optic Cabling</span></div>
+    <div class="sp-row" id="row-s6"><span class="sr-status" id="st-s6">○</span><span class="sr-nb">4.6</span><span class="sr-ttl">Wireless Media</span></div>
+    <div class="sp-row" id="row-s-pt-4-7"><span class="sr-status" id="st-s-pt-4-7">○</span><span class="sr-nb">PT 4.7</span><span class="sr-ttl">Packet Tracer — Physical Layer Activities</span></div>
+    <div class="sp-row" id="row-s7"><span class="sr-status" id="st-s7">○</span><span class="sr-nb">🎯</span><span class="sr-ttl">Common Exam Traps — Module 4</span></div>
+  </div>
+</div>
+
+<div class="toc">
+  <div class="toch open" onclick="this.classList.toggle('open');document.getElementById('tocb').classList.toggle('open')">
+    📋 Table of Contents — Tap to expand <span class="arr">▼</span>
+  </div>
+  <div class="tocb open" id="tocb">
+    <div class="tocg">4.1 — Purpose of the Physical Layer</div>
+    <a href="javascript:void(0)" onclick="goTo('s1')"><span class="n">4.1.1</span> Physical Connections — Wired and Wireless · NICs</a>
+    <a href="javascript:void(0)" onclick="goTo('s1')"><span class="n">4.1.2</span> Physical Layer Function — Frame to Bits</a>
+    <div class="tocg">4.2 — Physical Layer Characteristics</div>
+    <a href="javascript:void(0)" onclick="goTo('s2')"><span class="n">4.2.1</span> Standards Organizations</a>
+    <a href="javascript:void(0)" onclick="goTo('s2')"><span class="n">4.2.2</span> Three Functional Areas — Components, Encoding, Signaling</a>
+    <a href="javascript:void(0)" onclick="goTo('s2')"><span class="n">4.2.3</span> Encoding — Manchester, 4B/5B, 8B/10B</a>
+    <a href="javascript:void(0)" onclick="goTo('s2')"><span class="n">4.2.4</span> Signaling — Electrical, Light, Microwave</a>
+    <a href="javascript:void(0)" onclick="goTo('s2')"><span class="n">4.2.5</span> Bandwidth — Definition and Units</a>
+    <a href="javascript:void(0)" onclick="goTo('s2')"><span class="n">4.2.6</span> Latency, Throughput, and Goodput</a>
+    <div class="tocg">4.3 — Copper Cabling</div>
+    <a href="javascript:void(0)" onclick="goTo('s3')"><span class="n">4.3.1</span> Copper Characteristics — Attenuation, EMI/RFI, Crosstalk</a>
+    <a href="javascript:void(0)" onclick="goTo('s3')"><span class="n">4.3.2</span> Three Types — UTP, STP, Coaxial</a>
+    <div class="tocg">4.4 — UTP Cabling</div>
+    <a href="javascript:void(0)" onclick="goTo('s4')"><span class="n">4.4.1</span> Cancellation and Varying Twists</a>
+    <a href="javascript:void(0)" onclick="goTo('s4')"><span class="n">4.4.2</span> UTP Categories and Standards · RJ-45</a>
+    <a href="javascript:void(0)" onclick="goTo('s4')"><span class="n">4.4.3</span> Straight-through, Crossover, and Rollover</a>
+    <div class="tocg">4.5 — Fiber-Optic Cabling</div>
+    <a href="javascript:void(0)" onclick="goTo('s5')"><span class="n">4.5.1</span> Fiber Properties — Light, Distance, EMI Immunity</a>
+    <a href="javascript:void(0)" onclick="goTo('s5')"><span class="n">4.5.2</span> SMF vs MMF — Laser vs LED, Jacket Colors</a>
+    <a href="javascript:void(0)" onclick="goTo('s5')"><span class="n">4.5.3</span> Fiber Uses — Enterprise, FTTH, Long-Haul, Submarine</a>
+    <a href="javascript:void(0)" onclick="goTo('s5')"><span class="n">4.5.4</span> Fiber Connectors — ST, SC, LC, Duplex LC</a>
+    <a href="javascript:void(0)" onclick="goTo('s5')"><span class="n">4.5.6</span> Fiber vs Copper Comparison</a>
+    <div class="tocg">4.6 — Wireless Media</div>
+    <a href="javascript:void(0)" onclick="goTo('s6')"><span class="n">4.6.1</span> Wireless Properties and Limitations</a>
+    <a href="javascript:void(0)" onclick="goTo('s6')"><span class="n">4.6.2</span> Wireless Standards — 802.11, 802.15, 802.16, 802.15.4</a>
+    <a href="javascript:void(0)" onclick="goTo('s6')"><span class="n">4.6.3</span> WLAN — AP and Wireless NIC</a>
+    <div class="tocg">Reference</div>
+    <a href="javascript:void(0)" onclick="goTo('s7')"><span class="n">🎯</span> Common Exam Traps</a>
+  </div>
+</div>
+
+<div class="wrap">
+
+<!-- 4.1 PURPOSE -->
+<div class="sec" id="s1">
+<div class="sh open" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">4.1</span><span class="ttl">Purpose of the Physical Layer</span></span><button class="sec-check" id="sch-s1" onclick="event.stopPropagation();toggleSection('s1',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb open">
+
+  <div class="sub">
+  <h3><span class="sn">4.1.1</span> Physical Connections — Wired and Wireless</h3>
+  <p>Before any network communications can occur, a <strong>physical connection</strong> to a local network must be established. Two types:</p>
+  <div class="tw"><table>
+    <tr><th>Type</th><th>Description</th><th>Requires</th></tr>
+    <tr><td><strong>Wired</strong></td><td>Data transmitted through a physical cable</td><td>Cable + Ethernet NIC</td></tr>
+    <tr><td><strong>Wireless</strong></td><td>Data transmitted using radio waves</td><td>WLAN NIC + Wireless AP or router</td></tr>
+  </table></div>
+  <p><strong>Wireless router components:</strong> wireless antennas (may be embedded) · Ethernet switch ports · internet port</p>
+  <p><strong>Network Interface Cards (NICs):</strong></p>
+  <ul>
+    <li><strong>Ethernet NIC</strong> — used for wired connections</li>
+    <li><strong>WLAN NIC</strong> — used for wireless connections</li>
+    <li>End devices may include one or both (e.g., a network printer may have only an Ethernet NIC; a smartphone may have only a WLAN NIC)</li>
+  </ul>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">4.1.2</span> The Physical Layer Function</h3>
+  <p>The OSI physical layer (Layer 1) is at the bottom of the OSI stack. It is part of the <strong>Network Access layer</strong> in the TCP/IP model.</p>
+  <div class="tw"><table>
+    <tr><th>Direction</th><th>What the Physical Layer Does</th></tr>
+    <tr><td><strong>Sending</strong></td><td>Accepts a complete <strong>frame</strong> from the Data Link layer → encodes it as a series of electrical, optical, or radio signals → transmits those signals onto the local media <strong>one bit at a time</strong></td></tr>
+    <tr><td><strong>Receiving</strong></td><td>Retrieves individual signals from the media → restores them to their bit representations → passes the complete <strong>frame</strong> back up to the Data Link layer</td></tr>
+  </table></div>
+  <div class="ca info"><span class="ic">💡</span><div>The physical layer doesn't interpret frame content — it only handles the physical transmission of bits. The entire frame comes from above (Data Link layer) and is converted to signals, then converted back from signals to bits at the destination.</div></div>
+  </div>
+
+</div></div>
+
+<!-- 4.2 CHARACTERISTICS -->
+<div class="sec" id="s2">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">4.2</span><span class="ttl">Physical Layer Characteristics</span></span><button class="sec-check" id="sch-s2" onclick="event.stopPropagation();toggleSection('s2',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb">
+
+  <div class="sub">
+  <h3><span class="sn">4.2.1</span> Standards Organizations</h3>
+  <p>The physical layer consists of electronic circuitry developed by engineers — so its standards come from electrical and communications engineering organizations, not software bodies like the IETF.</p>
+  <div class="tw"><table>
+    <tr><th>Organization</th><th>Acronym</th><th>Role</th></tr>
+    <tr><td>International Organization for Standardization</td><td><strong>ISO</strong></td><td>International physical layer standards</td></tr>
+    <tr><td>Telecommunications Industry Association / Electronic Industries Association</td><td><strong>TIA/EIA</strong></td><td>Cabling standards (e.g., TIA/EIA-568 for UTP)</td></tr>
+    <tr><td>International Telecommunication Union</td><td><strong>ITU</strong></td><td>International communication standards</td></tr>
+    <tr><td>American National Standards Institute</td><td><strong>ANSI</strong></td><td>US standards</td></tr>
+    <tr><td>Institute of Electrical and Electronics Engineers</td><td><strong>IEEE</strong></td><td>802.3 Ethernet, UTP electrical specs, 802.11 WLAN</td></tr>
+    <tr><td>Federal Communications Commission / European Telecommunications Standards Institute</td><td><strong>FCC / ETSI</strong></td><td>National/regional regulatory authorities</td></tr>
+  </table></div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">4.2.2</span> Three Functional Areas of Physical Layer Standards</h3>
+  <div class="tw"><table>
+    <tr><th>Area</th><th>Description</th></tr>
+    <tr><td><strong>Physical Components</strong></td><td>Electronic hardware: NICs, interfaces, connectors, cable materials, cable designs, port types</td></tr>
+    <tr><td><strong>Encoding</strong></td><td>Method of converting a stream of data bits into a recognizable pattern/code</td></tr>
+    <tr><td><strong>Signaling</strong></td><td>How "1" and "0" are represented as actual signals on the medium</td></tr>
+  </table></div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">4.2.3</span> Encoding</h3>
+  <p><strong>Encoding (line encoding)</strong> = converting a stream of data bits into a predefined "code" recognizable by both sender and receiver. Similar to Morse code — a series of dots and dashes encode letters.</p>
+  <div class="tw"><table>
+    <tr><th>Encoding Scheme</th><th>Used In</th><th>How It Works</th></tr>
+    <tr><td><strong>Manchester encoding</strong></td><td>10BASE-T (10 Mbps Ethernet)</td><td>0 bit = high-to-low voltage transition · 1 bit = low-to-high voltage transition · Transition occurs at the <strong>middle of each bit period</strong></td></tr>
+    <tr><td><strong>4B/5B</strong></td><td>100BASE-TX (100 Mbps)</td><td>4 data bits mapped to 5-bit code groups to ensure enough transitions for clock synchronization</td></tr>
+    <tr><td><strong>8B/10B</strong></td><td>1000BASE-T (1 Gbps)</td><td>8 data bits mapped to 10-bit code groups; more complex for higher speeds</td></tr>
+  </table></div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">4.2.4</span> Signaling — How 1s and 0s Travel</h3>
+  <p>Signaling = the method used to represent bits as physical signals on the medium. The physical layer must generate the appropriate signal type for each medium:</p>
+  <div class="sig-grid">
+    <div class="sig-card copper">
+      <div class="sc-icon">⚡</div>
+      <div class="sc-name">Copper Cable</div>
+      Electrical pulses (voltage changes)
+    </div>
+    <div class="sig-card fiber">
+      <div class="sc-icon">💡</div>
+      <div class="sc-name">Fiber-Optic</div>
+      Pulses of light
+    </div>
+    <div class="sig-card wireless">
+      <div class="sc-icon">📡</div>
+      <div class="sc-name">Wireless</div>
+      Microwave / radio transmissions
+    </div>
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">4.2.5</span> Bandwidth — Definition and Units</h3>
+  <p><strong>Bandwidth</strong> = the capacity at which a medium can carry data. Measures how many bits can flow from one place to another per unit time.</p>
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Bandwidth ≠ speed of bit travel.</strong> In both 10 Mbps and 100 Mbps Ethernet, bits travel at the same speed (speed of electricity). The difference is how many bits per second are transmitted. Bandwidth = capacity, not velocity.</div></div>
+  <div class="tw"><table>
+    <tr><th>Unit</th><th>Abbreviation</th><th>Equivalence</th></tr>
+    <tr><td>Bits per second</td><td><strong>bps</strong></td><td>Fundamental unit</td></tr>
+    <tr><td>Kilobits per second</td><td><strong>Kbps</strong></td><td>1,000 bps = 10³ bps</td></tr>
+    <tr><td>Megabits per second</td><td><strong>Mbps</strong></td><td>1,000,000 bps = 10⁶ bps</td></tr>
+    <tr><td>Gigabits per second</td><td><strong>Gbps</strong></td><td>1,000,000,000 bps = 10⁹ bps</td></tr>
+    <tr><td>Terabits per second</td><td><strong>Tbps</strong></td><td>1,000,000,000,000 bps = 10¹² bps</td></tr>
+  </table></div>
+  <p>Practical bandwidth depends on: properties of the physical media + technologies chosen for signaling and detecting network signals.</p>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">4.2.6</span> Latency, Throughput, and Goodput</h3>
+  <div class="bw-bar">
+    <div class="bw-row bw">Bandwidth — Maximum theoretical capacity of the medium <span>▶ Highest</span></div>
+    <div class="bw-row th">Throughput — Actual bits transferred per second (usually lower than bandwidth) <span>▶ Middle</span></div>
+    <div class="bw-row gp">Goodput — Usable data only (throughput minus overhead) <span>▶ Lowest</span></div>
+  </div>
+  <div class="tw"><table>
+    <tr><th>Term</th><th>Definition</th><th>What Reduces It</th></tr>
+    <tr><td><strong>Latency</strong></td><td>Total time (including all delays) for data to travel from one point to another. Affects throughput.</td><td>Number of network devices; queuing delay; propagation delay; processing delay</td></tr>
+    <tr><td><strong>Throughput</strong></td><td>Actual measure of bits transferred across media over a given period</td><td>Traffic amount and type; latency from devices; congestion</td></tr>
+    <tr><td><strong>Goodput</strong></td><td>Usable data transferred per unit time = Throughput minus overhead</td><td>Session setup overhead; acknowledgments; encapsulation headers; retransmissions</td></tr>
+  </table></div>
+  <div class="et"><div class="lbl">🎯 ORDER — EXAM KEY</div>
+  <strong>Bandwidth ≥ Throughput ≥ Goodput (always, without exception)</strong><br>
+  Throughput is always ≤ bandwidth (traffic, latency, device processing reduce it).<br>
+  Goodput is always ≤ throughput (session setup, ACKs, encapsulation, retransmissions subtract from usable data).<br>
+  Even in perfect conditions: Goodput &lt; Throughput &lt; Bandwidth.
+  </div>
+  </div>
+
+</div></div>
+
+<!-- 4.3 COPPER -->
+<div class="sec" id="s3">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">4.3</span><span class="ttl">Copper Cabling</span></span><button class="sec-check" id="sch-s3" onclick="event.stopPropagation();toggleSection('s3',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb">
+
+  <div class="sub">
+  <h3><span class="sn">4.3.1</span> Copper Characteristics</h3>
+  <p><strong>Why copper is popular:</strong> inexpensive · easy to install · low resistance to electrical current</p>
+  <p><strong>Limitations:</strong> distance (attenuation) · signal interference</p>
+  <p><strong>Attenuation</strong> = signal weakening over distance. All copper media must follow strict distance limits per standard.</p>
+  <p><strong>Two interference sources:</strong></p>
+  <div class="intf-grid">
+    <div class="intf-card emi">
+      <div class="ic-title">📻 EMI / RFI</div>
+      <strong>Electromagnetic Interference / Radio Frequency Interference</strong><br>
+      External source. Comes from: fluorescent lights · electric motors · radio waves · other electromagnetic devices.<br>
+      <strong>Fix: metallic shielding</strong> (used in STP) + proper grounding
+    </div>
+    <div class="intf-card xt">
+      <div class="ic-title">🔀 Crosstalk</div>
+      <strong>Between adjacent wires</strong><br>
+      Electric/magnetic field from one wire couples into an adjacent wire. Can cause hearing part of another voice call in phone circuits.<br>
+      <strong>Fix: twisted wire pairs</strong> (cancellation effect)
+    </div>
+  </div>
+  <p><strong>Additional mitigation techniques:</strong></p>
+  <ul>
+    <li>Select cable type/category suited to the environment</li>
+    <li>Design infrastructure to avoid known interference sources</li>
+    <li>Use proper cable handling and termination techniques</li>
+  </ul>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">4.3.2–4.3.5</span> Three Types of Copper Cabling</h3>
+  <div class="copper-grid">
+    <div class="copper-card utp">
+      <div class="cc-hdr">🔶 UTP — Unshielded Twisted-Pair</div>
+      <div class="cc-body">
+        <strong>Most common networking media.</strong> Terminated with <strong>RJ-45</strong> connectors. 4 color-coded twisted pairs in flexible plastic sheath.
+        <ul>
+          <li><strong>Outer jacket</strong> — physical damage protection</li>
+          <li><strong>Twisted pairs</strong> — signal interference protection via cancellation</li>
+          <li><strong>Color-coded insulation</strong> — electrically isolates wires + identifies each pair</li>
+        </ul>
+        Relies entirely on <strong>cancellation</strong> (no shielding). Most widely used in LAN environments.
+      </div>
+    </div>
+    <div class="copper-card stp">
+      <div class="cc-hdr">🔷 STP — Shielded Twisted-Pair</div>
+      <div class="cc-body">
+        Better noise protection than UTP. More <strong>expensive</strong> and <strong>harder to install</strong>. Also uses <strong>RJ-45</strong> (with special shielded terminations).
+        <ul>
+          <li>Combines <strong>shielding</strong> (against EMI/RFI) + <strong>twisting</strong> (against crosstalk)</li>
+          <li>Structure: outer jacket → overall metallic braid/foil → 4 individual foil-shielded wire pairs</li>
+        </ul>
+        <strong>⚠️ Critical:</strong> If improperly grounded, shield acts as an <strong>antenna</strong> — picks up MORE unwanted signals. Grounding is essential for STP to work correctly.
+      </div>
+    </div>
+    <div class="copper-card coax">
+      <div class="cc-hdr">⚫ Coaxial Cable (Coax)</div>
+      <div class="cc-body">
+        Named because two conductors share the <strong>same axis</strong>. Structure (inside out): copper conductor → plastic insulation → woven copper braid/foil → outer jacket.
+        Connectors: <strong>BNC, N type, F type</strong>
+        <ul>
+          <li><strong>Not used in modern Ethernet</strong></li>
+          <li>Used for: wireless antenna connections (carries RF energy between antenna and radio equipment)</li>
+          <li>Used for: inside customer premises in cable internet installations</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  </div>
+
+</div></div>
+
+<!-- 4.4 UTP -->
+<div class="sec" id="s4">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">4.4</span><span class="ttl">UTP Cabling</span></span><button class="sec-check" id="sch-s4" onclick="event.stopPropagation();toggleSection('s4',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb">
+
+  <div class="sub">
+  <h3><span class="sn">4.4.1</span> How UTP Counters Interference — No Shielding Needed</h3>
+  <p>UTP uses two techniques instead of shielding:</p>
+  <ol>
+    <li><strong>Cancellation</strong> — pairing wires in a circuit; opposing magnetic fields cancel each other AND cancel outside EMI/RFI signals. The closer together the two wires, the more effective the cancellation.</li>
+    <li><strong>Varying the number of twists per pair</strong> — each color pair twisted a different number of times per meter; more twists = better cancellation. Must meet precise TIA/EIA specifications.</li>
+  </ol>
+  <div class="ca info"><span class="ic">💡</span><div>UTP "self-shields" through the physics of cancellation — no metal shielding required. This keeps UTP flexible, inexpensive, and easy to install — and it works effectively for most LAN environments.</div></div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">4.4.2</span> UTP Categories, Standards, and Connectors</h3>
+  <p><strong>Standards:</strong> TIA/EIA-568 = commercial cabling standard (defines types, lengths, connectors, termination, testing). IEEE = defines electrical characteristics and UTP categories by performance.</p>
+  <div class="cat-grid">
+    <div class="cat-row c3"><span class="cr-cat">Cat 3</span><span class="cr-speed">Voice</span><div>Originally voice; later used for data. Now obsolete for networking.</div></div>
+    <div class="cat-row c5"><span class="cr-cat">Cat 5</span><span class="cr-speed">100 Mbps</span><div>Used in 100BASE-TX Fast Ethernet</div></div>
+    <div class="cat-row c5e"><span class="cr-cat">Cat 5e</span><span class="cr-speed">1 Gbps</span><div>⚠️ <strong>Minimum acceptable for new installations</strong></div></div>
+    <div class="cat-row c6"><span class="cr-cat">Cat 6</span><span class="cr-speed">10 Gbps</span><div>✅ <strong>Recommended for new building installations</strong> · Has added separator between each wire pair</div></div>
+    <div class="cat-row c6a"><span class="cr-cat">Cat 6a</span><span class="cr-speed">10 Gbps</span><div>Extended range vs Cat 6</div></div>
+    <div class="cat-row c8"><span class="cr-cat">Cat 8</span><span class="cr-speed">40 Gbps</span><div>Newest category; data center use</div></div>
+  </div>
+  <p><strong>Connector:</strong> <strong>RJ-45</strong> — male plug crimped at end of cable / female socket on device or wall outlet. Improper termination is a source of physical layer performance degradation. Untwist wires only to the extent necessary to attach the connector.</p>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">4.4.3</span> Straight-through, Crossover, and Rollover Cables</h3>
+  <p>T568A and T568B wiring standards define pin assignments (pinouts) for RJ-45 connectors. The key difference: orange pair and green pair swap positions between A and B.</p>
+  <div class="cable-type-grid">
+    <div class="cable-card str">
+      <div class="ct-name">➡️ Ethernet Straight-through</div>
+      <strong>Both ends same standard</strong> (T568A–T568A or T568B–T568B)<br>
+      Use: <strong>Host → Switch</strong> · <strong>Switch → Router</strong><br>
+      Most common cable type in networking.
+    </div>
+    <div class="cable-card xov">
+      <div class="ct-name">🔀 Ethernet Crossover</div>
+      <strong>Different standards on each end</strong> (one T568A, one T568B)<br>
+      Use: Switch–Switch · Router–Router · Host–Host<br>
+      ⚠️ Now considered <strong>legacy</strong> because NICs use <strong>auto-MDIX</strong> to automatically detect and correct cable type.
+    </div>
+    <div class="cable-card rol">
+      <div class="ct-name">↩️ Rollover (Cisco Proprietary)</div>
+      <strong>Cisco proprietary wiring</strong><br>
+      Use: Workstation serial port → Router or switch <strong>console port</strong><br>
+      Used for out-of-band management (CLI access). Uses DB-9 or USB adapter at workstation end.
+    </div>
+  </div>
+  <div class="ca danger"><span class="ic">🚨</span><div><strong>Using the wrong cable type does NOT damage devices</strong> — but it PREVENTS connectivity. Checking cable type should always be the FIRST troubleshooting step when two devices fail to communicate.</div></div>
+  </div>
+
+</div></div>
+
+<!-- 4.5 FIBER -->
+<div class="sec" id="s5">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">4.5</span><span class="ttl">Fiber-Optic Cabling</span></span><button class="sec-check" id="sch-s5" onclick="event.stopPropagation();toggleSection('s5',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb">
+
+  <div class="sub">
+  <h3><span class="sn">4.5.1</span> Fiber-Optic Properties</h3>
+  <ul>
+    <li>Transmits data as <strong>light pulses</strong> through flexible, extremely thin transparent strands of very pure glass (about the size of a human hair)</li>
+    <li>Acts as a <strong>waveguide</strong> ("light pipe") — transmits light between two ends with minimal signal loss</li>
+    <li><strong>Longer distances</strong> and <strong>higher bandwidths</strong> than any other networking media</li>
+    <li><strong>Less attenuation</strong> than copper</li>
+    <li><strong>Completely immune</strong> to EMI and RFI — glass conducts no electricity, so no electromagnetic interference is possible</li>
+    <li>More expensive than copper; requires more skill to install and terminate</li>
+  </ul>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">4.5.2</span> SMF vs MMF — Two Types of Fiber Media</h3>
+  <div class="fiber-compare">
+    <div class="fiber-card smf">
+      <div class="fc-title">🔵 SMF — Single-Mode Fiber</div>
+      <ul>
+        <li>Very <strong>small core</strong></li>
+        <li>Uses expensive <strong>laser</strong> light source</li>
+        <li>Single ray travels straight through</li>
+        <li><strong>Less dispersion</strong> (signal stays focused)</li>
+        <li>Distance: <strong>hundreds of km</strong></li>
+        <li>Up to <strong>100 Gbps</strong></li>
+        <li>Jacket color: <strong>Yellow</strong></li>
+        <li>Use: long-haul telephony, cable TV, transoceanic</li>
+      </ul>
+    </div>
+    <div class="fiber-card mmf">
+      <div class="fc-title">🟢 MMF — Multimode Fiber</div>
+      <ul>
+        <li><strong>Larger core</strong></li>
+        <li>Uses low-cost <strong>LED</strong> light source</li>
+        <li>Light enters at multiple angles (bouncing)</li>
+        <li><strong>More dispersion</strong> → shorter max distance</li>
+        <li>Distance: up to <strong>550 meters</strong></li>
+        <li>Up to <strong>10 Gbps</strong></li>
+        <li>Jacket color: <strong>Orange</strong> (or aqua)</li>
+        <li>Use: LAN backbone, enterprise, buildings</li>
+      </ul>
+    </div>
+  </div>
+  <div class="ca info"><span class="ic">💡</span><div><strong>Dispersion</strong> = spreading out of a light pulse over time → increased signal loss. MMF has greater dispersion than SMF → shorter maximum distance. This is why MMF is limited to ~550m while SMF can run hundreds of kilometers.</div></div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">4.5.3</span> Four Fiber Industry Uses</h3>
+  <ol>
+    <li><strong>Enterprise Networks</strong> — backbone cabling and interconnecting infrastructure devices (most relevant to CCNA)</li>
+    <li><strong>FTTH (Fiber-to-the-Home)</strong> — provides always-on broadband to homes and small businesses</li>
+    <li><strong>Long-Haul Networks</strong> — service providers connecting countries and cities</li>
+    <li><strong>Submarine Cable Networks</strong> — connecting continents under oceans; must survive harsh undersea environments</li>
+  </ol>
+  <p>In enterprise environments: fiber primarily used as <strong>backbone cabling</strong> for high-traffic point-to-point connections between data distribution facilities and for interconnecting campus buildings.</p>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">4.5.4</span> Fiber-Optic Connectors</h3>
+  <div class="conn-grid">
+    <div class="conn-card st"><div class="conc-name">ST — Straight-Tip</div>One of the first fiber connector types. Bayonet-style <strong>twist-on/twist-off</strong> mechanism. Named for its round shape.</div>
+    <div class="conn-card sc"><div class="conc-name">SC — Subscriber Connector</div>"Square connector" or "standard connector." <strong>Push-pull</strong> mechanism for positive insertion. Widely adopted for LAN and WAN. Works with both SMF and MMF.</div>
+    <div class="conn-card lc"><div class="conc-name">LC — Lucent Connector (Simplex)</div>"Little connector" or "local connector." Smaller version of SC. Rapidly growing in popularity due to smaller size.</div>
+    <div class="conn-card dlc"><div class="conc-name">Duplex Multimode LC</div>LC connector accepting <strong>both TX and RX fibers in a single connector</strong>. Used where full-duplex on one connector is needed.</div>
+  </div>
+  <div class="ca info"><span class="ic">💡</span><div><strong>SFP (Small Form-factor Pluggable)</strong> transceivers are used on some Cisco switches and routers to support fiber-optic connectors. An SFP slides into a slot on the device and provides the fiber interface.<br><br><strong>Fiber patch cord jacket colors:</strong> Yellow = SMF · Orange (or aqua) = MMF</div></div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">4.5.6</span> Fiber vs Copper — Full Comparison</h3>
+  <div class="tw"><table>
+    <tr><th>Feature</th><th>UTP Copper</th><th>Fiber-Optic</th></tr>
+    <tr><td><strong>Bandwidth</strong></td><td>10 Mbps – 10 Gbps</td><td>10 Mbps – 100 Gbps</td></tr>
+    <tr><td><strong>Distance</strong></td><td>1–100 meters</td><td>1–100,000 meters</td></tr>
+    <tr><td><strong>EMI/RFI immunity</strong></td><td>Low</td><td>✅ High — completely immune</td></tr>
+    <tr><td><strong>Electrical hazard immunity</strong></td><td>Low</td><td>✅ High — completely immune</td></tr>
+    <tr><td><strong>Media and connector costs</strong></td><td>Lowest</td><td>Highest</td></tr>
+    <tr><td><strong>Installation skill required</strong></td><td>Lowest</td><td>Highest</td></tr>
+    <tr><td><strong>Safety precautions</strong></td><td>Lowest</td><td>Highest</td></tr>
+  </table></div>
+  </div>
+
+</div></div>
+
+<!-- 4.6 WIRELESS -->
+<div class="sec" id="s6">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">4.6</span><span class="ttl">Wireless Media</span></span><button class="sec-check" id="sch-s6" onclick="event.stopPropagation();toggleSection('s6',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb">
+
+  <div class="sub">
+  <h3><span class="sn">4.6.1</span> Wireless Properties and Limitations</h3>
+  <p>Wireless media carry <strong>electromagnetic signals</strong> representing binary data using <strong>radio or microwave frequencies</strong>. Provides the greatest mobility of all media types.</p>
+  <p><strong>Four limitations of wireless:</strong></p>
+  <div class="tw"><table>
+    <tr><th>Limitation</th><th>Description</th></tr>
+    <tr><td><strong>Coverage area</strong></td><td>Building construction materials, structures, and local terrain limit effective coverage</td></tr>
+    <tr><td><strong>Interference</strong></td><td>Household cordless phones, fluorescent lights, microwave ovens, and other wireless devices can disrupt signals</td></tr>
+    <tr><td><strong>Security</strong></td><td>No physical strand required — unauthorized devices can potentially intercept transmissions; major security concern for wireless network administration</td></tr>
+    <tr><td><strong>Shared medium (half-duplex)</strong></td><td>WLANs operate in half-duplex — only one device sends or receives at a time; many simultaneous users = reduced bandwidth per user</td></tr>
+  </table></div>
+  <div class="ca info"><span class="ic">💡</span><div>Copper and fiber remain the most popular physical layer media for <strong>intermediary network devices</strong> (routers, switches) even as wireless grows for end-user connections.</div></div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">4.6.2</span> Four Wireless Standards</h3>
+  <div class="wifi-grid">
+    <div class="wifi-card wifi">
+      <div class="wc-name">📶 Wi-Fi — IEEE 802.11 (WLAN)</div>
+      Wireless LAN technology. Uses <strong>CSMA/CA (Carrier Sense Multiple Access/Collision Avoidance)</strong> — NIC must <em>listen before transmitting</em>; if channel is busy, NIC waits. Wi-Fi is a trademark of the Wi-Fi Alliance for certified IEEE 802.11 devices.
+    </div>
+    <div class="wifi-card bt">
+      <div class="wc-name">🔵 Bluetooth — IEEE 802.15 (WPAN)</div>
+      Wireless Personal Area Network. Uses a <strong>device pairing process</strong> to communicate. Range: <strong>1–100 meters</strong>. Used for personal device connectivity (headphones, keyboards, phones).
+    </div>
+    <div class="wifi-card wmax">
+      <div class="wc-name">📡 WiMAX — IEEE 802.16</div>
+      Worldwide Interoperability for Microwave Access. Uses <strong>point-to-multipoint topology</strong> to provide wireless <strong>broadband access</strong>. Longer range than Wi-Fi.
+    </div>
+    <div class="wifi-card zig">
+      <div class="wc-name">🌿 Zigbee — IEEE 802.15.4 (IoT)</div>
+      <strong>Low data rate, low power</strong> communications. Short range, very long battery life. Used for: industrial environments, IoT applications (wireless light switches, medical device data collection, smart home). <em>Not for general data networking.</em>
+    </div>
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">4.6.3</span> Wireless LAN (WLAN) — Required Components</h3>
+  <div class="tw"><table>
+    <tr><th>Component</th><th>Description</th></tr>
+    <tr><td><strong>Wireless Access Point (AP)</strong></td><td>Concentrates wireless signals from users and connects to the existing copper-based network infrastructure (Ethernet). Home/small business wireless routers combine router + switch + AP in one device.</td></tr>
+    <tr><td><strong>Wireless NIC adapters</strong></td><td>Provide wireless communication capability to network hosts. May be internal (built-in) or external (USB adapter).</td></tr>
+  </table></div>
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Security is a major concern for WLANs.</strong> Without a physical cable, any device within range can potentially attempt to join the network. Network administrators must implement strong security policies (WPA3, authentication, encryption) to protect WLANs from unauthorized access.</div></div>
+  </div>
+
+  <!-- PT INLINE -->
+  <div style="margin:20px 0 6px;padding:14px 16px;background:#0d1117;border:1px solid #30363d;border-left:3px solid #1f6feb;border-radius:6px">
+    <div style="font-size:.72em;font-weight:800;text-transform:uppercase;letter-spacing:.8px;color:#1f6feb;margin-bottom:10px">&#x1F4E6; Packet Tracer Activities</div>
+  <div style="display:flex;align-items:baseline;gap:10px;padding:6px 0;border-bottom:1px solid #21262d"><span style="font-family:monospace;font-size:.85em;color:#79c0ff;white-space:nowrap;flex-shrink:0;min-width:52px">4.6.5</span><span style="font-size:.88em;color:#c9d1d9">Connect a Wired and Wireless LAN</span></div>
+    <div style="margin-top:10px;font-size:.78em;color:#6e7681">Full list: <a href="https://itexamanswers.net/ccna-1-v7-exam-answers-introduction-to-networks-v7-0-itn.html" target="_blank" rel="noopener" style="color:#58a6ff;word-break:break-all">itexamanswers.net/ccna-1-v7-exam-answers-introduction-to-networks-v7-0-itn.html</a></div>
+  </div>
+
+</div></div>
+
+<div class="sec" id="s-pt-4-7">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">4.7</span><span class="ttl">Packet Tracer — Physical Layer Activities</span></span><button class="sec-check" id="sch-s-pt-4-7" onclick="event.stopPropagation();toggleSection('s-pt-4-7',this)">○ Mark done</button>
+</div>
+<div class="sb">
+  <div style="padding:14px 16px;background:#0d1117;border:1px solid #30363d;border-left:3px solid #1f6feb;border-radius:6px">
+    <div style="font-size:.72em;font-weight:800;text-transform:uppercase;letter-spacing:.8px;color:#1f6feb;margin-bottom:10px">&#x1F4E6; Packet Tracer Activities</div>
+    <div style="font-size:.82em;color:#6e7681;margin-bottom:10px">Open in Cisco Packet Tracer via your NetAcad course.</div>
+      <div style="display:flex;align-items:baseline;gap:10px;padding:6px 0;border-bottom:1px solid #21262d"><span style="font-family:monospace;font-size:.85em;color:#79c0ff;white-space:nowrap;flex-shrink:0;min-width:52px">4.7.1</span><span style="font-size:.88em;color:#c9d1d9">Physical Layer Exploration (Physical Mode)</span></div>
+      <div style="display:flex;align-items:baseline;gap:10px;padding:6px 0;border-bottom:1px solid #21262d"><span style="font-family:monospace;font-size:.85em;color:#79c0ff;white-space:nowrap;flex-shrink:0;min-width:52px">4.7.2</span><span style="font-size:.88em;color:#c9d1d9">Connect the Physical Layer</span></div>
+    <div style="margin-top:12px;font-size:.78em;color:#6e7681">Full list: <a href="https://itexamanswers.net/ccna-1-v7-exam-answers-introduction-to-networks-v7-0-itn.html" target="_blank" rel="noopener" style="color:#58a6ff;word-break:break-all">itexamanswers.net/ccna-1-v7-exam-answers-introduction-to-networks-v7-0-itn.html</a></div>
+  </div>
+</div>
+</div>
+
+
+<!-- EXAM TRAPS -->
+
+
+  <!-- PT MASTER LINK -->
+  <div style="margin:18px 0 6px;padding:12px 14px;background:#0d1117;border:1px solid #30363d;border-left:3px solid #1f6feb;border-radius:6px">
+    <div style="font-size:.7em;font-weight:800;text-transform:uppercase;letter-spacing:.8px;color:#1f6feb;margin-bottom:6px">&#x1F4E6; All Packet Tracer Activities — CCNA 1</div>
+    <div style="font-size:.84em;color:#c9d1d9;margin-bottom:4px">Complete list of all CCNA 1 Packet Tracer activities with instructions:</div>
+    <a href="https://itexamanswers.net/ccna-1-v7-exam-answers-introduction-to-networks-v7-0-itn.html" target="_blank" rel="noopener" style="font-size:.78em;color:#58a6ff;word-break:break-all">https://itexamanswers.net/ccna-1-v7-exam-answers-introduction-to-networks-v7-0-itn.html</a>
+  </div>
+
+<div class="sec" id="s7">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">🎯</span><span class="ttl">Common Exam Traps — Module 4</span></span><button class="sec-check" id="sch-s7" onclick="event.stopPropagation();toggleSection('s7',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb">
+
+  <div class="ca danger"><span class="ic">❌</span><div><strong>Trap 1: The physical layer accepts a complete FRAME from Data Link — not a packet.</strong><br>The physical layer encodes the frame and transmits it as bits. It does not process the content. At the destination, it converts signals back to bits and passes the frame up to the Data Link layer. Packets live at Layer 3 (Network); Frames live at Layer 2 (Data Link); Bits live at Layer 1 (Physical).</div></div>
+
+  <div class="ca danger"><span class="ic">❌</span><div><strong>Trap 2: Bandwidth ≠ speed of bit travel. Both 10 Mbps and 100 Mbps Ethernet bits travel at the speed of electricity.</strong><br>The difference is bits per second — how many bits are packed into each second of transmission. Bandwidth = capacity. Bits always travel at roughly the same speed through a medium regardless of bandwidth rating.</div></div>
+
+  <div class="ca danger"><span class="ic">❌</span><div><strong>Trap 3: Bandwidth ≥ Throughput ≥ Goodput — always in this order.</strong><br>Throughput is always lower than bandwidth due to traffic type, latency, and device processing. Goodput is always lower than throughput because it subtracts session setup overhead, acknowledgments, encapsulation, and retransmissions.</div></div>
+
+  <div class="ca danger"><span class="ic">❌</span><div><strong>Trap 4: Two copper interference sources — EMI/RFI (external, fixed by shielding) and Crosstalk (between wires, fixed by twisting).</strong><br>EMI/RFI comes from outside the cable (lights, motors, radio). Crosstalk comes from adjacent wire pairs inside the cable. UTP counters crosstalk only (cancellation). STP counters both (shielding + twisting). Know which problem each technique addresses.</div></div>
+
+  <div class="ca danger"><span class="ic">❌</span><div><strong>Trap 5: STP improperly grounded = acts as an ANTENNA = MORE interference.</strong><br>The metallic shield in STP must be properly grounded at both ends. If grounding is poor or missing, the shield itself becomes an antenna that collects and amplifies interference — making it perform worse than UTP. Grounding is critical to STP effectiveness.</div></div>
+
+  <div class="ca danger"><span class="ic">❌</span><div><strong>Trap 6: Coaxial cable is NOT used in modern Ethernet networks.</strong><br>Coax is used for: (1) connecting antennas to wireless devices (RF energy between antenna and radio) and (2) inside customer premises for cable internet. Don't confuse "coax still exists" with "coax is used in Ethernet." Modern Ethernet uses UTP (or fiber for backbone).</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 7: Cat 5e = minimum for new installations (1 Gbps). Cat 6 = recommended (10 Gbps). Cat 8 = 40 Gbps.</strong><br>Cat 5 is only 100 Mbps. Cat 5e is the minimum acceptable for any new installation. Cat 6 has a physical separator between each wire pair and is recommended. Cat 8 is for data center use at 40 Gbps. Never recommend Cat 5 for new installations.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 8: Straight-through = both ends SAME standard. Crossover = ends are DIFFERENT standards.</strong><br>Straight-through: host to switch, switch to router. Crossover: like-to-like (switch-switch, router-router, host-host). Crossover is now legacy due to auto-MDIX. Rollover (Cisco proprietary) = workstation serial to console port only.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 9: Wrong cable type does NOT damage devices — but PREVENTS connectivity. Always check cable type first when troubleshooting.</strong><br>The devices are protected against wrong cable type. The connection simply won't work. This is one of the most common physical layer installation mistakes and should always be the first item checked.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 10: SMF = laser + yellow jacket + hundreds of km. MMF = LED + orange jacket + up to 550m.</strong><br>SMF is for long distances (long-haul, WAN). MMF is for LAN/enterprise (up to 550m). Dispersion is greater in MMF → shorter maximum distance. Mixing SMF and MMF components causes significant signal loss. Know the jacket colors for identifying fiber type.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 11: Fiber is completely immune to EMI and RFI — glass carries light, not electricity.</strong><br>There is no electrical signal in fiber to be disrupted by electromagnetic interference. This makes fiber ideal for high-noise environments, long outdoor runs, and anywhere electrical isolation is required between buildings.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 12: WLAN uses CSMA/CA (collision AVOIDANCE) — wired Ethernet uses CSMA/CD (collision DETECTION).</strong><br>Wireless devices cannot detect collisions while transmitting (the transmitting signal drowns out received signals). They avoid collisions instead by listening before transmitting. CA = avoidance (wireless). CD = detection (wired Ethernet, legacy half-duplex).</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 13: Wireless is half-duplex — only one device transmits at a time.</strong><br>This is a fundamental limitation of wireless vs wired switched Ethernet (which can run full-duplex). Many users sharing the same wireless frequency results in reduced per-user bandwidth. This is why enterprise WLANs need careful channel planning and sufficient access points.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 14: Zigbee (802.15.4) = IoT/low power — NOT for general networking. WiMAX (802.16) = wireless broadband — NOT Wi-Fi.</strong><br>802.11 = Wi-Fi (WLAN). 802.15 = Bluetooth (WPAN). 802.16 = WiMAX (wireless broadband, point-to-multipoint). 802.15.4 = Zigbee (IoT, low data rate, long battery life). These four standards appear in IEEE number matching questions.</div></div>
+
+  <div class="ca tip"><span class="ic">✅</span><div><strong>Module 4 quick-reference summary:</strong><br><br>
+  <strong>Physical layer position:</strong> OSI Layer 1 · TCP/IP Network Access layer · Bottom of stack<br>
+  <strong>Physical layer function:</strong> Accepts frame from L2 → encodes to signals → transmits bits · Reverse at destination<br>
+  <strong>Physical connection types:</strong> Wired (cable + Ethernet NIC) · Wireless (radio + WLAN NIC + AP)<br>
+  <strong>3 functional areas:</strong> Physical Components · Encoding · Signaling<br>
+  <strong>Signal types:</strong> Copper = electrical · Fiber = light · Wireless = microwave<br>
+  <strong>Encoding:</strong> Manchester (10BASE-T: high→low=0, low→high=1) · 4B/5B (100BASE-TX) · 8B/10B (1000BASE-T)<br>
+  <strong>Bandwidth:</strong> Capacity in bps (Kbps/Mbps/Gbps/Tbps) · Not speed of bit travel<br>
+  <strong>Hierarchy:</strong> Bandwidth ≥ Throughput ≥ Goodput (always)<br>
+  <strong>Latency:</strong> Total time including all delays<br>
+  <strong>Copper advantages:</strong> Cheap · Easy to install · Low resistance<br>
+  <strong>Copper limitations:</strong> Distance (attenuation) · Interference (EMI/RFI + Crosstalk)<br>
+  <strong>EMI/RFI fix:</strong> Shielding (STP) · Crosstalk fix: Twisting (UTP and STP)<br>
+  <strong>UTP:</strong> Most common · RJ-45 · 4 twisted pairs · No shielding · Cancellation + varying twists<br>
+  <strong>STP:</strong> Shielded + twisted · Expensive · Requires proper grounding · Improperly grounded = antenna<br>
+  <strong>Coax:</strong> Two conductors same axis · NOT modern Ethernet · Antennas + cable internet premises<br>
+  <strong>UTP categories:</strong> Cat5=100Mbps · Cat5e=1Gbps (minimum new) · Cat6=10Gbps (recommended) · Cat8=40Gbps<br>
+  <strong>UTP standards:</strong> TIA/EIA-568 (cabling) · IEEE (electrical/categories)<br>
+  <strong>Cable types:</strong> Straight-through (same standard, host→switch/router) · Crossover (different standards, like→like, legacy) · Rollover (Cisco, console)<br>
+  <strong>Auto-MDIX:</strong> Makes crossover cables legacy — auto detects and corrects<br>
+  <strong>Fiber properties:</strong> Light pulses · Waveguide · Longest distance · Highest bandwidth · Immune to EMI/RFI<br>
+  <strong>SMF:</strong> Laser · Small core · Yellow · Hundreds km · Long-haul<br>
+  <strong>MMF:</strong> LED · Large core · Orange · Up to 550m · Enterprise LAN<br>
+  <strong>Dispersion:</strong> Spreading light pulse → signal loss · MMF has more → shorter distance<br>
+  <strong>Fiber connectors:</strong> ST (bayonet twist) · SC (push-pull, square) · LC (small, popular) · Duplex LC (TX+RX in one)<br>
+  <strong>SFP:</strong> Transceiver for Cisco switches/routers to accept fiber<br>
+  <strong>Wireless limitations:</strong> Coverage · Interference · Security · Half-duplex shared medium<br>
+  <strong>Wireless standards:</strong> 802.11=Wi-Fi/CSMA-CA · 802.15=Bluetooth/WPAN · 802.16=WiMAX broadband · 802.15.4=Zigbee/IoT<br>
+  <strong>WLAN requires:</strong> Wireless AP (connects to wired network) + Wireless NIC adapters (on hosts)</div></div>
+
+</div></div>
+
+</div>
+<div class="ft">CCNA 1 ITN v7.02 — Module 4: Physical Layer v2.2<br>Based on Cisco NetAcad curriculum · Study guide for personal use</div>
+<button class="tb-btn" id="topb" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+<div class="mod-nav">
+  <a class="mn-hub" href="index.html">🏠 Hub</a>
+  <div class="mn-divider"></div>
+  <a class="mn-prev" href="ccna1_module3_protocols_and_models_v2.2.html">‹</a>
+  <span class="mn-label">M4 of 17</span>
+  <a class="mn-next" href="ccna1_module5_number_systems_v2.2.html">›</a>
+</div>
+<script>
+var MOD_KEY="ccna1-module4-physical-layer";
+var SECS=["s1","s2","s3","s4","s5","s6","s-pt-4-7","s7"];
+var checked={};
+function loadState(){
+  try{var s=localStorage.getItem(MOD_KEY);if(s)checked=JSON.parse(s);}catch(e){}
+  SECS.forEach(function(id){
+    var pill=document.getElementById('pill-'+id);
+    var row=document.getElementById('row-'+id);
+    var st=document.getElementById('st-'+id);
+    var sch=document.getElementById('sch-'+id);
+    if(checked[id]){
+      if(pill){pill.classList.add('checked');pill.querySelector('.pill-check').textContent='✓';}
+      if(row)row.classList.add('done');
+      if(st)st.textContent='✓';
+      if(sch){sch.classList.add('checked');sch.textContent='✓ Done';}
+    } else {
+      if(pill){pill.classList.remove('checked');pill.querySelector('.pill-check').textContent='○';}
+      if(row)row.classList.remove('done');
+      if(st)st.textContent='○';
+      if(sch){sch.classList.remove('checked');sch.textContent='○ Mark done';}
+    }
+  });
+}
+function toggleSection(id,btn){checked[id]=!checked[id];try{localStorage.setItem(MOD_KEY,JSON.stringify(checked));}catch(e){}loadState();}
+function toggleStudyPanel(){
+  var hdr=document.getElementById('sp-hdr');
+  var body=document.getElementById('sp-body');
+  var arr=document.getElementById('sp-arr');
+  hdr.classList.toggle('open');body.classList.toggle('open');
+  if(arr)arr.textContent=body.classList.contains('open')?'▲':'▼';
+}
+function goTo(id){var el=document.getElementById(id);if(!el)return;var h=el.querySelector('.sh'),b=el.querySelector('.sb');if(h&&b&&!b.classList.contains('open')){h.classList.add('open');b.classList.add('open');}setTimeout(function(){window.scrollTo({top:el.getBoundingClientRect().top+window.pageYOffset-60,behavior:'smooth'});},50);}
+function setFs(size,btn){document.documentElement.style.setProperty('--base-fs',size);document.querySelectorAll('.fs-btn').forEach(function(b){b.classList.remove('active');});btn.classList.add('active');try{localStorage.setItem('ccna-fs',size);}catch(e){}}
+(function(){try{var s=localStorage.getItem('ccna-fs');if(s){document.documentElement.style.setProperty('--base-fs',s);document.querySelectorAll('.fs-btn').forEach(function(b){b.classList.remove('active');if((b.textContent==='S'&&s==='14px')||(b.textContent==='M'&&s==='16px')||(b.textContent==='L'&&s==='18px')||(b.textContent==='XL'&&s==='20px'))b.classList.add('active');});}}catch(e){}loadState();})();
+function copyCode(btn){var pre=btn.closest('.cw').querySelector('pre');navigator.clipboard.writeText(pre.innerText||pre.textContent).then(function(){btn.textContent='Copied!';setTimeout(function(){btn.textContent='Copy';},1500);});}
+</script>
+<script src="../../site-config.js"></script>
+</body>
+</html>

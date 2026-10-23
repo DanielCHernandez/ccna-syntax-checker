@@ -1,0 +1,8 @@
+# Allow pages to be embedded in iframes from the same origin
+/*
+  X-Frame-Options: SAMEORIGIN
+  X-Content-Type-Options: nosniff
+
+# Syntax checker files specifically allowed in iframes
+/syntax-checker-simple/*
+  X-Frame-Options: SAMEORIGIN

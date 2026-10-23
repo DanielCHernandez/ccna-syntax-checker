@@ -1,0 +1,1048 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=2.0">
+<title>CCNA 2 Module 14: Routing Concepts v2.2</title>
+<style>
+:root{
+  --blue:#1ba0d7;--dark:#005073;--green:#6cc24a;
+  --rtr:#c45200;--rtrd:#fb923c;
+  --bg:#f4f6f8;--card:#fff;--text:#1a1a2e;--muted:#5a6a7a;
+  --cbg:#0d1117;--ctxt:#c9d1d9;--r:12px;--sh:0 2px 12px rgba(0,0,0,.08);
+  --base-fs:16px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);font-size:var(--base-fs);line-height:1.7}
+
+/* ── Font size toggle ── */
+.fs-bar{position:sticky;top:0;z-index:200;background:#1a1a2e;display:flex;align-items:center;justify-content:flex-end;padding:6px 14px;gap:6px;box-shadow:0 2px 8px rgba(0,0,0,.3)}
+.fs-label{color:#8b949e;font-size:.72em;font-weight:700;letter-spacing:.5px;text-transform:uppercase;margin-right:4px}
+.fs-btn{background:#30363d;color:#c9d1d9;border:2px solid transparent;border-radius:6px;padding:4px 12px;font-size:.75em;font-weight:700;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:all .2s;line-height:1.4}
+.fs-btn:active,.fs-btn.active{background:var(--rtr);color:#fff;border-color:var(--rtr)}
+
+/* ── Header ── */
+.hdr{background:linear-gradient(135deg,#7c2d00,var(--rtr));color:#fff;padding:32px 20px 24px;text-align:center}
+.hdr .badge{display:inline-block;background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.4);border-radius:20px;padding:4px 14px;font-size:.81em;margin-bottom:12px}
+.hdr h1{font-size:1.625em;font-weight:700;margin-bottom:6px}
+.hdr p{font-size:.94em;opacity:.85}
+.hdr .obj{display:inline-block;background:rgba(255,255,255,.15);border-radius:8px;padding:7px 16px;margin-top:12px;font-size:.875em;font-style:italic}
+
+/* ── Progress bar ── */
+.pb{background:var(--card);padding:14px 16px;margin:16px 16px 0;border-radius:var(--r);box-shadow:var(--sh)}
+.pbl{font-size:.81em;color:var(--muted);margin-bottom:6px;font-weight:600}
+.pbt{background:#e0e7ef;border-radius:10px;height:8px;overflow:hidden}
+.pbf{background:linear-gradient(90deg,var(--rtr),var(--rtrd));height:100%;border-radius:10px;width:0;transition:width 1s ease}
+
+/* ── TOC ── */
+.toc{background:var(--card);margin:16px;border-radius:var(--r);box-shadow:var(--sh);overflow:hidden}
+.toch{background:var(--rtr);color:#fff;padding:14px 18px;font-weight:700;font-size:.94em;display:flex;justify-content:space-between;align-items:center;cursor:pointer;user-select:none}
+.toch .arr{transition:transform .3s}
+.toch.open .arr{transform:rotate(180deg)}
+.tocb{display:none;padding:10px 0}
+.tocb.open{display:block}
+.tocg{font-size:.69em;font-weight:800;letter-spacing:.8px;color:var(--rtr);text-transform:uppercase;padding:8px 20px 2px}
+.tocb a{display:block;padding:9px 20px 9px 28px;color:var(--text);text-decoration:none;font-size:.875em;border-left:3px solid transparent;transition:all .2s}
+.tocb a:hover,.tocb a:active{background:#fff3ea;border-left-color:var(--rtrd)}
+.tocb a .n{display:inline-block;background:var(--rtr);color:#fff;border-radius:5px;padding:1px 8px;font-size:.75em;font-weight:700;margin-right:8px}
+
+/* ── Main wrap ── */
+.wrap{padding:0 16px 100px}
+
+/* ── Section cards ── */
+.sec{background:var(--card);border-radius:var(--r);box-shadow:var(--sh);margin-bottom:16px;overflow:hidden}
+.sh{background:linear-gradient(90deg,#7c2d00,var(--rtr));color:#fff;padding:16px 18px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;user-select:none;-webkit-tap-highlight-color:transparent}
+.sh .ttl{font-weight:700;font-size:1em}
+.sh .nb{background:rgba(255,255,255,.25);border-radius:6px;padding:3px 10px;font-size:.81em;font-weight:700;margin-right:10px;white-space:nowrap}
+.sh .ch{font-size:1.125em;transition:transform .3s}
+.sh.open .ch{transform:rotate(180deg)}
+.sb{display:none;padding:18px}
+.sb.open{display:block}
+
+/* ── Subsections ── */
+.sub{margin-bottom:24px}
+.sub:last-child{margin-bottom:0}
+.sub h3{font-size:.94em;font-weight:700;color:var(--rtr);margin-bottom:10px;padding-bottom:6px;border-bottom:2px solid #fff3ea;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.sub h3 .sn{background:var(--rtr);color:#fff;border-radius:5px;padding:2px 8px;font-size:.75em;white-space:nowrap}
+.sub h4{font-size:.875em;font-weight:700;color:var(--rtr);margin:14px 0 6px}
+.sub p{margin-bottom:10px;font-size:.94em}
+.sub ul,.sub ol{padding-left:20px;margin:8px 0;font-size:.94em}
+.sub li{margin-bottom:5px}
+
+/* ── Code blocks ── */
+.cw{background:var(--cbg);border-radius:10px;margin:12px 0;overflow:hidden}
+.cl{background:#21262d;color:#c9d1d9;font-size:.78em;font-weight:700;padding:6px 14px;letter-spacing:.5px;text-transform:uppercase;display:flex;justify-content:space-between;align-items:center}
+.cpb{background:#30363d;color:#c9d1d9;border:none;border-radius:5px;padding:3px 10px;font-size:.69em;cursor:pointer}
+.cpb:active{background:var(--rtr);color:#fff}
+pre{margin:0;padding:14px;overflow-x:auto;-webkit-overflow-scrolling:touch}
+code{font-family:'Courier New',monospace;font-size:.81em;color:var(--ctxt);line-height:1.6}
+p code,li code,td code,.ca code{background:#fff3ea;color:#7c2d00;border-radius:4px;padding:1px 5px;font-size:.81em;font-family:'Courier New',monospace;font-weight:600}
+
+/* ── Callout boxes ── */
+.ca{border-radius:8px;padding:12px 14px;margin:12px 0;font-size:.875em;line-height:1.6;display:flex;gap:10px;align-items:flex-start}
+.ca .ic{font-size:1.125em;flex-shrink:0;margin-top:1px}
+.ca.warn  {background:#fff3cd;border-left:4px solid #b38600;color:#3d2c00}
+.ca.tip   {background:#d4edda;border-left:4px solid #28a745;color:#0d3318}
+.ca.danger{background:#f8d7da;border-left:4px solid #dc3545;color:#3d0010}
+.ca.info  {background:#fff3ea;border-left:4px solid var(--rtr);color:#7c2d00}
+
+/* ── Exam tip dark box ── */
+.et{background:linear-gradient(135deg,#1a1a2e,#7c2d00);color:#fff;border-radius:10px;padding:14px 16px;margin:14px 0;font-size:.875em;line-height:1.6}
+.et .lbl{font-size:.69em;font-weight:800;letter-spacing:1px;color:var(--rtrd);margin-bottom:6px}
+.et ul,.et ol{padding-left:18px;margin-top:6px}
+.et li{margin-bottom:5px}
+
+/* ── Tables ── */
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:12px 0;border-radius:8px}
+table{width:100%;border-collapse:collapse;font-size:.875em}
+th{background:var(--rtr);color:#fff;padding:10px 12px;text-align:left;font-weight:700;font-size:.81em}
+td{padding:9px 12px;border-bottom:1px solid #e8ecf0;vertical-align:top;color:#1a1a2e}
+tr:nth-child(even) td{background:#fff3ea;color:#7c2d00}
+tr:last-child td{border-bottom:none}
+
+/* ── Numbered steps ── */
+.steps{counter-reset:step;list-style:none;padding:0;margin:12px 0}
+.steps li{counter-increment:step;display:flex;gap:12px;align-items:flex-start;padding:10px 0;border-bottom:1px solid #eef0f3;font-size:.875em;line-height:1.6}
+.steps li:last-child{border-bottom:none}
+.steps li::before{content:counter(step);background:var(--rtr);color:#fff;border-radius:50%;min-width:26px;height:26px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.81em;flex-shrink:0;margin-top:2px}
+
+/* ── Diagram box ── */
+.dg{background:#0d1117;border-radius:10px;padding:14px;margin:12px 0;overflow-x:auto}
+.dg pre{color:#58a6ff;font-family:'Courier New',monospace;font-size:.75em;line-height:1.6}
+
+/* ── Longest match visual ── */
+.lm-box{background:#0d1117;border:2px solid var(--rtrd);border-radius:10px;padding:16px;margin:14px 0}
+.lm-box .lm-title{font-size:.75em;font-weight:800;letter-spacing:.8px;color:var(--rtrd);text-transform:uppercase;margin-bottom:10px}
+.lm-row{display:flex;gap:10px;align-items:center;padding:7px 0;border-bottom:1px solid #21262d;flex-wrap:wrap}
+.lm-row:last-child{border-bottom:none}
+.lm-route{font-family:'Courier New',monospace;font-size:.81em;color:#c9d1d9;flex:1;min-width:0}
+.lm-bits{font-size:.75em;font-weight:700;padding:2px 8px;border-radius:4px;white-space:nowrap;flex-shrink:0}
+.lm-bits.match{background:#27ae60;color:#fff}
+.lm-bits.nomatch{background:#4b5563;color:#9ca3af}
+.lm-bits.winner{background:var(--rtr);color:#fff}
+.lm-badge{font-size:.69em;font-weight:800;padding:2px 8px;border-radius:4px;white-space:nowrap;flex-shrink:0}
+.lm-badge.win{background:var(--rtrd);color:#7c2d00}
+
+/* ── Route source codes ── */
+.code-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:8px;margin:12px 0}
+.code-card{border-radius:8px;padding:10px 12px;text-align:center;border:2px solid}
+.code-card.connected{border-color:#27ae60;background:#f0fff4}
+.code-card.local{border-color:#1ba0d7;background:#e8f4fb}
+.code-card.static{border-color:var(--rtr);background:#fff3ea}
+.code-card.ospf{border-color:#9333ea;background:#f3e8ff}
+.code-card.eigrp{border-color:#0e7490;background:#e0f2fe}
+.code-card.rip{border-color:#b38600;background:#fffbf0}
+.code-card .cc-code{font-size:1.5em;font-weight:900;font-family:'Courier New',monospace}
+.code-card.connected .cc-code{color:#1e8449}
+.code-card.local .cc-code{color:var(--dark)}
+.code-card.static .cc-code{color:var(--rtr)}
+.code-card.ospf .cc-code{color:#9333ea}
+.code-card.eigrp .cc-code{color:#0e7490}
+.code-card.rip .cc-code{color:#b38600}
+.code-card .cc-name{font-size:.75em;font-weight:700;color:#1a1a2e;margin-top:2px}
+.code-card .cc-ad{font-size:.69em;color:var(--muted);margin-top:1px}
+
+/* ── AD ladder ── */
+.ad-ladder{display:flex;flex-direction:column;gap:4px;margin:12px 0}
+.ad-row{display:flex;align-items:center;gap:10px;padding:7px 12px;border-radius:8px;font-size:.81em}
+.ad-row .ad-val{font-weight:900;font-family:'Courier New',monospace;font-size:1em;min-width:36px;text-align:center;padding:2px 6px;border-radius:5px;color:#fff;flex-shrink:0}
+.ad-row .ad-src{font-weight:700;flex:1}
+.ad-row .ad-bar{height:6px;border-radius:3px;background:currentColor;opacity:.3;flex:2}
+.ad-row.ad0{background:#f0fff4;color:#1e8449} .ad-row.ad0 .ad-val{background:#1e8449}
+.ad-row.ad1{background:#fff3ea;color:var(--rtr)} .ad-row.ad1 .ad-val{background:var(--rtr)}
+.ad-row.ad90{background:#e0f2fe;color:#0e7490} .ad-row.ad90 .ad-val{background:#0e7490}
+.ad-row.ad110{background:#f3e8ff;color:#9333ea} .ad-row.ad110 .ad-val{background:#9333ea}
+.ad-row.ad120{background:#fffbf0;color:#b38600} .ad-row.ad120 .ad-val{background:#b38600}
+.ad-row.ad170{background:#f9fafb;color:#4b5563} .ad-row.ad170 .ad-val{background:#4b5563}
+.ad-row.ad200{background:#f9fafb;color:#374151} .ad-row.ad200 .ad-val{background:#374151}
+
+/* ── Forwarding mechanism cards ── */
+.fw-grid{display:grid;gap:10px;margin:12px 0}
+.fw-card{border-radius:10px;padding:14px;border-left:5px solid}
+.fw-card.proc{border-left-color:#dc3545;background:#fff5f5}
+.fw-card.fast{border-left-color:#b38600;background:#fffbf0}
+.fw-card.cef{border-left-color:#27ae60;background:#f0fff4}
+.fw-card .fw-title{font-weight:800;font-size:.875em;margin-bottom:4px}
+.fw-card.proc .fw-title{color:#c0392b}
+.fw-card.fast .fw-title{color:#b38600}
+.fw-card.cef .fw-title{color:#1e8449}
+.fw-card .fw-badge{font-size:.69em;font-weight:700;padding:2px 8px;border-radius:4px;display:inline-block;margin-bottom:6px;color:#fff}
+.fw-card.proc .fw-badge{background:#dc3545}
+.fw-card.fast .fw-badge{background:#b38600}
+.fw-card.cef .fw-badge{background:#27ae60}
+.fw-card ul{padding-left:18px;font-size:.81em;color:#1a1a2e;line-height:1.8}
+
+/* ── Metric comparison ── */
+.metric-grid{display:grid;gap:10px;margin:12px 0}
+.metric-card{border-radius:10px;padding:12px 14px;border-left:5px solid}
+.metric-card.rip{border-left-color:#b38600;background:#fffbf0}
+.metric-card.ospf{border-left-color:#9333ea;background:#f3e8ff}
+.metric-card.eigrp{border-left-color:#0e7490;background:#e0f2fe}
+.metric-card .mc-title{font-weight:800;font-size:.875em;margin-bottom:2px}
+.metric-card.rip .mc-title{color:#b38600}
+.metric-card.ospf .mc-title{color:#9333ea}
+.metric-card.eigrp .mc-title{color:#0e7490}
+.metric-card .mc-metric{font-size:.75em;font-weight:700;padding:2px 8px;border-radius:4px;display:inline-block;margin-bottom:4px;color:#fff}
+.metric-card.rip .mc-metric{background:#b38600}
+.metric-card.ospf .mc-metric{background:#9333ea}
+.metric-card.eigrp .mc-metric{background:#0e7490}
+.metric-card p{font-size:.81em;color:#1a1a2e;line-height:1.6}
+
+/* ── Route entry anatomy ── */
+.entry-box{background:#0d1117;border-radius:10px;padding:16px;margin:12px 0;overflow-x:auto}
+.entry-raw{font-family:'Courier New',monospace;font-size:.875em;color:#e2e8f0;margin-bottom:12px;line-height:1.8;white-space:pre-wrap}
+.entry-fields{display:grid;gap:6px;margin-top:8px}
+.entry-field{display:flex;gap:10px;align-items:flex-start;font-size:.75em}
+.ef-badge{background:var(--rtr);color:#fff;border-radius:4px;padding:1px 8px;font-weight:700;white-space:nowrap;flex-shrink:0;min-width:80px;text-align:center;font-size:.9em}
+.ef-desc{color:#9ca3af;line-height:1.5}
+
+/* ── Scroll to top ── */
+.tb{position:fixed;bottom:80px;right:16px;background:var(--rtr);color:#fff;border:none;border-radius:50%;width:44px;height:44px;font-size:1.25em;box-shadow:0 4px 14px rgba(0,0,0,.25);cursor:pointer;display:none;align-items:center;justify-content:center;z-index:100}
+.tb.show{display:flex}
+.ft{text-align:center;padding:24px 16px;color:var(--muted);font-size:.81em}
+
+/* ── Module nav bar ── */
+.mod-nav{position:fixed;bottom:0;left:0;right:0;z-index:300;background:#1a1a2e;border-top:1px solid #30363d;display:flex;align-items:center;height:52px;padding:0 8px;gap:6px}
+.mn-hub{background:var(--blue);color:#fff;border:none;border-radius:8px;padding:6px 12px;font-size:.75em;font-weight:700;cursor:pointer;text-decoration:none;display:flex;align-items:center;gap:4px;white-space:nowrap;-webkit-tap-highlight-color:transparent;flex-shrink:0}
+.mn-hub:active{opacity:.8}
+.mn-divider{width:1px;height:28px;background:#30363d;flex-shrink:0}
+.mn-label{flex:1;text-align:center;font-size:.69em;color:#8b949e;font-weight:600;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding:0 4px}
+.mn-prev,.mn-next{background:#30363d;color:#c9d1d9;border:none;border-radius:8px;padding:6px 10px;font-size:.875em;font-weight:700;cursor:pointer;text-decoration:none;display:flex;align-items:center;-webkit-tap-highlight-color:transparent;flex-shrink:0}
+.mn-prev:active,.mn-next:active{background:var(--rtr);color:#fff}
+/* Study progress panel */
+.sp-wrap{background:var(--card);margin:16px 16px 0;border-radius:var(--r);box-shadow:var(--sh);overflow:hidden}
+.sp-hdr{background:var(--nt);color:#fff;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;user-select:none;-webkit-tap-highlight-color:transparent;gap:10px}
+.sp-hdr .sp-title{font-weight:700;font-size:.875em;flex-shrink:0}
+.sp-hdr .sp-arr{transition:transform .3s;flex-shrink:0}
+.sp-hdr.open .sp-arr{transform:rotate(180deg)}
+.sp-body{display:none;padding:12px 14px}
+.sp-body.open{display:block}
+.sp-row{display:flex;align-items:center;gap:10px;padding:6px 4px;border-bottom:1px solid #f0f4f8;font-size:.81em}
+.sp-row:last-child{border-bottom:none}
+.sp-row .sr-status{font-size:1em;flex-shrink:0;width:20px;text-align:center}
+.sp-row .sr-nb{font-weight:800;color:var(--nt);min-width:36px;flex-shrink:0;font-size:.875em}
+.sp-row .sr-ttl{color:var(--text);flex:1}
+.sp-row.done .sr-ttl{color:var(--muted);text-decoration:line-through}
+.sc-pills{display:flex;align-items:center;gap:4px;overflow-x:auto;-webkit-overflow-scrolling:touch;flex:1;padding:0 4px}
+.sc-pill{background:#30363d;color:#8b949e;border:2px solid transparent;border-radius:6px;padding:3px 8px;font-size:.72em;font-weight:700;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:all .15s;white-space:nowrap;flex-shrink:0;line-height:1.4;display:flex;align-items:center;gap:3px}
+.sc-pill.checked{background:var(--nt);color:#fff;border-color:var(--ntd)}
+.sc-pill .pill-check{font-size:.875em}
+
+/* v2.1 — In-section check button */
+.sh{position:relative}
+.sec-check{position:absolute;right:40px;top:50%;transform:translateY(-50%);background:rgba(255,255,255,.15);border:2px solid rgba(255,255,255,.4);border-radius:6px;padding:2px 10px;font-size:.72em;font-weight:800;color:#fff;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:all .2s;white-space:nowrap;z-index:10;line-height:1.5}
+.sec-check.checked{background:var(--ntd);border-color:var(--ntd);color:#052e1e}
+.sec-check:active{opacity:.75}
+/* Sections panel + tick colours (these pages never defined --nt/--ntd, so the panel header was invisible) */
+:root{--nt:var(--rtr);--ntd:#4ade80}
+</style>
+<style>.bc{background:#0d1117;padding:8px 16px;display:flex;align-items:center;flex-wrap:wrap;gap:4px;font-size:.75em;overflow-x:auto;white-space:nowrap;-webkit-overflow-scrolling:touch;border-bottom:1px solid #21262d}.bc a{color:#8b949e;text-decoration:none;font-weight:600;flex-shrink:0}.bc a:active{color:#c9d1d9}.bc .sep{color:#6e7681;flex-shrink:0}.bc .cur{color:#1ba0d7;font-weight:700;flex-shrink:0}</style>
+</head>
+<body>
+<nav class="bc"><a href="../../index.html">🏠 Home</a><span class="sep">›</span><a href="index.html">CCNA 2 — SRWE</a><span class="sep">›</span><span class="cur">M14: Routing</span></nav>
+
+<!-- FONT SIZE TOGGLE -->
+<div class="fs-bar">
+  <div class="sc-pills" id="sc-pills">
+  <button class="sc-pill" id="pill-s1" onclick="toggleSection('s1',this)"><span class="pill-check">○</span>14.1</button>
+  <button class="sc-pill" id="pill-s2" onclick="toggleSection('s2',this)"><span class="pill-check">○</span>14.2</button>
+  <button class="sc-pill" id="pill-s3" onclick="toggleSection('s3',this)"><span class="pill-check">○</span>14.3</button>
+  <button class="sc-pill" id="pill-s4" onclick="toggleSection('s4',this)"><span class="pill-check">○</span>14.4</button>
+  <button class="sc-pill" id="pill-s5" onclick="toggleSection('s5',this)"><span class="pill-check">○</span>14.5</button>
+  <button class="sc-pill" id="pill-s6" onclick="toggleSection('s6',this)"><span class="pill-check">○</span>CMD</button>
+  <button class="sc-pill" id="pill-s7" onclick="toggleSection('s7',this)"><span class="pill-check">○</span>🎯</button>
+  </div>
+  <span class="fs-label" style="flex-shrink:0;margin-left:6px">Size</span>
+  <button class="fs-btn" onclick="setFs('14px',this)">S</button>
+  <button class="fs-btn active" onclick="setFs('16px',this)">M</button>
+  <button class="fs-btn" onclick="setFs('18px',this)">L</button>
+  <button class="fs-btn" onclick="setFs('20px',this)">XL</button>
+</div>
+
+<!-- HEADER -->
+<div class="hdr">
+  <div class="badge">CCNA 2 — SRWE v7.02</div>
+  <h1>🗺️ Module 14: Routing Concepts</h1>
+  <p>Switching, Routing &amp; Wireless Essentials · NetAcad Study Guide</p>
+  <div class="obj">Module Objective: Explain how routers use information in packets to make forwarding decisions</div>
+</div>
+
+<div class="sp-wrap">
+  <div class="sp-hdr" id="sp-hdr" onclick="toggleStudyPanel()">
+    <span class="sp-title">📚 Sections</span>
+    <span class="sp-arr" id="sp-arr">▼</span>
+  </div>
+  <div class="sp-body" id="sp-body">
+    <div class="sp-row" id="row-s1"><span class="sr-status" id="st-s1">○</span><span class="sr-nb">14.1</span><span class="sr-ttl">Path Determination</span></div>
+    <div class="sp-row" id="row-s2"><span class="sr-status" id="st-s2">○</span><span class="sr-nb">14.2</span><span class="sr-ttl">Packet Forwarding</span></div>
+    <div class="sp-row" id="row-s3"><span class="sr-status" id="st-s3">○</span><span class="sr-nb">14.3</span><span class="sr-ttl">Basic Router Configuration Review</span></div>
+    <div class="sp-row" id="row-s4"><span class="sr-status" id="st-s4">○</span><span class="sr-nb">14.4</span><span class="sr-ttl">IP Routing Table</span></div>
+    <div class="sp-row" id="row-s5"><span class="sr-status" id="st-s5">○</span><span class="sr-nb">14.5</span><span class="sr-ttl">Static and Dynamic Routing</span></div>
+    <div class="sp-row" id="row-s6"><span class="sr-status" id="st-s6">○</span><span class="sr-nb">CMD</span><span class="sr-ttl">All Module 14 Commands</span></div>
+    <div class="sp-row" id="row-s7"><span class="sr-status" id="st-s7">○</span><span class="sr-nb">🎯</span><span class="sr-ttl">Common Exam Traps — Module 14</span></div>
+  </div>
+</div>
+
+<!-- TABLE OF CONTENTS -->
+<div class="toc">
+  <div class="toch open" onclick="this.classList.toggle('open');document.getElementById('tocb').classList.toggle('open')">
+    📋 Table of Contents — Tap to expand <span class="arr">▼</span>
+  </div>
+  <div class="tocb open" id="tocb">
+    <div class="tocg">14.1 — Path Determination</div>
+    <a href="javascript:void(0)" onclick="goTo('s1')"><span class="n">14.1.1</span> Two Functions of a Router</a>
+    <a href="javascript:void(0)" onclick="goTo('s1')"><span class="n">14.1.3</span> Best Path = Longest Match</a>
+    <a href="javascript:void(0)" onclick="goTo('s1')"><span class="n">14.1.6</span> Build the Routing Table</a>
+    <div class="tocg">14.2 — Packet Forwarding</div>
+    <a href="javascript:void(0)" onclick="goTo('s2')"><span class="n">14.2.1</span> Packet Forwarding Decision Process</a>
+    <a href="javascript:void(0)" onclick="goTo('s2')"><span class="n">14.2.2</span> End-to-End Packet Forwarding</a>
+    <a href="javascript:void(0)" onclick="goTo('s2')"><span class="n">14.2.3</span> Packet Forwarding Mechanisms</a>
+    <div class="tocg">14.3 — Basic Router Configuration Review</div>
+    <a href="javascript:void(0)" onclick="goTo('s3')"><span class="n">14.3.2</span> Configuration Commands</a>
+    <a href="javascript:void(0)" onclick="goTo('s3')"><span class="n">14.3.3</span> Verification Commands</a>
+    <a href="javascript:void(0)" onclick="goTo('s3')"><span class="n">14.3.4</span> Filter Command Output</a>
+    <div class="tocg">14.4 — IP Routing Table</div>
+    <a href="javascript:void(0)" onclick="goTo('s4')"><span class="n">14.4.1</span> Route Source Codes</a>
+    <a href="javascript:void(0)" onclick="goTo('s4')"><span class="n">14.4.2</span> Routing Table Principles</a>
+    <a href="javascript:void(0)" onclick="goTo('s4')"><span class="n">14.4.3</span> Route Entry Anatomy</a>
+    <a href="javascript:void(0)" onclick="goTo('s4')"><span class="n">14.4.4</span> C and L Routes</a>
+    <a href="javascript:void(0)" onclick="goTo('s4')"><span class="n">14.4.5</span> Static Routes</a>
+    <a href="javascript:void(0)" onclick="goTo('s4')"><span class="n">14.4.7</span> Dynamic Routes</a>
+    <a href="javascript:void(0)" onclick="goTo('s4')"><span class="n">14.4.9</span> Default Route</a>
+    <a href="javascript:void(0)" onclick="goTo('s4')"><span class="n">14.4.10</span> IPv4 vs IPv6 Table Structure</a>
+    <a href="javascript:void(0)" onclick="goTo('s4')"><span class="n">14.4.12</span> Administrative Distance</a>
+    <div class="tocg">14.5 — Static and Dynamic Routing</div>
+    <a href="javascript:void(0)" onclick="goTo('s5')"><span class="n">14.5.1</span> When to Use Static vs Dynamic</a>
+    <a href="javascript:void(0)" onclick="goTo('s5')"><span class="n">14.5.2</span> Dynamic Protocol Evolution</a>
+    <a href="javascript:void(0)" onclick="goTo('s5')"><span class="n">14.5.3</span> Protocol Components</a>
+    <a href="javascript:void(0)" onclick="goTo('s5')"><span class="n">14.5.4</span> Metrics — RIP, OSPF, EIGRP</a>
+    <a href="javascript:void(0)" onclick="goTo('s5')"><span class="n">14.5.5</span> Load Balancing</a>
+    <div class="tocg">Reference</div>
+    <a href="javascript:void(0)" onclick="goTo('s6')"><span class="n">CMD</span> All Module 14 Commands</a>
+    <a href="javascript:void(0)" onclick="goTo('s7')"><span class="n">🎯</span> Common Exam Traps</a>
+  </div>
+</div>
+
+<div class="wrap">
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- SECTION 14.1 — PATH DETERMINATION -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div class="sec" id="s1">
+<div class="sh open" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">14.1</span><span class="ttl">Path Determination</span></span><button class="sec-check" id="sch-s1" onclick="event.stopPropagation();toggleSection('s1',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb open">
+
+  <div class="sub">
+  <h3><span class="sn">14.1.1</span> Two Functions of a Router</h3>
+  <p>A router connects multiple networks — each interface belongs to a different IP network. The two primary functions are:</p>
+  <div class="tw"><table>
+    <tr><th>Function</th><th>Description</th></tr>
+    <tr><td><strong>1. Determine the best path</strong></td><td>Examine the destination IP address and search the routing table for the longest matching prefix</td></tr>
+    <tr><td><strong>2. Forward the packet</strong></td><td>Encapsulate the IP packet in the correct Layer 2 frame for the outgoing interface and send it toward the destination</td></tr>
+  </table></div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">14.1.3</span> Best Path = Longest Match</h3>
+  <p>The <strong>longest match</strong> is how a router selects the best route. It is the routing table entry with the <strong>greatest number of matching far-left bits</strong> compared to the destination IP address.</p>
+  <ul>
+    <li>Each route entry has a <strong>prefix</strong> (network address) and <strong>prefix length</strong></li>
+    <li>For a route to be a match, the minimum number of far-left bits defined by the prefix length must match the destination IP</li>
+    <li>The route with the <strong>most matching bits wins</strong> — regardless of any other factor</li>
+    <li>The IP packet contains only the destination IP address — not the prefix length</li>
+  </ul>
+
+  <div class="lm-box">
+    <div class="lm-title">🔍 IPv4 Longest Match Example — Destination: 172.16.0.10</div>
+    <div class="lm-row">
+      <span class="lm-route">Route 1: 172.16.0.0/12</span>
+      <span class="lm-bits nomatch">12 bits</span>
+    </div>
+    <div class="lm-row">
+      <span class="lm-route">Route 2: 172.16.0.0/18</span>
+      <span class="lm-bits match">18 bits</span>
+    </div>
+    <div class="lm-row">
+      <span class="lm-route">Route 3: 172.16.0.0/26</span>
+      <span class="lm-bits winner">26 bits</span>
+      <span class="lm-badge win">✅ WINNER</span>
+    </div>
+  </div>
+
+  <div class="lm-box" style="border-color:#1ba0d7;margin-top:10px">
+    <div class="lm-title" style="color:#1ba0d7">🔍 IPv6 Longest Match Example — Destination: 2001:db8:c000::99</div>
+    <div class="lm-row">
+      <span class="lm-route">Route 1: 2001:db8:c000::/40</span>
+      <span class="lm-bits match">40 bits</span>
+    </div>
+    <div class="lm-row">
+      <span class="lm-route">Route 2: 2001:db8:c000::/48</span>
+      <span class="lm-bits winner">48 bits</span>
+      <span class="lm-badge win">✅ WINNER</span>
+    </div>
+    <div class="lm-row">
+      <span class="lm-route">Route 3: 2001:db8:c000:5555::/64</span>
+      <span class="lm-bits nomatch">❌ NOT a match</span>
+    </div>
+    <p style="color:#8b949e;font-size:.75em;margin-top:8px">Route 3 requires 64 matching bits but only 48 exist. A route whose prefix length demands more bits than actually match is NOT a match at all.</p>
+  </div>
+
+  <div class="ca danger">
+    <span class="ic">🚨</span>
+    <div><strong>A "close" route that requires more matching bits than exist is NOT a match.</strong> Route 3 above looks like it covers the destination, but its /64 requires 64 bits to match — only 48 do. The router ignores it completely. This is a frequently tested trap.</div>
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">14.1.6</span> Build the Routing Table</h3>
+  <p>Routers populate their routing table from three sources:</p>
+  <div class="tw"><table>
+    <tr><th>Source</th><th>How Added</th><th>Requires</th></tr>
+    <tr><td><strong>Directly Connected</strong></td><td>Automatically when interface is configured with IP and active (up/up)</td><td>Just interface configuration + no shutdown</td></tr>
+    <tr><td><strong>Static Routes</strong></td><td>Manually configured by administrator — explicit path to a specific network</td><td>Admin must type each route; must be updated manually when topology changes</td></tr>
+    <tr><td><strong>Dynamic Routing Protocols</strong></td><td>EIGRP, OSPF, RIP automatically exchange routing info between routers</td><td>Protocol must be configured on all participating routers</td></tr>
+  </table></div>
+
+  <div class="ca info">
+    <span class="ic">💡</span>
+    <div><strong>Default Route — Gateway of Last Resort</strong><br>
+    When no specific route matches the destination, the router uses the default route.<br>
+    IPv4 default: <code>0.0.0.0/0</code> — zero bits need to match — catches everything<br>
+    IPv6 default: <code>::/0</code> — same concept for IPv6<br>
+    Can be set as a static route or learned from a dynamic protocol.</div>
+  </div>
+  </div>
+
+</div></div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- SECTION 14.2 — PACKET FORWARDING -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div class="sec" id="s2">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">14.2</span><span class="ttl">Packet Forwarding</span></span><button class="sec-check" id="sch-s2" onclick="event.stopPropagation();toggleSection('s2',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb">
+
+  <div class="sub">
+  <h3><span class="sn">14.2.1</span> Packet Forwarding Decision Process</h3>
+  <ol class="steps">
+    <li>Data link frame with encapsulated IP packet <strong>arrives on ingress interface</strong> — router strips the L2 frame</li>
+    <li>Router examines the <strong>destination IP address</strong> in the packet header</li>
+    <li>Router searches routing table for the <strong>longest matching prefix</strong></li>
+    <li>Router <strong>encapsulates the packet</strong> in the correct L2 frame for the egress interface and forwards it</li>
+    <li>If <strong>no matching route exists and no default route</strong> → packet is dropped (ICMP unreachable sent to source)</li>
+  </ol>
+
+  <h4>Three Possible Outcomes After Longest Match</h4>
+  <div class="tw"><table>
+    <tr><th>Outcome</th><th>Situation</th><th>Action</th></tr>
+    <tr><td><strong>Forward to directly connected device</strong></td><td>Destination is on a directly connected network</td><td>Router needs the destination's MAC → sends ARP request (IPv4) or ICMPv6 NS (IPv6)</td></tr>
+    <tr><td><strong>Forward to next-hop router</strong></td><td>Egress interface leads to a remote network</td><td>Router resolves <em>next-hop router's</em> MAC (not the packet destination's MAC) via ARP/neighbor cache; re-encapsulates and forwards</td></tr>
+    <tr><td><strong>Drop the packet</strong></td><td>No matching route and no default route</td><td>Packet discarded; ICMP Destination Unreachable sent to source</td></tr>
+  </table></div>
+  <div class="ca warn">
+    <span class="ic">⚠️</span>
+    <div><strong>For the next-hop scenario:</strong> the router looks up the <em>next-hop router's IP address</em> in its ARP table — NOT the packet's final destination IP. The destination IP travels unchanged inside the packet all the way to the final router. Only the Layer 2 frame changes at each hop.</div>
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">14.2.2</span> End-to-End Packet Forwarding</h3>
+  <p>The <strong>data link frame changes at every hop</strong> — the router strips the incoming frame and re-encapsulates the IP packet in a new frame for the outgoing interface. The IP packet itself (source/destination IP) never changes:</p>
+
+  <div class="dg"><pre>
+  PC1 ──Ethernet──► R1 ──Ethernet──► R2 ──Serial──► R3 ──Ethernet──► PC2
+
+  Hop 1 (PC1 → R1):  Ethernet frame  │ ARP for R1's MAC (default gateway)
+  Hop 2 (R1 → R2):   Ethernet frame  │ ARP for R2's next-hop MAC
+  Hop 3 (R2 → R3):   HDLC/PPP frame  │ No ARP needed — point-to-point link
+  Hop 4 (R3 → PC2):  Ethernet frame  │ ARP for PC2's MAC (destination)
+
+  IP packet (source IP / destination IP) = UNCHANGED throughout</pre></div>
+
+  <div class="ca info">
+    <span class="ic">💡</span>
+    <div><strong>Point-to-point serial links have no MAC addresses.</strong> The router encapsulates in HDLC or PPP and uses the broadcast-equivalent Layer 2 address. No ARP needed — there are only two devices on the link and the router always knows who the other end is.</div>
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">14.2.3</span> Packet Forwarding Mechanisms</h3>
+  <div class="fw-grid">
+    <div class="fw-card proc">
+      <div class="fw-title">Process Switching</div>
+      <div class="fw-badge">⚠️ Legacy — Rarely Used</div>
+      <ul>
+        <li>Every packet sent to the CPU for routing table lookup</li>
+        <li>CPU consulted for <em>every single packet</em> — even consecutive packets to the same destination</li>
+        <li>Extremely slow — CPU becomes the bottleneck</li>
+        <li>Still available on Cisco routers but almost never used</li>
+      </ul>
+    </div>
+    <div class="fw-card fast">
+      <div class="fw-title">Fast Switching</div>
+      <div class="fw-badge">⚡ Older — Cache-Based</div>
+      <ul>
+        <li>First packet in a flow is process-switched → result cached in fast-switching cache</li>
+        <li>Subsequent packets to the same destination use the cache — no CPU lookup</li>
+        <li>Significantly faster than process switching</li>
+        <li>Successor to process switching — now largely replaced by CEF</li>
+      </ul>
+    </div>
+    <div class="fw-card cef">
+      <div class="fw-title">CEF — Cisco Express Forwarding</div>
+      <div class="fw-badge">✅ Default on All Modern Cisco Devices</div>
+      <ul>
+        <li>Builds a <strong>FIB (Forwarding Information Base)</strong> from the routing table</li>
+        <li>Builds an <strong>adjacency table</strong> from the ARP table — stores L2 next-hop info</li>
+        <li>Both tables are pre-built when the network converges — <strong>not per-packet</strong></li>
+        <li>Tables update only on topology changes — not triggered by packet arrivals</li>
+        <li>All packets processed entirely in the <strong>data plane</strong> — no CPU involvement</li>
+        <li>Fastest mechanism — default on all modern Cisco routers and multilayer switches</li>
+      </ul>
+    </div>
+  </div>
+  <div class="et">
+    <div class="lbl">🎯 CEF IS THE DEFAULT — KNOW THIS</div>
+    When the exam asks about the default Cisco packet forwarding mechanism: <strong>CEF</strong>.<br><br>
+    <strong>FIB</strong> = the forwarding table (built from routing table)<br>
+    <strong>Adjacency table</strong> = Layer 2 next-hop info (built from ARP table)<br>
+    Both are pre-populated after convergence. No per-packet CPU lookup. Fastest.
+  </div>
+  </div>
+
+</div></div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- SECTION 14.3 — BASIC ROUTER CONFIGURATION REVIEW -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div class="sec" id="s3">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">14.3</span><span class="ttl">Basic Router Configuration Review</span></span><button class="sec-check" id="sch-s3" onclick="event.stopPropagation();toggleSection('s3',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb">
+
+  <div class="sub">
+  <h3><span class="sn">14.3.2</span> Full Router Configuration — R1</h3>
+  <div class="cw"><div class="cl">Complete R1 configuration — hostname, security, interfaces, IPv4 and IPv6 <button class="cpb" onclick="copyCode(this)">Copy</button></div>
+  <pre><code>Router> enable
+Router# configure terminal
+Router(config)# hostname R1
+
+! Security
+R1(config)# enable secret class
+R1(config)# service password-encryption
+R1(config)# banner motd #
+***WARNING: Unauthorized access is prohibited!***
+#
+
+! Console line
+R1(config)# line console 0
+R1(config-line)# logging synchronous
+R1(config-line)# password cisco
+R1(config-line)# login
+R1(config-line)# exit
+
+! VTY lines (Telnet/SSH)
+R1(config)# line vty 0 4
+R1(config-line)# password cisco
+R1(config-line)# login
+R1(config-line)# transport input ssh telnet
+R1(config-line)# exit
+
+! Enable IPv6 routing (required for IPv6 routing table)
+R1(config)# ipv6 unicast-routing
+
+! GigabitEthernet 0/0/0 — LAN interface
+R1(config)# interface gigabitethernet 0/0/0
+R1(config-if)# description Link to LAN 1
+R1(config-if)# ip address 10.0.1.1 255.255.255.0
+R1(config-if)# ipv6 address 2001:db8:acad:1::1/64
+R1(config-if)# ipv6 address fe80::1:a link-local
+R1(config-if)# no shutdown
+R1(config-if)# exit
+
+! Serial 0/1/1 — WAN link to R2
+R1(config)# interface serial 0/1/1
+R1(config-if)# description Link to R2
+R1(config-if)# ip address 10.0.3.1 255.255.255.0
+R1(config-if)# ipv6 address 2001:db8:acad:3::1/64
+R1(config-if)# ipv6 address fe80::1:c link-local
+R1(config-if)# no shutdown
+R1(config-if)# exit
+
+R1(config)# end
+R1# copy running-config startup-config</code></pre></div>
+  <div class="ca info">
+    <span class="ic">💡</span>
+    <div><strong><code>ipv6 unicast-routing</code> is required</strong> to enable IPv6 routing on a Cisco router. Without this command, the router does not process or forward IPv6 packets — it only processes IPv4. This command is frequently omitted in labs and causes all IPv6 connectivity to fail.</div>
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">14.3.3</span> Verification Commands</h3>
+  <div class="tw"><table>
+    <tr><th>Command</th><th>What It Shows</th></tr>
+    <tr><td><code>show ip interface brief</code></td><td>Summary of all interfaces — IPv4 address, status, protocol (up/down)</td></tr>
+    <tr><td><code>show ipv6 interface brief</code></td><td>Same as above for IPv6</td></tr>
+    <tr><td><code>show running-config interface [int]</code></td><td>Running config for one specific interface</td></tr>
+    <tr><td><code>show interfaces [int]</code></td><td>Full physical + data link details — hardware address, bandwidth, errors, queues</td></tr>
+    <tr><td><code>show ip interface [int]</code></td><td>Full IP details for one interface — ACLs applied, proxy ARP, CEF status</td></tr>
+    <tr><td><code>show ip route</code></td><td>Full IPv4 routing table</td></tr>
+    <tr><td><code>show ipv6 route</code></td><td>Full IPv6 routing table</td></tr>
+    <tr><td><code>ping [ip-address]</code></td><td>Test reachability — works for both IPv4 and IPv6 addresses</td></tr>
+  </table></div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">14.3.4</span> Filter Command Output with Pipe ( | )</h3>
+  <p>The pipe character <code>|</code> filters <code>show</code> command output. Four filter parameters:</p>
+  <div class="tw"><table>
+    <tr><th>Filter</th><th>What It Does</th></tr>
+    <tr><td><code>section [text]</code></td><td>Shows the entire config section starting with the matching line</td></tr>
+    <tr><td><code>include [text]</code></td><td>Shows only lines that contain the match — hides everything else</td></tr>
+    <tr><td><code>exclude [text]</code></td><td>Shows all lines EXCEPT those containing the match</td></tr>
+    <tr><td><code>begin [text]</code></td><td>Shows all lines starting from the first match onward</td></tr>
+  </table></div>
+  <div class="cw"><div class="cl">Pipe filter examples <button class="cpb" onclick="copyCode(this)">Copy</button></div>
+  <pre><code>R1# show running-config | section line vty       ! Show VTY config section only
+R1# show ipv6 interface brief | include up        ! Show only "up" interfaces
+R1# show ip interface brief | exclude unassigned  ! Hide interfaces with no IP
+R1# show ip route | begin Gateway                 ! Start output from "Gateway" line</code></pre></div>
+  </div>
+
+  <!-- SYNTAX CHECKER: 14.3.4 -->
+  <div style="margin:20px 0 6px;padding:16px;background:#0d1117;border:1px solid #30363d;border-left:3px solid #bc8cff;border-radius:8px">
+    <div style="font-size:.7em;font-weight:800;text-transform:uppercase;letter-spacing:.8px;color:#bc8cff;margin-bottom:6px">&#x1F5A5; Syntax Checker &mdash; 14.3.4</div>
+    <div style="font-size:.92em;font-weight:600;color:#e6edf3;margin-bottom:12px">Basic Router Configuration Review</div>
+    <div style="font-size:.82em;color:#8b949e;margin-bottom:14px">Type each command exactly as shown. Press Enter to submit. The checker validates your syntax step by step.</div>
+    <div class="tool-links" style="display:flex;flex-wrap:wrap;gap:14px">
+      <div style="flex:1 1 220px;min-width:0">
+        <a href="../../syntax-checker-simple/ccna2_syntax_checker.html?lab=14.3.4" target="_blank" rel="noopener" title="Quick, guided drill: type the exact commands for this NetAcad lab, step by step. Opens straight to lab 14.3.4." style="display:inline-flex;align-items:center;gap:8px;color:#fff;text-decoration:none;padding:8px 18px;border-radius:6px;font-size:.85em;font-weight:700;background:#238636;border:1px solid #2ea043">&#x25B6; Open Syntax Checker</a>
+        <div style="font-size:.75em;color:#8b949e;margin-top:6px">Quick, guided drill: type the exact commands for this NetAcad lab, step by step. Opens straight to lab 14.3.4.</div>
+      </div>
+      <div style="flex:1 1 220px;min-width:0">
+        <a class="cli-engine-link" href="../../cli-engine/ccna-cli-engine.html" target="_blank" rel="noopener" title="Full simulated Cisco IOS terminal: Tab completion, device state, Free Practice, Home Labs and Subnetting. In its exercise menu, pick “Course 2 · 14.3 — Basic Router Configuration Review”." style="display:inline-flex;align-items:center;gap:8px;color:#fff;text-decoration:none;padding:8px 18px;border-radius:6px;font-size:.85em;font-weight:700;background:#1f6feb;border:1px solid #388bfd">&#x1F4BB; Open CLI Engine</a>
+        <div style="font-size:.75em;color:#8b949e;margin-top:6px">Full simulated Cisco IOS terminal: Tab completion, device state, Free Practice, Home Labs and Subnetting. In its exercise menu, pick “Course 2 · 14.3 — Basic Router Configuration Review”.</div>
+      </div>
+    </div>
+    <div style="margin-top:12px;font-size:.75em"><a href="../../index.html" style="color:#58a6ff;text-decoration:none">&#x1F3E0; All study tools (home)</a></div>
+  </div>
+
+  <!-- PT INLINE -->
+  <div style="margin:20px 0 6px;padding:14px 16px;background:#0d1117;border:1px solid #30363d;border-left:3px solid #1f6feb;border-radius:6px">
+    <div style="font-size:.72em;font-weight:800;text-transform:uppercase;letter-spacing:.8px;color:#1f6feb;margin-bottom:10px">&#x1F4E6; Packet Tracer Activities</div>
+  <div style="display:flex;align-items:baseline;gap:10px;padding:6px 0;border-bottom:1px solid #21262d"><span style="font-family:monospace;font-size:.85em;color:#79c0ff;white-space:nowrap;flex-shrink:0;min-width:52px">14.3.5</span><span style="font-size:.88em;color:#c9d1d9">Basic Router Configuration Review</span></div>
+    <div style="margin-top:10px;font-size:.78em;color:#6e7681">Full list: <a href="https://itexamanswers.net/ccna-2-packet-tracer-labs-answers-srwe-v7-02.html" target="_blank" rel="noopener" style="color:#58a6ff;word-break:break-all">https://itexamanswers.net/ccna-2-packet-tracer-labs-answers-srwe-v7-02.html</a></div>
+  </div>
+
+</div></div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- SECTION 14.4 — IP ROUTING TABLE -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div class="sec" id="s4">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">14.4</span><span class="ttl">IP Routing Table</span></span><button class="sec-check" id="sch-s4" onclick="event.stopPropagation();toggleSection('s4',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb">
+
+  <div class="sub">
+  <h3><span class="sn">14.4.1</span> Route Source Codes</h3>
+  <p>The first letter of each routing table entry identifies how the route was learned:</p>
+  <div class="code-grid">
+    <div class="code-card connected"><div class="cc-code">C</div><div class="cc-name">Connected</div><div class="cc-ad">AD = 0</div></div>
+    <div class="code-card local"><div class="cc-code">L</div><div class="cc-name">Local</div><div class="cc-ad">AD = 0</div></div>
+    <div class="code-card static"><div class="cc-code">S</div><div class="cc-name">Static</div><div class="cc-ad">AD = 1</div></div>
+    <div class="code-card ospf"><div class="cc-code">O</div><div class="cc-name">OSPF</div><div class="cc-ad">AD = 110</div></div>
+    <div class="code-card eigrp"><div class="cc-code">D</div><div class="cc-name">EIGRP</div><div class="cc-ad">AD = 90</div></div>
+    <div class="code-card rip"><div class="cc-code">R</div><div class="cc-name">RIP</div><div class="cc-ad">AD = 120</div></div>
+  </div>
+  <p style="font-size:.81em;color:var(--muted);margin-top:4px"><code>*</code> next to a code (e.g., <code>S*</code>) = this route is a <strong>candidate default route</strong> (gateway of last resort)</p>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">14.4.2</span> Three Routing Table Principles</h3>
+  <div class="tw"><table>
+    <tr><th>Principle</th><th>Plain English</th></tr>
+    <tr><td><strong>Every router decides alone based on its own table</strong></td><td>R1 makes forwarding decisions using only R1's routing table. It has no knowledge of what's in R2's or R3's table.</td></tr>
+    <tr><td><strong>Routing tables don't need to match between routers</strong></td><td>R1 having a route to Network X via R2 does NOT mean R2 has that same route. Each router's table is independent.</td></tr>
+    <tr><td><strong>A forward route does not imply the return route exists</strong></td><td>R1 knowing how to reach PC3 does NOT mean R1 knows the return path from PC3 back to R1. Routing is asymmetric by default.</td></tr>
+  </table></div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">14.4.3</span> Route Entry Anatomy</h3>
+  <p>Every routing table entry contains seven fields. Here is a sample OSPF route dissected:</p>
+  <div class="entry-box">
+    <div class="entry-raw">O    10.0.4.0/24 [110/50] via 10.0.3.2, 00:24:22, Serial0/1/1</div>
+    <div class="entry-fields">
+      <div class="entry-field"><span class="ef-badge">Route source</span><span class="ef-desc"><code>O</code> = learned via OSPF</span></div>
+      <div class="entry-field"><span class="ef-badge">Destination</span><span class="ef-desc"><code>10.0.4.0/24</code> = network prefix and prefix length</span></div>
+      <div class="entry-field"><span class="ef-badge">AD</span><span class="ef-desc"><code>[110</code> = Administrative Distance — trustworthiness of OSPF routes</span></div>
+      <div class="entry-field"><span class="ef-badge">Metric</span><span class="ef-desc"><code>/50]</code> = OSPF cost to reach this network</span></div>
+      <div class="entry-field"><span class="ef-badge">Next-hop</span><span class="ef-desc"><code>via 10.0.3.2</code> = IP address of the next router to send packets to</span></div>
+      <div class="entry-field"><span class="ef-badge">Timestamp</span><span class="ef-desc"><code>00:24:22</code> = how long since this route was learned</span></div>
+      <div class="entry-field"><span class="ef-badge">Exit interface</span><span class="ef-desc"><code>Serial0/1/1</code> = outgoing interface used to reach the destination</span></div>
+    </div>
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">14.4.4</span> C and L Routes — Directly Connected</h3>
+  <p>When an interface is configured with an IP address and becomes <strong>active (up/up)</strong>, two routes are automatically added:</p>
+  <div class="cw"><div class="cl">Directly connected routes — C and L <button class="cpb" onclick="copyCode(this)">Copy</button></div>
+  <pre><code>C    10.0.1.0/24 is directly connected, GigabitEthernet0/0/0
+L    10.0.1.1/32 is directly connected, GigabitEthernet0/0/0</code></pre></div>
+  <div class="tw"><table>
+    <tr><th>Code</th><th>What It Is</th><th>Prefix Length</th><th>Purpose</th></tr>
+    <tr><td><strong>C</strong></td><td>The directly connected network prefix</td><td>As configured (e.g., /24)</td><td>Tells the router this network is reachable through this interface</td></tr>
+    <tr><td><strong>L</strong></td><td>The router's own IP address on that interface</td><td><strong>/32 (IPv4) or /128 (IPv6)</strong></td><td>Allows the router to recognize packets addressed to itself — so it processes them locally instead of forwarding them</td></tr>
+  </table></div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">14.4.5</span> Static Routes</h3>
+  <p>Manually configured by the administrator. Not automatically updated when topology changes.</p>
+  <ul>
+    <li>Less CPU and bandwidth than dynamic protocols</li>
+    <li>More secure — don't advertise network information</li>
+    <li>Must be manually reconfigured when topology changes</li>
+  </ul>
+  <p><strong>Three primary uses:</strong></p>
+  <ul>
+    <li><strong>Default route</strong> — stub router pointing to ISP; forward all unmatched traffic to one next-hop</li>
+    <li><strong>Stub networks</strong> — networks accessed by only one path; no need for dynamic protocol overhead</li>
+    <li><strong>Explicit path control</strong> — admin forces traffic through a specific path regardless of what dynamic protocols prefer</li>
+  </ul>
+  <div class="cw"><div class="cl">Static routes in show ip route / show ipv6 route <button class="cpb" onclick="copyCode(this)">Copy</button></div>
+  <pre><code>R1# show ip route static
+S    10.0.4.0/24 [1/0] via 10.0.3.2   ! S = static, AD=1, metric=0
+
+R1# show ipv6 route static
+S    2001:DB8:ACAD:4::/64 [1/0]
+      via 2001:DB8:ACAD:3::2</code></pre></div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">14.4.7</span> Dynamic Routes</h3>
+  <p>Dynamically learned from other routers via routing protocols. Automatically update when topology changes.</p>
+  <div class="cw"><div class="cl">Dynamic routes — OSPF example <button class="cpb" onclick="copyCode(this)">Copy</button></div>
+  <pre><code>R1# show ip route
+O    10.0.4.0/24 [110/50] via 10.0.3.2, 00:24:22, Serial0/1/1
+O    10.0.5.0/24 [110/50] via 10.0.3.2, 00:24:15, Serial0/1/1
+
+R1# show ipv6 route
+O    2001:DB8:ACAD:4::/64 [110/50]
+      via FE80::2:C, Serial0/1/1   ! IPv6 uses LINK-LOCAL of next-hop — not global unicast</code></pre></div>
+  <div class="ca danger">
+    <span class="ic">🚨</span>
+    <div><strong>IPv6 dynamic routes show the link-local address of the next-hop router</strong> — not the global unicast address. In <code>show ipv6 route</code>, the "via" field shows <code>FE80::x:x</code>. This catches many students off guard.</div>
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">14.4.9</span> Default Route — Gateway of Last Resort</h3>
+  <p>Matches any packet when no more-specific route exists. Used as a catch-all for traffic with no other match.</p>
+  <div class="tw"><table>
+    <tr><th>Protocol</th><th>Default Route Entry</th><th>Meaning</th></tr>
+    <tr><td>IPv4</td><td><strong>0.0.0.0/0</strong></td><td>Zero bits need to match — any IPv4 destination matches this</td></tr>
+    <tr><td>IPv6</td><td><strong>::/0</strong></td><td>Zero bits need to match — any IPv6 destination matches this</td></tr>
+  </table></div>
+  <div class="cw"><div class="cl">Default route in routing table — S* means gateway of last resort <button class="cpb" onclick="copyCode(this)">Copy</button></div>
+  <pre><code>R2# show ip route
+S*    0.0.0.0/0 [1/0] via 209.165.200.226   ! S* = static default route
+
+R2# show ipv6 route
+S    ::/0 [1/0]
+      via 2001:DB8:FEED:224::2               ! IPv6 static default route</code></pre></div>
+  <div class="ca tip">
+    <span class="ic">✅</span>
+    <div>The <code>*</code> marks this as the <strong>candidate default route</strong>. When R2 advertises this default via OSPF, R1 installs it as its gateway of last resort — any traffic R1 can't route specifically goes to R2, which sends it to the ISP. This is how a stub router connects to the internet.</div>
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">14.4.10</span> IPv4 vs IPv6 Routing Table Structure</h3>
+  <div class="tw"><table>
+    <tr><th>Feature</th><th>IPv4 Routing Table</th><th>IPv6 Routing Table</th></tr>
+    <tr><td><strong>Structure</strong></td><td>Classful hierarchy — parent routes + indented child routes</td><td>No classful history — all entries aligned the same way</td></tr>
+    <tr><td><strong>Parent route</strong></td><td>Left-aligned, no route source code (e.g., <code>10.0.0.0/8 is variably subnetted</code>)</td><td>Does not exist in IPv6</td></tr>
+    <tr><td><strong>Child routes</strong></td><td>Indented below parent — actual subnet entries</td><td>All entries are at the same level</td></tr>
+    <tr><td><strong>Readability</strong></td><td>More complex to read — legacy classful structure</td><td>Cleaner — every entry formatted identically</td></tr>
+  </table></div>
+  <div class="cw"><div class="cl">IPv4 parent/child structure in show ip route <button class="cpb" onclick="copyCode(this)">Copy</button></div>
+  <pre><code>R1# show ip route
+      10.0.0.0/8 is variably subnetted, 8 subnets, 2 masks   ← PARENT (classful /8)
+C        10.0.1.0/24 is directly connected, Gi0/0/0           ← child subnet
+L        10.0.1.1/32 is directly connected, Gi0/0/0           ← child local route
+C        10.0.3.0/24 is directly connected, Serial0/1/1       ← child subnet
+O        10.0.4.0/24 [110/50] via 10.0.3.2, Serial0/1/1      ← child OSPF route</code></pre></div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">14.4.12</span> Administrative Distance (AD)</h3>
+  <p>When the router learns the same network from multiple sources, <strong>AD determines which route is installed</strong> in the routing table. <strong>Lower AD = more trusted = preferred.</strong></p>
+
+  <div class="ad-ladder">
+    <div class="ad-row ad0"><span class="ad-val">0</span><span class="ad-src">Directly Connected</span><span class="ad-bar" style="width:2%"></span></div>
+    <div class="ad-row ad1"><span class="ad-val">1</span><span class="ad-src">Static Route</span><span class="ad-bar" style="width:3%"></span></div>
+    <div class="ad-row ad90"><span class="ad-val">90</span><span class="ad-src">Internal EIGRP</span><span class="ad-bar" style="width:45%"></span></div>
+    <div class="ad-row ad110"><span class="ad-val">110</span><span class="ad-src">OSPF</span><span class="ad-bar" style="width:55%"></span></div>
+    <div class="ad-row ad120"><span class="ad-val">120</span><span class="ad-src">RIP</span><span class="ad-bar" style="width:60%"></span></div>
+    <div class="ad-row ad170"><span class="ad-val">170</span><span class="ad-src">External EIGRP</span><span class="ad-bar" style="width:85%"></span></div>
+    <div class="ad-row ad200"><span class="ad-val">200</span><span class="ad-src">Internal BGP</span><span class="ad-bar" style="width:100%"></span></div>
+  </div>
+
+  <div class="ca warn">
+    <span class="ic">⚠️</span>
+    <div><strong>AD is NOT a measure of which protocol is "better."</strong> It only determines installation priority when multiple sources know the same network. A static route (AD 1) always beats OSPF (AD 110) for the same destination — intentional, so admins can override dynamic routing. AD does NOT affect how a routing protocol selects its best path internally — that's what metrics are for.</div>
+  </div>
+  </div>
+
+</div></div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- SECTION 14.5 — STATIC AND DYNAMIC ROUTING -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div class="sec" id="s5">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">14.5</span><span class="ttl">Static and Dynamic Routing</span></span><button class="sec-check" id="sch-s5" onclick="event.stopPropagation();toggleSection('s5',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb">
+
+  <div class="sub">
+  <h3><span class="sn">14.5.1</span> When to Use Static vs Dynamic</h3>
+  <div class="tw"><table>
+    <tr><th>Feature</th><th>Dynamic Routing</th><th>Static Routing</th></tr>
+    <tr><td><strong>Configuration complexity</strong></td><td>Independent of network size — same protocol config regardless</td><td>Increases with network size — every route must be typed manually</td></tr>
+    <tr><td><strong>Topology changes</strong></td><td>Adapts automatically — finds alternate paths</td><td>Admin must manually reconfigure every affected router</td></tr>
+    <tr><td><strong>Scalability</strong></td><td>Simple to very complex topologies</td><td>Simple topologies only — impractical for large networks</td></tr>
+    <tr><td><strong>Security</strong></td><td>Routing updates must be explicitly secured</td><td>Inherently more secure — routes not advertised to other routers</td></tr>
+    <tr><td><strong>Resource usage</strong></td><td>CPU, memory, and link bandwidth for protocol messages</td><td>No additional overhead — routes are fixed</td></tr>
+    <tr><td><strong>Path predictability</strong></td><td>Depends on topology and protocol algorithm</td><td>Fully predictable — admin defines every path explicitly</td></tr>
+  </table></div>
+  <div class="ca tip">
+    <span class="ic">✅</span>
+    <div><strong>Real networks use both.</strong> Static routes handle default routes and stub networks; dynamic protocols handle scalable automatic routing. They complement each other.</div>
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">14.5.2</span> Dynamic Routing Protocol Evolution</h3>
+  <div class="tw"><table>
+    <tr><th>Protocol</th><th>Type</th><th>Key Notes</th></tr>
+    <tr><td><strong>RIPv1</strong></td><td>Distance vector</td><td>1988; first widely used; 15-hop maximum; classful only</td></tr>
+    <tr><td><strong>RIPv2</strong></td><td>Distance vector</td><td>Classless; supports VLSM; still 15-hop limit; limited scalability</td></tr>
+    <tr><td><strong>IGRP</strong></td><td>Cisco proprietary</td><td>Replaced by EIGRP</td></tr>
+    <tr><td><strong>EIGRP</strong></td><td>Cisco hybrid</td><td>Advanced distance vector; composite metric; supports unequal-cost load balancing</td></tr>
+    <tr><td><strong>OSPF</strong></td><td>Link state</td><td>Open standard; scales to large networks; cost-based metric</td></tr>
+    <tr><td><strong>BGP</strong></td><td>Path vector (EGP)</td><td>Internet standard; connects ISPs and autonomous systems; routes all internet traffic</td></tr>
+    <tr><td><strong>IPv6 variants</strong></td><td>Various</td><td>RIPng, EIGRP for IPv6, OSPFv3, IS-IS for IPv6, BGP-MP</td></tr>
+  </table></div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">14.5.3</span> Dynamic Routing Protocol Components</h3>
+  <div class="tw"><table>
+    <tr><th>Component</th><th>Description</th><th>Examples</th></tr>
+    <tr><td><strong>Data structures</strong></td><td>Tables and databases stored in RAM</td><td>Routing table, topology table (OSPF LSDB), neighbor table (EIGRP)</td></tr>
+    <tr><td><strong>Routing protocol messages</strong></td><td>Messages to discover neighbors, share routing info, and maintain accuracy</td><td>OSPF Hello, LSA; EIGRP Hello, Update, Query, Reply; RIP Response</td></tr>
+    <tr><td><strong>Algorithm</strong></td><td>A finite set of steps to determine the best path and update the routing table</td><td>Dijkstra SPF (OSPF), DUAL (EIGRP), Bellman-Ford (RIP)</td></tr>
+  </table></div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">14.5.4</span> Best Path — Metrics</h3>
+  <p>Each dynamic routing protocol uses its own metric. <strong>Lower metric = preferred path.</strong></p>
+  <div class="metric-grid">
+    <div class="metric-card rip">
+      <div class="mc-title">RIP</div>
+      <div class="mc-metric">Hop Count</div>
+      <p>Each router along the path counts as 1 hop. Maximum 15 hops — 16 = unreachable. Simple but completely ignores link bandwidth. A 1-hop path over a 56K modem beats a 2-hop path over 10 Gbps fiber.</p>
+    </div>
+    <div class="metric-card ospf">
+      <div class="mc-title">OSPF</div>
+      <div class="mc-metric">Cost</div>
+      <p>Based on cumulative bandwidth. Reference bandwidth (default 100 Mbps) divided by link bandwidth = cost. Faster links = lower cost = preferred. Much more accurate than hop count. Cost is additive along the path.</p>
+    </div>
+    <div class="metric-card eigrp">
+      <div class="mc-title">EIGRP</div>
+      <div class="mc-metric">Composite Metric</div>
+      <p>Based on <strong>slowest bandwidth</strong> and <strong>cumulative delay</strong> by default. Can optionally include load and reliability. Most flexible and most accurate of the three. Supports both equal and unequal-cost load balancing.</p>
+    </div>
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">14.5.5</span> Load Balancing</h3>
+  <p>When two or more paths to the same destination have <strong>identical metrics</strong>, the router installs all paths in the routing table and distributes traffic across all of them — <strong>equal-cost load balancing</strong>.</p>
+  <ul>
+    <li>Enabled automatically by all routing protocols — no configuration required</li>
+    <li>Also works with multiple static routes to the same destination using different next-hops</li>
+    <li>Improves overall throughput and utilizes all available links</li>
+  </ul>
+  <div class="et">
+    <div class="lbl">🎯 EIGRP ONLY — UNEQUAL-COST LOAD BALANCING</div>
+    <strong>EIGRP</strong> is the only routing protocol that supports <strong>unequal-cost load balancing</strong> using the <strong>variance</strong> command.<br><br>
+    <strong>All other protocols</strong> (OSPF, RIP, static routes) only load balance across <strong>equal-cost</strong> paths.<br><br>
+    This is a very frequently tested exam distinction.
+  </div>
+  </div>
+
+</div></div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- SECTION 14.6 — COMMAND REFERENCE -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div class="sec" id="s6">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">CMD</span><span class="ttl">All Module 14 Commands</span></span><button class="sec-check" id="sch-s6" onclick="event.stopPropagation();toggleSection('s6',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb">
+
+  <div class="sub">
+  <h4>Routing Table Verification</h4>
+  <div class="cw"><div class="cl">Routing table commands <button class="cpb" onclick="copyCode(this)">Copy</button></div>
+  <pre><code>R1# show ip route              ! Full IPv4 routing table (all sources)
+R1# show ipv6 route            ! Full IPv6 routing table
+R1# show ip route static       ! Show only static routes
+R1# show ip route connected    ! Show only directly connected routes
+R1# show ip route ospf         ! Show only OSPF-learned routes
+R1# show ip route eigrp        ! Show only EIGRP-learned routes
+R1# show ip route | begin Gateway  ! Start from "Gateway" line (most useful)</code></pre></div>
+
+  <h4>Interface Verification</h4>
+  <div class="cw"><div class="cl">Interface commands <button class="cpb" onclick="copyCode(this)">Copy</button></div>
+  <pre><code>R1# show ip interface brief            ! Summary: IP, status, protocol — all interfaces
+R1# show ipv6 interface brief          ! Same for IPv6
+R1# show interfaces gigabitethernet 0/0/0        ! Full physical details
+R1# show ip interface gigabitethernet 0/0/0      ! Full IP config (ACLs, CEF, proxy ARP)
+R1# show running-config interface g0/0/0         ! Running config for one interface</code></pre></div>
+
+  <h4>Output Filtering</h4>
+  <div class="cw"><div class="cl">Pipe filter examples <button class="cpb" onclick="copyCode(this)">Copy</button></div>
+  <pre><code>R1# show running-config | section line vty        ! VTY config block
+R1# show ipv6 interface brief | include up        ! Only up interfaces
+R1# show ip interface brief | exclude unassigned  ! Hide interfaces with no IP
+R1# show ip route | begin Gateway                 ! Route table from Gateway line</code></pre></div>
+
+  <h4>Connectivity Testing</h4>
+  <div class="cw"><div class="cl">Ping commands <button class="cpb" onclick="copyCode(this)">Copy</button></div>
+  <pre><code>R1# ping 10.0.4.1                        ! IPv4 ping
+R1# ping 2001:db8:acad:4::1              ! IPv6 ping
+R1# ping 10.0.4.1 source g0/0/0         ! Ping from a specific source interface</code></pre></div>
+  </div>
+
+</div></div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- SECTION 14.7 — EXAM TRAPS -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div class="sec" id="s7">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">🎯</span><span class="ttl">Common Exam Traps — Module 14</span></span><button class="sec-check" id="sch-s7" onclick="event.stopPropagation();toggleSection('s7',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb">
+
+  <div class="ca danger"><span class="ic">❌</span><div><strong>Trap 1: Longest match = most matching far-left bits.</strong><br>A /26 always beats a /18 for the same destination. More bits = more specific = preferred. Never pick the "closest-looking" route — always count the matching bits.</div></div>
+
+  <div class="ca danger"><span class="ic">❌</span><div><strong>Trap 2: A route that needs more bits than actually match is NOT a match at all.</strong><br>A /64 route that only has 48 matching bits is completely ignored — the router treats it as if it doesn't exist. This is one of the most tricky longest-match exam questions.</div></div>
+
+  <div class="ca danger"><span class="ic">❌</span><div><strong>Trap 3: CEF is the default Cisco packet forwarding mechanism.</strong><br>Not process switching, not fast switching. CEF pre-builds the FIB (from routing table) and adjacency table (from ARP). All packets are processed in the data plane. No per-packet CPU involvement.</div></div>
+
+  <div class="ca danger"><span class="ic">❌</span><div><strong>Trap 4: IPv6 dynamic routes show the link-local address of the next-hop.</strong><br>In <code>show ipv6 route</code>, the "via" field for OSPF/EIGRP routes shows <code>FE80::x:x</code> — not the global unicast address. This surprises students who expect to see a global address.</div></div>
+
+  <div class="ca danger"><span class="ic">❌</span><div><strong>Trap 5: AD determines route installation — lower AD wins.</strong><br>Connected=0, Static=1, EIGRP=90, OSPF=110, RIP=120. A static route (AD 1) always beats OSPF (AD 110) for the same destination. AD is NOT a measure of which protocol is "better" — it only controls which source gets its route into the table.</div></div>
+
+  <div class="ca danger"><span class="ic">❌</span><div><strong>Trap 6: The L (local) route is /32 for IPv4 — not /24 or the same as C.</strong><br>When G0/0/0 has IP 10.0.1.1/24, the routing table shows both C (10.0.1.0/24) and L (10.0.1.1/32). The /32 local route lets the router recognize packets addressed directly to itself without full table lookup.</div></div>
+
+  <div class="ca danger"><span class="ic">❌</span><div><strong>Trap 7: <code>ipv6 unicast-routing</code> must be explicitly configured.</strong><br>Without this global command, a Cisco router will not route IPv6 packets — even if IPv6 addresses are configured on every interface. All IPv6 connectivity fails silently. This is the #1 IPv6 lab error.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 8: Only EIGRP supports unequal-cost load balancing.</strong><br>All other protocols (OSPF, RIP) only load balance across equal-cost paths. EIGRP uses the <code>variance</code> command to allow unequal-cost. This is directly tested on the M14–16 checkpoint exam.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 9: Routing table principles — every router is independent.</strong><br>R1 knowing a route does NOT mean R2 knows the same route. R1 knowing the forward path to PC3 does NOT guarantee R1 knows the return path. Routing is completely independent per router.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 10: The default route — 0.0.0.0/0 (IPv4) and ::/0 (IPv6).</strong><br>Zero bits need to match — it catches any destination with no better match. It is the gateway of last resort. Marked with <code>*</code> in the routing table (e.g., <code>S*</code> = static default candidate).</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 11: IPv4 routing table has parent/child structure — IPv6 does not.</strong><br>The classful hierarchy is visible in <code>show ip route</code> — left-aligned parent routes with indented child subnets. IPv6 has no classful history so every entry is formatted the same. Don't confuse the parent route line as a usable route entry.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 12: Metrics — RIP=hop count, OSPF=cost (bandwidth), EIGRP=composite.</strong><br>RIP's maximum is 15 hops (16 = unreachable). OSPF cost = reference bandwidth ÷ link bandwidth (default 100 Mbps reference). EIGRP uses slowest bandwidth + cumulative delay by default.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 13: Point-to-point serial links need no ARP.</strong><br>Serial interfaces have no MAC addresses. The router encapsulates in HDLC or PPP. No ARP is needed because there are only two devices on the link — the router already knows who the other end is.</div></div>
+
+  <div class="ca tip"><span class="ic">✅</span><div><strong>Module 14 quick-reference summary:</strong><br><br>
+  Longest match: most far-left matching bits wins<br>
+  Default forwarding: <strong>CEF</strong> (FIB + adjacency table)<br>
+  Route codes: C=connected, L=local(/32), S=static, O=OSPF, D=EIGRP, R=RIP<br>
+  AD: Connected=0 &gt; Static=1 &gt; EIGRP=90 &gt; OSPF=110 &gt; RIP=120<br>
+  Metrics: RIP=hops(max 15), OSPF=cost(bandwidth), EIGRP=composite<br>
+  Unequal-cost load balancing: <strong>EIGRP only</strong><br>
+  IPv6 dynamic via: <strong>link-local address</strong> of next-hop<br>
+  Default route: 0.0.0.0/0 (IPv4) / ::/0 (IPv6)<br>
+  Enable IPv6 routing: <strong>ipv6 unicast-routing</strong> (global config)</div></div>
+
+</div></div>
+
+</div><!-- end .wrap -->
+
+<div class="ft">
+  CCNA 2 SRWE v7.02 — Module 14: Routing Concepts v2.2<br>
+  Based on Cisco NetAcad curriculum · Study guide for personal use
+</div>
+
+<button class="tb" id="topb" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+
+<!-- MODULE NAVIGATION BAR -->
+<div class="mod-nav">
+  <a class="mn-hub" href="index.html">🏠 Hub</a>
+  <div class="mn-divider"></div>
+  <a class="mn-prev" href="ccna2_module13_wlan_configuration_v2.2.html">‹</a>
+  <span class="mn-label">M14 of 16</span>
+  <a class="mn-next" href="ccna2_module15_ip_static_routing_v2.2.html">›</a>
+</div>
+
+<script>
+var MOD_KEY="ccna2-module14-routing-concepts";
+var SECS=["s1","s2","s3","s4","s5","s6","s7"];
+var checked={};
+function loadState(){
+  try{var s=localStorage.getItem(MOD_KEY);if(s)checked=JSON.parse(s);}catch(e){}
+  SECS.forEach(function(id){
+    var pill=document.getElementById('pill-'+id);
+    var row=document.getElementById('row-'+id);
+    var st=document.getElementById('st-'+id);
+    var sch=document.getElementById('sch-'+id);
+    if(checked[id]){
+      if(pill){pill.classList.add('checked');pill.querySelector('.pill-check').textContent='✓';}
+      if(row)row.classList.add('done');
+      if(st)st.textContent='✓';
+      if(sch){sch.classList.add('checked');sch.textContent='✓ Done';}
+    } else {
+      if(pill){pill.classList.remove('checked');pill.querySelector('.pill-check').textContent='○';}
+      if(row)row.classList.remove('done');
+      if(st)st.textContent='○';
+      if(sch){sch.classList.remove('checked');sch.textContent='○ Mark done';}
+    }
+  });
+}
+function toggleSection(id,btn){checked[id]=!checked[id];try{localStorage.setItem(MOD_KEY,JSON.stringify(checked));}catch(e){}loadState();}
+function toggleStudyPanel(){
+  var hdr=document.getElementById('sp-hdr');
+  var body=document.getElementById('sp-body');
+  var arr=document.getElementById('sp-arr');
+  hdr.classList.toggle('open');body.classList.toggle('open');
+  if(arr)arr.textContent=body.classList.contains('open')?'▲':'▼';
+}
+function goTo(id){var el=document.getElementById(id);if(!el)return;var h=el.querySelector('.sh,.section-header'),b=el.querySelector('.sb,.section-body');if(h&&b&&!b.classList.contains('open')){h.classList.add('open');b.classList.add('open');}setTimeout(function(){window.scrollTo({top:el.getBoundingClientRect().top+window.pageYOffset-60,behavior:'smooth'});},50);}
+function setFs(size,btn){document.documentElement.style.setProperty('--base-fs',size);document.querySelectorAll('.fs-btn').forEach(function(b){b.classList.remove('active');});btn.classList.add('active');try{localStorage.setItem('ccna-fs',size);}catch(e){}}
+(function(){try{var s=localStorage.getItem('ccna-fs');if(s){document.documentElement.style.setProperty('--base-fs',s);document.querySelectorAll('.fs-btn').forEach(function(b){b.classList.remove('active');if((b.textContent==='S'&&s==='14px')||(b.textContent==='M'&&s==='16px')||(b.textContent==='L'&&s==='18px')||(b.textContent==='XL'&&s==='20px'))b.classList.add('active');});}}catch(e){}loadState();})();
+function copyCode(b){var t=b.closest('.cw').querySelector('pre').innerText;if(navigator.clipboard){navigator.clipboard.writeText(t).then(function(){b.textContent='Copied!';setTimeout(function(){b.textContent='Copy';},1500);}).catch(function(){fb(t,b);});}else{fb(t,b);}}
+function fb(t,b){var a=document.createElement('textarea');a.value=t;a.style.position='fixed';a.style.opacity='0';document.body.appendChild(a);a.focus();a.select();document.execCommand('copy');document.body.removeChild(a);b.textContent='Copied!';setTimeout(function(){b.textContent='Copy';},1500);}
+</script>
+<script src="../../site-config.js"></script>
+</body>
+</html>

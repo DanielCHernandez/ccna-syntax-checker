@@ -1,0 +1,884 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=2.0">
+<title>CCNA 3 Module 4: ACL Concepts v2.2</title>
+<style>
+:root{
+  --blue:#1ba0d7;--dark:#005073;--green:#6cc24a;
+  --sec:#7c1e1e;--secd:#f87171;
+  --acl:#1a4731;--acld:#4ade80;
+  --bg:#f4f6f8;--card:#fff;--text:#1a1a2e;--muted:#5a6a7a;
+  --cbg:#0d1117;--ctxt:#c9d1d9;--r:12px;--sh:0 2px 12px rgba(0,0,0,.08);
+  --base-fs:16px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);font-size:var(--base-fs);line-height:1.7}
+
+.fs-bar{position:sticky;top:0;z-index:200;background:#1a1a2e;display:flex;align-items:center;justify-content:flex-end;padding:6px 14px;gap:6px;box-shadow:0 2px 8px rgba(0,0,0,.3)}
+.fs-label{color:#8b949e;font-size:.72em;font-weight:700;letter-spacing:.5px;text-transform:uppercase;margin-right:4px}
+.fs-btn{background:#30363d;color:#c9d1d9;border:2px solid transparent;border-radius:6px;padding:4px 12px;font-size:.75em;font-weight:700;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:all .2s;line-height:1.4}
+.fs-btn:active,.fs-btn.active{background:var(--acl);color:#fff;border-color:var(--acl)}
+
+.hdr{background:linear-gradient(135deg,#0f2d1e,var(--acl));color:#fff;padding:32px 20px 24px;text-align:center}
+.hdr .badge{display:inline-block;background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.4);border-radius:20px;padding:4px 14px;font-size:.81em;margin-bottom:12px}
+.hdr h1{font-size:1.625em;font-weight:700;margin-bottom:6px}
+.hdr p{font-size:.94em;opacity:.85}
+.hdr .obj{display:inline-block;background:rgba(255,255,255,.15);border-radius:8px;padding:7px 16px;margin-top:12px;font-size:.875em;font-style:italic}
+
+.pb{background:var(--card);padding:14px 16px;margin:16px 16px 0;border-radius:var(--r);box-shadow:var(--sh)}
+.pbl{font-size:.81em;color:var(--muted);margin-bottom:6px;font-weight:600}
+.pbt{background:#e0e7ef;border-radius:10px;height:8px;overflow:hidden}
+.pbf{background:linear-gradient(90deg,var(--acl),var(--acld));height:100%;border-radius:10px;width:0;transition:width 1s ease}
+
+.toc{background:var(--card);margin:16px;border-radius:var(--r);box-shadow:var(--sh);overflow:hidden}
+.toch{background:var(--acl);color:#fff;padding:14px 18px;font-weight:700;font-size:.94em;display:flex;justify-content:space-between;align-items:center;cursor:pointer;user-select:none}
+.toch .arr{transition:transform .3s}
+.toch.open .arr{transform:rotate(180deg)}
+.tocb{display:none;padding:10px 0}
+.tocb.open{display:block}
+.tocg{font-size:.69em;font-weight:800;letter-spacing:.8px;color:var(--acl);text-transform:uppercase;padding:8px 20px 2px}
+.tocb a{display:block;padding:9px 20px 9px 28px;color:var(--text);text-decoration:none;font-size:.875em;border-left:3px solid transparent;transition:all .2s}
+.tocb a:hover,.tocb a:active{background:#f0fdf4;border-left-color:var(--acld)}
+.tocb a .n{display:inline-block;background:var(--acl);color:#fff;border-radius:5px;padding:1px 8px;font-size:.75em;font-weight:700;margin-right:8px}
+
+.wrap{padding:0 16px 100px}
+
+.sec{background:var(--card);border-radius:var(--r);box-shadow:var(--sh);margin-bottom:16px;overflow:hidden}
+.sh{background:linear-gradient(90deg,#0f2d1e,var(--acl));color:#fff;padding:16px 18px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;user-select:none;-webkit-tap-highlight-color:transparent}
+.sh .ttl{font-weight:700;font-size:1em}
+.sh .nb{background:rgba(255,255,255,.25);border-radius:6px;padding:3px 10px;font-size:.81em;font-weight:700;margin-right:10px;white-space:nowrap}
+.sh .ch{font-size:1.125em;transition:transform .3s}
+.sh.open .ch{transform:rotate(180deg)}
+.sb{display:none;padding:18px}
+.sb.open{display:block}
+
+.sub{margin-bottom:24px}
+.sub:last-child{margin-bottom:0}
+.sub h3{font-size:.94em;font-weight:700;color:var(--acl);margin-bottom:10px;padding-bottom:6px;border-bottom:2px solid #f0fdf4;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.sub h3 .sn{background:var(--acl);color:#fff;border-radius:5px;padding:2px 8px;font-size:.75em;white-space:nowrap}
+.sub h4{font-size:.875em;font-weight:700;color:var(--acl);margin:14px 0 6px}
+.sub p{margin-bottom:10px;font-size:.94em}
+.sub ul,.sub ol{padding-left:20px;margin:8px 0;font-size:.94em}
+.sub li{margin-bottom:5px}
+
+.cw{background:var(--cbg);border-radius:10px;margin:12px 0;overflow:hidden}
+.cl{background:#21262d;color:#c9d1d9;font-size:.78em;font-weight:700;padding:6px 14px;letter-spacing:.5px;text-transform:uppercase;display:flex;justify-content:space-between;align-items:center}
+.cpb{background:#30363d;color:#c9d1d9;border:none;border-radius:5px;padding:3px 10px;font-size:.69em;cursor:pointer}
+.cpb:active{background:var(--acl);color:#fff}
+pre{margin:0;padding:14px;overflow-x:auto;-webkit-overflow-scrolling:touch}
+code{font-family:'Courier New',monospace;font-size:.81em;color:var(--ctxt);line-height:1.6}
+p code,li code,td code,.ca code,.ap-body code{background:#f0fdf4;color:#0f2d1e;border-radius:4px;padding:1px 5px;font-size:.81em;font-family:'Courier New',monospace;font-weight:600}
+
+.ca{border-radius:8px;padding:12px 14px;margin:12px 0;font-size:.875em;line-height:1.6;display:flex;gap:10px;align-items:flex-start}
+.ca .ic{font-size:1.125em;flex-shrink:0;margin-top:1px}
+.ca.warn  {background:#fff3cd;border-left:4px solid #b38600;color:#3d2c00}
+.ca.tip   {background:#d4edda;border-left:4px solid #28a745;color:#0d3318}
+.ca.danger{background:#f8d7da;border-left:4px solid #dc3545;color:#3d0010}
+.ca.info  {background:#f0fdf4;border-left:4px solid var(--acl);color:#0f2d1e}
+
+.et{background:linear-gradient(135deg,#1a1a2e,#0f2d1e);color:#fff;border-radius:10px;padding:14px 16px;margin:14px 0;font-size:.875em;line-height:1.6}
+.et .lbl{font-size:.69em;font-weight:800;letter-spacing:1px;color:var(--acld);margin-bottom:6px}
+.et ul{padding-left:18px;margin-top:6px}
+.et li{margin-bottom:4px}
+
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:12px 0;border-radius:8px}
+table{width:100%;border-collapse:collapse;font-size:.875em}
+th{background:var(--acl);color:#fff;padding:10px 12px;text-align:left;font-weight:700;font-size:.81em}
+td{padding:9px 12px;border-bottom:1px solid #e8ecf0;vertical-align:top;color:#1a1a2e}
+tr:nth-child(even) td{background:#f0fdf4;color:#0f2d1e}
+tr:last-child td{border-bottom:none}
+
+.steps{counter-reset:step;list-style:none;padding:0;margin:12px 0}
+.steps li{counter-increment:step;display:flex;gap:12px;align-items:flex-start;padding:10px 0;border-bottom:1px solid #eef0f3;font-size:.875em;line-height:1.6}
+.steps li:last-child{border-bottom:none}
+.steps li::before{content:counter(step);background:var(--acl);color:#fff;border-radius:50%;min-width:26px;height:26px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.81em;flex-shrink:0;margin-top:2px}
+
+/* ACL operation flow */
+.acl-flow{background:#0d1117;border:2px solid var(--acld);border-radius:10px;padding:16px;margin:12px 0}
+.af-title{font-size:.75em;font-weight:800;letter-spacing:.8px;color:var(--acld);text-transform:uppercase;margin-bottom:10px}
+.af-step{display:flex;gap:10px;align-items:flex-start;padding:8px 0;border-bottom:1px solid #21262d;font-size:.81em;color:#c9d1d9;line-height:1.6}
+.af-step:last-child{border-bottom:none}
+.af-num{min-width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.75em;flex-shrink:0;margin-top:2px;color:#fff}
+.af-num.match{background:#27ae60}
+.af-num.nomatch{background:#dc3545}
+.af-num.step{background:var(--acl)}
+.af-label{font-weight:700;color:var(--acld);font-size:.75em;min-width:70px;flex-shrink:0}
+
+/* Implicit deny dark box */
+.implicit-box{background:#1a1a2e;border:2px solid #dc3545;border-radius:10px;padding:14px;margin:12px 0}
+.ib-title{font-size:.75em;font-weight:800;letter-spacing:.8px;color:#f87171;text-transform:uppercase;margin-bottom:8px}
+.ib-content{font-size:.81em;color:#c9d1d9;line-height:1.7}
+.ib-code{font-family:'Courier New',monospace;color:#f87171;font-weight:700;display:inline}
+
+/* Wildcard bit table */
+.wc-compare{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:12px 0}
+@media(max-width:480px){.wc-compare{grid-template-columns:1fr}}
+.wc-panel{border-radius:10px;overflow:hidden;border:2px solid #e8ecf0}
+.wc-panel .wcp-hdr{padding:8px 12px;font-size:.81em;font-weight:800;color:#fff;text-align:center}
+.wc-panel.subnet .wcp-hdr{background:#1a3a5c}
+.wc-panel.wildcard .wcp-hdr{background:var(--acl)}
+.wc-panel .wcp-body{padding:12px;font-size:.81em;color:#1a1a2e;line-height:1.8;background:#f9fafb}
+.wc-panel .wcp-row{display:flex;gap:8px;align-items:center;padding:4px 0;border-bottom:1px solid #e8ecf0}
+.wc-panel .wcp-row:last-child{border-bottom:none}
+.wc-panel .wcp-bit{font-family:'Courier New',monospace;font-weight:900;font-size:1.125em;min-width:20px;text-align:center}
+.wc-panel.subnet .wcp-bit.b1{color:#1a3a5c}
+.wc-panel.subnet .wcp-bit.b0{color:#6b7280}
+.wc-panel.wildcard .wcp-bit.b0{color:var(--acl)}
+.wc-panel.wildcard .wcp-bit.b1{color:#6b7280}
+.wc-panel .wcp-meaning{font-size:.75em;color:#374151}
+
+/* Wildcard examples */
+.wc-ex-grid{display:grid;gap:10px;margin:12px 0}
+.wc-ex{border-radius:10px;padding:12px 14px;border-left:5px solid}
+.wc-ex.host{border-left-color:#1a3a5c;background:#e0f2fe}
+.wc-ex.subnet{border-left-color:var(--acl);background:#f0fdf4}
+.wc-ex.range{border-left-color:#9333ea;background:#f3e8ff}
+.wc-ex .wex-title{font-weight:800;font-size:.875em;margin-bottom:4px}
+.wc-ex.host .wex-title{color:#1a3a5c}
+.wc-ex.subnet .wex-title{color:var(--acl)}
+.wc-ex.range .wex-title{color:#9333ea}
+.wc-ex .wex-cmd{font-family:'Courier New',monospace;font-size:.75em;background:rgba(0,0,0,.07);border-radius:4px;padding:4px 8px;display:block;margin:4px 0;color:#1a1a2e;line-height:1.5}
+.wc-ex p{font-size:.81em;color:#1a1a2e;line-height:1.6;margin-top:4px}
+
+/* Wildcard calc table */
+.calc-box{background:#0d1117;border:2px solid var(--acld);border-radius:10px;padding:14px;margin:12px 0}
+.calc-title{font-size:.75em;font-weight:800;letter-spacing:.8px;color:var(--acld);text-transform:uppercase;margin-bottom:10px}
+.calc-row{display:flex;gap:10px;align-items:center;padding:8px 0;border-bottom:1px solid #21262d;font-size:.81em;color:#c9d1d9;flex-wrap:wrap}
+.calc-row:last-child{border-bottom:none}
+.calc-label{min-width:90px;flex-shrink:0;color:#8b949e;font-size:.75em}
+.calc-val{font-family:'Courier New',monospace;font-weight:700;color:var(--acld);flex:1}
+.calc-result{font-family:'Courier New',monospace;font-weight:900;color:#4ade80;background:rgba(74,222,128,.1);padding:2px 8px;border-radius:4px}
+
+/* Keyword cards */
+.kw-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:12px 0}
+@media(max-width:480px){.kw-grid{grid-template-columns:1fr}}
+.kw-card{border-radius:10px;padding:14px;text-align:center;border:2px solid}
+.kw-card.host{border-color:var(--acl);background:#f0fdf4}
+.kw-card.any{border-color:#9333ea;background:#f3e8ff}
+.kw-card .kc-kw{font-family:'Courier New',monospace;font-size:1.25em;font-weight:900;margin-bottom:4px}
+.kw-card.host .kc-kw{color:var(--acl)}
+.kw-card.any .kc-kw{color:#9333ea}
+.kw-card .kc-replaces{font-size:.75em;font-weight:700;color:var(--muted);margin-bottom:6px}
+.kw-card p{font-size:.75em;color:#1a1a2e;line-height:1.5}
+
+/* ACL type comparison */
+.acl-type-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:12px 0}
+@media(max-width:500px){.acl-type-grid{grid-template-columns:1fr}}
+.acl-panel{border-radius:10px;overflow:hidden;border:2px solid #e8ecf0}
+.acl-panel .ap-hdr{padding:10px 14px;font-size:.875em;font-weight:800;color:#fff;text-align:center}
+.acl-panel.std .ap-hdr{background:#1a3a5c}
+.acl-panel.ext .ap-hdr{background:var(--acl)}
+.acl-panel .ap-body{padding:12px 14px;font-size:.81em;color:#1a1a2e;line-height:1.8;background:#f9fafb}
+.acl-panel .ap-body ul{padding-left:16px}
+.acl-panel .ap-body li{margin-bottom:4px}
+.acl-panel .ap-num{font-family:'Courier New',monospace;font-size:.875em;font-weight:700;background:rgba(0,0,0,.08);padding:3px 8px;border-radius:4px;display:inline-block;margin:4px 0}
+
+/* Placement rule cards */
+.placement-grid{display:grid;gap:12px;margin:12px 0}
+.place-card{border-radius:10px;overflow:hidden}
+.place-card .pc-hdr{padding:10px 14px;font-size:.875em;font-weight:800;color:#fff;display:flex;align-items:center;gap:8px}
+.place-card.std-place .pc-hdr{background:#1a3a5c}
+.place-card.ext-place .pc-hdr{background:var(--acl)}
+.place-card .pc-body{padding:12px 14px;font-size:.81em;color:#1a1a2e;line-height:1.7;background:#f9fafb;border:2px solid #e8ecf0;border-top:none;border-radius:0 0 10px 10px}
+.place-card .pc-rule{font-weight:800;font-size:.875em;margin-bottom:6px}
+.place-card.std-place .pc-rule{color:#1a3a5c}
+.place-card.ext-place .pc-rule{color:var(--acl)}
+
+/* Named ACL rules */
+.named-rules{display:grid;gap:6px;margin:12px 0}
+.nr-row{display:flex;gap:10px;align-items:flex-start;padding:8px 10px;border-radius:8px;font-size:.81em}
+.nr-row.ok{background:#f0fdf4;border-left:3px solid var(--acl)}
+.nr-row.bad{background:#fff5f5;border-left:3px solid #dc3545}
+.nr-row .nr-icon{flex-shrink:0;width:20px;text-align:center}
+.nr-row .nr-text{color:#1a1a2e;line-height:1.5}
+
+/* Interface ACL limit visual */
+.intf-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:12px 0}
+@media(max-width:480px){.intf-grid{grid-template-columns:1fr}}
+.intf-slot{border-radius:8px;padding:10px 12px;text-align:center;font-size:.75em}
+.intf-slot.in4{background:#e0f2fe;border:2px solid #1a3a5c}
+.intf-slot.out4{background:#f0fdf4;border:2px solid var(--acl)}
+.intf-slot.in6{background:#f3e8ff;border:2px solid #9333ea}
+.intf-slot.out6{background:#fff8f0;border:2px solid #e07b00}
+.intf-slot .is-dir{font-weight:800;font-size:.875em;margin-bottom:2px}
+.intf-slot.in4 .is-dir{color:#1a3a5c}
+.intf-slot.out4 .is-dir{color:var(--acl)}
+.intf-slot.in6 .is-dir{color:#9333ea}
+.intf-slot.out6 .is-dir{color:#e07b00}
+.intf-slot .is-proto{font-size:.69em;color:var(--muted);font-weight:600;text-transform:uppercase}
+
+.tb{position:fixed;bottom:80px;right:16px;background:var(--acl);color:#fff;border:none;border-radius:50%;width:44px;height:44px;font-size:1.25em;box-shadow:0 4px 14px rgba(0,0,0,.25);cursor:pointer;display:none;align-items:center;justify-content:center;z-index:100}
+.tb.show{display:flex}
+.ft{text-align:center;padding:24px 16px;color:var(--muted);font-size:.81em}
+
+.mod-nav{position:fixed;bottom:0;left:0;right:0;z-index:300;background:#1a1a2e;border-top:1px solid #30363d;display:flex;align-items:center;height:52px;padding:0 8px;gap:6px}
+.mn-hub{background:var(--blue);color:#fff;border:none;border-radius:8px;padding:6px 12px;font-size:.75em;font-weight:700;cursor:pointer;text-decoration:none;display:flex;align-items:center;gap:4px;white-space:nowrap;-webkit-tap-highlight-color:transparent;flex-shrink:0}
+.mn-hub:active{opacity:.8}
+.mn-divider{width:1px;height:28px;background:#30363d;flex-shrink:0}
+.mn-label{flex:1;text-align:center;font-size:.69em;color:#8b949e;font-weight:600;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding:0 4px}
+.mn-prev,.mn-next{background:#30363d;color:#c9d1d9;border:none;border-radius:8px;padding:6px 10px;font-size:.875em;font-weight:700;cursor:pointer;text-decoration:none;display:flex;align-items:center;-webkit-tap-highlight-color:transparent;flex-shrink:0}
+.mn-prev:active,.mn-next:active{background:var(--acl);color:#fff}
+/* Study progress panel */
+.sp-wrap{background:var(--card);margin:16px 16px 0;border-radius:var(--r);box-shadow:var(--sh);overflow:hidden}
+.sp-hdr{background:var(--nt);color:#fff;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;user-select:none;-webkit-tap-highlight-color:transparent;gap:10px}
+.sp-hdr .sp-title{font-weight:700;font-size:.875em;flex-shrink:0}
+.sp-hdr .sp-arr{transition:transform .3s;flex-shrink:0}
+.sp-hdr.open .sp-arr{transform:rotate(180deg)}
+.sp-body{display:none;padding:12px 14px}
+.sp-body.open{display:block}
+.sp-row{display:flex;align-items:center;gap:10px;padding:6px 4px;border-bottom:1px solid #f0f4f8;font-size:.81em}
+.sp-row:last-child{border-bottom:none}
+.sp-row .sr-status{font-size:1em;flex-shrink:0;width:20px;text-align:center}
+.sp-row .sr-nb{font-weight:800;color:var(--nt);min-width:36px;flex-shrink:0;font-size:.875em}
+.sp-row .sr-ttl{color:var(--text);flex:1}
+.sp-row.done .sr-ttl{color:var(--muted);text-decoration:line-through}
+.sc-pills{display:flex;align-items:center;gap:4px;overflow-x:auto;-webkit-overflow-scrolling:touch;flex:1;padding:0 4px}
+.sc-pill{background:#30363d;color:#8b949e;border:2px solid transparent;border-radius:6px;padding:3px 8px;font-size:.72em;font-weight:700;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:all .15s;white-space:nowrap;flex-shrink:0;line-height:1.4;display:flex;align-items:center;gap:3px}
+.sc-pill.checked{background:var(--nt);color:#fff;border-color:var(--ntd)}
+.sc-pill .pill-check{font-size:.875em}
+
+/* v2.1 — In-section check button */
+.sh{position:relative}
+.sec-check{position:absolute;right:40px;top:50%;transform:translateY(-50%);background:rgba(255,255,255,.15);border:2px solid rgba(255,255,255,.4);border-radius:6px;padding:2px 10px;font-size:.72em;font-weight:800;color:#fff;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:all .2s;white-space:nowrap;z-index:10;line-height:1.5}
+.sec-check.checked{background:var(--ntd);border-color:var(--ntd);color:#052e1e}
+.sec-check:active{opacity:.75}
+/* Sections panel + tick colours (these pages never defined --nt/--ntd, so the panel header was invisible) */
+:root{--nt:var(--acl);--ntd:#4ade80}
+</style>
+<style>.bc{background:#0d1117;padding:8px 16px;display:flex;align-items:center;flex-wrap:wrap;gap:4px;font-size:.75em;overflow-x:auto;white-space:nowrap;-webkit-overflow-scrolling:touch;border-bottom:1px solid #21262d}.bc a{color:#8b949e;text-decoration:none;font-weight:600;flex-shrink:0}.bc a:active{color:#c9d1d9}.bc .sep{color:#6e7681;flex-shrink:0}.bc .cur{color:#fbbf24;font-weight:700;flex-shrink:0;overflow:hidden;text-overflow:ellipsis;max-width:180px}</style>
+</head>
+<body>
+<nav class="bc"><a href="../../index.html">🏠 Home</a><span class="sep">›</span><a href="index.html">CCNA 3 — ENSA</a><span class="sep">›</span><span class="cur">M4: ACL Concepts</span></nav>
+
+<div class="fs-bar">
+  <div class="sc-pills" id="sc-pills">
+  <button class="sc-pill" id="pill-s1" onclick="toggleSection('s1',this)"><span class="pill-check">○</span>4.1</button>
+  <button class="sc-pill" id="pill-s2" onclick="toggleSection('s2',this)"><span class="pill-check">○</span>4.2</button>
+  <button class="sc-pill" id="pill-s3" onclick="toggleSection('s3',this)"><span class="pill-check">○</span>4.3</button>
+  <button class="sc-pill" id="pill-s4" onclick="toggleSection('s4',this)"><span class="pill-check">○</span>4.4</button>
+  <button class="sc-pill" id="pill-s5" onclick="toggleSection('s5',this)"><span class="pill-check">○</span>🎯</button>
+  </div>
+  <span class="fs-label" style="flex-shrink:0;margin-left:6px">Size</span>
+  <button class="fs-btn" onclick="setFs('14px',this)">S</button>
+  <button class="fs-btn active" onclick="setFs('16px',this)">M</button>
+  <button class="fs-btn" onclick="setFs('18px',this)">L</button>
+  <button class="fs-btn" onclick="setFs('20px',this)">XL</button>
+</div>
+
+<div class="hdr">
+  <div class="badge">CCNA 3 — ENSA v7.02</div>
+  <h1>🔒 Module 4: ACL Concepts</h1>
+  <p>Enterprise Networking, Security &amp; Automation · NetAcad Study Guide</p>
+  <div class="obj">Module Objective: Explain how ACLs are used as part of a network security policy</div>
+</div>
+
+<div class="sp-wrap">
+  <div class="sp-hdr" id="sp-hdr" onclick="toggleStudyPanel()">
+    <span class="sp-title">📚 Sections</span>
+    <span class="sp-arr" id="sp-arr">▼</span>
+  </div>
+  <div class="sp-body" id="sp-body">
+    <div class="sp-row" id="row-s1"><span class="sr-status" id="st-s1">○</span><span class="sr-nb">4.1</span><span class="sr-ttl">Purpose of ACLs</span></div>
+    <div class="sp-row" id="row-s2"><span class="sr-status" id="st-s2">○</span><span class="sr-nb">4.2</span><span class="sr-ttl">Wildcard Masks in ACLs</span></div>
+    <div class="sp-row" id="row-s3"><span class="sr-status" id="st-s3">○</span><span class="sr-nb">4.3</span><span class="sr-ttl">Guidelines for ACL Creation</span></div>
+    <div class="sp-row" id="row-s4"><span class="sr-status" id="st-s4">○</span><span class="sr-nb">4.4</span><span class="sr-ttl">Types of IPv4 ACLs</span></div>
+    <div class="sp-row" id="row-s5"><span class="sr-status" id="st-s5">○</span><span class="sr-nb">🎯</span><span class="sr-ttl">Common Exam Traps — Module 4</span></div>
+  </div>
+</div></div>
+
+<div class="toc">
+  <div class="toch open" onclick="this.classList.toggle('open');document.getElementById('tocb').classList.toggle('open')">
+    📋 Table of Contents — Tap to expand <span class="arr">▼</span>
+  </div>
+  <div class="tocb open" id="tocb">
+    <div class="tocg">4.1 — Purpose of ACLs</div>
+    <a href="javascript:void(0)" onclick="goTo('s1')"><span class="n">4.1.1</span> What Is an ACL?</a>
+    <a href="javascript:void(0)" onclick="goTo('s1')"><span class="n">4.1.2</span> Packet Filtering — Layer 3 vs Layer 4</a>
+    <a href="javascript:void(0)" onclick="goTo('s1')"><span class="n">4.1.3</span> ACL Operation — 4-Step Processing Logic</a>
+    <a href="javascript:void(0)" onclick="goTo('s1')"><span class="n">IMP</span> Implicit Deny — The Hidden Rule</a>
+    <div class="tocg">4.2 — Wildcard Masks in ACLs</div>
+    <a href="javascript:void(0)" onclick="goTo('s2')"><span class="n">4.2.1</span> Wildcard Mask Overview — 0=Match 1=Ignore</a>
+    <a href="javascript:void(0)" onclick="goTo('s2')"><span class="n">4.2.2</span> Wildcard Mask Types — Host, Subnet, Range</a>
+    <a href="javascript:void(0)" onclick="goTo('s2')"><span class="n">4.2.3</span> Wildcard Mask Calculation — 255.255.255.255 − mask</a>
+    <a href="javascript:void(0)" onclick="goTo('s2')"><span class="n">4.2.4</span> Keywords — host and any</a>
+    <div class="tocg">4.3 — Guidelines for ACL Creation</div>
+    <a href="javascript:void(0)" onclick="goTo('s3')"><span class="n">4.3.1</span> Maximum ACLs per Interface</a>
+    <a href="javascript:void(0)" onclick="goTo('s3')"><span class="n">4.3.2</span> ACL Best Practices</a>
+    <div class="tocg">4.4 — Types of IPv4 ACLs</div>
+    <a href="javascript:void(0)" onclick="goTo('s4')"><span class="n">4.4.1</span> Standard vs Extended ACLs</a>
+    <a href="javascript:void(0)" onclick="goTo('s4')"><span class="n">4.4.2</span> Numbered vs Named ACLs</a>
+    <a href="javascript:void(0)" onclick="goTo('s4')"><span class="n">4.4.3</span> Where to Place ACLs</a>
+    <a href="javascript:void(0)" onclick="goTo('s4')"><span class="n">4.4.4</span> Standard ACL Placement Example</a>
+    <a href="javascript:void(0)" onclick="goTo('s4')"><span class="n">4.4.5</span> Extended ACL Placement Example</a>
+    <div class="tocg">Reference</div>
+    <a href="javascript:void(0)" onclick="goTo('s5')"><span class="n">🎯</span> Common Exam Traps</a>
+  </div>
+</div>
+
+<div class="wrap">
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- SECTION 4.1 — PURPOSE OF ACLs -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div class="sec" id="s1">
+<div class="sh open" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">4.1</span><span class="ttl">Purpose of ACLs</span></span><button class="sec-check" id="sch-s1" onclick="event.stopPropagation();toggleSection('s1',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb open">
+
+  <div class="sub">
+  <h3><span class="sn">4.1.1</span> What Is an ACL?</h3>
+  <p>An <strong>ACL (Access Control List)</strong> is a series of IOS commands that filter packets based on information in the packet header. By default, a router has <strong>no ACLs configured</strong> — all traffic is forwarded. When an ACL is applied to an interface, the router performs additional evaluation of every packet passing through that interface.</p>
+  <p>An ACL contains a sequential list of <strong>permit</strong> or <strong>deny</strong> statements called <strong>ACEs (Access Control Entries)</strong>.</p>
+  <div class="tw"><table>
+    <tr><th>ACL Task</th><th>Example Policy</th></tr>
+    <tr><td><strong>Limit network traffic</strong></td><td>Block video streaming to reduce bandwidth consumption</td></tr>
+    <tr><td><strong>Traffic flow control</strong></td><td>Restrict routing updates to only known sources</td></tr>
+    <tr><td><strong>Basic network security</strong></td><td>Only authorized users can access the HR network</td></tr>
+    <tr><td><strong>Filter by traffic type</strong></td><td>Permit email (SMTP) but deny Telnet access</td></tr>
+    <tr><td><strong>Screen hosts for services</strong></td><td>Restrict FTP or HTTP access to specific user groups</td></tr>
+    <tr><td><strong>QoS classification</strong></td><td>Identify voice traffic for priority forwarding</td></tr>
+  </table></div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">4.1.2</span> Packet Filtering — Layer 3 and Layer 4</h3>
+  <p>Packet filtering controls network access by analyzing incoming or outgoing packets and forwarding or discarding them based on criteria. ACL filtering can occur at two layers:</p>
+  <div class="acl-type-grid">
+    <div class="acl-panel std">
+      <div class="ap-hdr">📋 Standard ACL</div>
+      <div class="ap-body">
+        <strong>Filters at Layer 3 only</strong><br>
+        Matches on: <strong>source IPv4 address only</strong><br><br>
+        Cannot distinguish between protocols or destination — just where the packet came from.
+      </div>
+    </div>
+    <div class="acl-panel ext">
+      <div class="ap-hdr">📋 Extended ACL</div>
+      <div class="ap-body">
+        <strong>Filters at Layer 3 AND Layer 4</strong><br>
+        Matches on: source IP, destination IP, protocol type, source/destination TCP or UDP ports<br><br>
+        Much more granular — can allow web traffic while denying FTP from the same host.
+      </div>
+    </div>
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">4.1.3</span> ACL Operation — Inbound and Outbound</h3>
+  <p>ACLs can be applied in two directions on a router interface:</p>
+  <div class="tw"><table>
+    <tr><th>Direction</th><th>When Applied</th><th>Best Used When</th><th>Efficiency</th></tr>
+    <tr><td><strong>Inbound ACL</strong></td><td>Packets filtered <strong>before</strong> routing lookup</td><td>One source network on inbound interface</td><td>More efficient — dropped packets skip routing</td></tr>
+    <tr><td><strong>Outbound ACL</strong></td><td>Packets filtered <strong>after</strong> routing, before exit</td><td>Same filter for traffic from multiple inbound interfaces</td><td>Less efficient — routing done before filter</td></tr>
+  </table></div>
+  <div class="ca danger">
+    <span class="ic">🚨</span>
+    <div><strong>ACLs do NOT act on packets that originate from the router itself.</strong> ACLs only filter transit traffic — packets that enter an interface and are being forwarded through the router. A ping sourced from the router bypasses all ACL checking.</div>
+  </div>
+
+  <h4>4-Step ACL Processing Logic — Inbound Standard IPv4</h4>
+  <div class="acl-flow">
+    <div class="af-title">🔍 ACL Packet Evaluation — Sequential Top-to-Bottom</div>
+    <div class="af-step">
+      <div class="af-num step">1</div>
+      <div class="af-label">EXTRACT</div>
+      <div>Router extracts the <strong>source IPv4 address</strong> from the packet header</div>
+    </div>
+    <div class="af-step">
+      <div class="af-num step">2</div>
+      <div class="af-label">COMPARE</div>
+      <div>Router starts at the <strong>top of the ACL</strong> and compares the source IP against each ACE in sequential order</div>
+    </div>
+    <div class="af-step">
+      <div class="af-num match">✓</div>
+      <div class="af-label">MATCH</div>
+      <div>When a match is found → router executes the <strong>permit or deny</strong> action → <strong>stops immediately</strong> — remaining ACEs are NOT checked</div>
+    </div>
+    <div class="af-step">
+      <div class="af-num nomatch">✗</div>
+      <div class="af-label">NO MATCH</div>
+      <div>If no ACE matches after checking the entire list → packet is <strong>discarded by the implicit deny</strong> at the end of every ACL</div>
+    </div>
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">IMP</span> Implicit Deny — The Hidden Rule</h3>
+  <div class="implicit-box">
+    <div class="ib-title">⚠️ Implicit Deny — Present in EVERY ACL</div>
+    <div class="ib-content">
+      The very last statement of every ACL is an invisible <span class="ib-code">deny any</span> that is <strong>never shown in show running-config</strong> but is always enforced.<br><br>
+      <strong>What this means:</strong><br>
+      → Any packet that does NOT match any ACE in the ACL is <strong>automatically dropped</strong><br>
+      → An ACL with <strong>only deny statements</strong> will drop ALL traffic (the implicit deny catches everything the explicit denies missed)<br>
+      → An ACL <strong>must have at least one permit statement</strong> — otherwise every single packet is denied<br><br>
+      <strong>Students often forget this and are confused when traffic they didn't intend to deny gets dropped.</strong>
+    </div>
+  </div>
+  </div>
+
+  <!-- PT INLINE -->
+  <div style="margin:20px 0 6px;padding:14px 16px;background:#0d1117;border:1px solid #30363d;border-left:3px solid #1f6feb;border-radius:6px">
+    <div style="font-size:.72em;font-weight:800;text-transform:uppercase;letter-spacing:.8px;color:#1f6feb;margin-bottom:10px">&#x1F4E6; Packet Tracer Activities</div>
+  <div style="display:flex;align-items:baseline;gap:10px;padding:6px 0;border-bottom:1px solid #21262d"><span style="font-family:monospace;font-size:.85em;color:#79c0ff;white-space:nowrap;flex-shrink:0;min-width:52px">4.1.4</span><span style="font-size:.88em;color:#c9d1d9">ACL Demonstration</span></div>
+    <div style="margin-top:10px;font-size:.78em;color:#6e7681">Full list: <a href="https://itexamanswers.net/ccna-3-packet-tracer-labs-answers-ensa-v7-02.html" target="_blank" rel="noopener" style="color:#58a6ff;word-break:break-all">https://itexamanswers.net/ccna-3-packet-tracer-labs-answers-ensa-v7-02.html</a></div>
+  </div>
+
+</div></div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- SECTION 4.2 — WILDCARD MASKS -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div class="sec" id="s2">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">4.2</span><span class="ttl">Wildcard Masks in ACLs</span></span><button class="sec-check" id="sch-s2" onclick="event.stopPropagation();toggleSection('s2',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb">
+
+  <div class="sub">
+  <h3><span class="sn">4.2.1</span> Wildcard Mask Overview — 0 = Match, 1 = Ignore</h3>
+  <p>ACEs use a <strong>32-bit wildcard mask</strong> to specify which bits of an address to check. Wildcard masks look like subnet masks but work in reverse:</p>
+  <div class="wc-compare">
+    <div class="wc-panel subnet">
+      <div class="wcp-hdr">Subnet Mask</div>
+      <div class="wcp-body">
+        <div class="wcp-row"><div class="wcp-bit b1">1</div><div class="wcp-meaning">Network bit — <strong>must match</strong></div></div>
+        <div class="wcp-row"><div class="wcp-bit b0">0</div><div class="wcp-meaning">Host bit — variable (don't care)</div></div>
+      </div>
+    </div>
+    <div class="wc-panel wildcard">
+      <div class="wcp-hdr">Wildcard Mask</div>
+      <div class="wcp-body">
+        <div class="wcp-row"><div class="wcp-bit b0">0</div><div class="wcp-meaning"><strong>MATCH</strong> — check this bit</div></div>
+        <div class="wcp-row"><div class="wcp-bit b1">1</div><div class="wcp-meaning"><strong>IGNORE</strong> — don't care</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="et">
+    <div class="lbl">🎯 THE KEY RULE — EXAM CRITICAL</div>
+    Wildcard mask: <strong>0 = match (check this bit) · 1 = ignore (skip this bit)</strong><br>
+    This is the INVERSE of subnet mask logic where 1 = network bits that must match.<br>
+    Quick memory trick: wildcard 0 = "zero tolerance" (must match) · wildcard 1 = "whatever" (ignore)
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">4.2.2</span> Wildcard Mask Types</h3>
+  <div class="wc-ex-grid">
+    <div class="wc-ex host">
+      <div class="wex-title">Match a Single Host — 0.0.0.0</div>
+      <span class="wex-cmd">access-list 10 permit 192.168.1.1 0.0.0.0</span>
+      <p>All 32 bits of the wildcard are 0 → every bit must match exactly → only 192.168.1.1 matches. Use the <code>host</code> keyword as shorthand.</p>
+    </div>
+    <div class="wc-ex subnet">
+      <div class="wex-title">Match a /24 Subnet — 0.0.0.255</div>
+      <span class="wex-cmd">access-list 10 permit 192.168.1.0 0.0.0.255</span>
+      <p>First 24 bits (first 3 octets) must match exactly. Last 8 bits (last octet = 0xFF) are ignored → permits all addresses 192.168.1.0 through 192.168.1.255.</p>
+    </div>
+    <div class="wc-ex range">
+      <div class="wex-title">Match a Range of Subnets — 0.0.15.255</div>
+      <span class="wex-cmd">access-list 10 permit 192.168.16.0 0.0.15.255</span>
+      <p>0.0.15.255 in binary: <code>00000000.00000000.00001111.11111111</code>. The lower 4 bits of the 3rd octet are wildcarded → matches 192.168.16.0/24 through 192.168.31.0/24 (16 networks).</p>
+    </div>
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">4.2.3</span> Wildcard Mask Calculation</h3>
+  <p><strong>Formula: wildcard mask = 255.255.255.255 − subnet mask</strong></p>
+
+  <div class="calc-box">
+    <div class="calc-title">🧮 Wildcard Mask Calculation Examples</div>
+    <div class="calc-row">
+      <div class="calc-label">Network</div>
+      <div class="calc-val">192.168.3.0/24 (mask 255.255.255.0)</div>
+    </div>
+    <div class="calc-row">
+      <div class="calc-label">255.255.255.255</div>
+      <div class="calc-val">255.255.255.255</div>
+    </div>
+    <div class="calc-row">
+      <div class="calc-label">− Subnet mask</div>
+      <div class="calc-val">− 255.255.255.0</div>
+    </div>
+    <div class="calc-row">
+      <div class="calc-label">= Wildcard</div>
+      <div class="calc-result">0.0.0.255</div>
+    </div>
+  </div>
+
+  <div class="tw"><table>
+    <tr><th>Network / Scenario</th><th>Subnet Mask</th><th>Wildcard Mask</th><th>ACE</th></tr>
+    <tr><td>192.168.3.0<strong>/24</strong></td><td>255.255.255.0</td><td><strong>0.0.0.255</strong></td><td><code>permit 192.168.3.0 0.0.0.255</code></td></tr>
+    <tr><td>192.168.3.32<strong>/28</strong> (14 hosts)</td><td>255.255.255.240</td><td><strong>0.0.0.15</strong></td><td><code>permit 192.168.3.32 0.0.0.15</code></td></tr>
+    <tr><td>.10.0 + .11.0 as <strong>/23</strong></td><td>255.255.254.0</td><td><strong>0.0.1.255</strong></td><td><code>permit 192.168.10.0 0.0.1.255</code></td></tr>
+    <tr><td>.16.0 – .31.0 as <strong>/20</strong></td><td>255.255.240.0</td><td><strong>0.0.15.255</strong></td><td><code>permit 192.168.16.0 0.0.15.255</code></td></tr>
+  </table></div>
+
+  <div class="cw"><div class="cl">Wildcard mask calculation — step-by-step examples <button class="cpb" onclick="copyCode(this)">Copy</button></div>
+  <pre><code>! Example 1 — /24:
+  255.255.255.255
+- 255.255.255.0    (subnet mask for /24)
+= 0.0.0.255        ← wildcard mask
+access-list 10 permit 192.168.3.0 0.0.0.255
+
+! Example 2 — /28 (14 hosts, e.g. 192.168.3.32/28):
+  255.255.255.255
+- 255.255.255.240  (subnet mask for /28)
+= 0.0.0.15         ← wildcard mask
+access-list 10 permit 192.168.3.32 0.0.0.15
+
+! Example 3 — Two /24s summarized as /23:
+  255.255.255.255
+- 255.255.254.0    (subnet mask for /23)
+= 0.0.1.255        ← wildcard mask
+access-list 10 permit 192.168.10.0 0.0.1.255
+
+! Example 4 — 16 /24s summarized as /20:
+  255.255.255.255
+- 255.255.240.0    (subnet mask for /20)
+= 0.0.15.255       ← wildcard mask
+access-list 10 permit 192.168.16.0 0.0.15.255</code></pre></div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">4.2.4</span> Wildcard Mask Keywords — host and any</h3>
+  <p>Two IOS keywords simplify the most common wildcard patterns:</p>
+  <div class="kw-grid">
+    <div class="kw-card host">
+      <div class="kc-kw">host</div>
+      <div class="kc-replaces">Replaces 0.0.0.0 wildcard</div>
+      <p>All 32 bits must match — targets exactly one IPv4 address</p>
+    </div>
+    <div class="kw-card any">
+      <div class="kc-kw">any</div>
+      <div class="kc-replaces">Replaces 255.255.255.255 wildcard</div>
+      <p>Ignore all 32 bits — matches any and every IPv4 address</p>
+    </div>
+  </div>
+
+  <div class="cw"><div class="cl">host and any keywords — long form vs shorthand <button class="cpb" onclick="copyCode(this)">Copy</button></div>
+  <pre><code>! Long form — quad-zero wildcard for exact host match:
+R1(config)# access-list 10 permit 192.168.10.10 0.0.0.0
+
+! Shorthand with "host" keyword — identical result:
+R1(config)# access-list 10 permit host 192.168.10.10
+
+! Long form — all-ones wildcard to match everything:
+R1(config)# access-list 11 permit 0.0.0.0 255.255.255.255
+
+! Shorthand with "any" keyword — identical result:
+R1(config)# access-list 11 permit any</code></pre></div>
+  </div>
+
+</div></div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- SECTION 4.3 — GUIDELINES FOR ACL CREATION -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div class="sec" id="s3">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">4.3</span><span class="ttl">Guidelines for ACL Creation</span></span><button class="sec-check" id="sch-s3" onclick="event.stopPropagation();toggleSection('s3',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb">
+
+  <div class="sub">
+  <h3><span class="sn">4.3.1</span> Maximum ACLs per Interface</h3>
+  <p>A dual-stacked (IPv4 + IPv6) interface supports a maximum of <strong>4 ACLs</strong>:</p>
+  <div class="intf-grid">
+    <div class="intf-slot in4">
+      <div class="is-dir">⬇️ Inbound</div>
+      <div class="is-proto">IPv4 ACL</div>
+    </div>
+    <div class="intf-slot out4">
+      <div class="is-dir">⬆️ Outbound</div>
+      <div class="is-proto">IPv4 ACL</div>
+    </div>
+    <div class="intf-slot in6">
+      <div class="is-dir">⬇️ Inbound</div>
+      <div class="is-proto">IPv6 ACL</div>
+    </div>
+    <div class="intf-slot out6">
+      <div class="is-dir">⬆️ Outbound</div>
+      <div class="is-proto">IPv6 ACL</div>
+    </div>
+  </div>
+  <div class="ca info">
+    <span class="ic">💡</span>
+    <div>A two-interface dual-stacked router could have up to <strong>8 ACLs total</strong> (4 per interface). ACLs do NOT have to be configured in both directions — the organization's security policy determines the requirement.</div>
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">4.3.2</span> ACL Best Practices</h3>
+  <div class="tw"><table>
+    <tr><th>Guideline</th><th>Benefit</th></tr>
+    <tr><td>Base ACLs on organizational security policies</td><td>Ensures implementation of established security requirements</td></tr>
+    <tr><td>Write out what the ACL should do before configuring</td><td>Avoids inadvertent access problems</td></tr>
+    <tr><td>Use a text editor to create, edit, and save ACLs</td><td>Creates a reusable library of configurations</td></tr>
+    <tr><td>Document ACLs using the <code>remark</code> command</td><td>Helps administrators understand the purpose of each ACE</td></tr>
+    <tr><td>Test ACLs on a development network before production</td><td>Avoids costly errors on live networks</td></tr>
+  </table></div>
+  <div class="cw"><div class="cl">remark command — document ACL purpose inline <button class="cpb" onclick="copyCode(this)">Copy</button></div>
+  <pre><code>! Numbered ACL remark (from global config):
+R1(config)# access-list 10 remark Block marketing network from accessing HR servers
+
+! Named ACL remark (from named ACL config mode):
+R1(config)# ip access-list standard BLOCK-MARKETING
+R1(config-std-nacl)# remark Deny 192.168.5.0 network access to HR
+R1(config-std-nacl)# deny 192.168.5.0 0.0.0.255
+R1(config-std-nacl)# permit any</code></pre></div>
+  </div>
+
+</div></div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- SECTION 4.4 — TYPES OF IPv4 ACLs -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div class="sec" id="s4">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">4.4</span><span class="ttl">Types of IPv4 ACLs</span></span><button class="sec-check" id="sch-s4" onclick="event.stopPropagation();toggleSection('s4',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb">
+
+  <div class="sub">
+  <h3><span class="sn">4.4.1</span> Standard vs Extended ACLs</h3>
+  <div class="tw"><table>
+    <tr><th>Feature</th><th>Standard ACL</th><th>Extended ACL</th></tr>
+    <tr><td><strong>Filtering criteria</strong></td><td>Source IPv4 address only</td><td>Source IP, destination IP, protocol, source/dest ports</td></tr>
+    <tr><td><strong>OSI Layer</strong></td><td>Layer 3 only</td><td>Layer 3 AND Layer 4</td></tr>
+    <tr><td><strong>Numbered range</strong></td><td>1–99 and 1300–1999</td><td>100–199 and 2000–2699</td></tr>
+    <tr><td><strong>Typical placement</strong></td><td>Close to <strong>destination</strong></td><td>Close to <strong>source</strong></td></tr>
+    <tr><td><strong>Granularity</strong></td><td>Coarse — can't control traffic type</td><td>Fine — filter by specific application or port</td></tr>
+  </table></div>
+
+  <div class="cw"><div class="cl">Standard ACL vs Extended ACL — syntax comparison <button class="cpb" onclick="copyCode(this)">Copy</button></div>
+  <pre><code>! Standard ACL — source IP address only:
+R1(config)# access-list 10 permit 192.168.10.0 0.0.0.255
+! Permits ALL traffic from 192.168.10.0/24 — doesn't matter where it's going
+! Implicit deny blocks everything else
+
+! Extended ACL — source + destination + protocol + port:
+R1(config)# access-list 100 permit tcp 192.168.10.0 0.0.0.255 any eq www
+! Permits ONLY HTTP (port 80) from 192.168.10.0/24 to any destination
+! Can be on same router, same network — filters at much finer granularity</code></pre></div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">4.4.2</span> Numbered ACLs vs Named ACLs</h3>
+  <div class="acl-type-grid">
+    <div class="acl-panel std">
+      <div class="ap-hdr">🔢 Numbered ACLs</div>
+      <div class="ap-body">
+        Identified by a number:<br>
+        Standard: <span class="ap-num">1–99</span> and <span class="ap-num">1300–1999</span><br>
+        Extended: <span class="ap-num">100–199</span> and <span class="ap-num">2000–2699</span><br><br>
+        Less descriptive — hard to know what ACL 100 does without reading all its ACEs.
+      </div>
+    </div>
+    <div class="acl-panel ext">
+      <div class="ap-hdr">🏷️ Named ACLs (Preferred)</div>
+      <div class="ap-body">
+        Identified by a descriptive name:<br>
+        <span class="ap-num">FTP-FILTER</span> vs <span class="ap-num">100</span><br>
+        <span class="ap-num">BLOCK-TELNET</span> vs <span class="ap-num">101</span><br><br>
+        Individual ACEs can be added or deleted by sequence number. Use <code>ip access-list</code> to create.
+      </div>
+    </div>
+  </div>
+
+  <h4>Named ACL Rules</h4>
+  <div class="named-rules">
+    <div class="nr-row ok"><div class="nr-icon">✅</div><div class="nr-text">Names can contain alphanumeric characters (letters and numbers)</div></div>
+    <div class="nr-row ok"><div class="nr-icon">✅</div><div class="nr-text">Convention: write names in <strong>CAPITAL LETTERS</strong> (e.g., BLOCK-FTP, PERMIT-WEB)</div></div>
+    <div class="nr-row ok"><div class="nr-icon">✅</div><div class="nr-text">Names should clearly identify the ACL's purpose</div></div>
+    <div class="nr-row ok"><div class="nr-icon">✅</div><div class="nr-text">Individual ACEs can be added or deleted within the ACL (unlike older numbered ACLs)</div></div>
+    <div class="nr-row bad"><div class="nr-icon">❌</div><div class="nr-text">Names <strong>cannot</strong> contain spaces</div></div>
+    <div class="nr-row bad"><div class="nr-icon">❌</div><div class="nr-text">Names <strong>cannot</strong> contain punctuation characters</div></div>
+  </div>
+
+  <div class="cw"><div class="cl">Named ACL creation — ip access-list command <button class="cpb" onclick="copyCode(this)">Copy</button></div>
+  <pre><code>! Create a named extended ACL:
+R1(config)# ip access-list extended FTP-FILTER
+R1(config-ext-nacl)# permit tcp 192.168.10.0 0.0.0.255 any eq ftp
+R1(config-ext-nacl)# permit tcp 192.168.10.0 0.0.0.255 any eq ftp-data
+R1(config-ext-nacl)# end
+
+! Create a named standard ACL:
+R1(config)# ip access-list standard PERMIT-LAN1
+R1(config-std-nacl)# remark Permit hosts from LAN1 only
+R1(config-std-nacl)# permit 192.168.1.0 0.0.0.255
+R1(config-std-nacl)# end</code></pre></div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">4.4.3</span> Where to Place ACLs — The Golden Rules</h3>
+  <div class="placement-grid">
+    <div class="place-card std-place">
+      <div class="pc-hdr">📋 Standard ACL</div>
+      <div class="pc-body">
+        <div class="pc-rule">Place as CLOSE to the DESTINATION as possible</div>
+        <p>Standard ACLs filter by source address only — they cannot specify what destination the source is going to. Placing a standard ACL near the source would block that source from reaching ALL destinations — not just the intended target.</p>
+        <p style="margin-top:8px"><strong>Typical interface:</strong> outbound on the interface directly connected to the destination network</p>
+      </div>
+    </div>
+    <div class="place-card ext-place">
+      <div class="pc-hdr">📋 Extended ACL</div>
+      <div class="pc-body">
+        <div class="pc-rule">Place as CLOSE to the SOURCE as possible</div>
+        <p>Extended ACLs specify both source and destination, so unwanted traffic can be dropped immediately at the source — before it consumes bandwidth traversing the entire network to be dropped at the destination.</p>
+        <p style="margin-top:8px"><strong>Typical interface:</strong> inbound on the interface connected to the source network</p>
+        <p style="margin-top:4px"><strong>Constraint:</strong> can only place on devices the organization controls</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="tw"><table>
+    <tr><th>Factor</th><th>Impact on ACL Placement</th></tr>
+    <tr><td><strong>Organizational control</strong></td><td>Can only place ACLs on devices you administer — may prevent ideal placement</td></tr>
+    <tr><td><strong>Bandwidth</strong></td><td>Filter at source to prevent unwanted traffic consuming bandwidth across the network</td></tr>
+    <tr><td><strong>Ease of configuration</strong></td><td>Destination placement may be simpler but wastes bandwidth; multiple extended ACLs at each source router saves bandwidth but is complex</td></tr>
+  </table></div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">4.4.4</span> Standard ACL Placement Example</h3>
+  <p><strong>Goal:</strong> Prevent 192.168.10.0/24 from reaching 192.168.30.0/24. Topology: R1 (.10 LAN) → R2 → R3 (.30 LAN, .31 LAN). Standard ACL must go on R3 (closest to destination).</p>
+
+  <div class="tw"><table>
+    <tr><th>Interface Option</th><th>Effect</th><th>Correct?</th></tr>
+    <tr><td><strong>R3 S0/1/1 inbound</strong></td><td>Would block .10 network from reaching both .30 AND .31 — too broad</td><td>❌ Wrong</td></tr>
+    <tr><td><strong>R3 G0/0/0 outbound</strong></td><td>Only blocks .10 traffic going to .30 LAN; .10 can still reach .31 LAN normally</td><td>✅ Correct</td></tr>
+  </table></div>
+  <div class="ca tip">
+    <span class="ic">✅</span>
+    <div><strong>Rule confirmed:</strong> Standard ACL on R3 outbound G0/0/0 (connected to .30 network). The .10 network is still able to reach the .31 network — only the .30 LAN is blocked. The ACL is as close to the destination as possible without affecting other reachable networks.</div>
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">4.4.5</span> Extended ACL Placement Example</h3>
+  <p><strong>Goal:</strong> Company A (192.168.11.0/24 via R1) wants to deny Telnet and FTP to Company B (192.168.30.0/24 via R3). Company A controls R1 only — not R3. Extended ACL must go on R1 (closest controllable device to source).</p>
+
+  <div class="tw"><table>
+    <tr><th>Interface Option</th><th>Effect</th><th>Correct?</th></tr>
+    <tr><td><strong>R1 S0/1/0 outbound</strong></td><td>Would process ALL traffic leaving R1, including 192.168.10.0/24 (not just .11)</td><td>❌ Too broad</td></tr>
+    <tr><td><strong>R1 G0/0/1 inbound</strong></td><td>Only processes packets entering from 192.168.11.0/24 — precise filter, minimal overhead</td><td>✅ Correct</td></tr>
+  </table></div>
+  <div class="ca tip">
+    <span class="ic">✅</span>
+    <div><strong>Rule confirmed:</strong> Extended ACL inbound on R1 G0/0/1 (connected to .11 network). Only .11 traffic is filtered. Traffic from .10 network is unaffected. Unwanted Telnet/FTP is dropped at R1 immediately — it never crosses the network to R3.</div>
+  </div>
+  </div>
+
+</div></div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- SECTION 4.5 — EXAM TRAPS -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div class="sec" id="s5">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">🎯</span><span class="ttl">Common Exam Traps — Module 4</span></span><button class="sec-check" id="sch-s5" onclick="event.stopPropagation();toggleSection('s5',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb">
+
+  <div class="ca danger"><span class="ic">❌</span><div><strong>Trap 1: Implicit deny — every ACL ends with a hidden "deny any."</strong><br>This invisible statement is never shown in <code>show running-config</code> but always enforced. Any packet that doesn't match any ACE is automatically dropped. An ACL needs at least one permit statement — otherwise ALL traffic is denied. Students are often caught by accidentally blocking valid traffic they forgot to explicitly permit.</div></div>
+
+  <div class="ca danger"><span class="ic">❌</span><div><strong>Trap 2: First match wins — processing stops immediately on match.</strong><br>Once a packet matches an ACE, the router executes that permit/deny and skips all remaining ACEs. Order matters enormously. Place more specific ACEs before more general ones. A broadly-written permit early in the ACL can accidentally allow traffic a later deny was meant to block.</div></div>
+
+  <div class="ca danger"><span class="ic">❌</span><div><strong>Trap 3: Wildcard 0 = match, wildcard 1 = ignore.</strong><br>This is the inverse of subnet mask logic. Students frequently mix these up. Subnet mask: 1 = network (must match), 0 = host (variable). Wildcard mask: 0 = must match, 1 = ignore. Quick formula: wildcard = 255.255.255.255 − subnet mask.</div></div>
+
+  <div class="ca danger"><span class="ic">❌</span><div><strong>Trap 4: ACLs do NOT act on packets originating from the router itself.</strong><br>Only transit traffic is filtered by ACLs. A ping sourced from the router bypasses all ACL checking. This often causes confusion when testing ACLs with router-generated pings — the test may pass even when the ACL would block user traffic.</div></div>
+
+  <div class="ca danger"><span class="ic">❌</span><div><strong>Trap 5: Standard ACL near destination — Extended ACL near source.</strong><br>Standard ACLs filter by source address only — placing them near the source blocks that source from ALL destinations, not just the intended one. Extended ACLs know both source and destination — placing them near the source drops unwanted traffic early, before it wastes bandwidth crossing the network.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 6: ACL number ranges — know all four ranges.</strong><br>Standard: 1–99 AND 1300–1999. Extended: 100–199 AND 2000–2699. Students often only remember the primary range and forget the expanded ranges. Both are valid and may appear in exam questions.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 7: host = 0.0.0.0 wildcard. any = 255.255.255.255 wildcard.</strong><br><code>host 192.168.1.1</code> is identical to <code>192.168.1.1 0.0.0.0</code>. <code>any</code> is identical to <code>0.0.0.0 255.255.255.255</code>. Know both the keyword form and the explicit wildcard form — questions may present either.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 8: Named ACLs are the preferred method — no spaces, no punctuation.</strong><br>Named ACLs are more descriptive and allow individual ACE deletion. Names must be alphanumeric with no spaces or punctuation. Convention is CAPITAL LETTERS. Use <code>ip access-list standard|extended NAME</code> to create them.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 9: Maximum 4 ACLs per dual-stacked interface.</strong><br>One inbound IPv4, one outbound IPv4, one inbound IPv6, one outbound IPv6. This is a hard limit. ACLs don't need to be configured in both directions — depends on security policy.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 10: Extended ACL placement is constrained by organizational control.</strong><br>Even though the rule is "extended ACL as close to source as possible," you can only place ACLs on devices your organization controls. If the source network is outside your control, place the ACL on the closest device you do control.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 11: Inbound ACL is more efficient than outbound.</strong><br>Inbound: packet dropped before routing lookup — saves processing overhead. Outbound: packet survives routing first, then gets dropped — less efficient. Both are valid; the efficiency difference matters for exam questions about which type to prefer when both would work.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 12: An ACL with only deny statements drops ALL traffic.</strong><br>Explicit deny ACEs catch specific traffic, and the implicit deny at the end catches everything else. The net result: 100% of traffic is dropped. Always include at least one <code>permit</code> ACE — typically <code>permit any</code> at the end if the goal is to deny specific traffic and permit everything else.</div></div>
+
+  <div class="ca tip"><span class="ic">✅</span><div><strong>Module 4 quick-reference summary:</strong><br><br>
+  <strong>ACL = series of ACEs (permit/deny) applied to an interface</strong><br>
+  <strong>Processing:</strong> top-to-bottom · first match wins · implicit deny any at end<br>
+  <strong>ACLs do NOT filter:</strong> traffic originated by the router itself<br>
+  <strong>Wildcard mask:</strong> 0=match · 1=ignore · formula: 255.255.255.255 − subnet mask<br>
+  <strong>Keywords:</strong> host = 0.0.0.0 · any = 255.255.255.255<br>
+  <strong>Standard ACL:</strong> source IP only · L3 · numbers 1–99, 1300–1999 · near DESTINATION<br>
+  <strong>Extended ACL:</strong> src+dst+proto+port · L3+L4 · 100–199, 2000–2699 · near SOURCE<br>
+  <strong>Named ACL:</strong> preferred · CAPITAL LETTERS · no spaces/punctuation · ip access-list<br>
+  <strong>Max per interface:</strong> 4 (in/out × IPv4/IPv6)<br>
+  <strong>Inbound:</strong> filtered before routing (more efficient)<br>
+  <strong>Outbound:</strong> filtered after routing</div></div>
+
+</div></div>
+
+</div><!-- end .wrap -->
+
+<div class="ft">
+  CCNA 3 ENSA v7.02 — Module 4: ACL Concepts v2.2<br>
+  Based on Cisco NetAcad curriculum · Study guide for personal use
+</div>
+
+<button class="tb" id="topb" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+
+<div class="mod-nav">
+  <a class="mn-hub" href="index.html">🏠 Hub</a>
+  <div class="mn-divider"></div>
+  <a class="mn-prev" href="ccna3_module3_network_security_concepts_v2.2.html">‹</a>
+  <span class="mn-label">M4 of 14</span>
+  <a class="mn-next" href="ccna3_module5_acls_ipv4_configuration_v2.2.html">›</a>
+</div>
+
+<script>
+var MOD_KEY="ccna3-module4-acl-concepts";
+var SECS=["s1","s2","s3","s4","s5"];
+var checked={};
+function loadState(){
+  try{var s=localStorage.getItem(MOD_KEY);if(s)checked=JSON.parse(s);}catch(e){}
+  SECS.forEach(function(id){
+    var pill=document.getElementById('pill-'+id);
+    var row=document.getElementById('row-'+id);
+    var st=document.getElementById('st-'+id);
+    var sch=document.getElementById('sch-'+id);
+    if(checked[id]){
+      if(pill){pill.classList.add('checked');pill.querySelector('.pill-check').textContent='✓';}
+      if(row)row.classList.add('done');
+      if(st)st.textContent='✓';
+      if(sch){sch.classList.add('checked');sch.textContent='✓ Done';}
+    } else {
+      if(pill){pill.classList.remove('checked');pill.querySelector('.pill-check').textContent='○';}
+      if(row)row.classList.remove('done');
+      if(st)st.textContent='○';
+      if(sch){sch.classList.remove('checked');sch.textContent='○ Mark done';}
+    }
+  });
+}
+function toggleSection(id,btn){checked[id]=!checked[id];try{localStorage.setItem(MOD_KEY,JSON.stringify(checked));}catch(e){}loadState();}
+function toggleStudyPanel(){
+  var hdr=document.getElementById('sp-hdr');
+  var body=document.getElementById('sp-body');
+  var arr=document.getElementById('sp-arr');
+  hdr.classList.toggle('open');body.classList.toggle('open');
+  if(arr)arr.textContent=body.classList.contains('open')?'▲':'▼';
+}
+function goTo(id){var el=document.getElementById(id);if(!el)return;var h=el.querySelector('.sh,.section-header'),b=el.querySelector('.sb,.section-body');if(h&&b&&!b.classList.contains('open')){h.classList.add('open');b.classList.add('open');}setTimeout(function(){window.scrollTo({top:el.getBoundingClientRect().top+window.pageYOffset-60,behavior:'smooth'});},50);}
+function setFs(size,btn){document.documentElement.style.setProperty('--base-fs',size);document.querySelectorAll('.fs-btn').forEach(function(b){b.classList.remove('active');});btn.classList.add('active');try{localStorage.setItem('ccna-fs',size);}catch(e){}}
+(function(){try{var s=localStorage.getItem('ccna-fs');if(s){document.documentElement.style.setProperty('--base-fs',s);document.querySelectorAll('.fs-btn').forEach(function(b){b.classList.remove('active');if((b.textContent==='S'&&s==='14px')||(b.textContent==='M'&&s==='16px')||(b.textContent==='L'&&s==='18px')||(b.textContent==='XL'&&s==='20px'))b.classList.add('active');});}}catch(e){}loadState();})();
+function copyCode(b){var t=b.closest('.cw').querySelector('pre').innerText;if(navigator.clipboard){navigator.clipboard.writeText(t).then(function(){b.textContent='Copied!';setTimeout(function(){b.textContent='Copy';},1500);}).catch(function(){fb(t,b);});}else{fb(t,b);}}
+function fb(t,b){var a=document.createElement('textarea');a.value=t;a.style.position='fixed';a.style.opacity='0';document.body.appendChild(a);a.focus();a.select();document.execCommand('copy');document.body.removeChild(a);b.textContent='Copied!';setTimeout(function(){b.textContent='Copy';},1500);}
+</script>
+<script src="../../site-config.js"></script>
+</body>
+</html>

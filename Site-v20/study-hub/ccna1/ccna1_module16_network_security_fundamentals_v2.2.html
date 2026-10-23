@@ -1,0 +1,737 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=2.0">
+<title>CCNA 1 Module 16: Network Security Fundamentals v2.2</title>
+<style>
+:root{--nt:#0a6e4e;--ntd:#4ade80;--nt2:#052e1e;--nt3:#021710;--bg:#f4f6f8;--card:#fff;--text:#1a1a2e;--muted:#5a6a7a;--cbg:#0d1117;--ctxt:#c9d1d9;--r:12px;--sh:0 2px 12px rgba(0,0,0,.08);--base-fs:20px;}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);font-size:var(--base-fs);line-height:1.7}
+.bc{background:#0d1117;padding:8px 16px;display:flex;align-items:center;flex-wrap:wrap;gap:4px;font-size:.75em;overflow-x:auto;white-space:nowrap;-webkit-overflow-scrolling:touch;border-bottom:1px solid #21262d}
+.bc a{color:#8b949e;text-decoration:none;font-weight:600;flex-shrink:0}
+.bc .sep{color:#6e7681;flex-shrink:0}
+.bc .cur{color:var(--ntd);font-weight:700;flex-shrink:0}
+.fs-bar{position:sticky;top:0;z-index:200;background:#1a1a2e;display:flex;align-items:center;justify-content:flex-end;padding:6px 14px;gap:6px;box-shadow:0 2px 8px rgba(0,0,0,.3)}
+.fs-label{color:#8b949e;font-size:.72em;font-weight:700;letter-spacing:.5px;text-transform:uppercase;margin-right:4px}
+.fs-btn{background:#30363d;color:#c9d1d9;border:2px solid transparent;border-radius:6px;padding:4px 12px;font-size:.75em;font-weight:700;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:all .2s;line-height:1.4}
+.fs-btn:active,.fs-btn.active{background:var(--nt);color:#fff;border-color:var(--ntd)}
+.hdr{background:linear-gradient(135deg,var(--nt3),var(--nt2),var(--nt));color:#fff;padding:32px 20px 24px;text-align:center}
+.hdr .badge{display:inline-block;background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.4);border-radius:20px;padding:4px 14px;font-size:.81em;margin-bottom:12px}
+.hdr h1{font-size:1.5em;font-weight:700;margin-bottom:6px}
+.hdr p{font-size:.94em;opacity:.85}
+.hdr .obj{display:inline-block;background:rgba(255,255,255,.15);border-radius:8px;padding:7px 16px;margin-top:12px;font-size:.875em;font-style:italic}
+/* Study progress panel */
+.sp-wrap{background:var(--card);margin:16px 16px 0;border-radius:var(--r);box-shadow:var(--sh);overflow:hidden}
+.sp-hdr{background:var(--nt);color:#fff;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;user-select:none;-webkit-tap-highlight-color:transparent;gap:10px}
+.sp-hdr .sp-title{font-weight:700;font-size:.875em;flex-shrink:0}
+.sp-hdr .sp-arr{transition:transform .3s;flex-shrink:0}
+.sp-hdr.open .sp-arr{transform:rotate(180deg)}
+.sp-body{display:none;padding:12px 14px}
+.sp-body.open{display:block}
+.sp-row{display:flex;align-items:center;gap:10px;padding:6px 4px;border-bottom:1px solid #f0f4f8;font-size:.81em}
+.sp-row:last-child{border-bottom:none}
+.sp-row .sr-status{font-size:1em;flex-shrink:0;width:20px;text-align:center}
+.sp-row .sr-nb{font-weight:800;color:var(--nt);min-width:36px;flex-shrink:0;font-size:.875em}
+.sp-row .sr-ttl{color:var(--text);flex:1}
+.sp-row.done .sr-ttl{color:var(--muted);text-decoration:line-through}
+/* Section check pills in fs-bar */
+.sc-pills{display:flex;align-items:center;gap:4px;overflow-x:auto;-webkit-overflow-scrolling:touch;flex:1;padding:0 4px}
+.sc-pill{background:#30363d;color:#8b949e;border:2px solid transparent;border-radius:6px;padding:3px 8px;font-size:.72em;font-weight:700;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:all .15s;white-space:nowrap;flex-shrink:0;line-height:1.4;display:flex;align-items:center;gap:3px}
+.sc-pill.checked{background:var(--nt);color:#fff;border-color:var(--ntd)}
+.sc-pill .pill-check{font-size:.875em}
+.toc{background:var(--card);margin:16px;border-radius:var(--r);box-shadow:var(--sh);overflow:hidden}
+.toch{background:var(--nt);color:#fff;padding:14px 18px;font-weight:700;font-size:.94em;display:flex;justify-content:space-between;align-items:center;cursor:pointer;user-select:none}
+.toch .arr{transition:transform .3s}
+.toch.open .arr{transform:rotate(180deg)}
+.tocb{display:none;padding:10px 0}
+.tocb.open{display:block}
+.tocg{font-size:.69em;font-weight:800;letter-spacing:.8px;color:var(--nt);text-transform:uppercase;padding:8px 20px 2px}
+.tocb a{display:block;padding:9px 20px 9px 28px;color:var(--text);text-decoration:none;font-size:.875em;border-left:3px solid transparent;transition:all .2s}
+.tocb a:active{background:#f0fdf4;border-left-color:var(--ntd)}
+.tocb a .n{display:inline-block;background:var(--nt);color:#fff;border-radius:5px;padding:1px 8px;font-size:.75em;font-weight:700;margin-right:8px}
+.wrap{padding:0 16px 100px}
+.sec{background:var(--card);border-radius:var(--r);box-shadow:var(--sh);margin-bottom:16px;overflow:hidden}
+.sh{background:linear-gradient(90deg,var(--nt3),var(--nt));color:#fff;padding:16px 18px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;user-select:none;-webkit-tap-highlight-color:transparent}
+.sh .ttl{font-weight:700;font-size:1em}
+.sh .nb{background:rgba(255,255,255,.25);border-radius:6px;padding:3px 10px;font-size:.81em;font-weight:700;margin-right:10px;white-space:nowrap}
+.sh .ch{font-size:1.125em;transition:transform .3s}
+.sh.open .ch{transform:rotate(180deg)}
+.sb{display:none;padding:18px}
+.sb.open{display:block}
+.sub{margin-bottom:24px}
+.sub:last-child{margin-bottom:0}
+.sub h3{font-size:.94em;font-weight:700;color:var(--nt);margin-bottom:10px;padding-bottom:6px;border-bottom:2px solid #f0fdf4;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.sub h3 .sn{background:var(--nt);color:#fff;border-radius:5px;padding:2px 8px;font-size:.75em;white-space:nowrap}
+.sub h4{font-size:.875em;font-weight:700;color:var(--nt);margin:14px 0 6px}
+.sub p{margin-bottom:10px;font-size:.94em}
+.sub ul,.sub ol{padding-left:20px;margin:8px 0;font-size:.94em}
+.sub li{margin-bottom:5px}
+.cw{background:var(--cbg);border-radius:10px;margin:12px 0;overflow:hidden}
+.cl{background:#21262d;color:#c9d1d9;font-size:.78em;font-weight:700;padding:6px 14px;letter-spacing:.5px;text-transform:uppercase;display:flex;justify-content:space-between;align-items:center}
+.cl .copy-btn{background:var(--nt);color:#fff;border:none;border-radius:4px;padding:2px 10px;font-size:.875em;cursor:pointer;font-weight:700}
+pre{margin:0;padding:14px;overflow-x:auto;-webkit-overflow-scrolling:touch}
+code{font-family:'Courier New',monospace;font-size:.81em;color:var(--ctxt);line-height:1.6}
+.ca{border-radius:8px;padding:12px 14px;margin:12px 0;font-size:.875em;line-height:1.6;display:flex;gap:10px;align-items:flex-start}
+.ca .ic{font-size:1.125em;flex-shrink:0;margin-top:1px}
+.ca.warn{background:#fff3cd;border-left:4px solid #b38600;color:#3d2c00}
+.ca.tip{background:#d4edda;border-left:4px solid #28a745;color:#0d3318}
+.ca.danger{background:#f8d7da;border-left:4px solid #dc3545;color:#3d0010}
+.ca.info{background:#f0fdf4;border-left:4px solid var(--nt);color:#052e1e}
+.et{background:linear-gradient(135deg,#1a1a2e,var(--nt3));color:#fff;border-radius:10px;padding:14px 16px;margin:14px 0;font-size:.875em;line-height:1.6}
+.et .lbl{font-size:.69em;font-weight:800;letter-spacing:1px;color:var(--ntd);margin-bottom:6px}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:12px 0;border-radius:8px}
+table{width:100%;border-collapse:collapse;font-size:.875em}
+th{background:var(--nt);color:#fff;padding:10px 12px;text-align:left;font-weight:700;font-size:.81em}
+td{padding:9px 12px;border-bottom:1px solid #e8ecf0;vertical-align:top;color:#1a1a2e}
+tr:nth-child(even) td{background:#f0fdf4;color:#052e1e}
+tr:last-child td{border-bottom:none}
+p code,li code,td code,.ca code{background:#f0fdf4;color:#052e1e;border-radius:4px;padding:1px 5px;font-size:.81em;font-family:'Courier New',monospace;font-weight:600}
+
+/* Threat cards */
+.threat-cards{display:grid;gap:6px;margin:12px 0}
+.threat-card{border-radius:8px;padding:10px 14px;font-size:.81em;border-left:4px solid;line-height:1.6}
+.threat-card.info-thft{border-left-color:#1a3a5c;background:#e0f2fe}
+.threat-card.data-loss{border-left-color:#b38600;background:#fffbeb}
+.threat-card.id-thft{border-left-color:#7b2d8b;background:#f3e8ff}
+.threat-card.disruption{border-left-color:#dc3545;background:#fff5f5}
+.threat-card .tc-name{font-weight:800;margin-bottom:3px}
+.threat-card.info-thft .tc-name{color:#1a3a5c}
+.threat-card.data-loss .tc-name{color:#b38600}
+.threat-card.id-thft .tc-name{color:#7b2d8b}
+.threat-card.disruption .tc-name{color:#7c1e1e}
+
+/* Malware compare */
+.malware-cards{display:grid;gap:8px;margin:12px 0}
+.malware-card{border-radius:8px;padding:11px 14px;font-size:.81em;border-left:5px solid;line-height:1.6}
+.malware-card.virus{border-left-color:#dc3545;background:#fff5f5}
+.malware-card.worm{border-left-color:#b38600;background:#fffbeb}
+.malware-card.trojan{border-left-color:#7b2d8b;background:#f3e8ff}
+.malware-card .mc-name{font-weight:800;margin-bottom:4px}
+.malware-card.virus  .mc-name{color:#7c1e1e}
+.malware-card.worm   .mc-name{color:#b38600}
+.malware-card.trojan .mc-name{color:#7b2d8b}
+
+/* Attack type cards */
+.atk-cards{display:grid;gap:6px;margin:12px 0}
+.atk-card{border-radius:8px;padding:10px 14px;font-size:.81em;border-left:4px solid var(--nt);background:#f0fdf4;line-height:1.6}
+.atk-card .ac-name{font-weight:800;color:var(--nt);margin-bottom:3px}
+
+/* DoS vs DDoS */
+.dos-cards{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:12px 0}
+@media(max-width:480px){.dos-cards{grid-template-columns:1fr}}
+.dos-card{border-radius:10px;padding:12px 14px;font-size:.81em;line-height:1.7}
+.dos-card.dos{background:#fff5f5;border:2px solid #dc3545}
+.dos-card.ddos{background:#3d000f;border:2px solid #7c1e1e}
+.dos-card.ddos,.dos-card.ddos *{color:#f8d7da}
+.dos-card .dc-title{font-weight:800;margin-bottom:5px}
+.dos-card.dos .dc-title{color:#7c1e1e}
+.dos-card.ddos .dc-title{color:#f8d7da}
+
+/* Defense-in-depth services */
+.did-grid{display:grid;gap:5px;margin:12px 0}
+.did-row{display:flex;gap:8px;align-items:flex-start;padding:8px 12px;border-radius:6px;font-size:.81em;border-left:4px solid var(--nt);background:#f0fdf4;line-height:1.5}
+.did-row .dr-name{font-weight:800;color:var(--nt);min-width:100px;flex-shrink:0}
+
+/* Firewall types */
+.fw-cards{display:grid;gap:5px;margin:12px 0}
+.fw-card{display:flex;gap:8px;align-items:flex-start;padding:8px 12px;border-radius:6px;font-size:.81em;border-left:4px solid;line-height:1.5}
+.fw-card.pf{border-left-color:#1a3a5c;background:#e0f2fe}
+.fw-card.af{border-left-color:#b38600;background:#fffbeb}
+.fw-card.uf{border-left-color:#7b2d8b;background:#f3e8ff}
+.fw-card.sp{border-left-color:var(--nt);background:#f0fdf4}
+.fw-card .fw-name{font-weight:800;min-width:80px;flex-shrink:0}
+.fw-card.pf .fw-name{color:#1a3a5c}
+.fw-card.af .fw-name{color:#b38600}
+.fw-card.uf .fw-name{color:#7b2d8b}
+.fw-card.sp .fw-name{color:var(--nt)}
+
+/* AAA */
+.aaa-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:12px 0}
+@media(max-width:480px){.aaa-cards{grid-template-columns:1fr}}
+.aaa-card{border-radius:8px;padding:10px 12px;font-size:.81em;text-align:center;line-height:1.5}
+.aaa-card.aut{background:#e0f2fe;border:2px solid #1a3a5c}
+.aaa-card.atz{background:#f0fdf4;border:2px solid var(--nt)}
+.aaa-card.acc{background:#f3e8ff;border:2px solid #7b2d8b}
+.aaa-card .aaa-icon{font-size:1.5em;margin-bottom:4px}
+.aaa-card .aaa-name{font-weight:800;display:block;margin-bottom:3px}
+.aaa-card.aut .aaa-name{color:#1a3a5c}
+.aaa-card.atz .aaa-name{color:var(--nt)}
+.aaa-card.acc .aaa-name{color:#7b2d8b}
+
+/* SSH steps */
+.ssh-steps{display:grid;gap:5px;margin:12px 0}
+.ssh-step{display:flex;gap:10px;align-items:flex-start;padding:9px 12px;border-radius:8px;font-size:.81em;border-left:3px solid var(--nt);background:#f0fdf4;line-height:1.6}
+.ssh-step .ss-num{font-weight:900;color:var(--nt);flex-shrink:0;min-width:20px}
+.ssh-step .ss-cmd{font-family:'Courier New',monospace;background:#0d1117;color:#4ade80;border-radius:4px;padding:1px 7px;font-size:.75em;display:inline-block;margin-top:2px}
+
+.tb-btn{position:fixed;bottom:80px;right:16px;background:var(--nt);color:#fff;border:none;border-radius:50%;width:44px;height:44px;font-size:1.25em;box-shadow:0 4px 14px rgba(0,0,0,.25);cursor:pointer;display:none;align-items:center;justify-content:center;z-index:100}
+.tb-btn.show{display:flex}
+.ft{text-align:center;padding:24px 16px;color:var(--muted);font-size:.81em}
+.mod-nav{position:fixed;bottom:0;left:0;right:0;z-index:300;background:#1a1a2e;border-top:1px solid #30363d;display:flex;align-items:center;height:52px;padding:0 8px;gap:6px}
+.mn-hub{background:#1ba0d7;color:#fff;border:none;border-radius:8px;padding:6px 12px;font-size:.75em;font-weight:700;cursor:pointer;text-decoration:none;display:flex;align-items:center;gap:4px;white-space:nowrap;-webkit-tap-highlight-color:transparent;flex-shrink:0}
+.mn-hub:active{opacity:.8}
+.mn-divider{width:1px;height:28px;background:#30363d;flex-shrink:0}
+.mn-label{flex:1;text-align:center;font-size:.69em;color:#8b949e;font-weight:600;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding:0 4px}
+.mn-prev,.mn-next{background:#30363d;color:#c9d1d9;border:none;border-radius:8px;padding:6px 10px;font-size:.875em;font-weight:700;cursor:pointer;text-decoration:none;display:flex;align-items:center;-webkit-tap-highlight-color:transparent;flex-shrink:0}
+.mn-prev:active,.mn-next:active{background:var(--nt);color:#fff}
+
+/* v2.1 — In-section check button */
+.sh{position:relative}
+.sec-check{position:absolute;right:40px;top:50%;transform:translateY(-50%);background:rgba(255,255,255,.15);border:2px solid rgba(255,255,255,.4);border-radius:6px;padding:2px 10px;font-size:.72em;font-weight:800;color:#fff;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:all .2s;white-space:nowrap;z-index:10;line-height:1.5}
+.sec-check.checked{background:var(--ntd);border-color:var(--ntd);color:#052e1e}
+.sec-check:active{opacity:.75}
+</style>
+</head>
+<body>
+<nav class="bc">
+  <a href="../../index.html">🏠 Home</a><span class="sep">›</span>
+  <a href="index.html">CCNA 1 — ITN</a><span class="sep">›</span>
+  <span class="cur">M16: Network Security Fundamentals</span>
+</nav>
+<div class="fs-bar">
+  <div class="sc-pills" id="sc-pills">
+  <button class="sc-pill" id="pill-s1" onclick="toggleSection('s1',this)"><span class="pill-check">○</span>16.1</button>
+  <button class="sc-pill" id="pill-s2" onclick="toggleSection('s2',this)"><span class="pill-check">○</span>16.2</button>
+  <button class="sc-pill" id="pill-s3" onclick="toggleSection('s3',this)"><span class="pill-check">○</span>16.3</button>
+  <button class="sc-pill" id="pill-s4" onclick="toggleSection('s4',this)"><span class="pill-check">○</span>16.4</button>
+  <button class="sc-pill" id="pill-s-pt-16-5" onclick="toggleSection('s-pt-16-5',this)"><span class="pill-check">○</span>PT 16.5</button>
+  <button class="sc-pill" id="pill-s5" onclick="toggleSection('s5',this)"><span class="pill-check">○</span>🎯</button>
+  </div>
+  <span class="fs-label" style="flex-shrink:0;margin-left:6px">Size</span>
+  <button class="fs-btn" onclick="setFs('14px',this)">S</button>
+  <button class="fs-btn" onclick="setFs('16px',this)">M</button>
+  <button class="fs-btn" onclick="setFs('18px',this)">L</button>
+  <button class="fs-btn active" onclick="setFs('20px',this)">XL</button>
+</div>
+<div class="hdr">
+  <div class="badge">CCNA 1 — ITN v7.02 · Module 16</div>
+  <h1>🔒 Network Security Fundamentals</h1>
+  <p>Introduction to Networks · NetAcad Study Guide</p>
+  <div class="obj">Module Objective: Configure switches and routers with device hardening features to enhance security</div>
+</div>
+<div class="sp-wrap">
+  <div class="sp-hdr" id="sp-hdr" onclick="toggleStudyPanel()">
+    <span class="sp-title">📚 Sections</span>
+    <span class="sp-arr" id="sp-arr">▼</span>
+  </div>
+  <div class="sp-body" id="sp-body">
+    <div class="sp-row" id="row-s1"><span class="sr-status" id="st-s1">○</span><span class="sr-nb">16.1</span><span class="sr-ttl">Security Threats and Vulnerabilities</span></div>
+    <div class="sp-row" id="row-s2"><span class="sr-status" id="st-s2">○</span><span class="sr-nb">16.2</span><span class="sr-ttl">Network Attacks</span></div>
+    <div class="sp-row" id="row-s3"><span class="sr-status" id="st-s3">○</span><span class="sr-nb">16.3</span><span class="sr-ttl">Network Attack Mitigations</span></div>
+    <div class="sp-row" id="row-s4"><span class="sr-status" id="st-s4">○</span><span class="sr-nb">16.4</span><span class="sr-ttl">Device Security</span></div>
+    <div class="sp-row" id="row-s-pt-16-5"><span class="sr-status" id="st-s-pt-16-5">○</span><span class="sr-nb">PT 16.5</span><span class="sr-ttl">Packet Tracer — Secure Network Devices</span></div>
+    <div class="sp-row" id="row-s5"><span class="sr-status" id="st-s5">○</span><span class="sr-nb">🎯</span><span class="sr-ttl">Common Exam Traps — Module 16</span></div>
+  </div>
+</div>
+
+<div class="toc">
+  <div class="toch open" onclick="this.classList.toggle('open');document.getElementById('tocb').classList.toggle('open')">
+    📋 Table of Contents — Tap to expand <span class="arr">▼</span>
+  </div>
+  <div class="tocb open" id="tocb">
+    <div class="tocg">16.1 — Security Threats and Vulnerabilities</div>
+    <a href="javascript:void(0)" onclick="goTo('s1')"><span class="n">16.1.1</span> Four Types of Threats</a>
+    <a href="javascript:void(0)" onclick="goTo('s1')"><span class="n">16.1.2</span> Three Types of Vulnerabilities — Tech · Config · Policy</a>
+    <a href="javascript:void(0)" onclick="goTo('s1')"><span class="n">16.1.3</span> Physical Security — Four Threat Classes</a>
+    <div class="tocg">16.2 — Network Attacks</div>
+    <a href="javascript:void(0)" onclick="goTo('s2')"><span class="n">16.2.1</span> Malware — Virus · Worm · Trojan Horse</a>
+    <a href="javascript:void(0)" onclick="goTo('s2')"><span class="n">16.2.2</span> Reconnaissance Attacks — Queries · Ping Sweep · Port Scan</a>
+    <a href="javascript:void(0)" onclick="goTo('s2')"><span class="n">16.2.3</span> Access Attacks — Password · Trust · Port Redirect · MitM</a>
+    <a href="javascript:void(0)" onclick="goTo('s2')"><span class="n">16.2.4</span> DoS and DDoS — Botnet · Zombies · CnC</a>
+    <div class="tocg">16.3 — Network Attack Mitigations</div>
+    <a href="javascript:void(0)" onclick="goTo('s3')"><span class="n">16.3.1</span> Defense-in-Depth — VPN · ASA · IPS · ESA · WSA · AAA</a>
+    <a href="javascript:void(0)" onclick="goTo('s3')"><span class="n">16.3.2</span> Backups — Frequency · Storage · Security · Validation</a>
+    <a href="javascript:void(0)" onclick="goTo('s3')"><span class="n">16.3.3</span> Patch and Update</a>
+    <a href="javascript:void(0)" onclick="goTo('s3')"><span class="n">16.3.4</span> AAA — Authentication · Authorization · Accounting</a>
+    <a href="javascript:void(0)" onclick="goTo('s3')"><span class="n">16.3.5</span> Firewalls — DMZ — Four Firewall Types</a>
+    <a href="javascript:void(0)" onclick="goTo('s3')"><span class="n">16.3.7</span> Endpoint Security</a>
+    <div class="tocg">16.4 — Device Security</div>
+    <a href="javascript:void(0)" onclick="goTo('s4')"><span class="n">16.4.1</span> Cisco AutoSecure · Default Security Basics</a>
+    <a href="javascript:void(0)" onclick="goTo('s4')"><span class="n">16.4.2</span> Password Guidelines · Weak vs Strong</a>
+    <a href="javascript:void(0)" onclick="goTo('s4')"><span class="n">16.4.3</span> Additional Password Security Commands</a>
+    <a href="javascript:void(0)" onclick="goTo('s4')"><span class="n">16.4.4</span> Enable SSH — Six Configuration Steps</a>
+    <a href="javascript:void(0)" onclick="goTo('s4')"><span class="n">16.4.5</span> Disable Unused Services</a>
+    <div class="tocg">Reference</div>
+    <a href="javascript:void(0)" onclick="goTo('s5')"><span class="n">🎯</span> Common Exam Traps</a>
+  </div>
+</div>
+
+<div class="wrap">
+
+<!-- 16.1 THREATS AND VULNERABILITIES -->
+<div class="sec" id="s1">
+<div class="sh open" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">16.1</span><span class="ttl">Security Threats and Vulnerabilities</span></span><button class="sec-check" id="sch-s1" onclick="event.stopPropagation();toggleSection('s1',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb open">
+  <div class="sub">
+  <h3><span class="sn">16.1.1</span> Four Types of Threats</h3>
+  <div class="threat-cards">
+    <div class="threat-card info-thft"><div class="tc-name">🔍 Information Theft</div>Breaking into a computer to obtain confidential information. Stolen info may be sold or used for competitive or financial gain (e.g., R&D data, trade secrets).</div>
+    <div class="threat-card data-loss"><div class="tc-name">💥 Data Loss and Manipulation</div>Breaking in to destroy or alter data records (e.g., virus reformats a hard drive; manipulating prices in a database). Destroys or corrupts, rather than copies.</div>
+    <div class="threat-card id-thft"><div class="tc-name">🪪 Identity Theft</div>Stealing personal information to impersonate someone — obtaining legal documents, applying for credit, making unauthorized purchases. Costs billions per year globally.</div>
+    <div class="threat-card disruption"><div class="tc-name">🚫 Disruption of Service</div>Preventing legitimate users from accessing services they are entitled to (e.g., DoS/DDoS attacks on servers, network devices, or communication links).</div>
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">16.1.2</span> Three Types of Vulnerabilities</h3>
+  <div class="tw"><table>
+    <tr><th>Type</th><th>Examples</th></tr>
+    <tr><td><strong>Technological</strong></td><td>Inherent weaknesses in protocols (HTTP, FTP, ICMP, SNMP, SMTP all have known weaknesses); OS vulnerabilities (documented in CERT archives); Network equipment weaknesses (poor password protection, lack of authentication, firewall holes)</td></tr>
+    <tr><td><strong>Configuration</strong></td><td>Unsecured user accounts; easily guessed passwords; misconfigured internet services; unsecured default settings from manufacturer; misconfigured access lists, routing protocols, or SNMP community strings</td></tr>
+    <tr><td><strong>Policy</strong></td><td>No written security policy; political battles preventing enforcement; weak or default passwords; no logical access controls; unauthorized software/hardware changes; no disaster recovery plan</td></tr>
+  </table></div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">16.1.3</span> Physical Security — Four Classes of Physical Threats</h3>
+  <div class="tw"><table>
+    <tr><th>Class</th><th>Examples</th></tr>
+    <tr><td><strong>Hardware</strong></td><td>Physical damage to servers, routers, switches, cabling plant, workstations</td></tr>
+    <tr><td><strong>Environmental</strong></td><td>Temperature extremes (too hot or too cold); humidity extremes (too wet or too dry)</td></tr>
+    <tr><td><strong>Electrical</strong></td><td>Voltage spikes; insufficient supply voltage (brownouts); unconditioned power (noise); total power loss</td></tr>
+    <tr><td><strong>Maintenance</strong></td><td>Electrostatic discharge (ESD); lack of critical spare parts; poor cabling; poor labeling</td></tr>
+  </table></div>
+  <p><strong>Physical security plan steps:</strong> (1) Lock equipment rooms; restrict access from doors, ceiling, vents, ducts (2) Monitor closet entry with electronic logs (3) Use security cameras</p>
+  </div>
+</div></div>
+
+<!-- 16.2 NETWORK ATTACKS -->
+<div class="sec" id="s2">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">16.2</span><span class="ttl">Network Attacks</span></span><button class="sec-check" id="sch-s2" onclick="event.stopPropagation();toggleSection('s2',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb">
+  <div class="sub">
+  <h3><span class="sn">16.2.1</span> Types of Malware</h3>
+  <p><strong>Malware</strong> = malicious software — code designed to damage, disrupt, steal, or perform illegitimate actions on data, hosts, or networks.</p>
+  <div class="malware-cards">
+    <div class="malware-card virus">
+      <div class="mc-name">🦠 Virus</div>
+      · Attaches to an executable file; becomes part of another program<br>
+      · Requires <strong>human action</strong> to spread (opening/running an infected file)<br>
+      · Spreads via network, disk, file sharing, or infected email attachments<br>
+      · Host program usually keeps functioning after infection<br>
+      · Some viruses overwrite host programs completely<br>
+      · Does NOT spread on its own — needs user to execute
+    </div>
+    <div class="malware-card worm">
+      <div class="mc-name">🪱 Worm</div>
+      · <strong>Standalone</strong> — does NOT require a host file<br>
+      · <strong>NO human action needed</strong> to propagate<br>
+      · Exploits OS/software vulnerabilities to spread through network unaided<br>
+      · Self-replicating — makes copies of itself<br>
+      · Can cause same damage as viruses (bandwidth consumption, system crashes)<br>
+      · Mitigation: patch the OS vulnerability it exploits
+    </div>
+    <div class="malware-card trojan">
+      <div class="mc-name">🐴 Trojan Horse</div>
+      · Disguised as legitimate, useful software<br>
+      · Requires <strong>user interaction</strong> to spread (opening email attachment, downloading)<br>
+      · Does <strong>NOT self-replicate</strong> or attach to other programs<br>
+      · After activation: can damage, steal data, or create <strong>backdoors</strong><br>
+      · Can activate and spread other malware (viruses) once installed<br>
+      · Named after the Greek myth — appears safe, is not
+    </div>
+  </div>
+  <div class="et"><div class="lbl">🎯 MALWARE QUICK COMPARE</div>
+  <strong>Virus:</strong> host file required + human action required + attaches to programs<br>
+  <strong>Worm:</strong> no host file + no human action + self-replicating + exploits vulnerabilities<br>
+  <strong>Trojan:</strong> looks legitimate + user interaction required + no self-replication + creates backdoors
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">16.2.2</span> Three Attack Categories + Reconnaissance</h3>
+  <div class="tw"><table>
+    <tr><th>Category</th><th>Goal</th><th>Description</th></tr>
+    <tr><td><strong>Reconnaissance</strong></td><td>Discover</td><td>Mapping of systems, services, and vulnerabilities before an attack</td></tr>
+    <tr><td><strong>Access</strong></td><td>Exploit</td><td>Unauthorized manipulation of data, system access, or user privileges</td></tr>
+    <tr><td><strong>Denial of Service</strong></td><td>Disrupt</td><td>Disabling or corrupting networks, systems, or services</td></tr>
+  </table></div>
+  <p><strong>Three types of reconnaissance attacks:</strong></p>
+  <div class="atk-cards">
+    <div class="atk-card"><div class="ac-name">🔎 Internet Queries</div>Using Google, whois, organization websites to gather initial target information (IP space, personnel, infrastructure). No direct contact with target.</div>
+    <div class="atk-card"><div class="ac-name">📡 Ping Sweeps</div>Tools like fping or gping systematically ping every IP address in a range to identify active hosts. Similar to calling every number in a phone book section.</div>
+    <div class="atk-card"><div class="ac-name">🔌 Port Scans</div>Scanning active IP addresses to identify which ports are open and what services are running — reveals attack surface.</div>
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">16.2.3</span> Four Types of Access Attacks</h3>
+  <div class="atk-cards">
+    <div class="atk-card"><div class="ac-name">🔑 Password Attacks</div>Brute-force (try all combinations systematically) · Trojan horse (capture keystrokes/credentials) · Packet sniffers (capture credentials sent in cleartext over network)</div>
+    <div class="atk-card"><div class="ac-name">🤝 Trust Exploitation</div>Attacker compromises System B (which is trusted by System A) to use System B as a stepping stone to attack System A. Example: compromise a less-secure host to reach a more-secure target.</div>
+    <div class="atk-card"><div class="ac-name">↩️ Port Redirection</div>Attacker uses a compromised host as a launch point to attack other targets. Example: SSH into compromised Host A → Telnet from Host A to Host B (which trusts Host A).</div>
+    <div class="atk-card"><div class="ac-name">👥 Man-in-the-Middle (MitM)</div>Attacker positions between two legitimate parties. (1) Victim's request goes to attacker (2) Attacker forwards to real server (3) Attacker can read/modify response (4) Modified page sent to victim. Intercepts and can alter all traffic.</div>
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">16.2.4</span> DoS and DDoS Attacks</h3>
+  <div class="dos-cards">
+    <div class="dos-card dos">
+      <div class="dc-title">🔴 DoS — Denial of Service</div>
+      Single source floods target with traffic or exploits a vulnerability to crash/overwhelm a service. Prevents legitimate users from accessing the service. Relatively simple to execute — even by unskilled actors. Can cause massive business disruption.
+    </div>
+    <div class="dos-card ddos">
+      <div class="dc-title">💀 DDoS — Distributed DoS</div>
+      Originates from <strong>multiple coordinated sources simultaneously</strong>.<br><br>
+      · Threat actor builds a <strong>botnet</strong> (network of infected zombie hosts)<br>
+      · Uses a <strong>CnC (Command and Control) program</strong> to direct the botnet<br>
+      · All zombies attack the target simultaneously<br>
+      · Far more powerful and harder to stop than single-source DoS
+    </div>
+  </div>
+  <div class="ca info"><span class="ic">💡</span><div>DoS attacks are among the most publicized and most difficult to fully eliminate. Prevention includes: keeping OS and applications patched, using rate-limiting, and deploying firewalls with SPI.</div></div>
+  </div>
+</div></div>
+
+<!-- 16.3 MITIGATIONS -->
+<div class="sec" id="s3">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">16.3</span><span class="ttl">Network Attack Mitigations</span></span><button class="sec-check" id="sch-s3" onclick="event.stopPropagation();toggleSection('s3',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb">
+  <div class="sub">
+  <h3><span class="sn">16.3.1</span> Defense-in-Depth (Layered Security)</h3>
+  <p>No single security tool provides complete protection. <strong>Defense-in-depth</strong> combines multiple devices and services working together.</p>
+  <div class="did-grid">
+    <div class="did-row"><span class="dr-name">VPN (Router)</span>Provides secure encrypted tunnels for remote users and corporate site-to-site connections</div>
+    <div class="did-row"><span class="dr-name">ASA Firewall</span>Dedicated stateful firewall — allows established outbound connections back in; blocks unsolicited inbound connections</div>
+    <div class="did-row"><span class="dr-name">IPS</span>Intrusion Prevention System — monitors traffic for malware and attack signatures; can immediately stop detected threats</div>
+    <div class="did-row"><span class="dr-name">ESA</span>Email Security Appliance — filters spam and suspicious emails before they reach users</div>
+    <div class="did-row"><span class="dr-name">WSA</span>Web Security Appliance — filters known and suspicious malware websites; blocks access to dangerous URLs</div>
+    <div class="did-row"><span class="dr-name">AAA Server</span>Secure database of authorized users; network devices authenticate administrative users against it</div>
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">16.3.2</span> Backups</h3>
+  <div class="tw"><table>
+    <tr><th>Consideration</th><th>Description</th></tr>
+    <tr><td><strong>Frequency</strong></td><td>Regular backups per security policy. Full backups monthly/weekly; partial backups of changed files more frequently</td></tr>
+    <tr><td><strong>Storage</strong></td><td>Always validate backups to ensure data integrity and that restoration procedures work</td></tr>
+    <tr><td><strong>Security</strong></td><td>Protect backups with strong passwords; store offsite on a rotation schedule (daily/weekly/monthly)</td></tr>
+    <tr><td><strong>Validation</strong></td><td>Test that backups can actually be restored — an untested backup may fail when most needed</td></tr>
+  </table></div>
+  <div class="ca info"><span class="ic">💡</span><div>Infrastructure devices should have configuration files and IOS images backed up to an FTP or similar server. If hardware fails, the device can be quickly restored from backup rather than reconfigured from scratch.</div></div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">16.3.3</span> Upgrade, Update, and Patch</h3>
+  <ul>
+    <li>Most effective mitigation for <strong>worm attacks</strong>: download OS security updates and patch all vulnerable systems</li>
+    <li>Most effective mitigation for <strong>virus attacks</strong>: update antivirus software definitions regularly</li>
+    <li>Enable <strong>automatic updates</strong> on end systems where possible</li>
+    <li>Deploy standard software images with approved applications; maintain consistent patching across all systems</li>
+  </ul>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">16.3.4</span> AAA — Authentication, Authorization, and Accounting</h3>
+  <div class="aaa-cards">
+    <div class="aaa-card aut"><div class="aaa-icon">🔐</div><span class="aaa-name">Authentication</span>Who are you? Verify identity before granting access. <em>Credit card analogy: identifies who can use it.</em></div>
+    <div class="aaa-card atz"><div class="aaa-icon">✅</div><span class="aaa-name">Authorization</span>What can you do? What resources and actions are permitted? <em>Credit card: how much can be spent.</em></div>
+    <div class="aaa-card acc"><div class="aaa-icon">📋</div><span class="aaa-name">Accounting</span>What did you do? Logs all actions for audit trail. <em>Credit card: record of all purchases.</em></div>
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">16.3.5–16.3.6</span> Firewalls, DMZ, and Firewall Types</h3>
+  <p>A <strong>firewall</strong> resides between two or more networks and controls traffic between them. It allows established outbound connections to return; blocks unsolicited inbound connections.</p>
+  <p><strong>DMZ (Demilitarized Zone)</strong> = special network segment for servers that must be publicly accessible (web servers, email servers). External users can access DMZ servers. The internal network is protected behind a second firewall layer. Admins apply specific policies to DMZ hosts.</p>
+  <p><strong>Four types of firewalls:</strong></p>
+  <div class="fw-cards">
+    <div class="fw-card pf"><span class="fw-name">Packet Filter</span>Allows/denies based on IP or MAC addresses. Simple, fast, but can't detect application-level attacks.</div>
+    <div class="fw-card af"><span class="fw-name">App Filter</span>Allows/denies based on port numbers (specific application types). Can block specific services regardless of IP.</div>
+    <div class="fw-card uf"><span class="fw-name">URL Filter</span>Allows/denies access to websites based on specific URLs or keywords. Blocks malicious/inappropriate sites.</div>
+    <div class="fw-card sp"><span class="fw-name">SPI ★ Best</span><strong>Stateful Packet Inspection</strong> — only allows inbound packets that are legitimate responses to established outbound connections. Can also recognize and filter specific attack types like DoS. Most effective type.</div>
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">16.3.7</span> Endpoint Security</h3>
+  <p><strong>Endpoint</strong> = individual client device (laptop, desktop, server, smartphone, tablet).</p>
+  <p>Securing endpoints is one of the most challenging tasks — it involves human behavior. Requires: well-documented policies, employee training, antivirus software, host intrusion prevention, and network access control (NAC).</p>
+  </div>
+</div></div>
+
+<!-- 16.4 DEVICE SECURITY -->
+<div class="sec" id="s4">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">16.4</span><span class="ttl">Device Security</span></span><button class="sec-check" id="sch-s4" onclick="event.stopPropagation();toggleSection('s4',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb">
+  <div class="sub">
+  <h3><span class="sn">16.4.1</span> Cisco AutoSecure and Device Basics</h3>
+  <p><code>Router# auto secure</code> — Cisco feature that assists in securing the router. Not a complete solution but a good starting point that disables unnecessary services and enables basic security.</p>
+  <p><strong>Basic security for all devices:</strong></p>
+  <ul>
+    <li>Change default usernames and passwords <strong>immediately</strong></li>
+    <li>Restrict access to authorized users only</li>
+    <li>Turn off and uninstall any unnecessary services and applications</li>
+    <li>Update software and install security patches before deployment</li>
+  </ul>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">16.4.2</span> Password Guidelines</h3>
+  <div class="tw"><table>
+    <tr><th>Guideline</th><th>Detail</th></tr>
+    <tr><td><strong>Length</strong></td><td>Minimum 8 characters, preferably 10 or more. Longer = more secure.</td></tr>
+    <tr><td><strong>Complexity</strong></td><td>Mix of uppercase, lowercase, numbers, symbols, and spaces</td></tr>
+    <tr><td><strong>Avoid</strong></td><td>Dictionary words, repetition, sequences (123456), usernames, names, birthdates, easily guessable personal info</td></tr>
+    <tr><td><strong>Misspell</strong></td><td>Smith → 5mYth · Security → 5ecur1ty · Deliberate substitutions are harder to crack</td></tr>
+    <tr><td><strong>Change often</strong></td><td>Limits window of opportunity if password is compromised</td></tr>
+    <tr><td><strong>Don't write down</strong></td><td>Never leave passwords visible on desks, monitors, or sticky notes</td></tr>
+  </table></div>
+  <div class="ca info"><span class="ic">💡</span><div><strong>Passphrase</strong> = multiple words combined (e.g., "coffee table lamp 7" or "IloveNetworks!2024"). Passphrases are longer and easier to remember than random characters, yet harder to crack because of length. On Cisco devices, spaces within a password (after the first character) are valid — useful for creating space-separated passphrases.</div></div>
+  <div class="tw"><table>
+    <tr><th>Type</th><th>Examples</th><th>Why</th></tr>
+    <tr><td>❌ Weak</td><td>secret · smith · toyota · bob1967 · Blueleaf23</td><td>Dictionary words, personal info, simple sequences</td></tr>
+    <tr><td>✅ Strong</td><td>b67n42d39c · 12^h u4@1p7</td><td>Alphanumeric + symbols + spaces; no recognizable pattern</td></tr>
+  </table></div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">16.4.3</span> Additional Password Security Commands</h3>
+  <div class="cw"><div class="cl"><span>Additional Password Security — IOS Commands</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+  <pre><code>Router(config)# service password-encryption
+! Encrypts all plaintext passwords in running-config (Type 7 — weak but better than plaintext)
+
+Router(config)# security passwords min-length 8
+! New passwords must be at least 8 characters long
+
+Router(config)# login block-for 120 attempts 3 within 60
+! Block VTY login attempts for 120 seconds if 3 failed attempts occur within 60 seconds
+! Deters brute-force password attacks
+
+Router(config)# line vty 0 4
+Router(config-line)# exec-timeout 5 30
+! Automatically disconnect idle sessions after 5 minutes 30 seconds
+! Prevents exploitation of unattended privileged EXEC sessions</code></pre></div>
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>service password-encryption = Type 7 (weak, reversible).</strong> It prevents casual viewing of passwords in config files but can be decoded with free online tools. It is NOT a substitute for <code>enable secret</code> (MD5, strong). Always use <code>enable secret</code> for privileged EXEC access.</div></div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">16.4.4</span> Enable SSH — Six Configuration Steps</h3>
+  <div class="ca danger"><span class="ic">🚨</span><div><strong>Telnet sends all data including passwords in cleartext. Never use Telnet in production.</strong> SSH encrypts the entire session. Always configure SSH and disable Telnet on all network device VTY lines.</div></div>
+  <div class="ssh-steps">
+    <div class="ssh-step"><div class="ss-num">1</div><div><strong>Configure unique hostname</strong> — device must have a unique hostname other than "Router" or "Switch"<div class="ss-cmd">hostname R1</div></div></div>
+    <div class="ssh-step"><div class="ss-num">2</div><div><strong>Configure IP domain name</strong> — used with hostname to create RSA key name<div class="ss-cmd">ip domain-name cisco.com</div></div></div>
+    <div class="ssh-step"><div class="ss-num">3</div><div><strong>Generate RSA key pair</strong> — minimum 1024 bits recommended; creates encryption key named hostname.domain<div class="ss-cmd">crypto key generate rsa general-keys modulus 1024</div></div></div>
+    <div class="ssh-step"><div class="ss-num">4</div><div><strong>Create local database username</strong> — use "secret" keyword for MD5 encryption<div class="ss-cmd">username admin secret cisco12345</div></div></div>
+    <div class="ssh-step"><div class="ss-num">5</div><div><strong>Authenticate VTY against local database</strong><div class="ss-cmd">line vty 0 4 → login local</div></div></div>
+    <div class="ssh-step"><div class="ss-num">6</div><div><strong>Allow only SSH on VTY lines</strong> — restricts to SSH, disables Telnet<div class="ss-cmd">transport input ssh</div></div></div>
+  </div>
+  <div class="ca info"><span class="ic">💡</span><div>
+  <strong>Why does SSH need a domain name?</strong><br><br>
+  The RSA key pair that SSH uses must have a name. Cisco IOS automatically builds that name by combining the <strong>hostname</strong> and <strong>domain name</strong> — for example <code>hostname R1</code> + <code>ip domain-name cisco.com</code> creates a key named <code>R1.cisco.com</code>.<br><br>
+  Without a domain name configured, the <code>crypto key generate rsa</code> command will fail with the error:<br>
+  <code>% Please define a domain-name first.</code><br><br>
+  The domain name does not need to be a real registered domain — it is only used locally to name the RSA key. Common choices in labs: <code>cisco.com</code>, <code>ccna-lab.com</code>, <code>lab.local</code>.
+  <br><br>
+  <strong>Also note:</strong> <code>ip ssh version 2</code> forces SSHv2 which is more secure than SSHv1. Always add this after generating the RSA keys. SSHv1 has known cryptographic weaknesses.
+  </div></div>
+
+  <div class="cw"><div class="cl"><span>Complete SSH Configuration Example</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+  <pre><code>Router(config)# hostname R1
+R1(config)# security passwords min-length 10
+R1(config)# enable secret class12345
+R1(config)# ip domain-name cisco.com
+R1(config)# username admin secret cisco12345
+R1(config)# crypto key generate rsa modulus 1024
+! Key name auto-created as: R1.cisco.com
+! Output: % Generating 1024 bit RSA keys, keys will be non-exportable... [OK]
+! Output: %SSH-5-ENABLED: SSH 1.99 has been enabled
+R1(config)# ip ssh version 2
+R1(config)# line vty 0 4
+R1(config-line)# login local
+R1(config-line)# transport input ssh
+R1(config-line)# end</code></pre></div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">16.4.5</span> Disable Unused Services</h3>
+  <p>Only run necessary services. Unused services waste CPU/RAM and expand the attack surface.</p>
+  <div class="cw"><div class="cl"><span>Verify and Disable Unused Services</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+  <pre><code>! Check active listening ports (IOS-XE):
+Router# show ip ports all
+
+! Check active ports (older IOS):
+Router# show control-plane host open-ports
+! Output may show Telnet (23) and HTTP (80) — both should be disabled
+
+! Disable unencrypted HTTP web management:
+Router(config)# no ip http server
+
+! Restrict VTY to SSH only (disables Telnet):
+Router(config)# line vty 0 15
+Router(config-line)# transport input ssh</code></pre></div>
+  <div class="ca tip"><span class="ic">✅</span><div><strong>IOS-XE default:</strong> Only HTTPS (443) and DHCP (67) ports are open by default — a much more secure starting point than older IOS versions which may have HTTP (80) and Telnet (23) enabled by default.</div></div>
+  </div>
+</div></div>
+
+<!-- EXAM TRAPS -->
+
+
+  <!-- PT MASTER LINK -->
+  <div style="margin:18px 0 6px;padding:12px 14px;background:#0d1117;border:1px solid #30363d;border-left:3px solid #1f6feb;border-radius:6px">
+    <div style="font-size:.7em;font-weight:800;text-transform:uppercase;letter-spacing:.8px;color:#1f6feb;margin-bottom:6px">&#x1F4E6; All Packet Tracer Activities — CCNA 1</div>
+    <div style="font-size:.84em;color:#c9d1d9;margin-bottom:4px">Complete list of all CCNA 1 Packet Tracer activities with instructions:</div>
+    <a href="https://itexamanswers.net/ccna-1-v7-exam-answers-introduction-to-networks-v7-0-itn.html" target="_blank" rel="noopener" style="font-size:.78em;color:#58a6ff;word-break:break-all">https://itexamanswers.net/ccna-1-v7-exam-answers-introduction-to-networks-v7-0-itn.html</a>
+  </div>
+
+
+<div class="sec" id="s-pt-16-5">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">16.5</span><span class="ttl">Packet Tracer — Secure Network Devices</span></span><button class="sec-check" id="sch-s-pt-16-5" onclick="event.stopPropagation();toggleSection('s-pt-16-5',this)">○ Mark done</button>
+</div>
+<div class="sb">
+  <div style="padding:14px 16px;background:#0d1117;border:1px solid #30363d;border-left:3px solid #1f6feb;border-radius:6px">
+    <div style="font-size:.72em;font-weight:800;text-transform:uppercase;letter-spacing:.8px;color:#1f6feb;margin-bottom:10px">&#x1F4E6; Packet Tracer Activities</div>
+    <div style="font-size:.82em;color:#6e7681;margin-bottom:10px">Open in Cisco Packet Tracer via your NetAcad course.</div>
+      <div style="display:flex;align-items:baseline;gap:10px;padding:6px 0;border-bottom:1px solid #21262d"><span style="font-family:monospace;font-size:.85em;color:#79c0ff;white-space:nowrap;flex-shrink:0;min-width:52px">16.5.1</span><span style="font-size:.88em;color:#c9d1d9">Secure Network Devices</span></div>
+    <div style="margin-top:12px;font-size:.78em;color:#6e7681">Full list: <a href="https://itexamanswers.net/ccna-1-v7-exam-answers-introduction-to-networks-v7-0-itn.html" target="_blank" rel="noopener" style="color:#58a6ff;word-break:break-all">itexamanswers.net/ccna-1-v7-exam-answers-introduction-to-networks-v7-0-itn.html</a></div>
+  </div>
+</div>
+</div>
+<div class="sec" id="s5">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">🎯</span><span class="ttl">Common Exam Traps — Module 16</span></span><button class="sec-check" id="sch-s5" onclick="event.stopPropagation();toggleSection('s5',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb">
+
+  <div class="ca danger"><span class="ic">❌</span><div><strong>Trap 1: Virus needs host file + human action. Worm needs neither. Trojan = disguised software, no self-replication.</strong><br>Virus: attaches to programs, spreads when user runs infected file. Worm: standalone, exploits vulnerabilities, spreads automatically. Trojan: looks legitimate, user installs it, creates backdoors but doesn't self-replicate. These distinctions appear in every exam.</div></div>
+
+  <div class="ca danger"><span class="ic">❌</span><div><strong>Trap 2: Three vulnerability types: Technological · Configuration · Policy. Four physical threat classes: Hardware · Environmental · Electrical · Maintenance.</strong><br>Electrostatic discharge = maintenance. Temperature = environmental. Voltage spike = electrical. Physical damage = hardware. Know which threat goes in which physical class.</div></div>
+
+  <div class="ca danger"><span class="ic">❌</span><div><strong>Trap 3: DDoS uses a botnet of zombie hosts controlled by a CnC (Command and Control) program.</strong><br>Botnet = network of infected computers (zombies). CnC = software used by the attacker to direct all zombies to attack simultaneously. DDoS is distributed across many sources — this is what makes it so much more powerful and harder to stop than single-source DoS.</div></div>
+
+  <div class="ca danger"><span class="ic">❌</span><div><strong>Trap 4: SSH requires BOTH hostname AND domain name before crypto key generate rsa will work.</strong><br>The RSA key name is automatically created as hostname.domain-name. If either is missing, the key cannot be generated and SSH cannot be enabled. Minimum modulus = 1024 bits. Both must be configured BEFORE the crypto key command.</div></div>
+
+  <div class="ca danger"><span class="ic">❌</span><div><strong>Trap 5: service password-encryption = Type 7 (weak, reversible). enable secret = MD5 (strong). These are NOT equivalent.</strong><br>service password-encryption protects console and VTY passwords from casual viewing in the config file — but these passwords can be decoded. enable secret uses MD5 which cannot be reversed. Never use service password-encryption as a substitute for enable secret.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 6: Three attack categories: Reconnaissance (discover) · Access (exploit) · DoS (disrupt).</strong><br>Reconnaissance discovers the target — internet queries, ping sweeps, port scans. Access attacks exploit what was found — password attacks, trust exploitation, port redirection, MitM. DoS prevents legitimate access. Know which specific attacks belong to each category.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 7: SPI (Stateful Packet Inspection) is the most effective firewall type — tracks connection state.</strong><br>SPI only allows inbound packets that are legitimate responses to established outbound connections. It can also detect and block DoS attacks. Packet filtering (IP/MAC), application filtering (ports), and URL filtering are simpler techniques. SPI combines all of these with state tracking.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 8: AAA — Authentication (who are you?), Authorization (what can you do?), Accounting (what did you do?).</strong><br>AAA = "Triple A" = the primary framework for access control. Credit card analogy: auth=who can use it, authz=spending limit, accounting=transaction record. Know which letter covers which function.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 9: login block-for 120 attempts 3 within 60 — block for 120 seconds after 3 failed attempts in 60 seconds.</strong><br>Deters brute-force password attacks. The syntax order: block duration (120s) → keyword "attempts" → threshold (3) → keyword "within" → window (60s). Applied in global configuration mode, protects VTY lines.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 10: exec-timeout 5 30 = 5 minutes 30 seconds idle timeout. Applies to console, aux, and VTY lines.</strong><br>Prevents exploitation of unattended logged-in sessions. Default Cisco timeout = 10 minutes. Configured in line configuration mode. Applied per line (console 0, aux 0, vty 0 4).</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 11: Worm mitigation = patch OS. Virus mitigation = update antivirus definitions.</strong><br>Worms exploit OS and software vulnerabilities — patching removes the vulnerability itself. Viruses spread through files — antivirus software detects and quarantines infected files. Know which mitigation matches which malware type.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 12: DMZ = network segment for publicly accessible servers. NOT the same as the internal network.</strong><br>The DMZ hosts servers that need to be reachable from the internet (web, email). They're isolated from the internal network. External users reach DMZ servers but cannot reach internal hosts. The internal network is behind both the internet firewall AND the internal firewall.</div></div>
+
+  <div class="ca tip"><span class="ic">✅</span><div><strong>Module 16 quick-reference summary:</strong><br><br>
+  <strong>4 threat types:</strong> Information theft · Data loss/manipulation · Identity theft · Disruption of service<br>
+  <strong>3 vulnerability types:</strong> Technological · Configuration · Policy<br>
+  <strong>4 physical threat classes:</strong> Hardware · Environmental · Electrical · Maintenance<br>
+  <strong>Malware:</strong> Virus (host+human needed) · Worm (neither needed, exploits vulns) · Trojan (disguised, user installs, no replication)<br>
+  <strong>3 attack categories:</strong> Reconnaissance (discover) · Access (exploit) · DoS (disrupt)<br>
+  <strong>Recon types:</strong> Internet queries · Ping sweeps · Port scans<br>
+  <strong>Access attack types:</strong> Password attacks · Trust exploitation · Port redirection · Man-in-the-middle<br>
+  <strong>DoS:</strong> Single source · Blocks legitimate access<br>
+  <strong>DDoS:</strong> Multiple sources · Botnet of zombies · Controlled by CnC program<br>
+  <strong>Defense-in-depth:</strong> VPN + ASA firewall + IPS + ESA + WSA + AAA server<br>
+  <strong>Backups:</strong> Frequency · Storage (offsite) · Security (strong password) · Validation (test restores)<br>
+  <strong>Patch:</strong> Best worm mitigation = patch OS · Best virus mitigation = update AV definitions<br>
+  <strong>AAA:</strong> Authentication (who?) · Authorization (what can they do?) · Accounting (what did they do?)<br>
+  <strong>Firewall types:</strong> Packet filter (IP/MAC) · App filter (ports) · URL filter (websites) · SPI (stateful, best)<br>
+  <strong>DMZ:</strong> Special segment for publicly accessible servers; isolated from internal network<br>
+  <strong>AutoSecure:</strong> auto secure command — basic Cisco router hardening<br>
+  <strong>Password rules:</strong> 8+ chars · mix case/num/symbol · avoid dictionary · misspell · change often<br>
+  <strong>Passphrase:</strong> Multiple words = longer + easier to remember + harder to crack<br>
+  <strong>service password-encryption:</strong> Type 7 (weak, reversible) — encrypts console/VTY passwords<br>
+  <strong>enable secret:</strong> MD5 (strong) — always use over enable password<br>
+  <strong>security passwords min-length 8:</strong> Enforce minimum password length globally<br>
+  <strong>login block-for 120 attempts 3 within 60:</strong> Block 120s after 3 failures in 60s<br>
+  <strong>exec-timeout 5 30:</strong> Disconnect idle session after 5m 30s<br>
+  <strong>SSH 6 steps:</strong> hostname → ip domain-name → crypto key gen rsa modulus 1024 → username secret → login local → transport input ssh<br>
+  <strong>RSA key name:</strong> auto = hostname.domain-name<br>
+  <strong>Disable services:</strong> no ip http server · transport input ssh · show ip ports all</div></div>
+
+  <!-- SYNTAX CHECKER: 16.4.5 -->
+  <div style="margin:20px 0 6px;padding:16px;background:#0d1117;border:1px solid #30363d;border-left:3px solid #bc8cff;border-radius:8px">
+    <div style="font-size:.7em;font-weight:800;text-transform:uppercase;letter-spacing:.8px;color:#bc8cff;margin-bottom:6px">&#x1F5A5; Syntax Checker &mdash; 16.4.5</div>
+    <div style="font-size:.92em;font-weight:600;color:#e6edf3;margin-bottom:12px">Configure Secure Passwords and SSH</div>
+    <div style="font-size:.82em;color:#8b949e;margin-bottom:14px">Type each command exactly as shown. Press Enter to submit. The checker validates your syntax step by step.</div>
+    <div class="tool-links" style="display:flex;flex-wrap:wrap;gap:14px">
+      <div style="flex:1 1 220px;min-width:0">
+        <a href="../../syntax-checker-simple/ccna1_syntax_checker.html?lab=16.4.5" target="_blank" rel="noopener" title="Quick, guided drill: type the exact commands for this NetAcad lab, step by step. Opens straight to lab 16.4.5." style="display:inline-flex;align-items:center;gap:8px;color:#fff;text-decoration:none;padding:8px 18px;border-radius:6px;font-size:.85em;font-weight:700;background:#238636;border:1px solid #2ea043">&#x25B6; Open Syntax Checker</a>
+        <div style="font-size:.75em;color:#8b949e;margin-top:6px">Quick, guided drill: type the exact commands for this NetAcad lab, step by step. Opens straight to lab 16.4.5.</div>
+      </div>
+      <div style="flex:1 1 220px;min-width:0">
+        <a class="cli-engine-link" href="../../cli-engine/ccna-cli-engine.html" target="_blank" rel="noopener" title="Full simulated Cisco IOS terminal: Tab completion, device state, Free Practice, Home Labs and Subnetting. In its exercise menu, pick “Course 1 · 16.4 — Configure Secure Passwords and SSH”." style="display:inline-flex;align-items:center;gap:8px;color:#fff;text-decoration:none;padding:8px 18px;border-radius:6px;font-size:.85em;font-weight:700;background:#1f6feb;border:1px solid #388bfd">&#x1F4BB; Open CLI Engine</a>
+        <div style="font-size:.75em;color:#8b949e;margin-top:6px">Full simulated Cisco IOS terminal: Tab completion, device state, Free Practice, Home Labs and Subnetting. In its exercise menu, pick “Course 1 · 16.4 — Configure Secure Passwords and SSH”.</div>
+      </div>
+    </div>
+    <div style="margin-top:12px;font-size:.75em"><a href="../../index.html" style="color:#58a6ff;text-decoration:none">&#x1F3E0; All study tools (home)</a></div>
+  </div>
+
+  <!-- PT INLINE -->
+  <div style="margin:20px 0 6px;padding:14px 16px;background:#0d1117;border:1px solid #30363d;border-left:3px solid #1f6feb;border-radius:6px">
+    <div style="font-size:.72em;font-weight:800;text-transform:uppercase;letter-spacing:.8px;color:#1f6feb;margin-bottom:10px">&#x1F4E6; Packet Tracer Activities</div>
+  <div style="display:flex;align-items:baseline;gap:10px;padding:6px 0;border-bottom:1px solid #21262d"><span style="font-family:monospace;font-size:.85em;color:#79c0ff;white-space:nowrap;flex-shrink:0;min-width:52px">16.4.6</span><span style="font-size:.88em;color:#c9d1d9">Configure Secure Passwords and SSH</span></div>
+    <div style="margin-top:10px;font-size:.78em;color:#6e7681">Full list: <a href="https://itexamanswers.net/ccna-1-v7-exam-answers-introduction-to-networks-v7-0-itn.html" target="_blank" rel="noopener" style="color:#58a6ff;word-break:break-all">itexamanswers.net/ccna-1-v7-exam-answers-introduction-to-networks-v7-0-itn.html</a></div>
+  </div>
+
+</div></div>
+
+
+</div>
+<div class="ft">CCNA 1 ITN v7.02 — Module 16: Network Security Fundamentals v2.2<br>Based on Cisco NetAcad curriculum · Study guide for personal use</div>
+<button class="tb-btn" id="topb" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+<div class="mod-nav">
+  <a class="mn-hub" href="index.html">🏠 Hub</a>
+  <div class="mn-divider"></div>
+  <a class="mn-prev" href="ccna1_module15_application_layer_v2.2.html">‹</a>
+  <span class="mn-label">M16 of 17</span>
+  <a class="mn-next" href="ccna1_module17_build_small_network_v2.2.html">›</a>
+</div>
+<script>
+var MOD_KEY="ccna1-module16-network-security-fundamentals";
+var SECS=["s1","s2","s3","s4","s-pt-16-5","s5"];
+var checked={};
+function loadState(){
+  try{var s=localStorage.getItem(MOD_KEY);if(s)checked=JSON.parse(s);}catch(e){}
+  SECS.forEach(function(id){
+    var pill=document.getElementById('pill-'+id);
+    var row=document.getElementById('row-'+id);
+    var st=document.getElementById('st-'+id);
+    var sch=document.getElementById('sch-'+id);
+    if(checked[id]){
+      if(pill){pill.classList.add('checked');pill.querySelector('.pill-check').textContent='✓';}
+      if(row)row.classList.add('done');
+      if(st)st.textContent='✓';
+      if(sch){sch.classList.add('checked');sch.textContent='✓ Done';}
+    } else {
+      if(pill){pill.classList.remove('checked');pill.querySelector('.pill-check').textContent='○';}
+      if(row)row.classList.remove('done');
+      if(st)st.textContent='○';
+      if(sch){sch.classList.remove('checked');sch.textContent='○ Mark done';}
+    }
+  });
+}
+function toggleSection(id,btn){checked[id]=!checked[id];try{localStorage.setItem(MOD_KEY,JSON.stringify(checked));}catch(e){}loadState();}
+function toggleStudyPanel(){
+  var hdr=document.getElementById('sp-hdr');
+  var body=document.getElementById('sp-body');
+  var arr=document.getElementById('sp-arr');
+  hdr.classList.toggle('open');body.classList.toggle('open');
+  if(arr)arr.textContent=body.classList.contains('open')?'▲':'▼';
+}
+function goTo(id){var el=document.getElementById(id);if(!el)return;var h=el.querySelector('.sh'),b=el.querySelector('.sb');if(h&&b&&!b.classList.contains('open')){h.classList.add('open');b.classList.add('open');}setTimeout(function(){window.scrollTo({top:el.getBoundingClientRect().top+window.pageYOffset-60,behavior:'smooth'});},50);}
+function setFs(size,btn){document.documentElement.style.setProperty('--base-fs',size);document.querySelectorAll('.fs-btn').forEach(function(b){b.classList.remove('active');});btn.classList.add('active');try{localStorage.setItem('ccna-fs',size);}catch(e){}}
+(function(){try{var s=localStorage.getItem('ccna-fs');if(s){document.documentElement.style.setProperty('--base-fs',s);document.querySelectorAll('.fs-btn').forEach(function(b){b.classList.remove('active');if((b.textContent==='S'&&s==='14px')||(b.textContent==='M'&&s==='16px')||(b.textContent==='L'&&s==='18px')||(b.textContent==='XL'&&s==='20px'))b.classList.add('active');});}}catch(e){}loadState();})();
+function copyCode(btn){var pre=btn.closest('.cw').querySelector('pre');navigator.clipboard.writeText(pre.innerText||pre.textContent).then(function(){btn.textContent='Copied!';setTimeout(function(){btn.textContent='Copy';},1500);});}
+</script>
+<script src="../../site-config.js"></script>
+</body>
+</html>

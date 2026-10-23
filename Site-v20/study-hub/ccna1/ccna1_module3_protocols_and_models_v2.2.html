@@ -1,0 +1,901 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=2.0">
+<title>CCNA 1 Module 3: Protocols and Models v2.2</title>
+<style>
+:root{
+  --nt:#0a6e4e;--ntd:#4ade80;--nt2:#052e1e;--nt3:#021710;
+  --bg:#f4f6f8;--card:#fff;--text:#1a1a2e;--muted:#5a6a7a;
+  --cbg:#0d1117;--ctxt:#c9d1d9;--r:12px;--sh:0 2px 12px rgba(0,0,0,.08);
+  --base-fs:20px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);font-size:var(--base-fs);line-height:1.7}
+.bc{background:#0d1117;padding:8px 16px;display:flex;align-items:center;flex-wrap:wrap;gap:4px;font-size:.75em;overflow-x:auto;white-space:nowrap;-webkit-overflow-scrolling:touch;border-bottom:1px solid #21262d}
+.bc a{color:#8b949e;text-decoration:none;font-weight:600;flex-shrink:0}
+.bc .sep{color:#6e7681;flex-shrink:0}
+.bc .cur{color:var(--ntd);font-weight:700;flex-shrink:0}
+.fs-bar{position:sticky;top:0;z-index:200;background:#1a1a2e;display:flex;align-items:center;justify-content:flex-end;padding:6px 14px;gap:6px;box-shadow:0 2px 8px rgba(0,0,0,.3)}
+.fs-label{color:#8b949e;font-size:.72em;font-weight:700;letter-spacing:.5px;text-transform:uppercase;margin-right:4px}
+.fs-btn{background:#30363d;color:#c9d1d9;border:2px solid transparent;border-radius:6px;padding:4px 12px;font-size:.75em;font-weight:700;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:all .2s;line-height:1.4}
+.fs-btn:active,.fs-btn.active{background:var(--nt);color:#fff;border-color:var(--ntd)}
+.hdr{background:linear-gradient(135deg,var(--nt3),var(--nt2),var(--nt));color:#fff;padding:32px 20px 24px;text-align:center}
+.hdr .badge{display:inline-block;background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.4);border-radius:20px;padding:4px 14px;font-size:.81em;margin-bottom:12px}
+.hdr h1{font-size:1.5em;font-weight:700;margin-bottom:6px}
+.hdr p{font-size:.94em;opacity:.85}
+.hdr .obj{display:inline-block;background:rgba(255,255,255,.15);border-radius:8px;padding:7px 16px;margin-top:12px;font-size:.875em;font-style:italic}
+/* Study progress panel */
+.sp-wrap{background:var(--card);margin:16px 16px 0;border-radius:var(--r);box-shadow:var(--sh);overflow:hidden}
+.sp-hdr{background:var(--nt);color:#fff;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;user-select:none;-webkit-tap-highlight-color:transparent;gap:10px}
+.sp-hdr .sp-title{font-weight:700;font-size:.875em;flex-shrink:0}
+.sp-hdr .sp-arr{transition:transform .3s;flex-shrink:0}
+.sp-hdr.open .sp-arr{transform:rotate(180deg)}
+.sp-body{display:none;padding:12px 14px}
+.sp-body.open{display:block}
+.sp-row{display:flex;align-items:center;gap:10px;padding:6px 4px;border-bottom:1px solid #f0f4f8;font-size:.81em}
+.sp-row:last-child{border-bottom:none}
+.sp-row .sr-status{font-size:1em;flex-shrink:0;width:20px;text-align:center}
+.sp-row .sr-nb{font-weight:800;color:var(--nt);min-width:36px;flex-shrink:0;font-size:.875em}
+.sp-row .sr-ttl{color:var(--text);flex:1}
+.sp-row.done .sr-ttl{color:var(--muted);text-decoration:line-through}
+/* Section check pills in fs-bar */
+.sc-pills{display:flex;align-items:center;gap:4px;overflow-x:auto;-webkit-overflow-scrolling:touch;flex:1;padding:0 4px}
+.sc-pill{background:#30363d;color:#8b949e;border:2px solid transparent;border-radius:6px;padding:3px 8px;font-size:.72em;font-weight:700;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:all .15s;white-space:nowrap;flex-shrink:0;line-height:1.4;display:flex;align-items:center;gap:3px}
+.sc-pill.checked{background:var(--nt);color:#fff;border-color:var(--ntd)}
+.sc-pill .pill-check{font-size:.875em}
+.toc{background:var(--card);margin:16px;border-radius:var(--r);box-shadow:var(--sh);overflow:hidden}
+.toch{background:var(--nt);color:#fff;padding:14px 18px;font-weight:700;font-size:.94em;display:flex;justify-content:space-between;align-items:center;cursor:pointer;user-select:none}
+.toch .arr{transition:transform .3s}
+.toch.open .arr{transform:rotate(180deg)}
+.tocb{display:none;padding:10px 0}
+.tocb.open{display:block}
+.tocg{font-size:.69em;font-weight:800;letter-spacing:.8px;color:var(--nt);text-transform:uppercase;padding:8px 20px 2px}
+.tocb a{display:block;padding:9px 20px 9px 28px;color:var(--text);text-decoration:none;font-size:.875em;border-left:3px solid transparent;transition:all .2s}
+.tocb a:active{background:#f0fdf4;border-left-color:var(--ntd)}
+.tocb a .n{display:inline-block;background:var(--nt);color:#fff;border-radius:5px;padding:1px 8px;font-size:.75em;font-weight:700;margin-right:8px}
+.wrap{padding:0 16px 100px}
+.sec{background:var(--card);border-radius:var(--r);box-shadow:var(--sh);margin-bottom:16px;overflow:hidden}
+.sh{background:linear-gradient(90deg,var(--nt3),var(--nt));color:#fff;padding:16px 18px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;user-select:none;-webkit-tap-highlight-color:transparent}
+.sh .ttl{font-weight:700;font-size:1em}
+.sh .nb{background:rgba(255,255,255,.25);border-radius:6px;padding:3px 10px;font-size:.81em;font-weight:700;margin-right:10px;white-space:nowrap}
+.sh .ch{font-size:1.125em;transition:transform .3s}
+.sh.open .ch{transform:rotate(180deg)}
+.sb{display:none;padding:18px}
+.sb.open{display:block}
+.sub{margin-bottom:24px}
+.sub:last-child{margin-bottom:0}
+.sub h3{font-size:.94em;font-weight:700;color:var(--nt);margin-bottom:10px;padding-bottom:6px;border-bottom:2px solid #f0fdf4;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.sub h3 .sn{background:var(--nt);color:#fff;border-radius:5px;padding:2px 8px;font-size:.75em;white-space:nowrap}
+.sub h4{font-size:.875em;font-weight:700;color:var(--nt);margin:14px 0 6px}
+.sub p{margin-bottom:10px;font-size:.94em}
+.sub ul,.sub ol{padding-left:20px;margin:8px 0;font-size:.94em}
+.sub li{margin-bottom:5px}
+.ca{border-radius:8px;padding:12px 14px;margin:12px 0;font-size:.875em;line-height:1.6;display:flex;gap:10px;align-items:flex-start}
+.ca .ic{font-size:1.125em;flex-shrink:0;margin-top:1px}
+.ca.warn  {background:#fff3cd;border-left:4px solid #b38600;color:#3d2c00}
+.ca.tip   {background:#d4edda;border-left:4px solid #28a745;color:#0d3318}
+.ca.danger{background:#f8d7da;border-left:4px solid #dc3545;color:#3d0010}
+.ca.info  {background:#f0fdf4;border-left:4px solid var(--nt);color:#052e1e}
+.ca code{color:inherit!important;background:rgba(0,0,0,.1)!important;border:1px solid rgba(0,0,0,.15)}
+.et{background:linear-gradient(135deg,#1a1a2e,var(--nt3));color:#fff;border-radius:10px;padding:14px 16px;margin:14px 0;font-size:.875em;line-height:1.6}
+.et .lbl{font-size:.69em;font-weight:800;letter-spacing:1px;color:var(--ntd);margin-bottom:6px}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:12px 0;border-radius:8px}
+table{width:100%;border-collapse:collapse;font-size:.875em}
+th{background:var(--nt);color:#fff;padding:10px 12px;text-align:left;font-weight:700;font-size:.81em}
+td{padding:9px 12px;border-bottom:1px solid #e8ecf0;vertical-align:top;color:#1a1a2e}
+tr:nth-child(even) td{background:#f0fdf4;color:#052e1e}
+tr:last-child td{border-bottom:none}
+p code,li code,td code,.ca code{background:#f0fdf4;color:#052e1e;border-radius:4px;padding:1px 5px;font-size:.81em;font-family:'Courier New',monospace;font-weight:600}
+
+/* Delivery types */
+.delivery-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:12px 0}
+@media(max-width:480px){.delivery-grid{grid-template-columns:1fr}}
+.delivery-card{border-radius:10px;padding:12px 14px;text-align:center;font-size:.81em}
+.delivery-card.uni{background:#e0f2fe;border:2px solid #1a3a5c}
+.delivery-card.mul{background:#f3e8ff;border:2px solid #7b2d8b}
+.delivery-card.bro{background:#fff3cd;border:2px solid #b38600}
+.delivery-card .dc-icon{font-size:1.75em;margin-bottom:6px}
+.delivery-card .dc-name{font-weight:800;margin-bottom:4px}
+.delivery-card.uni .dc-name{color:#1a3a5c}
+.delivery-card.mul .dc-name{color:#7b2d8b}
+.delivery-card.bro .dc-name{color:#b38600}
+
+/* Protocol type cards */
+.ptype-grid{display:grid;gap:8px;margin:12px 0}
+.ptype-card{border-radius:8px;padding:10px 14px;font-size:.81em;border-left:4px solid;line-height:1.6}
+.ptype-card.comm{border-left-color:var(--nt);background:#f0fdf4}
+.ptype-card.sec {border-left-color:#7c1e1e;background:#fff5f5}
+.ptype-card.rout{border-left-color:#1a3a5c;background:#e0f2fe}
+.ptype-card.svc {border-left-color:#5c3d00;background:#fffbeb}
+.ptype-card .pt-name{font-weight:800;margin-bottom:3px}
+.ptype-card.comm .pt-name{color:var(--nt)}
+.ptype-card.sec  .pt-name{color:#7c1e1e}
+.ptype-card.rout .pt-name{color:#1a3a5c}
+.ptype-card.svc  .pt-name{color:#5c3d00}
+
+/* OSI model layers */
+.osi-stack{display:grid;gap:3px;margin:12px 0}
+.osi-layer{border-radius:6px;padding:9px 14px;display:flex;align-items:center;gap:10px;font-size:.81em;line-height:1.5}
+.osi-layer .ol-num{font-weight:900;font-size:1em;min-width:24px;text-align:center;flex-shrink:0}
+.osi-layer .ol-name{font-weight:800;min-width:90px;flex-shrink:0}
+.osi-layer .ol-desc{color:#374151;flex:1}
+.osi-layer.l7{background:#7b2d8b;color:#fff}.osi-layer.l7 .ol-desc{color:rgba(255,255,255,.85)}
+.osi-layer.l6{background:#1a3a5c;color:#fff}.osi-layer.l6 .ol-desc{color:rgba(255,255,255,.85)}
+.osi-layer.l5{background:#1a4731;color:#fff}.osi-layer.l5 .ol-desc{color:rgba(255,255,255,.85)}
+.osi-layer.l4{background:#5c3d00;color:#fff}.osi-layer.l4 .ol-desc{color:rgba(255,255,255,.85)}
+.osi-layer.l3{background:var(--nt);color:#fff}.osi-layer.l3 .ol-desc{color:rgba(255,255,255,.85)}
+.osi-layer.l2{background:#374151;color:#fff}.osi-layer.l2 .ol-desc{color:rgba(255,255,255,.85)}
+.osi-layer.l1{background:#7c1e1e;color:#fff}.osi-layer.l1 .ol-desc{color:rgba(255,255,255,.85)}
+
+/* TCP/IP model layers */
+.tcpip-stack{display:grid;gap:3px;margin:12px 0}
+.tcpip-layer{border-radius:6px;padding:9px 14px;display:flex;align-items:center;gap:10px;font-size:.81em;line-height:1.5}
+.tcpip-layer .tl-num{font-weight:900;font-size:1em;min-width:24px;text-align:center;flex-shrink:0}
+.tcpip-layer .tl-name{font-weight:800;min-width:110px;flex-shrink:0}
+.tcpip-layer .tl-desc{flex:1}
+.tcpip-layer.t4{background:#7b2d8b;color:#fff}.tcpip-layer.t4 .tl-desc{color:rgba(255,255,255,.85)}
+.tcpip-layer.t3{background:#5c3d00;color:#fff}.tcpip-layer.t3 .tl-desc{color:rgba(255,255,255,.85)}
+.tcpip-layer.t2{background:var(--nt);color:#fff}.tcpip-layer.t2 .tl-desc{color:rgba(255,255,255,.85)}
+.tcpip-layer.t1{background:#7c1e1e;color:#fff}.tcpip-layer.t1 .tl-desc{color:rgba(255,255,255,.85)}
+
+/* Model comparison */
+.compare-box{background:#0d1117;border-radius:10px;padding:14px;margin:12px 0}
+.compare-box .cb-title{font-size:.69em;font-weight:800;letter-spacing:.8px;color:var(--ntd);text-transform:uppercase;margin-bottom:10px}
+.compare-row{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:4px}
+.cr-cell{border-radius:6px;padding:7px 12px;font-size:.75em;font-weight:700;text-align:center;color:#fff}
+.cr-cell.osi7{background:#7b2d8b}
+.cr-cell.osi6{background:#7b2d8b;opacity:.8}
+.cr-cell.osi5{background:#7b2d8b;opacity:.6}
+.cr-cell.osi4{background:#5c3d00}
+.cr-cell.osi3{background:var(--nt)}
+.cr-cell.osi2{background:#374151}
+.cr-cell.osi1{background:#7c1e1e}
+.cr-cell.tcp4{background:#7b2d8b}
+.cr-cell.tcp3{background:#5c3d00}
+.cr-cell.tcp2{background:var(--nt)}
+.cr-cell.tcp1{background:#7c1e1e}
+.compare-row .cr-label{font-size:.69em;color:#8b949e;text-align:center;padding:3px 0;font-weight:600}
+
+/* PDU stack */
+.pdu-stack{display:grid;gap:3px;margin:12px 0}
+.pdu-layer{border-radius:6px;padding:8px 14px;display:flex;justify-content:space-between;align-items:center;font-size:.81em}
+.pdu-layer.app{background:#7b2d8b;color:#fff}
+.pdu-layer.tra{background:#5c3d00;color:#fff}
+.pdu-layer.net{background:var(--nt);color:#fff}
+.pdu-layer.dl {background:#374151;color:#fff}
+.pdu-layer.phy{background:#7c1e1e;color:#fff}
+.pdu-layer .pl-layer{font-weight:700}
+.pdu-layer .pl-pdu{font-family:'Courier New',monospace;font-weight:800;background:rgba(255,255,255,.2);padding:2px 8px;border-radius:4px}
+
+/* Address comparison */
+.addr-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:12px 0}
+@media(max-width:480px){.addr-grid{grid-template-columns:1fr}}
+.addr-card{border-radius:10px;padding:12px 14px;font-size:.81em;line-height:1.7}
+.addr-card.l3{background:#e0f2fe;border:2px solid #1a3a5c}
+.addr-card.l2{background:#fffbeb;border:2px solid #b38600}
+.addr-card .ac-title{font-weight:800;margin-bottom:6px;font-size:.875em}
+.addr-card.l3 .ac-title{color:#1a3a5c}
+.addr-card.l2 .ac-title{color:#b38600}
+
+/* Org cards */
+.org-grid{display:grid;gap:6px;margin:12px 0}
+.org-row{display:flex;gap:8px;align-items:flex-start;padding:8px 12px;border-radius:8px;font-size:.81em;line-height:1.6;border-left:4px solid}
+.org-row.inet{border-left-color:var(--nt);background:#f0fdf4}
+.org-row.elec{border-left-color:#1a3a5c;background:#e0f2fe}
+.org-row .or-name{font-weight:800;min-width:55px;flex-shrink:0;color:#1a1a2e;font-family:'Courier New',monospace;font-size:.875em}
+
+/* Hop diagram */
+.hop-diagram{background:#0d1117;border-radius:10px;padding:14px;margin:12px 0}
+.hop-diagram .hd-title{font-size:.69em;font-weight:800;letter-spacing:.8px;color:var(--ntd);text-transform:uppercase;margin-bottom:10px}
+.hop-row{display:flex;align-items:center;gap:6px;margin-bottom:8px;font-size:.75em;flex-wrap:wrap}
+.hop-row .hop-node{background:#21262d;color:#c9d1d9;border-radius:6px;padding:4px 10px;font-weight:700;flex-shrink:0}
+.hop-row .hop-l3{color:#4ade80;font-weight:700;flex-shrink:0;font-size:.875em}
+.hop-row .hop-l2{color:#fbbf24;font-weight:700;flex-shrink:0;font-size:.875em}
+.hop-row .hop-sep{color:#8b949e;flex-shrink:0}
+
+/* TCP/IP protocol table */
+.proto-tabs{border-radius:10px;overflow:hidden;margin:12px 0}
+.proto-tab-hdr{background:#21262d;display:flex;gap:2px;padding:6px;overflow-x:auto}
+.proto-tab-btn{background:#30363d;color:#8b949e;border:none;border-radius:6px;padding:6px 12px;font-size:.75em;font-weight:700;cursor:pointer;white-space:nowrap;-webkit-tap-highlight-color:transparent}
+.proto-tab-btn.active{background:var(--nt);color:#fff}
+
+.tb-btn{position:fixed;bottom:80px;right:16px;background:var(--nt);color:#fff;border:none;border-radius:50%;width:44px;height:44px;font-size:1.25em;box-shadow:0 4px 14px rgba(0,0,0,.25);cursor:pointer;display:none;align-items:center;justify-content:center;z-index:100}
+.tb-btn.show{display:flex}
+.ft{text-align:center;padding:24px 16px;color:var(--muted);font-size:.81em}
+.mod-nav{position:fixed;bottom:0;left:0;right:0;z-index:300;background:#1a1a2e;border-top:1px solid #30363d;display:flex;align-items:center;height:52px;padding:0 8px;gap:6px}
+.mn-hub{background:#1ba0d7;color:#fff;border:none;border-radius:8px;padding:6px 12px;font-size:.75em;font-weight:700;cursor:pointer;text-decoration:none;display:flex;align-items:center;gap:4px;white-space:nowrap;-webkit-tap-highlight-color:transparent;flex-shrink:0}
+.mn-hub:active{opacity:.8}
+.mn-divider{width:1px;height:28px;background:#30363d;flex-shrink:0}
+.mn-label{flex:1;text-align:center;font-size:.69em;color:#8b949e;font-weight:600;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding:0 4px}
+.mn-prev,.mn-next{background:#30363d;color:#c9d1d9;border:none;border-radius:8px;padding:6px 10px;font-size:.875em;font-weight:700;cursor:pointer;text-decoration:none;display:flex;align-items:center;-webkit-tap-highlight-color:transparent;flex-shrink:0}
+.mn-prev:active,.mn-next:active{background:var(--nt);color:#fff}
+
+/* v2.1 — In-section check button */
+.sh{position:relative}
+.sec-check{position:absolute;right:40px;top:50%;transform:translateY(-50%);background:rgba(255,255,255,.15);border:2px solid rgba(255,255,255,.4);border-radius:6px;padding:2px 10px;font-size:.72em;font-weight:800;color:#fff;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:all .2s;white-space:nowrap;z-index:10;line-height:1.5}
+.sec-check.checked{background:var(--ntd);border-color:var(--ntd);color:#052e1e}
+.sec-check:active{opacity:.75}
+</style>
+</head>
+<body>
+<nav class="bc">
+  <a href="../../index.html">🏠 Home</a><span class="sep">›</span>
+  <a href="index.html">CCNA 1 — ITN</a><span class="sep">›</span>
+  <span class="cur">M3: Protocols and Models</span>
+</nav>
+<div class="fs-bar">
+  <div class="sc-pills" id="sc-pills">
+  <button class="sc-pill" id="pill-s1" onclick="toggleSection('s1',this)"><span class="pill-check">○</span>3.1</button>
+  <button class="sc-pill" id="pill-s2" onclick="toggleSection('s2',this)"><span class="pill-check">○</span>3.2</button>
+  <button class="sc-pill" id="pill-s3" onclick="toggleSection('s3',this)"><span class="pill-check">○</span>3.3</button>
+  <button class="sc-pill" id="pill-s4" onclick="toggleSection('s4',this)"><span class="pill-check">○</span>3.4</button>
+  <button class="sc-pill" id="pill-s5" onclick="toggleSection('s5',this)"><span class="pill-check">○</span>3.5</button>
+  <button class="sc-pill" id="pill-s6" onclick="toggleSection('s6',this)"><span class="pill-check">○</span>3.6</button>
+  <button class="sc-pill" id="pill-s7" onclick="toggleSection('s7',this)"><span class="pill-check">○</span>3.7</button>
+  <button class="sc-pill" id="pill-s8" onclick="toggleSection('s8',this)"><span class="pill-check">○</span>🎯</button>
+  </div>
+  <span class="fs-label" style="flex-shrink:0;margin-left:6px">Size</span>
+  <button class="fs-btn" onclick="setFs('14px',this)">S</button>
+  <button class="fs-btn" onclick="setFs('16px',this)">M</button>
+  <button class="fs-btn" onclick="setFs('18px',this)">L</button>
+  <button class="fs-btn active" onclick="setFs('20px',this)">XL</button>
+</div>
+<div class="hdr">
+  <div class="badge">CCNA 1 — ITN v7.02 · Module 3</div>
+  <h1>📡 Protocols and Models</h1>
+  <p>Introduction to Networks · NetAcad Study Guide</p>
+  <div class="obj">Module Objective: Explain how network protocols enable devices to access local and remote network resources</div>
+</div>
+<div class="sp-wrap">
+  <div class="sp-hdr" id="sp-hdr" onclick="toggleStudyPanel()">
+    <span class="sp-title">📚 Sections</span>
+    <span class="sp-arr" id="sp-arr">▼</span>
+  </div>
+  <div class="sp-body" id="sp-body">
+    <div class="sp-row" id="row-s1"><span class="sr-status" id="st-s1">○</span><span class="sr-nb">3.1</span><span class="sr-ttl">The Rules</span></div>
+    <div class="sp-row" id="row-s2"><span class="sr-status" id="st-s2">○</span><span class="sr-nb">3.2</span><span class="sr-ttl">Protocols</span></div>
+    <div class="sp-row" id="row-s3"><span class="sr-status" id="st-s3">○</span><span class="sr-nb">3.3</span><span class="sr-ttl">Protocol Suites</span></div>
+    <div class="sp-row" id="row-s4"><span class="sr-status" id="st-s4">○</span><span class="sr-nb">3.4</span><span class="sr-ttl">Standards Organizations</span></div>
+    <div class="sp-row" id="row-s5"><span class="sr-status" id="st-s5">○</span><span class="sr-nb">3.5</span><span class="sr-ttl">Reference Models</span></div>
+    <div class="sp-row" id="row-s6"><span class="sr-status" id="st-s6">○</span><span class="sr-nb">3.6</span><span class="sr-ttl">Data Encapsulation</span></div>
+    <div class="sp-row" id="row-s7"><span class="sr-status" id="st-s7">○</span><span class="sr-nb">3.7</span><span class="sr-ttl">Data Access</span></div>
+    <div class="sp-row" id="row-s8"><span class="sr-status" id="st-s8">○</span><span class="sr-nb">🎯</span><span class="sr-ttl">Common Exam Traps — Module 3</span></div>
+  </div>
+</div>
+
+<div class="toc">
+  <div class="toch open" onclick="this.classList.toggle('open');document.getElementById('tocb').classList.toggle('open')">
+    📋 Table of Contents — Tap to expand <span class="arr">▼</span>
+  </div>
+  <div class="tocb open" id="tocb">
+    <div class="tocg">3.1 — The Rules</div>
+    <a href="javascript:void(0)" onclick="goTo('s1')"><span class="n">3.1.2</span> Communications Fundamentals — Source, Channel, Destination</a>
+    <a href="javascript:void(0)" onclick="goTo('s1')"><span class="n">3.1.5</span> Five Network Protocol Requirements</a>
+    <a href="javascript:void(0)" onclick="goTo('s1')"><span class="n">3.1.6</span> Message Encoding and Decoding</a>
+    <a href="javascript:void(0)" onclick="goTo('s1')"><span class="n">3.1.7</span> Message Formatting and Encapsulation</a>
+    <a href="javascript:void(0)" onclick="goTo('s1')"><span class="n">3.1.9</span> Message Timing — Flow Control, Timeout, Access Method</a>
+    <a href="javascript:void(0)" onclick="goTo('s1')"><span class="n">3.1.10</span> Delivery Options — Unicast, Multicast, Broadcast</a>
+    <div class="tocg">3.2 — Protocols</div>
+    <a href="javascript:void(0)" onclick="goTo('s2')"><span class="n">3.2.1</span> Four Types of Network Protocols</a>
+    <a href="javascript:void(0)" onclick="goTo('s2')"><span class="n">3.2.2</span> Six Protocol Functions</a>
+    <a href="javascript:void(0)" onclick="goTo('s2')"><span class="n">3.2.3</span> Protocol Interaction — Web Page Request Example</a>
+    <div class="tocg">3.3 — Protocol Suites</div>
+    <a href="javascript:void(0)" onclick="goTo('s3')"><span class="n">3.3.1</span> Protocol Suite and Protocol Stack</a>
+    <a href="javascript:void(0)" onclick="goTo('s3')"><span class="n">3.3.2</span> Evolution of Protocol Suites</a>
+    <a href="javascript:void(0)" onclick="goTo('s3')"><span class="n">3.3.4</span> TCP/IP Protocol Suite — All Layers and Protocols</a>
+    <div class="tocg">3.4 — Standards Organizations</div>
+    <a href="javascript:void(0)" onclick="goTo('s4')"><span class="n">3.4.2</span> Internet Standards — ISOC, IAB, IETF, IRTF, ICANN, IANA</a>
+    <a href="javascript:void(0)" onclick="goTo('s4')"><span class="n">3.4.3</span> Electronic and Communications Standards — IEEE, EIA, TIA, ITU-T</a>
+    <div class="tocg">3.5 — Reference Models</div>
+    <a href="javascript:void(0)" onclick="goTo('s5')"><span class="n">3.5.1</span> Benefits of a Layered Model</a>
+    <a href="javascript:void(0)" onclick="goTo('s5')"><span class="n">3.5.2</span> OSI Reference Model — 7 Layers</a>
+    <a href="javascript:void(0)" onclick="goTo('s5')"><span class="n">3.5.3</span> TCP/IP Protocol Model — 4 Layers</a>
+    <a href="javascript:void(0)" onclick="goTo('s5')"><span class="n">3.5.4</span> OSI vs TCP/IP Comparison</a>
+    <div class="tocg">3.6 — Data Encapsulation</div>
+    <a href="javascript:void(0)" onclick="goTo('s6')"><span class="n">3.6.1</span> Segmentation and Multiplexing</a>
+    <a href="javascript:void(0)" onclick="goTo('s6')"><span class="n">3.6.2</span> Sequencing</a>
+    <a href="javascript:void(0)" onclick="goTo('s6')"><span class="n">3.6.3</span> Protocol Data Units (PDUs)</a>
+    <a href="javascript:void(0)" onclick="goTo('s6')"><span class="n">3.6.4</span> Encapsulation and De-encapsulation</a>
+    <div class="tocg">3.7 — Data Access</div>
+    <a href="javascript:void(0)" onclick="goTo('s7')"><span class="n">3.7.1</span> Two Types of Addresses — L3 IP vs L2 MAC</a>
+    <a href="javascript:void(0)" onclick="goTo('s7')"><span class="n">3.7.2</span> Layer 3 Logical Address Structure</a>
+    <a href="javascript:void(0)" onclick="goTo('s7')"><span class="n">3.7.3</span> Same Network Communication</a>
+    <a href="javascript:void(0)" onclick="goTo('s7')"><span class="n">3.7.5</span> Remote Network Communication — Default Gateway</a>
+    <a href="javascript:void(0)" onclick="goTo('s7')"><span class="n">3.7.8</span> MAC Addresses Change at Every Hop</a>
+    <div class="tocg">Reference</div>
+    <a href="javascript:void(0)" onclick="goTo('s8')"><span class="n">🎯</span> Common Exam Traps</a>
+  </div>
+</div>
+
+<div class="wrap">
+
+<!-- 3.1 THE RULES -->
+<div class="sec" id="s1">
+<div class="sh open" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">3.1</span><span class="ttl">The Rules</span></span><button class="sec-check" id="sch-s1" onclick="event.stopPropagation();toggleSection('s1',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb open">
+
+  <div class="sub">
+  <h3><span class="sn">3.1.2</span> Communications Fundamentals</h3>
+  <p>All communication methods share three elements in common:</p>
+  <div class="tw"><table>
+    <tr><th>Element</th><th>Description</th></tr>
+    <tr><td><strong>Message Source (Sender)</strong></td><td>Person or electronic device that needs to send a message to other individuals or devices</td></tr>
+    <tr><td><strong>Message Destination (Receiver)</strong></td><td>Receives the message and interprets it</td></tr>
+    <tr><td><strong>Channel</strong></td><td>Media providing the pathway over which the message travels from source to destination</td></tr>
+  </table></div>
+  <p>Simply having a physical connection between end devices is not enough. Devices must know <strong>how</strong> to communicate — they need protocols (rules).</p>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">3.1.5</span> Five Network Protocol Requirements</h3>
+  <p>Protocol requirements for human communication (identified sender/receiver, common language, timing, acknowledgment) also apply to computer networks. Common computer protocols must address:</p>
+  <ol>
+    <li><strong>Message encoding</strong></li>
+    <li><strong>Message formatting and encapsulation</strong></li>
+    <li><strong>Message size</strong></li>
+    <li><strong>Message timing</strong></li>
+    <li><strong>Message delivery options</strong></li>
+  </ol>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">3.1.6</span> Message Encoding and Decoding</h3>
+  <p><strong>Encoding</strong> = converting information into another acceptable form for transmission.<br>
+  <strong>Decoding</strong> = the reverse process to interpret the information.</p>
+  <p>Messages sent across a network are first converted to <strong>bits</strong> by the sending host. Each bit is encoded into:</p>
+  <ul>
+    <li>Patterns of <strong>voltages</strong> on copper wires</li>
+    <li><strong>Infrared light</strong> pulses in optical fibers</li>
+    <li><strong>Microwaves</strong> for wireless systems</li>
+  </ul>
+  <p>The destination host receives and decodes the signals to interpret the message.</p>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">3.1.7</span> Message Formatting and Encapsulation</h3>
+  <p>Messages must follow a specific format or structure depending on type and channel. The letter-in-envelope analogy:</p>
+  <ul>
+    <li>The <strong>letter</strong> = the inner message (data)</li>
+    <li>The <strong>envelope</strong> = the outer format containing addressing information</li>
+    <li>If addressing or formatting is incorrect, the message won't be delivered</li>
+  </ul>
+  <p><strong>Encapsulation</strong> = placing one message format inside another message format (letter in envelope).<br>
+  <strong>De-encapsulation</strong> = removing the outer format to access the inner message.</p>
+  <div class="ca info"><span class="ic">💡</span><div><strong>IP (Internet Protocol)</strong> functions like the envelope in networking — it contains source and destination addresses and is responsible for delivering the packet from the original source to the final destination across one or more networks.</div></div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">3.1.9</span> Message Timing — Three Aspects</h3>
+  <div class="tw"><table>
+    <tr><th>Aspect</th><th>Description</th></tr>
+    <tr><td><strong>Flow Control</strong></td><td>Manages the rate of data transmission. Defines how much information can be sent and at what speed. Prevents a fast sender from overwhelming a slow receiver. Network protocols manage flow control between source and destination.</td></tr>
+    <tr><td><strong>Response Timeout</strong></td><td>Defines how long to wait for a response before taking action. If no response within specified time → resend the request, or assume no answer and move on.</td></tr>
+    <tr><td><strong>Access Method</strong></td><td>Determines when a device can send a message. If two devices transmit simultaneously → "collision of information" → both must back off and retry. On WLANs, the NIC must check if the wireless medium is available before transmitting.</td></tr>
+  </table></div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">3.1.10</span> Message Delivery Options</h3>
+  <div class="delivery-grid">
+    <div class="delivery-card uni">
+      <div class="dc-icon">👤</div>
+      <div class="dc-name">Unicast</div>
+      Information transmitted to a <strong>single</strong> end device (one-to-one)
+    </div>
+    <div class="delivery-card mul">
+      <div class="dc-icon">👥</div>
+      <div class="dc-name">Multicast</div>
+      Information transmitted to <strong>one or more</strong> end devices (a specific subscribed group)
+    </div>
+    <div class="delivery-card bro">
+      <div class="dc-icon">📢</div>
+      <div class="dc-name">Broadcast</div>
+      Information transmitted to <strong>all</strong> end devices on the network
+    </div>
+  </div>
+  </div>
+
+</div></div>
+
+<!-- 3.2 PROTOCOLS -->
+<div class="sec" id="s2">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">3.2</span><span class="ttl">Protocols</span></span><button class="sec-check" id="sch-s2" onclick="event.stopPropagation();toggleSection('s2',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb">
+
+  <div class="sub">
+  <h3><span class="sn">3.2.1</span> Four Types of Network Protocols</h3>
+  <div class="ptype-grid">
+    <div class="ptype-card comm"><div class="pt-name">🌐 Network Communications Protocols</div>Enable two or more devices to communicate over one or more networks. Examples: <strong>IP, TCP, HTTP, Ethernet</strong></div>
+    <div class="ptype-card sec"><div class="pt-name">🔐 Network Security Protocols</div>Secure data — provide authentication, data integrity, and encryption. Examples: <strong>SSH, SSL, TLS</strong></div>
+    <div class="ptype-card rout"><div class="pt-name">🗺️ Routing Protocols</div>Enable routers to exchange route information, compare paths, and select the best path to the destination. Examples: <strong>OSPF, BGP</strong></div>
+    <div class="ptype-card svc"><div class="pt-name">🔍 Service Discovery Protocols</div>Automatic detection of devices or services. Examples: <strong>DHCP</strong> (IP address allocation), <strong>DNS</strong> (name-to-IP translation)</div>
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">3.2.2</span> Six Network Protocol Functions</h3>
+  <div class="tw"><table>
+    <tr><th>Function</th><th>Description</th><th>Example Protocol</th></tr>
+    <tr><td><strong>Addressing</strong></td><td>Identifies sender and intended receiver using a defined addressing scheme</td><td>Ethernet, IPv4, IPv6</td></tr>
+    <tr><td><strong>Reliability</strong></td><td>Provides guaranteed delivery — if messages are lost or corrupted in transit, they are resent</td><td>TCP</td></tr>
+    <tr><td><strong>Flow Control</strong></td><td>Ensures data flows at an efficient rate between two communicating devices</td><td>TCP</td></tr>
+    <tr><td><strong>Sequencing</strong></td><td>Uniquely labels each segment; receiver uses sequence numbers to reassemble in correct order even if segments arrive out-of-order</td><td>TCP</td></tr>
+    <tr><td><strong>Error Detection</strong></td><td>Determines if data was corrupted during transmission</td><td>Ethernet, IPv4, IPv6, TCP</td></tr>
+    <tr><td><strong>Application Interface</strong></td><td>Contains information for process-to-process communications between network applications</td><td>HTTP, HTTPS</td></tr>
+  </table></div>
+  <div class="ca info"><span class="ic">💡</span><div>Note that <strong>Reliability, Flow Control, and Sequencing are all provided by TCP</strong>. These three functions are often tested together as a group that belongs to TCP.</div></div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">3.2.3</span> Protocol Interaction — Web Page Request Example</h3>
+  <p>A single web page request requires multiple protocols working together simultaneously:</p>
+  <div class="tw"><table>
+    <tr><th>Protocol</th><th>Role in Web Page Request</th></tr>
+    <tr><td><strong>HTTP</strong></td><td>Governs the interaction between web server and client — the content and format of requests and responses. Both client and server implement HTTP. Relies on other protocols for transport.</td></tr>
+    <tr><td><strong>TCP</strong></td><td>Manages individual conversations. Guarantees reliable delivery and flow control between end devices.</td></tr>
+    <tr><td><strong>IP</strong></td><td>Delivers messages from sender to receiver. Routers use IP to forward packets across multiple networks.</td></tr>
+    <tr><td><strong>Ethernet</strong></td><td>Delivers messages from one NIC to another NIC on the same Ethernet LAN.</td></tr>
+  </table></div>
+  </div>
+
+</div></div>
+
+<!-- 3.3 PROTOCOL SUITES -->
+<div class="sec" id="s3">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">3.3</span><span class="ttl">Protocol Suites</span></span><button class="sec-check" id="sch-s3" onclick="event.stopPropagation();toggleSection('s3',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb">
+
+  <div class="sub">
+  <h3><span class="sn">3.3.1</span> Protocol Suite and Protocol Stack</h3>
+  <p><strong>Protocol suite</strong> = a group of inter-related protocols necessary to perform a communication function. Designed to work together seamlessly.</p>
+  <p><strong>Protocol stack</strong> = shows how individual protocols within a suite are implemented in layers. Higher layers depend on lower layers. Lower layers move data over the network; upper layers focus on content.</p>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">3.3.2</span> Evolution of Protocol Suites</h3>
+  <div class="tw"><table>
+    <tr><th>Suite</th><th>Developer</th><th>Status</th></tr>
+    <tr><td><strong>TCP/IP</strong></td><td>IETF (open standard)</td><td>✅ Most common today — the internet standard</td></tr>
+    <tr><td><strong>OSI protocols</strong></td><td>ISO + ITU (1977)</td><td>⚠️ OSI protocols replaced by TCP/IP; the OSI 7-layer reference MODEL is still widely used</td></tr>
+    <tr><td><strong>AppleTalk</strong></td><td>Apple Inc. (1985)</td><td>❌ Replaced by TCP/IP in 1995</td></tr>
+    <tr><td><strong>Novell NetWare (IPX)</strong></td><td>Novell Inc. (1983)</td><td>❌ Replaced by TCP/IP in 1995</td></tr>
+  </table></div>
+  <p>TCP/IP has two key advantages: it is <strong>open standard</strong> (freely available to any vendor) and <strong>standards-based</strong> (ensures interoperability between products from different manufacturers).</p>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">3.3.4</span> TCP/IP Protocol Suite — All Protocols by Layer</h3>
+  <h4>Application Layer</h4>
+  <div class="tw"><table>
+    <tr><th>Category</th><th>Protocol</th><th>Description</th></tr>
+    <tr><td>Name System</td><td><strong>DNS</strong></td><td>Translates domain names (cisco.com) to IP addresses</td></tr>
+    <tr><td rowspan="3">Host Config</td><td><strong>DHCPv4</strong></td><td>Dynamically assigns IPv4 address, subnet mask, gateway, DNS to clients</td></tr>
+    <tr><td><strong>DHCPv6</strong></td><td>Dynamically assigns IPv6 addressing to clients</td></tr>
+    <tr><td><strong>SLAAC</strong></td><td>Stateless Address Autoconfiguration — device generates its own IPv6 address without a DHCP server</td></tr>
+    <tr><td rowspan="3">Email</td><td><strong>SMTP</strong></td><td>Client sends email to mail server; servers relay email to other servers</td></tr>
+    <tr><td><strong>POP3</strong></td><td>Client retrieves email from server; email downloaded to local application</td></tr>
+    <tr><td><strong>IMAP</strong></td><td>Client accesses email stored on server; email maintained on server</td></tr>
+    <tr><td rowspan="3">File Transfer</td><td><strong>FTP</strong></td><td>Reliable, connection-oriented, acknowledged file transfer between hosts</td></tr>
+    <tr><td><strong>SFTP</strong></td><td>Secure FTP over SSH — encrypted file transfer session</td></tr>
+    <tr><td><strong>TFTP</strong></td><td>Simple connectionless file transfer; best-effort (no acknowledgment); less overhead than FTP</td></tr>
+    <tr><td rowspan="3">Web</td><td><strong>HTTP</strong></td><td>Exchange text, images, video on the World Wide Web</td></tr>
+    <tr><td><strong>HTTPS</strong></td><td>Secure HTTP — encrypts all data exchanged over the web</td></tr>
+    <tr><td><strong>REST</strong></td><td>Web service using APIs and HTTP requests to create web applications</td></tr>
+  </table></div>
+  <h4>Transport Layer</h4>
+  <div class="tw"><table>
+    <tr><th>Protocol</th><th>Type</th><th>Key Characteristics</th></tr>
+    <tr><td><strong>TCP</strong></td><td>Connection-oriented</td><td>Reliable delivery · Acknowledgments · Flow control · Sequencing · Ordered delivery</td></tr>
+    <tr><td><strong>UDP</strong></td><td>Connectionless</td><td>Fast · No acknowledgment · No sequencing · Used when speed matters more than reliability</td></tr>
+  </table></div>
+  <h4>Internet Layer</h4>
+  <div class="tw"><table>
+    <tr><th>Category</th><th>Protocol</th><th>Description</th></tr>
+    <tr><td rowspan="3">Internet Protocol</td><td><strong>IPv4</strong></td><td>32-bit address; receives segments, packages into packets, routes to destination</td></tr>
+    <tr><td><strong>IPv6</strong></td><td>128-bit address; same function as IPv4</td></tr>
+    <tr><td><strong>NAT</strong></td><td>Translates private IPv4 addresses to globally unique public IPv4 addresses</td></tr>
+    <tr><td rowspan="3">Messaging</td><td><strong>ICMPv4</strong></td><td>Error feedback from destination to source about IPv4 packet delivery problems</td></tr>
+    <tr><td><strong>ICMPv6</strong></td><td>Same as ICMPv4 but for IPv6 packets</td></tr>
+    <tr><td><strong>ICMPv6 ND</strong></td><td>Neighbor Discovery — address resolution and duplicate address detection for IPv6</td></tr>
+    <tr><td rowspan="3">Routing</td><td><strong>OSPF</strong></td><td>Open standard; link-state; hierarchical (areas); interior routing protocol</td></tr>
+    <tr><td><strong>EIGRP</strong></td><td>Cisco proprietary; composite metric (bandwidth, delay, load, reliability)</td></tr>
+    <tr><td><strong>BGP</strong></td><td>Open standard; exterior gateway protocol; used between ISPs</td></tr>
+  </table></div>
+  <h4>Network Access Layer</h4>
+  <div class="tw"><table>
+    <tr><th>Category</th><th>Protocol</th><th>Description</th></tr>
+    <tr><td>Address Resolution</td><td><strong>ARP</strong></td><td>Maps IPv4 addresses to hardware (MAC) addresses dynamically</td></tr>
+    <tr><td rowspan="2">Data Link</td><td><strong>Ethernet</strong></td><td>Wiring and signaling standards for wired LAN network access</td></tr>
+    <tr><td><strong>WLAN</strong></td><td>Wireless signaling across 2.4 GHz and 5 GHz radio frequencies</td></tr>
+  </table></div>
+  </div>
+
+</div></div>
+
+<!-- 3.4 STANDARDS ORGANIZATIONS -->
+<div class="sec" id="s4">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">3.4</span><span class="ttl">Standards Organizations</span></span><button class="sec-check" id="sch-s4" onclick="event.stopPropagation();toggleSection('s4',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb">
+
+  <div class="sub">
+  <h3><span class="sn">3.4.1</span> Why Open Standards Matter</h3>
+  <p>Open standards encourage <strong>interoperability, competition, and innovation</strong>. They prevent any single company from monopolizing the market or gaining unfair advantage. Standards organizations are typically vendor-neutral, non-profit organizations.</p>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">3.4.2</span> Internet Standards Organizations</h3>
+  <div class="org-grid">
+    <div class="org-row inet"><div class="or-name">ISOC</div><div>Internet Society — promotes open development and evolution of internet use worldwide</div></div>
+    <div class="org-row inet"><div class="or-name">IAB</div><div>Internet Architecture Board — overall management and development of internet standards</div></div>
+    <div class="org-row inet"><div class="or-name">IETF</div><div>Internet Engineering Task Force — develops, updates, and maintains internet and TCP/IP technologies. Produces <strong>RFC (Request for Comments)</strong> documents — formal specifications for new and updated protocols</div></div>
+    <div class="org-row inet"><div class="or-name">IRTF</div><div>Internet Research Task Force — long-term research related to internet and TCP/IP protocols (Anti-Spam, Crypto Forum, P2P research groups)</div></div>
+    <div class="org-row inet"><div class="or-name">ICANN</div><div>Internet Corporation for Assigned Names and Numbers — coordinates IP address allocation, domain name management, and assignment of other TCP/IP information</div></div>
+    <div class="org-row inet"><div class="or-name">IANA</div><div>Internet Assigned Numbers Authority — manages IP address allocation, domain names, and protocol identifiers under ICANN</div></div>
+  </div>
+  <div class="et"><div class="lbl">🎯 IANA vs ICANN — EXAM KEY</div>
+  <strong>ICANN</strong> = the governance/coordination body (names and numbers for the internet)<br>
+  <strong>IANA</strong> = the operational arm that does the actual work of IP address and protocol identifier management for ICANN<br>
+  Think: ICANN is the organization; IANA is the function within it.
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">3.4.3</span> Electronic and Communications Standards</h3>
+  <div class="org-grid">
+    <div class="org-row elec"><div class="or-name">IEEE</div><div>Institute of Electrical and Electronics Engineers ("I-triple-E") — creates networking standards: <strong>802.3 Ethernet</strong> and <strong>802.11 WLAN (Wi-Fi)</strong>. Also covers power/energy, healthcare, telecommunications.</div></div>
+    <div class="org-row elec"><div class="or-name">EIA</div><div>Electronic Industries Alliance — standards for electrical wiring, connectors, and 19-inch racks used to mount networking equipment</div></div>
+    <div class="org-row elec"><div class="or-name">TIA</div><div>Telecommunications Industry Association — standards for radio equipment, cellular towers, VoIP devices, satellite communications. Co-developed certified Ethernet cable standards with EIA.</div></div>
+    <div class="org-row elec"><div class="or-name">ITU-T</div><div>International Telecommunications Union – Telecommunication Standardization Sector — one of the largest/oldest communications standards bodies. Standards for video compression, IPTV, and broadband (DSL).</div></div>
+  </div>
+  </div>
+
+</div></div>
+
+<!-- 3.5 REFERENCE MODELS -->
+<div class="sec" id="s5">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">3.5</span><span class="ttl">Reference Models</span></span><button class="sec-check" id="sch-s5" onclick="event.stopPropagation();toggleSection('s5',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb">
+
+  <div class="sub">
+  <h3><span class="sn">3.5.1</span> Four Benefits of a Layered Model</h3>
+  <ol>
+    <li><strong>Assists in protocol design</strong> — each layer has defined information it acts on and a defined interface to adjacent layers</li>
+    <li><strong>Fosters competition</strong> — products from different vendors interoperate because they implement the same layer standards</li>
+    <li><strong>Prevents ripple effects</strong> — technology changes in one layer don't affect other layers</li>
+    <li><strong>Provides common language</strong> — standardized terminology to describe networking functions and capabilities</li>
+  </ol>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">3.5.2</span> OSI Reference Model — 7 Layers</h3>
+  <p>OSI describes <strong>what must be done</strong> at each layer — not <strong>how</strong>. OSI layers are referred to by <strong>number</strong>, not by name (e.g., "Layer 3" not "Network Layer").</p>
+  <div class="osi-stack">
+    <div class="osi-layer l7"><span class="ol-num">7</span><span class="ol-name">Application</span><span class="ol-desc">Process-to-process communications protocols</span></div>
+    <div class="osi-layer l6"><span class="ol-num">6</span><span class="ol-name">Presentation</span><span class="ol-desc">Common data representation between application layer services</span></div>
+    <div class="osi-layer l5"><span class="ol-num">5</span><span class="ol-name">Session</span><span class="ol-desc">Organizes dialog and manages data exchange</span></div>
+    <div class="osi-layer l4"><span class="ol-num">4</span><span class="ol-name">Transport</span><span class="ol-desc">Segments, transfers, and reassembles data for individual end-device communications</span></div>
+    <div class="osi-layer l3"><span class="ol-num">3</span><span class="ol-name">Network</span><span class="ol-desc">Exchanges individual pieces of data over the network between identified end devices</span></div>
+    <div class="osi-layer l2"><span class="ol-num">2</span><span class="ol-name">Data Link</span><span class="ol-desc">Methods for exchanging data frames between devices over a common media</span></div>
+    <div class="osi-layer l1"><span class="ol-num">1</span><span class="ol-name">Physical</span><span class="ol-desc">Mechanical, electrical, functional means for bit transmission over physical connections</span></div>
+  </div>
+  <div class="ca tip"><span class="ic">✅</span><div><strong>Memory aids (7 to 1):</strong> "All People Seem To Need Data Processing"<br><strong>Memory aids (1 to 7):</strong> "Please Do Not Throw Sausage Pizza Away"</div></div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">3.5.3</span> TCP/IP Protocol Model — 4 Layers</h3>
+  <p>TCP/IP is a <strong>protocol model</strong> — it closely matches the structure of actual protocols. TCP/IP layers are referred to by <strong>name</strong>, not number.</p>
+  <div class="tcpip-stack">
+    <div class="tcpip-layer t4"><span class="tl-num">4</span><span class="tl-name">Application</span><span class="tl-desc">Represents data to the user; encoding and dialog control</span></div>
+    <div class="tcpip-layer t3"><span class="tl-num">3</span><span class="tl-name">Transport</span><span class="tl-desc">Supports communication between various devices across diverse networks</span></div>
+    <div class="tcpip-layer t2"><span class="tl-num">2</span><span class="tl-name">Internet</span><span class="tl-desc">Determines the best path through the network</span></div>
+    <div class="tcpip-layer t1"><span class="tl-num">1</span><span class="tl-name">Network Access</span><span class="tl-desc">Controls the hardware devices and media that make up the network</span></div>
+  </div>
+  <div class="ca info"><span class="ic">💡</span><div>TCP/IP protocol specifications are publicly defined in <strong>IETF RFC (Request for Comments)</strong> documents — authored by networking engineers and open for public comment.</div></div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">3.5.4</span> OSI vs TCP/IP — Layer Mapping</h3>
+  <div class="compare-box">
+    <div class="cb-title">OSI vs TCP/IP Model Comparison</div>
+    <div class="compare-row"><div class="cr-label">OSI</div><div class="cr-label">TCP/IP</div></div>
+    <div class="compare-row"><div class="cr-cell osi7">7 — Application</div><div class="cr-cell tcp4" style="grid-row:span 3">4 — Application</div></div>
+    <div class="compare-row"><div class="cr-cell osi6">6 — Presentation</div></div>
+    <div class="compare-row"><div class="cr-cell osi5">5 — Session</div></div>
+    <div class="compare-row"><div class="cr-cell osi4">4 — Transport</div><div class="cr-cell tcp3">3 — Transport</div></div>
+    <div class="compare-row"><div class="cr-cell osi3">3 — Network</div><div class="cr-cell tcp2">2 — Internet</div></div>
+    <div class="compare-row"><div class="cr-cell osi2">2 — Data Link</div><div class="cr-cell tcp1" style="grid-row:span 2">1 — Network Access</div></div>
+    <div class="compare-row"><div class="cr-cell osi1">1 — Physical</div></div>
+  </div>
+  <div class="tw"><table>
+    <tr><th>TCP/IP Layer</th><th>OSI Layer(s)</th><th>Key Relationship</th></tr>
+    <tr><td>Application (4)</td><td>7+6+5</td><td>TCP/IP combines all three OSI upper layers into one Application layer</td></tr>
+    <tr><td>Transport (3)</td><td>4</td><td>Direct 1:1 mapping — both describe ordered, reliable delivery between end devices</td></tr>
+    <tr><td>Internet (2)</td><td>3</td><td>Direct 1:1 mapping — both describe addressing and routing across networks</td></tr>
+    <tr><td>Network Access (1)</td><td>2+1</td><td>TCP/IP combines both OSI lower layers; OSI model preferred when distinguishing L1 and L2</td></tr>
+  </table></div>
+  </div>
+
+  <!-- PT INLINE -->
+  <div style="margin:20px 0 6px;padding:14px 16px;background:#0d1117;border:1px solid #30363d;border-left:3px solid #1f6feb;border-radius:6px">
+    <div style="font-size:.72em;font-weight:800;text-transform:uppercase;letter-spacing:.8px;color:#1f6feb;margin-bottom:10px">&#x1F4E6; Packet Tracer Activities</div>
+  <div style="display:flex;align-items:baseline;gap:10px;padding:6px 0;border-bottom:1px solid #21262d"><span style="font-family:monospace;font-size:.85em;color:#79c0ff;white-space:nowrap;flex-shrink:0;min-width:52px">3.5.5</span><span style="font-size:.88em;color:#c9d1d9">Investigate the TCP/IP and OSI Models in Action</span></div>
+    <div style="margin-top:10px;font-size:.78em;color:#6e7681">Full list: <a href="https://itexamanswers.net/ccna-1-v7-exam-answers-introduction-to-networks-v7-0-itn.html" target="_blank" rel="noopener" style="color:#58a6ff;word-break:break-all">itexamanswers.net/ccna-1-v7-exam-answers-introduction-to-networks-v7-0-itn.html</a></div>
+  </div>
+
+</div></div>
+
+<!-- 3.6 DATA ENCAPSULATION -->
+<div class="sec" id="s6">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">3.6</span><span class="ttl">Data Encapsulation</span></span><button class="sec-check" id="sch-s6" onclick="event.stopPropagation();toggleSection('s6',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb">
+
+  <div class="sub">
+  <h3><span class="sn">3.6.1</span> Segmentation and Multiplexing</h3>
+  <p><strong>Segmentation</strong> = dividing a stream of data into smaller units (packets/frames) for transmission. Data networks use TCP/IP to send data in individual IP packets.</p>
+  <p>Why not send one giant stream? It would monopolize the link, and if any part failed, the entire stream would need retransmission.</p>
+  <p><strong>Two benefits of segmentation:</strong></p>
+  <ol>
+    <li><strong>Increases speed</strong> — many different conversations can be interleaved on the network simultaneously. This is called <strong>multiplexing</strong>.</li>
+    <li><strong>Increases efficiency</strong> — if a single segment fails to reach its destination, only that segment needs to be retransmitted — not the entire data stream.</li>
+  </ol>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">3.6.2</span> Sequencing</h3>
+  <p>Because segments may take different paths and arrive out of order, they need sequence numbers. <strong>TCP is responsible for sequencing individual segments</strong> so the receiver can reassemble them into the original message in correct order — even if segments arrive out of sequence, delayed, or lost.</p>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">3.6.3</span> Protocol Data Units (PDUs)</h3>
+  <p>As data passes down the protocol stack, protocol information is added at each level. This is <strong>encapsulation</strong>. The form data takes at any layer is called a <strong>PDU (Protocol Data Unit)</strong>.</p>
+  <div class="pdu-stack">
+    <div class="pdu-layer app"><span class="pl-layer">Application Layer</span><span class="pl-pdu">Data</span></div>
+    <div class="pdu-layer tra"><span class="pl-layer">Transport Layer (TCP = Segment / UDP = Datagram)</span><span class="pl-pdu">Segment</span></div>
+    <div class="pdu-layer net"><span class="pl-layer">Network / Internet Layer</span><span class="pl-pdu">Packet</span></div>
+    <div class="pdu-layer dl"><span class="pl-layer">Data Link Layer</span><span class="pl-pdu">Frame</span></div>
+    <div class="pdu-layer phy"><span class="pl-layer">Physical Layer</span><span class="pl-pdu">Bits</span></div>
+  </div>
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>TCP Transport PDU = Segment. UDP Transport PDU = Datagram.</strong> Both are Transport layer PDUs but named differently based on which protocol is used. The Network layer PDU is always called a "Packet" (also sometimes "IP datagram"). The Data Link PDU is always "Frame."</div></div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">3.6.4–3.6.5</span> Encapsulation and De-encapsulation</h3>
+  <p><strong>Encapsulation</strong> (sender — top down): At each layer, the upper layer PDU becomes the "data payload" of the current layer's PDU. Protocol header information is added at each step.</p>
+  <p>Application Data → [Transport header] Segment → [Network header] Packet → [DL header+trailer] Frame → Bits</p>
+  <p><strong>De-encapsulation</strong> (receiver — bottom up): At each layer, the current layer's header is removed, and the inner PDU is passed up to the next layer.</p>
+  <p>Bits → Frame stripped → Packet extracted → Segment extracted → Data delivered to application</p>
+  </div>
+
+</div></div>
+
+<!-- 3.7 DATA ACCESS -->
+<div class="sec" id="s7">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">3.7</span><span class="ttl">Data Access</span></span><button class="sec-check" id="sch-s7" onclick="event.stopPropagation();toggleSection('s7',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb">
+
+  <div class="sub">
+  <h3><span class="sn">3.7.1</span> Two Types of Addresses</h3>
+  <div class="addr-grid">
+    <div class="addr-card l3">
+      <div class="ac-title">🌐 Layer 3 — IP Address (Logical)</div>
+      <strong>Purpose:</strong> Delivers the IP packet from the original source to the final destination — may cross multiple networks.<br><br>
+      <strong>Scope:</strong> End-to-end (never changes during the journey)<br><br>
+      <strong>Format:</strong> IPv4 (32-bit dotted decimal) or IPv6 (128-bit hexadecimal)
+    </div>
+    <div class="addr-card l2">
+      <div class="ac-title">🔌 Layer 2 — MAC Address (Physical)</div>
+      <strong>Purpose:</strong> Delivers the data link frame from one NIC to the next NIC on the same network.<br><br>
+      <strong>Scope:</strong> Hop-by-hop (changes at every router)<br><br>
+      <strong>Format:</strong> Ethernet MAC (48-bit hexadecimal, e.g., AA-AA-AA-AA-AA-AA)
+    </div>
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">3.7.2</span> Layer 3 IP Address Structure</h3>
+  <p>Every IP address has two parts:</p>
+  <div class="tw"><table>
+    <tr><th>Part</th><th>IPv4 Name</th><th>IPv6 Name</th><th>Description</th></tr>
+    <tr><td><strong>Left portion</strong></td><td>Network portion</td><td>Prefix</td><td>Identifies the network. <strong>Same for all devices on the same network.</strong></td></tr>
+    <tr><td><strong>Right portion</strong></td><td>Host portion</td><td>Interface ID</td><td>Identifies the specific device. <strong>Unique per device on the network.</strong></td></tr>
+  </table></div>
+  <p>The <strong>subnet mask (IPv4)</strong> or <strong>prefix-length (IPv6)</strong> identifies the boundary between the network and host portions.</p>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">3.7.3–3.7.4</span> Same Network Communication</h3>
+  <p>When source and destination share the same network portion of their IP addresses:</p>
+  <ul>
+    <li>The data link frame can be sent <strong>directly</strong> to the destination device</li>
+    <li>Source MAC = NIC of sending device</li>
+    <li>Destination MAC = NIC of receiving device (on the same LAN)</li>
+  </ul>
+  <div class="ca tip"><span class="ic">✅</span><div><strong>Example:</strong> PC1 (192.168.<strong>1</strong>.110) → FTP server (192.168.<strong>1</strong>.9)<br>Both share network portion 192.168.1.x → same network → frame sent directly PC1 MAC → FTP server MAC</div></div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">3.7.5–3.7.7</span> Remote Network — Default Gateway</h3>
+  <p>When source and destination have different network portions in their IP addresses:</p>
+  <ul>
+    <li>The Ethernet frame <strong>cannot be sent directly</strong> to the destination — it is on a different network</li>
+    <li>The frame must be sent to the <strong>default gateway (router)</strong></li>
+    <li>Source MAC = NIC of sending device</li>
+    <li>Destination MAC = <strong>MAC of the router's local interface</strong> (NOT the final destination MAC)</li>
+    <li>The router then forwards the packet toward the actual destination</li>
+  </ul>
+  <div class="ca danger"><span class="ic">🚨</span><div><strong>Key distinction:</strong> When communicating with a remote host, the destination <strong>IP address</strong> is the final destination (web server, etc.), but the destination <strong>MAC address</strong> is the router's MAC. Students frequently mix these up.</div></div>
+  <div class="ca tip"><span class="ic">✅</span><div><strong>Example:</strong> PC1 (192.168.<strong>1</strong>.110) → Web Server (172.16.<strong>1</strong>.99)<br>Different network portions → PC1 sends frame to R1's MAC → R1 forwards packet to Web Server</div></div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">3.7.8</span> MAC Addresses Change at Every Hop — IP Addresses Don't</h3>
+  <div class="hop-diagram">
+    <div class="hd-title">🔄 IP Addresses Unchanged · MAC Addresses Change at Each Router</div>
+    <div class="hop-row">
+      <div class="hop-node">PC1</div>
+      <span class="hop-sep">→→</span>
+      <div class="hop-node">Router R1</div>
+      <span class="hop-sep">→→</span>
+      <div class="hop-node">Router R2</div>
+      <span class="hop-sep">→→</span>
+      <div class="hop-node">Web Server</div>
+    </div>
+    <div class="hop-row">
+      <span style="color:#8b949e;font-size:.75em">L3 IP (stays same):</span>
+      <span class="hop-l3">Src: 192.168.1.10 → Dst: 172.16.1.99 (unchanged throughout)</span>
+    </div>
+    <div class="hop-row">
+      <span style="color:#8b949e;font-size:.75em">L2 MAC hop 1:</span>
+      <span class="hop-l2">Src: PC1-MAC · Dst: R1-local-MAC</span>
+    </div>
+    <div class="hop-row">
+      <span style="color:#8b949e;font-size:.75em">L2 MAC hop 2:</span>
+      <span class="hop-l2">Src: R1-exit-MAC · Dst: R2-local-MAC</span>
+    </div>
+    <div class="hop-row">
+      <span style="color:#8b949e;font-size:.75em">L2 MAC hop 3:</span>
+      <span class="hop-l2">Src: R2-exit-MAC · Dst: WebServer-MAC</span>
+    </div>
+  </div>
+  <p>At each router: the old data link frame is removed and a new one is created for the next segment of the journey. The IP packet inside is passed forward unchanged.</p>
+  </div>
+
+</div></div>
+
+<!-- EXAM TRAPS -->
+
+
+  <!-- PT MASTER LINK -->
+  <div style="margin:18px 0 6px;padding:12px 14px;background:#0d1117;border:1px solid #30363d;border-left:3px solid #1f6feb;border-radius:6px">
+    <div style="font-size:.7em;font-weight:800;text-transform:uppercase;letter-spacing:.8px;color:#1f6feb;margin-bottom:6px">&#x1F4E6; All Packet Tracer Activities — CCNA 1</div>
+    <div style="font-size:.84em;color:#c9d1d9;margin-bottom:4px">Complete list of all CCNA 1 Packet Tracer activities with instructions:</div>
+    <a href="https://itexamanswers.net/ccna-1-v7-exam-answers-introduction-to-networks-v7-0-itn.html" target="_blank" rel="noopener" style="font-size:.78em;color:#58a6ff;word-break:break-all">https://itexamanswers.net/ccna-1-v7-exam-answers-introduction-to-networks-v7-0-itn.html</a>
+  </div>
+
+<div class="sec" id="s8">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">🎯</span><span class="ttl">Common Exam Traps — Module 3</span></span><button class="sec-check" id="sch-s8" onclick="event.stopPropagation();toggleSection('s8',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb">
+
+  <div class="ca danger"><span class="ic">❌</span><div><strong>Trap 1: OSI = 7 layers (by number). TCP/IP = 4 layers (by name). Know both.</strong><br>OSI: Physical(1) · Data Link(2) · Network(3) · Transport(4) · Session(5) · Presentation(6) · Application(7)<br>TCP/IP: Network Access(1) · Internet(2) · Transport(3) · Application(4)<br>OSI layers are called "Layer 3," "Layer 2," etc. TCP/IP layers are called "Transport layer," "Internet layer," etc.</div></div>
+
+  <div class="ca danger"><span class="ic">❌</span><div><strong>Trap 2: OSI L1+L2 = TCP/IP Network Access. OSI L3 = TCP/IP Internet. OSI L4 = TCP/IP Transport. OSI L5+L6+L7 = TCP/IP Application.</strong><br>This mapping is directly tested. The "split" happens at the top (3 OSI layers → 1 TCP/IP) and the bottom (2 OSI layers → 1 TCP/IP). Middle layers map directly 1:1.</div></div>
+
+  <div class="ca danger"><span class="ic">❌</span><div><strong>Trap 3: PDU names — Data (App) → Segment/Datagram (Transport) → Packet (Network) → Frame (Data Link) → Bits (Physical).</strong><br>TCP PDU = Segment. UDP PDU = Datagram. These exact names are tested in matching and multiple-choice questions. "Packet" is Layer 3 only. "Frame" is Layer 2 only. Students often confuse packet and frame.</div></div>
+
+  <div class="ca danger"><span class="ic">❌</span><div><strong>Trap 4: L3 IP addresses stay the same end-to-end. L2 MAC addresses change at every router hop.</strong><br>The source and destination IP addresses in an IP packet never change as it crosses the internet. The source and destination MAC addresses in the data link frame change at every router because each new link segment needs new addressing for that hop only.</div></div>
+
+  <div class="ca danger"><span class="ic">❌</span><div><strong>Trap 5: Unicast = one, Multicast = group (not all), Broadcast = all.</strong><br>Multicast is often confused with broadcast. Broadcast goes to ALL devices on the network. Multicast goes to only those devices that have subscribed to a specific multicast group. Unicast = one-to-one communication.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 6: TCP provides reliability, flow control, AND sequencing — all three.</strong><br>Students often know TCP provides reliability but forget sequencing (numbering segments for correct reassembly) and flow control (managing rate of transmission). All three functions are TCP's responsibility.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 7: IETF produces RFCs (Request for Comments). ISOC promotes internet use. IAB manages overall standards development.</strong><br>IETF is the technical standards body for TCP/IP and internet protocols. Their output documents are called RFCs. ISOC is more of an advocacy/governance body. IAB sits between ISOC and IETF.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 8: IEEE = 802.3 Ethernet + 802.11 WLAN. EIA = wiring/connectors. TIA = radio/cellular/VoIP. ITU-T = DSL/video.</strong><br>IEEE is "I-triple-E." These four organizations appear in matching questions. IEEE is the most tested because of its famous 802.3 and 802.11 standards used in every network.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 9: TFTP = connectionless, best-effort, no acknowledgment (less overhead). FTP = connection-oriented, reliable, acknowledged.</strong><br>TFTP is used for simple transfers like uploading IOS firmware to a router where simplicity matters. FTP is used for general file transfers where reliability matters. SFTP = FTP over SSH (encrypted).</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 10: When communicating with a remote host, the destination MAC is the router's MAC — not the final destination.</strong><br>The host sends the frame to the default gateway (router) because the final destination is not on the local network. The destination IP is the final target; the destination MAC is the router. This distinction is critical for understanding ARP and routing.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 11: Encoding ≠ encryption. Encoding = converting to a transmissible format. Encryption = securing data.</strong><br>Encoding converts data to bits, then bits to voltages/light/microwaves for the medium. It is a neutral process with no security intent. Encryption is a separate security function performed by protocols like SSH, SSL, TLS, and HTTPS.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 12: OSI protocols were replaced by TCP/IP. But the OSI 7-layer reference MODEL is still used today.</strong><br>The actual OSI protocol suite (like AppleTalk and NetWare) no longer exists in modern networks. However, the OSI model (the 7-layer framework for describing networking) remains the standard reference model used by engineers worldwide.</div></div>
+
+  <div class="ca tip"><span class="ic">✅</span><div><strong>Module 3 quick-reference summary:</strong><br><br>
+  <strong>Communication elements:</strong> Source · Channel · Destination<br>
+  <strong>5 protocol requirements:</strong> Encoding · Formatting/Encapsulation · Size · Timing · Delivery options<br>
+  <strong>Encoding:</strong> Converts to bits → voltages (copper) / light (fiber) / microwaves (wireless)<br>
+  <strong>Encapsulation:</strong> One message format inside another (letter in envelope). De-encapsulation = reverse.<br>
+  <strong>Timing:</strong> Flow Control (rate) · Response Timeout (wait time) · Access Method (when to transmit)<br>
+  <strong>Delivery:</strong> Unicast (one) · Multicast (group) · Broadcast (all)<br>
+  <strong>4 protocol types:</strong> Communications (IP/TCP/HTTP) · Security (SSH/SSL/TLS) · Routing (OSPF/BGP) · Service Discovery (DHCP/DNS)<br>
+  <strong>6 protocol functions:</strong> Addressing · Reliability · Flow Control · Sequencing · Error Detection · App Interface (TCP = Reliability + Flow Control + Sequencing)<br>
+  <strong>Protocol suite:</strong> Group of inter-related protocols. Stack = layered view.<br>
+  <strong>TCP/IP:</strong> Open standard · Standards-based · Dominant suite today. OSI protocols = replaced. AppleTalk/NetWare = replaced 1995.<br>
+  <strong>TCP/IP Application:</strong> DNS · DHCPv4/v6 · SLAAC · SMTP/POP3/IMAP · FTP/SFTP/TFTP · HTTP/HTTPS/REST<br>
+  <strong>TCP/IP Transport:</strong> TCP (reliable/connection-oriented) · UDP (fast/connectionless)<br>
+  <strong>TCP/IP Internet:</strong> IPv4(32-bit)/IPv6(128-bit)/NAT · ICMPv4/ICMPv6/ICMPv6 ND · OSPF/EIGRP/BGP<br>
+  <strong>TCP/IP Network Access:</strong> ARP · Ethernet · WLAN<br>
+  <strong>Internet orgs:</strong> ISOC (promote) · IAB (manage) · IETF (RFCs/standards) · IRTF (research) · ICANN (names/numbers) · IANA (IP/protocol IDs under ICANN)<br>
+  <strong>Electronic orgs:</strong> IEEE (802.3 Ethernet / 802.11 WLAN) · EIA (wiring/connectors) · TIA (radio/VoIP) · ITU-T (DSL/video)<br>
+  <strong>Layered model benefits:</strong> Protocol design · Competition · Isolates changes · Common language<br>
+  <strong>OSI 7 layers (7→1):</strong> App · Presentation · Session · Transport · Network · Data Link · Physical<br>
+  <strong>TCP/IP 4 layers:</strong> Application · Transport · Internet · Network Access<br>
+  <strong>Model mapping:</strong> OSI L7/6/5=TCP App · OSI L4=TCP Transport · OSI L3=TCP Internet · OSI L2/1=TCP Network Access<br>
+  <strong>Segmentation benefits:</strong> Multiplexing (interleaved conversations) + Efficient retransmission (only lost segment resent)<br>
+  <strong>TCP sequences segments</strong> for correct reassembly at destination<br>
+  <strong>PDUs:</strong> Data (App) · Segment/Datagram (Transport) · Packet (Network) · Frame (Data Link) · Bits (Physical)<br>
+  <strong>Addresses:</strong> L3 IP = end-to-end (never changes) · L2 MAC = hop-by-hop (changes at every router)<br>
+  <strong>Same network:</strong> Frame goes directly to destination (same MAC addresses)<br>
+  <strong>Remote network:</strong> Frame destination MAC = router (default gateway), not final destination<br>
+  <strong>ARP:</strong> Maps IPv4 addresses to MAC addresses (Network Access layer)</div></div>
+
+</div></div>
+
+</div>
+<div class="ft">CCNA 1 ITN v7.02 — Module 3: Protocols and Models v2.2<br>Based on Cisco NetAcad curriculum · Study guide for personal use</div>
+<button class="tb-btn" id="topb" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+<div class="mod-nav">
+  <a class="mn-hub" href="index.html">🏠 Hub</a>
+  <div class="mn-divider"></div>
+  <a class="mn-prev" href="ccna1_module2_basic_switch_end_device_config_v2.2.html">‹</a>
+  <span class="mn-label">M3 of 17</span>
+  <a class="mn-next" href="ccna1_module4_physical_layer_v2.2.html">›</a>
+</div>
+<script>
+var MOD_KEY="ccna1-module3-protocols-and-models";
+var SECS=["s1","s2","s3","s4","s5","s6","s7","s8"];
+var checked={};
+function loadState(){
+  try{var s=localStorage.getItem(MOD_KEY);if(s)checked=JSON.parse(s);}catch(e){}
+  SECS.forEach(function(id){
+    var pill=document.getElementById('pill-'+id);
+    var row=document.getElementById('row-'+id);
+    var st=document.getElementById('st-'+id);
+    var sch=document.getElementById('sch-'+id);
+    if(checked[id]){
+      if(pill){pill.classList.add('checked');pill.querySelector('.pill-check').textContent='✓';}
+      if(row)row.classList.add('done');
+      if(st)st.textContent='✓';
+      if(sch){sch.classList.add('checked');sch.textContent='✓ Done';}
+    } else {
+      if(pill){pill.classList.remove('checked');pill.querySelector('.pill-check').textContent='○';}
+      if(row)row.classList.remove('done');
+      if(st)st.textContent='○';
+      if(sch){sch.classList.remove('checked');sch.textContent='○ Mark done';}
+    }
+  });
+}
+function toggleSection(id,btn){checked[id]=!checked[id];try{localStorage.setItem(MOD_KEY,JSON.stringify(checked));}catch(e){}loadState();}
+function toggleStudyPanel(){
+  var hdr=document.getElementById('sp-hdr');
+  var body=document.getElementById('sp-body');
+  var arr=document.getElementById('sp-arr');
+  hdr.classList.toggle('open');body.classList.toggle('open');
+  if(arr)arr.textContent=body.classList.contains('open')?'▲':'▼';
+}
+function goTo(id){var el=document.getElementById(id);if(!el)return;var h=el.querySelector('.sh'),b=el.querySelector('.sb');if(h&&b&&!b.classList.contains('open')){h.classList.add('open');b.classList.add('open');}setTimeout(function(){window.scrollTo({top:el.getBoundingClientRect().top+window.pageYOffset-60,behavior:'smooth'});},50);}
+function setFs(size,btn){document.documentElement.style.setProperty('--base-fs',size);document.querySelectorAll('.fs-btn').forEach(function(b){b.classList.remove('active');});btn.classList.add('active');try{localStorage.setItem('ccna-fs',size);}catch(e){}}
+(function(){try{var s=localStorage.getItem('ccna-fs');if(s){document.documentElement.style.setProperty('--base-fs',s);document.querySelectorAll('.fs-btn').forEach(function(b){b.classList.remove('active');if((b.textContent==='S'&&s==='14px')||(b.textContent==='M'&&s==='16px')||(b.textContent==='L'&&s==='18px')||(b.textContent==='XL'&&s==='20px'))b.classList.add('active');});}}catch(e){}loadState();})();
+function copyCode(btn){var pre=btn.closest('.cw').querySelector('pre');navigator.clipboard.writeText(pre.innerText||pre.textContent).then(function(){btn.textContent='Copied!';setTimeout(function(){btn.textContent='Copy';},1500);});}
+</script>
+<script src="../../site-config.js"></script>
+</body>
+</html>

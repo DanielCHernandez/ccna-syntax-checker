@@ -1,0 +1,1067 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=2.0">
+<title>CCNA 2 Module 5: STP Concepts v2.2</title>
+<style>
+:root{
+  --blue:#1ba0d7;--dark:#005073;--green:#6cc24a;
+  --bg:#f4f6f8;--card:#fff;--text:#1a1a2e;--muted:#5a6a7a;
+  --cbg:#0d1117;--ctxt:#c9d1d9;--r:12px;--sh:0 2px 12px rgba(0,0,0,.08);
+  --base-fs:16px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);font-size:var(--base-fs);line-height:1.7}
+
+/* ── Font size toggle ── */
+.fs-bar{position:sticky;top:0;z-index:200;background:#1a1a2e;display:flex;align-items:center;justify-content:flex-end;padding:6px 14px;gap:6px;box-shadow:0 2px 8px rgba(0,0,0,.3)}
+.fs-label{color:#8b949e;font-size:.72em;font-weight:700;letter-spacing:.5px;text-transform:uppercase;margin-right:4px}
+.fs-btn{background:#30363d;color:#c9d1d9;border:2px solid transparent;border-radius:6px;padding:4px 12px;font-size:.75em;font-weight:700;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:all .2s;line-height:1.4}
+.fs-btn:active,.fs-btn.active{background:var(--blue);color:#fff;border-color:var(--blue)}
+
+/* ── Header ── */
+.hdr{background:linear-gradient(135deg,var(--dark),var(--blue));color:#fff;padding:32px 20px 24px;text-align:center}
+.hdr .badge{display:inline-block;background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.4);border-radius:20px;padding:4px 14px;font-size:.81em;margin-bottom:12px}
+.hdr h1{font-size:1.625em;font-weight:700;margin-bottom:6px}
+.hdr p{font-size:.94em;opacity:.85}
+.hdr .obj{display:inline-block;background:rgba(255,255,255,.15);border-radius:8px;padding:7px 16px;margin-top:12px;font-size:.875em;font-style:italic}
+
+/* ── Progress bar ── */
+.pb{background:var(--card);padding:14px 16px;margin:16px 16px 0;border-radius:var(--r);box-shadow:var(--sh)}
+.pbl{font-size:.81em;color:var(--muted);margin-bottom:6px;font-weight:600}
+.pbt{background:#e0e7ef;border-radius:10px;height:8px;overflow:hidden}
+.pbf{background:linear-gradient(90deg,var(--blue),var(--green));height:100%;border-radius:10px;width:0;transition:width 1s ease}
+
+/* ── TOC ── */
+.toc{background:var(--card);margin:16px;border-radius:var(--r);box-shadow:var(--sh);overflow:hidden}
+.toch{background:var(--dark);color:#fff;padding:14px 18px;font-weight:700;font-size:.94em;display:flex;justify-content:space-between;align-items:center;cursor:pointer;user-select:none}
+.toch .arr{transition:transform .3s}
+.toch.open .arr{transform:rotate(180deg)}
+.tocb{display:none;padding:10px 0}
+.tocb.open{display:block}
+.tocg{font-size:.69em;font-weight:800;letter-spacing:.8px;color:var(--dark);text-transform:uppercase;padding:8px 20px 2px}
+.tocb a{display:block;padding:9px 20px 9px 28px;color:var(--dark);text-decoration:none;font-size:.875em;border-left:3px solid transparent;transition:all .2s}
+.tocb a:hover,.tocb a:active{background:#d0e8f5;border-left-color:var(--blue)}
+.tocb a .n{display:inline-block;background:var(--blue);color:#fff;border-radius:5px;padding:1px 8px;font-size:.75em;font-weight:700;margin-right:8px}
+
+/* ── Main wrap ── */
+.wrap{padding:0 16px 100px}
+
+/* ── Section cards ── */
+.sec{background:var(--card);border-radius:var(--r);box-shadow:var(--sh);margin-bottom:16px;overflow:hidden}
+.sh{background:linear-gradient(90deg,var(--dark),var(--blue));color:#fff;padding:16px 18px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;user-select:none;-webkit-tap-highlight-color:transparent}
+.sh .ttl{font-weight:700;font-size:1em}
+.sh .nb{background:rgba(255,255,255,.25);border-radius:6px;padding:3px 10px;font-size:.81em;font-weight:700;margin-right:10px;white-space:nowrap}
+.sh .ch{font-size:1.125em;transition:transform .3s}
+.sh.open .ch{transform:rotate(180deg)}
+.sb{display:none;padding:18px}
+.sb.open{display:block}
+
+/* ── Subsections ── */
+.sub{margin-bottom:24px}
+.sub:last-child{margin-bottom:0}
+.sub h3{font-size:.94em;font-weight:700;color:var(--dark);margin-bottom:10px;padding-bottom:6px;border-bottom:2px solid #d0e8f5;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.sub h3 .sn{background:var(--blue);color:#fff;border-radius:5px;padding:2px 8px;font-size:.75em;white-space:nowrap}
+.sub p{margin-bottom:10px;font-size:.94em}
+.sub ul,.sub ol{padding-left:20px;margin:8px 0;font-size:.94em}
+.sub li{margin-bottom:5px}
+
+/* ── Code blocks ── */
+.cw{background:var(--cbg);border-radius:10px;margin:12px 0;overflow:hidden}
+.cl{background:#21262d;color:#c9d1d9;font-size:.78em;font-weight:700;padding:6px 14px;letter-spacing:.5px;text-transform:uppercase;display:flex;justify-content:space-between;align-items:center}
+.cpb{background:#30363d;color:#c9d1d9;border:none;border-radius:5px;padding:3px 10px;font-size:.69em;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.cpb:active{background:var(--blue);color:#fff}
+pre{margin:0;padding:14px;overflow-x:auto;-webkit-overflow-scrolling:touch}
+code{font-family:'Courier New',monospace;font-size:.81em;color:var(--ctxt);line-height:1.6}
+p code,li code,td code,h3 code,.ca code{background:#c2d9ea;color:#002233;border-radius:4px;padding:1px 5px;font-size:.81em;font-family:'Courier New',monospace;font-weight:600}
+
+/* ── Callout boxes ── */
+.ca{border-radius:8px;padding:12px 14px;margin:12px 0;font-size:.875em;line-height:1.6;display:flex;gap:10px;align-items:flex-start}
+.ca .ic{font-size:1.125em;flex-shrink:0;margin-top:1px}
+.ca.warn  {background:#fff3cd;border-left:4px solid #b38600;color:#3d2c00}
+.ca.tip   {background:#d4edda;border-left:4px solid #28a745;color:#0d3318}
+.ca.danger{background:#f8d7da;border-left:4px solid #dc3545;color:#3d0010}
+.ca.info  {background:#d0e8f5;border-left:4px solid var(--blue);color:#002d44}
+
+/* ── Exam tip dark box ── */
+.et{background:linear-gradient(135deg,#1a1a2e,var(--dark));color:#fff;border-radius:10px;padding:14px 16px;margin:14px 0;font-size:.875em;line-height:1.6}
+.et .lbl{font-size:.69em;font-weight:800;letter-spacing:1px;color:var(--green);margin-bottom:6px}
+.et ol,.et ul{padding-left:18px;margin-top:6px}
+.et li{margin-bottom:5px}
+
+/* ── Tables ── */
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:12px 0;border-radius:8px}
+table{width:100%;border-collapse:collapse;font-size:.875em}
+th{background:var(--dark);color:#fff;padding:10px 12px;text-align:left;font-weight:700;font-size:.81em}
+td{padding:9px 12px;border-bottom:1px solid #e8ecf0;vertical-align:top;color:#1a1a2e}
+tr:nth-child(even) td{background:#d0e8f5;color:#002d44}
+tr:last-child td{border-bottom:none}
+
+/* ── Numbered steps ── */
+.steps{counter-reset:step;list-style:none;padding:0;margin:12px 0}
+.steps li{counter-increment:step;display:flex;gap:12px;align-items:flex-start;padding:10px 0;border-bottom:1px solid #eef0f3;font-size:.875em;line-height:1.6}
+.steps li:last-child{border-bottom:none}
+.steps li::before{content:counter(step);background:var(--blue);color:#fff;border-radius:50%;min-width:26px;height:26px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.81em;flex-shrink:0;margin-top:2px}
+
+/* ── Diagram box ── */
+.dg{background:#0d1117;border-radius:10px;padding:14px;margin:12px 0;overflow-x:auto;-webkit-overflow-scrolling:touch}
+.dg pre{color:#58a6ff;font-family:'Courier New',monospace;font-size:.75em;line-height:1.6}
+
+/* ── Scenario box ── */
+.sc{background:#1a1a2e;color:#c9d1d9;border-radius:8px;padding:14px;margin:12px 0;font-size:.875em;line-height:1.6}
+.sc .scl{font-size:.69em;font-weight:800;letter-spacing:.8px;color:var(--green);margin-bottom:8px}
+
+/* ── BID explainer box ── */
+.bid-box{background:#0d1117;border:2px solid var(--blue);border-radius:10px;padding:16px;margin:14px 0}
+.bid-box .bid-title{font-size:.75em;font-weight:800;letter-spacing:.8px;color:var(--blue);text-transform:uppercase;margin-bottom:10px}
+.bid-row{display:flex;gap:0;margin-bottom:10px;border-radius:6px;overflow:hidden}
+.bid-field{flex:1;padding:8px 10px;text-align:center;font-size:.75em;font-weight:700}
+.bid-field.priority{background:#005073;color:#fff}
+.bid-field.sysid{background:#1ba0d7;color:#fff}
+.bid-field.mac{background:#2d6a4f;color:#fff}
+.bid-sub{display:flex;gap:0}
+.bid-sub-field{flex:1;padding:4px 8px;text-align:center;font-size:.69em;color:#8b949e}
+.bid-sub-field.priority{border-top:1px solid #005073}
+.bid-sub-field.sysid{border-top:1px solid #1ba0d7}
+.bid-sub-field.mac{border-top:1px solid #2d6a4f}
+
+/* ── STP step cards ── */
+.stp-steps{display:grid;gap:10px;margin:12px 0}
+.stp-step{border-radius:10px;padding:14px;border-left:5px solid}
+.stp-step.s1{background:#e8f4fb;border-left-color:var(--dark)}
+.stp-step.s2{background:#d4edda;border-left-color:#28a745}
+.stp-step.s3{background:#fff3cd;border-left-color:#b38600}
+.stp-step.s4{background:#f8d7da;border-left-color:#dc3545}
+.stp-step .st-num{font-size:.69em;font-weight:800;letter-spacing:.8px;text-transform:uppercase;margin-bottom:4px}
+.stp-step.s1 .st-num{color:var(--dark)}
+.stp-step.s2 .st-num{color:#0d3318}
+.stp-step.s3 .st-num{color:#3d2c00}
+.stp-step.s4 .st-num{color:#3d0010}
+.stp-step .st-title{font-weight:700;font-size:.94em;margin-bottom:4px;color:#1a1a2e}
+.stp-step .st-body{font-size:.875em;color:#1a1a2e}
+
+/* ── Port state timeline ── */
+.port-timeline{margin:12px 0}
+.pt-row{display:flex;align-items:stretch;gap:0;border-radius:10px;overflow:hidden;margin-bottom:8px}
+.pt-state{flex:1;padding:10px 8px;text-align:center;font-size:.75em;font-weight:700}
+.pt-state.blocking{background:#6c757d;color:#fff}
+.pt-state.listening{background:#e07b00;color:#fff}
+.pt-state.learning{background:#1ba0d7;color:#fff}
+.pt-state.forwarding{background:#28a745;color:#fff}
+.pt-state.disabled{background:#3d0010;color:#fff}
+.pt-arrow{display:flex;align-items:center;padding:0 4px;color:var(--muted);font-size:.875em;font-weight:700}
+.pt-label{font-size:.69em;color:var(--muted);text-align:center;margin-top:2px}
+
+/* ── STP versions comparison ── */
+.ver-grid{display:grid;gap:10px;margin:12px 0}
+.ver-card{border-radius:10px;padding:12px 14px;border:2px solid}
+.ver-card.cisco-default{border-color:var(--green);background:#f0fff4}
+.ver-card.cisco-prop{border-color:var(--blue);background:#e8f4fb}
+.ver-card.ieee{border-color:#6c757d;background:#f8f9fa}
+.ver-card .vc-title{font-size:.875em;font-weight:800;margin-bottom:6px}
+.ver-card.cisco-default .vc-title{color:#0d3318}
+.ver-card.cisco-prop .vc-title{color:var(--dark)}
+.ver-card.ieee .vc-title{color:#343a40}
+.ver-card p{font-size:.81em;color:#1a1a2e;line-height:1.6}
+
+
+/* ── Module navigation bar ── */
+.mod-nav{position:fixed;bottom:0;left:0;right:0;z-index:300;background:#1a1a2e;border-top:1px solid #30363d;display:flex;align-items:center;height:52px;padding:0 8px;gap:6px}
+.mn-hub{background:#1ba0d7;color:#fff;border:none;border-radius:8px;padding:6px 12px;font-size:.75em;font-weight:700;cursor:pointer;text-decoration:none;display:flex;align-items:center;gap:4px;white-space:nowrap;-webkit-tap-highlight-color:transparent;flex-shrink:0}
+.mn-hub:active{opacity:.8}
+.mn-divider{width:1px;height:28px;background:#30363d;flex-shrink:0}
+.mn-label{flex:1;text-align:center;font-size:.69em;color:#8b949e;font-weight:600;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding:0 4px}
+.mn-prev,.mn-next{background:#30363d;color:#c9d1d9;border:none;border-radius:8px;padding:6px 10px;font-size:.875em;font-weight:700;cursor:pointer;text-decoration:none;display:flex;align-items:center;-webkit-tap-highlight-color:transparent;flex-shrink:0}
+.mn-prev:active,.mn-next:active{background:#1ba0d7;color:#fff}
+.mn-prev.disabled,.mn-next.disabled{opacity:.3;pointer-events:none}
+
+/* ── Scroll to top ── */
+.tb{position:fixed;bottom:80px;right:16px;background:var(--blue);color:#fff;border:none;border-radius:50%;width:44px;height:44px;font-size:1.25em;box-shadow:0 4px 14px rgba(0,0,0,.25);cursor:pointer;display:none;align-items:center;justify-content:center;z-index:100}
+.tb.show{display:flex}
+.ft{text-align:center;padding:24px 16px;color:var(--muted);font-size:.81em}
+/* Study progress panel */
+.sp-wrap{background:var(--card);margin:16px 16px 0;border-radius:var(--r);box-shadow:var(--sh);overflow:hidden}
+.sp-hdr{background:var(--nt);color:#fff;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;user-select:none;-webkit-tap-highlight-color:transparent;gap:10px}
+.sp-hdr .sp-title{font-weight:700;font-size:.875em;flex-shrink:0}
+.sp-hdr .sp-arr{transition:transform .3s;flex-shrink:0}
+.sp-hdr.open .sp-arr{transform:rotate(180deg)}
+.sp-body{display:none;padding:12px 14px}
+.sp-body.open{display:block}
+.sp-row{display:flex;align-items:center;gap:10px;padding:6px 4px;border-bottom:1px solid #f0f4f8;font-size:.81em}
+.sp-row:last-child{border-bottom:none}
+.sp-row .sr-status{font-size:1em;flex-shrink:0;width:20px;text-align:center}
+.sp-row .sr-nb{font-weight:800;color:var(--nt);min-width:36px;flex-shrink:0;font-size:.875em}
+.sp-row .sr-ttl{color:var(--text);flex:1}
+.sp-row.done .sr-ttl{color:var(--muted);text-decoration:line-through}
+.sc-pills{display:flex;align-items:center;gap:4px;overflow-x:auto;-webkit-overflow-scrolling:touch;flex:1;padding:0 4px}
+.sc-pill{background:#30363d;color:#8b949e;border:2px solid transparent;border-radius:6px;padding:3px 8px;font-size:.72em;font-weight:700;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:all .15s;white-space:nowrap;flex-shrink:0;line-height:1.4;display:flex;align-items:center;gap:3px}
+.sc-pill.checked{background:var(--nt);color:#fff;border-color:var(--ntd)}
+.sc-pill .pill-check{font-size:.875em}
+
+/* v2.1 — In-section check button */
+.sh{position:relative}
+.sec-check{position:absolute;right:40px;top:50%;transform:translateY(-50%);background:rgba(255,255,255,.15);border:2px solid rgba(255,255,255,.4);border-radius:6px;padding:2px 10px;font-size:.72em;font-weight:800;color:#fff;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:all .2s;white-space:nowrap;z-index:10;line-height:1.5}
+.sec-check.checked{background:var(--ntd);border-color:var(--ntd);color:#052e1e}
+.sec-check:active{opacity:.75}
+/* Sections panel + tick colours (these pages never defined --nt/--ntd, so the panel header was invisible) */
+:root{--nt:var(--dark);--ntd:#4ade80}
+</style>
+<style>.bc{background:#0d1117;padding:8px 16px;display:flex;align-items:center;flex-wrap:wrap;gap:4px;font-size:.75em;overflow-x:auto;white-space:nowrap;-webkit-overflow-scrolling:touch;border-bottom:1px solid #21262d}.bc a{color:#8b949e;text-decoration:none;font-weight:600;flex-shrink:0}.bc a:active{color:#c9d1d9}.bc .sep{color:#6e7681;flex-shrink:0}.bc .cur{color:#1ba0d7;font-weight:700;flex-shrink:0}</style>
+</head>
+<body>
+<nav class="bc"><a href="../../index.html">🏠 Home</a><span class="sep">›</span><a href="index.html">CCNA 2 — SRWE</a><span class="sep">›</span><span class="cur">M5: STP</span></nav>
+
+<!-- FONT SIZE TOGGLE -->
+<div class="fs-bar">
+  <div class="sc-pills" id="sc-pills">
+  <button class="sc-pill" id="pill-s1" onclick="toggleSection('s1',this)"><span class="pill-check">○</span>5.1</button>
+  <button class="sc-pill" id="pill-s2" onclick="toggleSection('s2',this)"><span class="pill-check">○</span>5.2</button>
+  <button class="sc-pill" id="pill-s3" onclick="toggleSection('s3',this)"><span class="pill-check">○</span>5.3</button>
+  <button class="sc-pill" id="pill-s4" onclick="toggleSection('s4',this)"><span class="pill-check">○</span>CMD</button>
+  <button class="sc-pill" id="pill-s5" onclick="toggleSection('s5',this)"><span class="pill-check">○</span>🎯</button>
+  </div>
+  <span class="fs-label" style="flex-shrink:0;margin-left:6px">Size</span>
+  <button class="fs-btn" onclick="setFs('14px',this)">S</button>
+  <button class="fs-btn active" onclick="setFs('16px',this)">M</button>
+  <button class="fs-btn" onclick="setFs('18px',this)">L</button>
+  <button class="fs-btn" onclick="setFs('20px',this)">XL</button>
+</div>
+
+<!-- HEADER -->
+<div class="hdr">
+  <div class="badge">CCNA 2 — SRWE v7.02</div>
+  <h1>🌲 Module 5: STP Concepts</h1>
+  <p>Switching, Routing &amp; Wireless Essentials · NetAcad Study Guide</p>
+  <div class="obj">Module Objective: Explain how STP enables redundancy in a Layer 2 network</div>
+</div>
+
+<div class="sp-wrap">
+  <div class="sp-hdr" id="sp-hdr" onclick="toggleStudyPanel()">
+    <span class="sp-title">📚 Sections</span>
+    <span class="sp-arr" id="sp-arr">▼</span>
+  </div>
+  <div class="sp-body" id="sp-body">
+    <div class="sp-row" id="row-s1"><span class="sr-status" id="st-s1">○</span><span class="sr-nb">5.1</span><span class="sr-ttl">Purpose of STP</span></div>
+    <div class="sp-row" id="row-s2"><span class="sr-status" id="st-s2">○</span><span class="sr-nb">5.2</span><span class="sr-ttl">STP Operations</span></div>
+    <div class="sp-row" id="row-s3"><span class="sr-status" id="st-s3">○</span><span class="sr-nb">5.3</span><span class="sr-ttl">Evolution of STP</span></div>
+    <div class="sp-row" id="row-s4"><span class="sr-status" id="st-s4">○</span><span class="sr-nb">CMD</span><span class="sr-ttl">Quick Reference — All Module 5 Commands</span></div>
+    <div class="sp-row" id="row-s5"><span class="sr-status" id="st-s5">○</span><span class="sr-nb">🎯</span><span class="sr-ttl">Common Exam Traps — Module 5</span></div>
+  </div>
+</div>
+
+<!-- TABLE OF CONTENTS -->
+<div class="toc">
+  <div class="toch open" onclick="this.classList.toggle('open');document.getElementById('tocb').classList.toggle('open')">
+    📋 Table of Contents — Tap to expand <span class="arr">▼</span>
+  </div>
+  <div class="tocb open" id="tocb">
+    <div class="tocg">5.1 — Purpose of STP</div>
+    <a href="javascript:void(0)" onclick="goTo('s1')"><span class="n">5.1.1</span> Redundancy in Layer 2 Networks</a>
+    <a href="javascript:void(0)" onclick="goTo('s1')"><span class="n">5.1.2</span> Spanning Tree Protocol</a>
+    <a href="javascript:void(0)" onclick="goTo('s1')"><span class="n">5.1.4</span> Layer 2 Loop Problems</a>
+    <a href="javascript:void(0)" onclick="goTo('s1')"><span class="n">5.1.6</span> Broadcast Storm</a>
+    <a href="javascript:void(0)" onclick="goTo('s1')"><span class="n">5.1.7</span> The Spanning Tree Algorithm</a>
+    <div class="tocg">5.2 — STP Operations</div>
+    <a href="javascript:void(0)" onclick="goTo('s2')"><span class="n">BID</span> Understanding the Bridge ID</a>
+    <a href="javascript:void(0)" onclick="goTo('s2')"><span class="n">5.2.2</span> Step 1 — Elect the Root Bridge</a>
+    <a href="javascript:void(0)" onclick="goTo('s2')"><span class="n">5.2.4</span> Determine the Root Path Cost</a>
+    <a href="javascript:void(0)" onclick="goTo('s2')"><span class="n">5.2.5</span> Step 2 — Elect Root Ports</a>
+    <a href="javascript:void(0)" onclick="goTo('s2')"><span class="n">5.2.6</span> Step 3 — Elect Designated Ports</a>
+    <a href="javascript:void(0)" onclick="goTo('s2')"><span class="n">5.2.7</span> Step 4 — Elect Alternate (Blocked) Ports</a>
+    <a href="javascript:void(0)" onclick="goTo('s2')"><span class="n">5.2.9</span> STP Timers and Port States</a>
+    <a href="javascript:void(0)" onclick="goTo('s2')"><span class="n">5.2.11</span> Per-VLAN Spanning Tree (PVST+)</a>
+    <div class="tocg">5.3 — Evolution of STP</div>
+    <a href="javascript:void(0)" onclick="goTo('s3')"><span class="n">5.3.1</span> Different Versions of STP</a>
+    <a href="javascript:void(0)" onclick="goTo('s3')"><span class="n">5.3.2</span> RSTP Concepts</a>
+    <a href="javascript:void(0)" onclick="goTo('s3')"><span class="n">5.3.3</span> RSTP Port States and Roles</a>
+    <a href="javascript:void(0)" onclick="goTo('s3')"><span class="n">5.3.4</span> PortFast and BPDU Guard</a>
+    <a href="javascript:void(0)" onclick="goTo('s3')"><span class="n">5.3.5</span> Alternatives to STP</a>
+    <div class="tocg">Reference</div>
+    <a href="javascript:void(0)" onclick="goTo('s4')"><span class="n">CMD</span> All Module 5 Commands</a>
+    <a href="javascript:void(0)" onclick="goTo('s5')"><span class="n">🎯</span> Common Exam Traps</a>
+  </div>
+</div>
+
+<div class="wrap">
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- SECTION 5.1 — PURPOSE OF STP -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div class="sec" id="s1">
+<div class="sh open" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">5.1</span><span class="ttl">Purpose of STP</span></span><button class="sec-check" id="sch-s1" onclick="event.stopPropagation();toggleSection('s1',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb open">
+
+  <div class="sub">
+  <h3><span class="sn">5.1.1</span> Redundancy in Layer 2 Switched Networks</h3>
+  <p>Redundancy eliminates single points of failure — if one switch or cable fails, traffic takes an alternate path. This is critical for enterprise network design. However, physical redundancy in a Layer 2 network creates a serious problem: <strong>Layer 2 loops</strong>.</p>
+  <div class="tw"><table>
+    <tr><th>Protocol</th><th>Has Loop Prevention?</th><th>Mechanism</th></tr>
+    <tr><td><strong>IPv4 (Layer 3)</strong></td><td>✅ Yes</td><td>TTL field — decremented at every router, packet dropped at 0</td></tr>
+    <tr><td><strong>IPv6 (Layer 3)</strong></td><td>✅ Yes</td><td>Hop Limit field — same concept as TTL</td></tr>
+    <tr><td><strong>Ethernet (Layer 2)</strong></td><td>❌ No</td><td>No TTL equivalent — frames loop forever without STP</td></tr>
+  </table></div>
+  <div class="ca danger">
+    <span class="ic">🚨</span>
+    <div><strong>Layer 2 has no TTL.</strong> A frame caught in a Layer 2 loop circulates forever. There is nothing built into Ethernet to stop it. STP was created specifically and exclusively to solve this problem.</div>
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">5.1.2</span> Spanning Tree Protocol</h3>
+  <p><strong>STP (Spanning Tree Protocol)</strong> is a loop-prevention protocol that allows physical redundancy to exist while logically blocking the ports that would create loops — creating a single active path between any two devices.</p>
+  <ul>
+    <li>Standard: <strong>IEEE 802.1D</strong> (original specification)</li>
+    <li>STP is <strong>enabled by default</strong> on all Cisco switches</li>
+    <li>STP does NOT remove the redundant physical cables — it just disables them logically</li>
+    <li>When an active link fails, STP detects the change and <strong>unblocks a previously blocked port</strong> to restore connectivity</li>
+  </ul>
+  <div class="dg"><pre>
+  Normal operation (STP active):
+  [S1 ROOT]──────────[S2]
+      │                │
+      └──────[S3]──────┘
+              X  ← S3's port to S2 is BLOCKED by STP
+  One path only — no loop possible.
+
+  Link S1-S2 fails:
+  [S1 ROOT]──×──────[S2]
+      │                │
+      └──────[S3]──────┘
+              ↑ STP unblocks this port → connectivity restored</pre></div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">5.1.4–5.1.5</span> Issues with Redundant Links — Layer 2 Loops</h3>
+  <p>Without STP, three catastrophic problems occur the instant a loop exists — sometimes within seconds:</p>
+  <div class="stp-steps">
+    <div class="stp-step s1">
+      <div class="st-num">Problem 1</div>
+      <div class="st-title">MAC Address Table Instability</div>
+      <div class="st-body">A broadcast frame enters the loop and circles continuously. Each time it arrives on a different port, the switch updates its MAC table with the source MAC on that port — then the frame circles back and arrives on a different port again. The MAC table thrashes constantly. The switch can never stabilize its table and cannot make reliable forwarding decisions.</div>
+    </div>
+    <div class="stp-step s2">
+      <div class="st-num">Problem 2</div>
+      <div class="st-title">Link Saturation</div>
+      <div class="st-body">Looping frames consume 100% of available bandwidth on every link in the loop. No useful user traffic can get through — all bandwidth is consumed by looping garbage frames.</div>
+    </div>
+    <div class="stp-step s3">
+      <div class="st-num">Problem 3</div>
+      <div class="st-title">High CPU Utilization</div>
+      <div class="st-body">Every looping frame is processed by the switch CPU. Frames multiply exponentially with each loop iteration. The CPU becomes overwhelmed and the switch becomes completely unusable — often within just a few seconds.</div>
+    </div>
+  </div>
+  <div class="ca info">
+    <span class="ic">💡</span>
+    <div>Both broadcast frames AND unknown unicast frames can loop. Unknown unicast frames (destination MAC not in the table) are flooded out all ports — in a loop this creates duplicate frames arriving at destination devices on top of the broadcast storm.</div>
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">5.1.6</span> Broadcast Storm</h3>
+  <p>A <strong>broadcast storm</strong> is the specific catastrophic result of a Layer 2 loop — an exponentially growing flood of broadcast frames that completely overwhelms the network.</p>
+  <div class="dg"><pre>
+  ARP broadcast enters loop on S1:
+  Round 1:  1 frame  → flooded out all ports
+  Round 2:  2 frames → each flooded again
+  Round 3:  4 frames → each flooded again
+  Round 4:  8 frames → ...
+  Seconds later: thousands of frames per second
+  Result: network completely unusable</pre></div>
+  <ul>
+    <li>Network becomes completely unusable within <strong>seconds</strong></li>
+    <li>All switches in the loop domain overwhelmed — CPU at 100%</li>
+    <li>End devices also suffer — their NICs receive and must process every looping frame</li>
+    <li>Both <strong>broadcasts</strong> and <strong>unknown unicast frames</strong> can loop</li>
+  </ul>
+  <div class="ca warn">
+    <span class="ic">⚠️</span>
+    <div>Even IPv6 is affected — IPv6 never uses Layer 2 broadcasts, but ICMPv6 Neighbor Discovery uses Layer 2 <strong>multicast</strong> frames. Switches forward multicasts the same way as broadcasts by default — they also loop.</div>
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">5.1.7</span> The Spanning Tree Algorithm (STA)</h3>
+  <p>STP is based on the <strong>Spanning Tree Algorithm (STA)</strong>, invented by <strong>Radia Perlman</strong> in 1985. The STA creates a loop-free topology in three logical steps:</p>
+  <ol class="steps">
+    <li>Select a single <strong>root bridge</strong> — one switch becomes the reference point for the entire topology</li>
+    <li>Determine <strong>least-cost paths</strong> — every non-root switch finds the single cheapest path to the root bridge</li>
+    <li><strong>Block redundant paths</strong> — any port that would create a loop is placed in blocking state</li>
+  </ol>
+  <div class="ca info">
+    <span class="ic">💡</span>
+    <div><strong>Historical note:</strong> The IEEE standard and all STP documentation refers to switches as <strong>"bridges"</strong> — a legacy term from early Ethernet when the devices were called bridges. So "Bridge ID (BID)" simply means "Switch ID" in modern networks. Don't let this terminology trip you up.</div>
+  </div>
+  </div>
+
+  <!-- PT INLINE -->
+  <div style="margin:20px 0 6px;padding:14px 16px;background:#0d1117;border:1px solid #30363d;border-left:3px solid #1f6feb;border-radius:6px">
+    <div style="font-size:.72em;font-weight:800;text-transform:uppercase;letter-spacing:.8px;color:#1f6feb;margin-bottom:10px">&#x1F4E6; Packet Tracer Activities</div>
+  <div style="display:flex;align-items:baseline;gap:10px;padding:6px 0;border-bottom:1px solid #21262d"><span style="font-family:monospace;font-size:.85em;color:#79c0ff;white-space:nowrap;flex-shrink:0;min-width:52px">5.1.9</span><span style="font-size:.88em;color:#c9d1d9">Investigate STP Loop Prevention</span></div>
+    <div style="margin-top:10px;font-size:.78em;color:#6e7681">Full list: <a href="https://itexamanswers.net/ccna-2-packet-tracer-labs-answers-srwe-v7-02.html" target="_blank" rel="noopener" style="color:#58a6ff;word-break:break-all">https://itexamanswers.net/ccna-2-packet-tracer-labs-answers-srwe-v7-02.html</a></div>
+  </div>
+
+</div></div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- SECTION 5.2 — STP OPERATIONS -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div class="sec" id="s2">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">5.2</span><span class="ttl">STP Operations</span></span><button class="sec-check" id="sch-s2" onclick="event.stopPropagation();toggleSection('s2',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb">
+
+  <div class="sub">
+  <h3><span class="sn">5.2.1</span> Steps to a Loop-Free Topology</h3>
+  <p>STP builds a loop-free topology in <strong>four sequential steps</strong>. Switches communicate using <strong>BPDUs (Bridge Protocol Data Units)</strong> — sent every 2 seconds by default — which carry all the information needed for every election decision.</p>
+  <div class="stp-steps">
+    <div class="stp-step s1"><div class="st-num">Step 1</div><div class="st-title">Elect the Root Bridge</div><div class="st-body">One switch per network becomes the central reference point. All path calculations are made toward the root bridge.</div></div>
+    <div class="stp-step s2"><div class="st-num">Step 2</div><div class="st-title">Elect Root Ports</div><div class="st-body">Every non-root switch selects exactly one port — the port with the lowest-cost path to the root bridge.</div></div>
+    <div class="stp-step s3"><div class="st-num">Step 3</div><div class="st-title">Elect Designated Ports</div><div class="st-body">Every segment between two switches gets one designated port — the port with the best path to the root bridge on that segment.</div></div>
+    <div class="stp-step s4"><div class="st-num">Step 4</div><div class="st-title">Elect Alternate (Blocked) Ports</div><div class="st-body">Everything remaining — not a root port, not a designated port — becomes an alternate port in blocking state. This is the loop prevention.</div></div>
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">BID</span> Understanding the Bridge ID (BID)</h3>
+  <p>Before the four steps make sense, you must understand the <strong>BID (Bridge ID)</strong> — every STP election is decided by comparing BIDs. The BID is a unique identifier every switch carries in every BPDU it sends.</p>
+
+  <div class="bid-box">
+    <div class="bid-title">🔑 BID Structure — Three Fields Combined</div>
+    <div class="bid-row">
+      <div class="bid-field priority">Bridge Priority<br><span style="font-weight:400;font-size:.9em">4 bits</span></div>
+      <div class="bid-field sysid">Extended System ID<br><span style="font-weight:400;font-size:.9em">12 bits (VLAN ID)</span></div>
+      <div class="bid-field mac">MAC Address<br><span style="font-weight:400;font-size:.9em">48 bits</span></div>
+    </div>
+    <div class="bid-sub">
+      <div class="bid-sub-field priority">Default: 32768<br>Range: 0–61440<br>Must be × 4096</div>
+      <div class="bid-sub-field sysid">Auto-added<br>Cannot be changed<br>= VLAN number</div>
+      <div class="bid-sub-field mac">Switch's burned-in MAC<br>Final tiebreaker<br>Cannot be changed</div>
+    </div>
+  </div>
+
+  <div class="ca warn">
+    <span class="ic">⚠️</span>
+    <div><strong>Why you see 32769 instead of 32768 in show spanning-tree output:</strong><br><br>
+    Default bridge priority = <strong>32768</strong><br>
+    Extended system ID for VLAN 1 = <strong>+ 1</strong><br>
+    Combined value shown in output = <strong>32769</strong><br><br>
+    For VLAN 10: 32768 + 10 = <strong>32778</strong><br>
+    For VLAN 100: 32768 + 100 = <strong>32868</strong><br><br>
+    This is <strong>not a misconfiguration</strong> — it is normal and expected behavior. The extended system ID is automatically added and cannot be removed.</div>
+  </div>
+
+  <div class="cw">
+    <div class="cl">show spanning-tree — how BID appears in output <button class="cpb" onclick="copyCode(this)">Copy</button></div>
+    <pre><code>S1# show spanning-tree vlan 1
+
+VLAN0001
+  Root ID    Priority    32769
+             Address     000A.0033.1111
+             This bridge is the root
+
+  Bridge ID  Priority    32769  (priority 32768 sys-id-ext 1)
+  !                       ↑              ↑           ↑
+  !                    Combined    Base priority  VLAN 1 ID
+             Address     000A.0033.1111
+             Hello Time 2 sec  Max Age 20 sec  Forward Delay 15 sec</code></pre>
+  </div>
+
+  <p><strong>Valid bridge priority values</strong> — must be a multiple of 4096:</p>
+  <div class="cw">
+    <div class="cl">Valid priority values (must be exact — IOS rejects anything else) <button class="cpb" onclick="copyCode(this)">Copy</button></div>
+    <pre><code>0, 4096, 8192, 12288, 16384, 20480, 24576, 28672,
+32768 (default), 36864, 40960, 45056, 49152, 53248, 57344, 61440
+
+! INVALID examples — IOS will reject these:
+spanning-tree vlan 1 priority 32000   ← rejected (not multiple of 4096)
+spanning-tree vlan 1 priority 33000   ← rejected
+spanning-tree vlan 1 priority 1       ← rejected
+
+! VALID examples:
+spanning-tree vlan 1 priority 4096    ← valid
+spanning-tree vlan 1 priority 28672   ← valid</code></pre>
+  </div>
+
+  <div class="et">
+    <div class="lbl">🎯 THE GOLDEN RULE OF STP</div>
+    <strong>The lowest BID wins every STP election. Lower is ALWAYS better in STP.</strong><br><br>
+    Lower bridge priority = more likely to be root bridge.<br>
+    Priority 0 = highest possible preference (always wins priority comparisons).<br>
+    Priority 4096 beats the default 32768.<br><br>
+    Students often think "higher priority = more important" — in STP the <strong>opposite</strong> is true.
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">5.2.2</span> Step 1 — Elect the Root Bridge</h3>
+  <p>The <strong>root bridge</strong> is the central reference point for the entire spanning tree. Think of it as the trunk of a tree — all other switches are branches reaching toward it.</p>
+
+  <div class="cw">
+    <div class="cl">Root bridge election process — what happens when switches boot <button class="cpb" onclick="copyCode(this)">Copy</button></div>
+    <pre><code>All switches boot
+  ↓
+Every switch declares ITSELF the root bridge
+  ↓
+Every switch sends BPDUs advertising its own BID as the "Root ID"
+  ↓
+Switches receive each other's BPDUs and compare:
+  "Is the received BID lower than mine?"
+  YES → accept that switch as the superior root candidate
+  NO  → continue advertising myself
+  ↓
+Exchange continues until all switches agree on ONE root bridge
+  ↓
+The switch with the LOWEST BID = Root Bridge</code></pre>
+  </div>
+
+  <p><strong>Tiebreaker order — evaluated left to right, stop at first difference:</strong></p>
+  <div class="tw"><table>
+    <tr><th>Priority</th><th>Tiebreaker</th><th>Rule</th><th>Admin Controllable?</th></tr>
+    <tr><td>1st</td><td>Bridge Priority</td><td>Lower wins. Default 32768.</td><td>✅ Yes — set with <code>spanning-tree vlan [id] priority [value]</code></td></tr>
+    <tr><td>2nd</td><td>Extended System ID</td><td>Lower VLAN number wins. Rarely the deciding factor.</td><td>❌ No — auto-set to VLAN number</td></tr>
+    <tr><td>3rd</td><td>MAC Address</td><td>Lower hexadecimal MAC wins. Pure tiebreaker.</td><td>❌ No — burned in at factory</td></tr>
+  </table></div>
+
+  <div class="sc">
+    <div class="scl">🔍 WORKED EXAMPLE — Three Switches, All Default Priority</div>
+    S1: Priority 32769, MAC 000A.0033.1111<br>
+    S2: Priority 32769, MAC 000A.0033.2222<br>
+    S3: Priority 32769, MAC 000A.0033.3333<br><br>
+    Step 1: Compare priorities → 32769 = 32769 = 32769 → TIE<br>
+    Step 2: Compare extended system IDs → all VLAN 1 → TIE<br>
+    Step 3: Compare MAC addresses in hexadecimal:<br>
+    000A.0033.1111 &lt; 000A.0033.2222 &lt; 000A.0033.3333<br><br>
+    <strong>→ S1 wins — S1 becomes the root bridge</strong><br><br>
+    Problem: you cannot predict which switch has the lowest factory MAC. Always manually set the priority on the switch you want to be root!
+  </div>
+
+  <div class="cw">
+    <div class="cl">Manually control root bridge placement (best practice) <button class="cpb" onclick="copyCode(this)">Copy</button></div>
+    <pre><code>! Method 1 — Manually set priority (most control)
+S1(config)# spanning-tree vlan 1 priority 4096
+
+! Method 2 — Let IOS auto-set the right priority
+S1(config)# spanning-tree vlan 1 root primary
+! (IOS sets priority to 24576, or lower if another switch already has &lt;24576)
+
+! Set the backup root bridge
+S2(config)# spanning-tree vlan 1 root secondary
+! (IOS sets priority to 28672)</code></pre>
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">5.2.4</span> Determine the Root Path Cost</h3>
+  <p>Once the root bridge is elected, every non-root switch calculates its <strong>internal root path cost</strong> — the total accumulated cost of all port costs along the path to the root bridge. The path with the lowest total cost is preferred.</p>
+  <div class="tw"><table>
+    <tr><th>Link Speed</th><th>STP Cost (IEEE 802.1D)</th><th>RSTP Cost (IEEE 802.1w)</th></tr>
+    <tr><td>10 Gbps</td><td>2</td><td>2,000</td></tr>
+    <tr><td>1 Gbps</td><td>4</td><td>20,000</td></tr>
+    <tr><td><strong>100 Mbps</strong></td><td><strong>19</strong></td><td>200,000</td></tr>
+    <tr><td>10 Mbps</td><td>100</td><td>2,000,000</td></tr>
+  </table></div>
+
+  <div class="sc">
+    <div class="scl">🔍 WORKED EXAMPLE — Calculating Root Path Cost</div>
+    Topology: S1 (root) ── S2 ── S3 (all 100 Mbps links, cost = 19 each)<br>
+    S1 also connects directly to S3 via a 100 Mbps link.<br><br>
+    S3's path options to root bridge S1:<br>
+    Path 1: S3 → S2 → S1 = cost 19 + 19 = <strong>38</strong><br>
+    Path 2: S3 → S1 direct = cost <strong>19</strong><br><br>
+    Path 2 has the lower cost → S3 uses the direct link as its root port.<br>
+    Path 1 link on S3 becomes the alternate (blocked) port.
+  </div>
+  <div class="ca tip">
+    <span class="ic">✅</span>
+    <div><strong>Port costs are configurable.</strong> Use <code>spanning-tree cost [value]</code> on an interface to override the default. Administrators use this to steer STP toward a preferred path when automatic cost selection doesn't match the desired topology.</div>
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">5.2.5</span> Step 2 — Elect Root Ports</h3>
+  <p>Every <strong>non-root switch</strong> selects exactly <strong>one root port</strong> — the single port with the lowest-cost path to the root bridge. Root ports are always in <strong>forwarding state</strong>. The root bridge itself has no root port — all its ports are designated ports.</p>
+
+  <p><strong>What happens when two paths to the root bridge have equal cost?</strong> This is where the <strong>tiebreaker chain</strong> applies — and the most important rule is that tiebreakers always use the <em>sender's</em> information, not the local switch's.</p>
+
+  <div class="tw"><table>
+    <tr><th>Priority</th><th>Tiebreaker</th><th>Whose Info?</th><th>Rule</th></tr>
+    <tr><td>1st</td><td>Root path cost</td><td>Calculated locally</td><td>Lowest total cost to root wins outright</td></tr>
+    <tr><td>2nd</td><td>Sender's BID</td><td><strong>Neighboring switch</strong></td><td>The neighboring switch with the lower BID — its connected port wins</td></tr>
+    <tr><td>3rd</td><td>Sender's port priority</td><td><strong>Neighboring switch</strong></td><td>Default 128. Admin can lower to influence decision.</td></tr>
+    <tr><td>4th</td><td>Sender's port ID</td><td><strong>Neighboring switch</strong></td><td>Lower port number wins (Fa0/1 beats Fa0/2)</td></tr>
+  </table></div>
+
+  <div class="sc">
+    <div class="scl">🔍 WORKED EXAMPLE — Tiebreaker Using Sender's Port ID</div>
+    Topology: S1 (root bridge) connected to S4 via TWO cables:<br>
+    &nbsp;&nbsp;S1 Fa0/1 ──── S4 Fa0/5<br>
+    &nbsp;&nbsp;S1 Fa0/2 ──── S4 Fa0/6<br><br>
+    Both paths: cost = 19 → TIE (equal cost)<br>
+    Both from same sender S1: BID is equal → TIE<br>
+    Both sender port priority = 128: equal → TIE<br>
+    Sender port ID: Fa0/1 (port 1) &lt; Fa0/2 (port 2) → Fa0/1 WINS<br><br>
+    <strong>→ S4 Fa0/5 (connected to S1's Fa0/1) becomes the ROOT PORT</strong><br>
+    <strong>→ S4 Fa0/6 (connected to S1's Fa0/2) becomes the ALTERNATE (BLOCKED) PORT</strong><br><br>
+    The decision is based on S1's port numbers — not S4's port numbers.
+  </div>
+
+  <div class="ca danger">
+    <span class="ic">❌</span>
+    <div><strong>Critical exam trap — tiebreakers use the SENDER's information.</strong><br>
+    When S4 has two equal-cost paths to root bridge S1, the tiebreaker decision is based on <strong>S1's</strong> port priority and port ID — NOT S4's. The question "which of S4's ports becomes the root port?" is answered by looking at what S4 is receiving from S1, not at S4's own port numbers.</div>
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">5.2.6</span> Step 3 — Elect Designated Ports</h3>
+  <p>Every <strong>segment</strong> (link between two switches) must have exactly <strong>one designated port</strong> — the port with the best path to the root bridge on that segment. Designated ports are always in <strong>forwarding state</strong>.</p>
+
+  <p><strong>Three rules that cover every possible scenario:</strong></p>
+  <ol class="steps">
+    <li><strong>All ports on the root bridge are designated ports.</strong> The root bridge has zero cost to itself — it always wins. All its ports are designated, always.</li>
+    <li><strong>If one end of a segment is a root port, the other end is the designated port.</strong> A root port is already the best path toward root on that switch — the port at the other end of the same cable is automatically designated.</li>
+    <li><strong>When two non-root switches connect and neither port is a root port:</strong> compare root path costs — lower cost wins designated port. If tied, lower BID wins. All ports connecting to end devices (PCs, phones, printers) are always designated — no competition on those segments.</li>
+  </ol>
+
+  <div class="sc">
+    <div class="scl">🔍 WORKED EXAMPLE — Rule 3 (BID Tiebreaker)</div>
+    S2 and S3 are both connected to root bridge S1, and also to each other.<br>
+    S2 root path cost to S1: 19<br>
+    S3 root path cost to S1: 19 → TIE<br><br>
+    Compare BIDs:<br>
+    S2 BID: 32769:000A.0033.2222<br>
+    S3 BID: 32769:000A.0033.3333<br><br>
+    S2 has the lower BID →<br>
+    <strong>→ S2's port toward S3 = DESIGNATED PORT (forwarding)</strong><br>
+    <strong>→ S3's port toward S2 = ALTERNATE PORT (blocking)</strong>
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">5.2.7</span> Step 4 — Elect Alternate (Blocked) Ports</h3>
+  <p>Any port that is <strong>not</strong> a root port and <strong>not</strong> a designated port becomes an <strong>alternate port</strong> in <strong>blocking state</strong>. This is the loop-prevention step. Blocked ports do not forward user traffic but they DO receive BPDUs so they can monitor the network and react to failures.</p>
+
+  <div class="tw"><table>
+    <tr><th></th><th>Root Port</th><th>Designated Port</th><th>Alternate (Blocked)</th></tr>
+    <tr><td><strong>Forwards user traffic</strong></td><td>✅ Yes</td><td>✅ Yes</td><td>❌ No</td></tr>
+    <tr><td><strong>Sends BPDUs</strong></td><td>✅ Yes</td><td>✅ Yes</td><td>❌ No</td></tr>
+    <tr><td><strong>Receives BPDUs</strong></td><td>✅ Yes</td><td>✅ Yes</td><td>✅ Yes</td></tr>
+    <tr><td><strong>Available for failover</strong></td><td>—</td><td>—</td><td>✅ Yes — immediately</td></tr>
+    <tr><td><strong>Count per switch</strong></td><td>One (non-root only)</td><td>One per segment</td><td>All remaining ports</td></tr>
+  </table></div>
+
+  <div class="ca tip">
+    <span class="ic">✅</span>
+    <div>Blocked ports <strong>receive BPDUs</strong> — this is critical. By monitoring BPDUs, a blocked port knows when an active link has failed and can immediately begin transitioning to forwarding to restore connectivity. Without receiving BPDUs, the blocked port would have no way to detect topology changes.</div>
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">5.2.9</span> STP Timers and Port States</h3>
+  <p>STP uses <strong>three timers</strong> to control convergence. All timers are set on the <strong>root bridge</strong> and communicated to all other switches via BPDUs — do not set timers on non-root switches.</p>
+  <div class="tw"><table>
+    <tr><th>Timer</th><th>Default</th><th>Range</th><th>Purpose</th></tr>
+    <tr><td><strong>Hello Timer</strong></td><td>2 seconds</td><td>1–10 sec</td><td>How often the root bridge sends BPDUs</td></tr>
+    <tr><td><strong>Forward Delay Timer</strong></td><td>15 seconds</td><td>4–30 sec</td><td>Time spent in Listening state AND in Learning state (15 sec each)</td></tr>
+    <tr><td><strong>Max Age Timer</strong></td><td>20 seconds</td><td>6–40 sec</td><td>How long a switch waits without receiving a BPDU before assuming a topology change</td></tr>
+  </table></div>
+
+  <p style="font-weight:700;color:var(--dark);margin:16px 0 8px;">STP Port States — a port transitions through these as STP converges:</p>
+  <div class="tw"><table>
+    <tr><th>Port State</th><th>Sends BPDUs</th><th>Receives BPDUs</th><th>Updates MAC Table</th><th>Forwards Traffic</th><th>Duration</th></tr>
+    <tr><td><strong>Blocking</strong></td><td>❌ No</td><td>✅ Yes</td><td>❌ No</td><td>❌ No</td><td>Up to 20 sec (Max Age)</td></tr>
+    <tr><td><strong>Listening</strong></td><td>✅ Yes</td><td>✅ Yes</td><td>❌ No</td><td>❌ No</td><td>15 sec (Forward Delay)</td></tr>
+    <tr><td><strong>Learning</strong></td><td>✅ Yes</td><td>✅ Yes</td><td>✅ Yes</td><td>❌ No</td><td>15 sec (Forward Delay)</td></tr>
+    <tr><td><strong>Forwarding</strong></td><td>✅ Yes</td><td>✅ Yes</td><td>✅ Yes</td><td>✅ Yes</td><td>Indefinite (active)</td></tr>
+    <tr><td><strong>Disabled</strong></td><td>❌ No</td><td>❌ No</td><td>❌ No</td><td>❌ No</td><td>Until admin re-enables</td></tr>
+  </table></div>
+
+  <div class="cw">
+    <div class="cl">STP convergence timeline — port moving from blocked to forwarding <button class="cpb" onclick="copyCode(this)">Copy</button></div>
+    <pre><code>Port connects (or topology changes)
+         ↓
+  BLOCKING (up to 20 sec — Max Age timer)
+  "I receive BPDUs but do not forward or send anything"
+         ↓
+  LISTENING (15 sec — Forward Delay timer)
+  "I send and receive BPDUs — determining my role"
+         ↓
+  LEARNING (15 sec — Forward Delay timer)
+  "I know my role — building MAC table, not yet forwarding"
+         ↓
+  FORWARDING (active — forwarding user traffic)
+
+Total worst-case time: up to 50 seconds
+Typical (blocked → forwarding): 30 seconds (Listening 15s + Learning 15s)
+
+Why Learning exists: the switch builds its MAC table BEFORE forwarding.
+Without Learning, forwarding would cause a flood of unknown unicast frames
+the moment the port activated.</code></pre>
+  </div>
+
+  <div class="ca danger">
+    <span class="ic">🚨</span>
+    <div><strong>The 30-second convergence delay breaks DHCP on access ports.</strong> When a PC connects, the port takes 30 seconds to reach forwarding. During this time, the PC's DHCP Discover is not forwarded. The DHCP process may time out and the PC receives no IP address. This is exactly the problem PortFast solves (see Section 5.3.4).</div>
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">5.2.11</span> Per-VLAN Spanning Tree (PVST+)</h3>
+  <p>In a multi-VLAN network, <strong>PVST+</strong> runs a separate STP instance for every VLAN. Each instance can have a different root bridge, and blocked ports for one VLAN can be forwarding for another — enabling load balancing across redundant links.</p>
+  <div class="dg"><pre>
+  PVST+ Load Balancing Example:
+  ┌─────────────────────────────────────────────┐
+  │   S1                       S2               │
+  │  (VLAN 10 root)           (VLAN 20 root)    │
+  │    │                           │            │
+  │    └──────────[S3]─────────────┘            │
+  │                                             │
+  │  VLAN 10: S3 uses link toward S1 (active)   │
+  │           S3-S2 link is BLOCKED for VLAN 10  │
+  │  VLAN 20: S3 uses link toward S2 (active)   │
+  │           S3-S1 link is BLOCKED for VLAN 20  │
+  │                                             │
+  │  Result: BOTH links carry traffic!          │
+  │  (Different VLANs use different paths)      │
+  └─────────────────────────────────────────────┘</pre></div>
+  <div class="ca info">
+    <span class="ic">💡</span>
+    <div>Without PVST+, original 802.1D STP runs ONE instance for ALL VLANs. All VLANs share the same blocked ports. No load balancing is possible — one redundant link sits completely idle.</div>
+  </div>
+  </div>
+
+</div></div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- SECTION 5.3 — EVOLUTION OF STP -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div class="sec" id="s3">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">5.3</span><span class="ttl">Evolution of STP</span></span><button class="sec-check" id="sch-s3" onclick="event.stopPropagation();toggleSection('s3',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb">
+
+  <div class="sub">
+  <h3><span class="sn">5.3.1</span> Different Versions of STP</h3>
+  <div class="ver-grid">
+    <div class="ver-card ieee"><div class="vc-title">STP — IEEE 802.1D-1998 (Original)</div><p>One instance for ALL VLANs. Slow convergence (30–50 seconds). Also called Common Spanning Tree (CST). Historical baseline — you need to know it to understand everything that came after.</p></div>
+    <div class="ver-card cisco-prop"><div class="vc-title">PVST+ — Cisco Proprietary</div><p>Per-VLAN Spanning Tree Plus. One 802.1D STP instance per VLAN. Supports PortFast, BPDU Guard, Root Guard, Loop Guard. Cisco default on older IOS versions.</p></div>
+    <div class="ver-card ieee"><div class="vc-title">RSTP — IEEE 802.1w</div><p>Rapid Spanning Tree Protocol. Convergence in milliseconds to seconds. Backward compatible with 802.1D. Alternate ports can immediately replace failed root ports — no timer wait.</p></div>
+    <div class="ver-card cisco-default"><div class="vc-title">✅ Rapid PVST+ — Cisco Default on IOS 15.0+</div><p>Cisco's implementation of RSTP running a separate instance per VLAN. Combines the speed of RSTP with the per-VLAN flexibility of PVST+. Supports PortFast, BPDU Guard, Root Guard, Loop Guard. THIS is what Cisco switches run by default.</p></div>
+    <div class="ver-card ieee"><div class="vc-title">MSTP / MST — IEEE 802.1s / Cisco MST</div><p>Maps multiple VLANs into fewer spanning tree instances — efficient for networks with many VLANs. Cisco MST supports up to 16 RSTP instances. Beyond CCNA scope but know the name.</p></div>
+  </div>
+  <div class="et">
+    <div class="lbl">🎯 EXAM TIP — What Does Cisco Run by Default?</div>
+    <strong>Cisco switches running IOS 15.0 or later run Rapid PVST+ by default.</strong><br><br>
+    Not original STP. Not PVST+. Not RSTP. <strong>Rapid PVST+</strong>.<br><br>
+    This is a direct, one-answer exam question that appears frequently.
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">5.3.2</span> RSTP Concepts</h3>
+  <p><strong>RSTP (IEEE 802.1w)</strong> supersedes original 802.1D while remaining backward compatible. Key improvements:</p>
+  <ul>
+    <li>Convergence in <strong>milliseconds to a few seconds</strong> (vs. 30–50 seconds for 802.1D)</li>
+    <li>An <strong>alternate port</strong> can immediately transition to forwarding when the root port fails — no waiting for timers</li>
+    <li>RSTP <strong>actively negotiates</strong> port roles with neighbors using a proposal/agreement handshake — rather than passively waiting for timers to expire</li>
+    <li>Uses the <strong>same STA algorithm</strong> as original STP — same BID, same root bridge election, same path cost concepts</li>
+  </ul>
+  <div class="ca info">
+    <span class="ic">💡</span>
+    <div><strong>Rapid PVST+</strong> = Cisco's implementation of RSTP running a separate RSTP instance for each VLAN. This is what all modern Cisco switches run. The "Rapid" means RSTP-based convergence, and "PVST+" means one instance per VLAN.</div>
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">5.3.3</span> RSTP Port States and Port Roles</h3>
+  <p><strong>RSTP reduces port states from 5 to 3</strong> by merging the inactive states into a single discarding state:</p>
+  <div class="tw"><table>
+    <tr><th>Original STP State</th><th>RSTP State</th><th>Forwards Traffic?</th></tr>
+    <tr><td>Disabled</td><td rowspan="3"><strong>Discarding</strong></td><td rowspan="3">❌ No</td></tr>
+    <tr><td>Blocking</td></tr>
+    <tr><td>Listening</td></tr>
+    <tr><td>Learning</td><td><strong>Learning</strong></td><td>❌ No (building MAC table)</td></tr>
+    <tr><td>Forwarding</td><td><strong>Forwarding</strong></td><td>✅ Yes</td></tr>
+  </table></div>
+
+  <p style="margin-top:14px"><strong>RSTP port roles</strong> — two new roles replace the old STP blocked port:</p>
+  <div class="tw"><table>
+    <tr><th>Port Role</th><th>In STP?</th><th>In RSTP?</th><th>Description</th></tr>
+    <tr><td><strong>Root Port</strong></td><td>✅ Yes</td><td>✅ Yes</td><td>Best path to root bridge — one per non-root switch — forwarding</td></tr>
+    <tr><td><strong>Designated Port</strong></td><td>✅ Yes</td><td>✅ Yes</td><td>Best port on each segment — always forwarding</td></tr>
+    <tr><td><strong>Alternate Port</strong></td><td>❌ No</td><td>✅ Yes</td><td>Has an alternate path to root — immediately takes over if root port fails</td></tr>
+    <tr><td><strong>Backup Port</strong></td><td>❌ No</td><td>✅ Yes</td><td>Backup to a shared medium (hub) — rare since hubs are legacy devices</td></tr>
+  </table></div>
+  <div class="ca tip">
+    <span class="ic">✅</span>
+    <div><strong>The alternate port is the speed advantage of RSTP.</strong> In original STP, a blocked port had to wait through the full convergence cycle (up to 50 seconds) before forwarding. In RSTP, an alternate port transitions <strong>immediately</strong> to forwarding when the root port fails — no timers, no listening, no learning.</div>
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">5.3.4</span> PortFast and BPDU Guard</h3>
+  <p><strong>The problem without PortFast:</strong> When a PC, phone, or printer connects to a switch port, that port must pass through Listening (15 sec) and Learning (15 sec) before it can forward — a 30-second delay. During this window:</p>
+  <ul>
+    <li>DHCP Discover from the device is not forwarded</li>
+    <li>DHCP may time out → device gets no IP address</li>
+    <li>User cannot access the network for 30 seconds every time they plug in</li>
+  </ul>
+
+  <div class="cw">
+    <div class="cl">Port state comparison — with and without PortFast <button class="cpb" onclick="copyCode(this)">Copy</button></div>
+    <pre><code>Without PortFast (normal STP):
+  Link up → Blocking → Listening (15s) → Learning (15s) → Forwarding
+                       ↑ DHCP fails here — port not yet forwarding ↑
+
+With PortFast:
+  Link up → Forwarding (IMMEDIATE)
+             ↑ DHCP succeeds immediately ↑</code></pre>
+  </div>
+
+  <div class="cw">
+    <div class="cl">Configure PortFast <button class="cpb" onclick="copyCode(this)">Copy</button></div>
+    <pre><code>! Enable PortFast on a single access port
+S1(config)# interface fa0/6
+S1(config-if)# spanning-tree portfast
+
+! Enable PortFast globally on ALL access ports (recommended)
+S1(config)# spanning-tree portfast default</code></pre>
+  </div>
+
+  <div class="ca danger">
+    <span class="ic">🚨</span>
+    <div><strong>PortFast is ONLY for access ports connected to end devices.</strong> Never enable PortFast on a port connecting to another switch. If PortFast is active on a switch-to-switch port, a loop can form before STP has time to react — because the PortFast port immediately starts forwarding without waiting for STP convergence.</div>
+  </div>
+
+  <p style="margin-top:14px"><strong>BPDU Guard — always pair with PortFast:</strong></p>
+  <p>End devices (PCs, phones, printers) <strong>never send BPDUs</strong> — only switches send BPDUs. So if a BPDU arrives on a PortFast-enabled port, it means a switch was connected there — a serious misconfiguration that could create a loop.</p>
+  <p>BPDU Guard immediately shuts the port into <strong>err-disabled state</strong> the instant any BPDU is received:</p>
+
+  <div class="cw">
+    <div class="cl">BPDU Guard process and recovery <button class="cpb" onclick="copyCode(this)">Copy</button></div>
+    <pre><code>BPDU arrives on PortFast-enabled port
+    ↓
+BPDU Guard triggers immediately
+    ↓
+Port enters err-disabled state (completely shut down, no traffic)
+    ↓
+Log message: "%SPANTREE-2-BLOCK_BPDUGUARD: Received BPDU on port Fa0/6"
+    ↓
+Administrator must manually investigate and re-enable:
+  S1(config)# interface fa0/6
+  S1(config-if)# shutdown
+  S1(config-if)# no shutdown
+
+! Verify err-disabled ports
+S1# show interfaces fa0/6 status
+Port    Name   Status        Vlan  Duplex  Speed  Type
+Fa0/6          err-disabled  1     auto    auto   10/100BaseTX</code></pre>
+  </div>
+
+  <div class="cw">
+    <div class="cl">Configure BPDU Guard <button class="cpb" onclick="copyCode(this)">Copy</button></div>
+    <pre><code>! Enable BPDU Guard on a single interface
+S1(config-if)# spanning-tree bpduguard enable
+
+! Enable BPDU Guard globally on all PortFast-enabled ports (recommended)
+S1(config)# spanning-tree portfast bpduguard default</code></pre>
+  </div>
+
+  <div class="et">
+    <div class="lbl">🎯 BEST PRACTICE — PortFast + BPDU Guard Together</div>
+    Always deploy PortFast and BPDU Guard together on every access port.<br><br>
+    PortFast = eliminates the 30-second convergence delay for end devices<br>
+    BPDU Guard = shuts down the port immediately if a switch is accidentally connected<br><br>
+    The err-disabled state does NOT auto-recover. An administrator must investigate and manually re-enable the port with <code>shutdown</code> then <code>no shutdown</code>. This forces accountability — a misconfigured port cannot quietly re-enable itself.
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">5.3.5</span> Alternatives to STP</h3>
+  <p>As networks grew from a few switches to hierarchical designs with hundreds of switches and thousands of VLANs, STP limitations became more visible — slow convergence, blocked ports wasting bandwidth, complex per-VLAN management.</p>
+  <p><strong>Modern trend:</strong> Many organizations are moving to <strong>Layer 3 everywhere</strong> — replacing Layer 2 uplinks between access and distribution switches with routed (Layer 3) links. Since Layer 3 routing handles redundant paths natively without blocking ports, STP is only needed at the access layer where end devices connect.</p>
+  <div class="ca info">
+    <span class="ic">💡</span>
+    <div>Other STP alternatives exist — <strong>MLAG</strong> (Multi-System Link Aggregation), <strong>SPB</strong> (Shortest Path Bridging), and <strong>TRILL</strong> (Transparent Interconnection of Lots of Links) — but these are beyond the scope of the CCNA exam. Know the names if asked.</div>
+  </div>
+  </div>
+
+</div></div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- SECTION 5.4 — COMMANDS -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div class="sec" id="s4">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">CMD</span><span class="ttl">Quick Reference — All Module 5 Commands</span></span><button class="sec-check" id="sch-s4" onclick="event.stopPropagation();toggleSection('s4',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb">
+
+  <p style="font-weight:700;color:var(--dark);margin-bottom:10px;">STP Verification</p>
+  <div class="tw"><table>
+    <tr><th>Command</th><th>What It Shows</th></tr>
+    <tr><td><code>show spanning-tree</code></td><td>Full STP topology for all VLANs — root bridge, port roles, port states</td></tr>
+    <tr><td><code>show spanning-tree vlan [id]</code></td><td>STP details for a specific VLAN only</td></tr>
+    <tr><td><code>show spanning-tree summary</code></td><td>Summary — STP mode, root bridge status, port counts by state</td></tr>
+    <tr><td><code>show spanning-tree detail</code></td><td>Full details including timer values and BPDU statistics</td></tr>
+    <tr><td><code>show spanning-tree active</code></td><td>Only shows VLANs/ports that are actively participating in STP</td></tr>
+  </table></div>
+
+  <p style="font-weight:700;color:var(--dark);margin:20px 0 10px;">Root Bridge Configuration</p>
+  <div class="tw"><table>
+    <tr><th>Command</th><th>What It Does</th></tr>
+    <tr><td><code>spanning-tree vlan [id] priority [value]</code></td><td>Set bridge priority — must be a multiple of 4096. Lower = more preferred as root.</td></tr>
+    <tr><td><code>spanning-tree vlan [id] root primary</code></td><td>Auto-sets this switch as root by lowering priority to 24576 (or lower if needed)</td></tr>
+    <tr><td><code>spanning-tree vlan [id] root secondary</code></td><td>Sets backup root bridge — priority set to 28672</td></tr>
+  </table></div>
+
+  <p style="font-weight:700;color:var(--dark);margin:20px 0 10px;">PortFast and BPDU Guard</p>
+  <div class="tw"><table>
+    <tr><th>Command</th><th>What It Does</th></tr>
+    <tr><td><code>spanning-tree portfast</code></td><td>Enable PortFast on one specific access port interface</td></tr>
+    <tr><td><code>spanning-tree portfast default</code></td><td>Enable PortFast globally on all access ports (global config)</td></tr>
+    <tr><td><code>spanning-tree bpduguard enable</code></td><td>Enable BPDU Guard on one specific interface</td></tr>
+    <tr><td><code>spanning-tree portfast bpduguard default</code></td><td>Enable BPDU Guard globally on all PortFast-enabled ports</td></tr>
+  </table></div>
+
+  <p style="font-weight:700;color:var(--dark);margin:20px 0 10px;">Annotated show spanning-tree vlan output</p>
+  <div class="cw">
+    <div class="cl">show spanning-tree vlan 1 — full annotated output <button class="cpb" onclick="copyCode(this)">Copy</button></div>
+    <pre><code>S1# show spanning-tree vlan 1
+
+VLAN0001
+  Spanning tree enabled protocol ieee
+  Root ID    Priority    24577         ← Root bridge priority + VLAN ID
+             Address     000A.0033.3333
+             This bridge is the root  ← S1 IS the root bridge for VLAN 1
+             Hello Time 2 sec  Max Age 20 sec  Forward Delay 15 sec
+
+  Bridge ID  Priority    24577  (priority 24576 sys-id-ext 1)
+  !                              ↑ base priority    ↑ VLAN 1 added automatically
+             Address     000A.0033.3333
+             Hello Time 2 sec  Max Age 20 sec  Forward Delay 15 sec
+
+Interface      Role  Sts   Cost   Prio.Nbr  Type
+-------------- ----  ---   -----  --------  ----
+Fa0/1          Desg  FWD   19     128.1     P2p   ← Designated, Forwarding
+Fa0/2          Desg  FWD   19     128.2     P2p   ← Designated, Forwarding
+
+! On a NON-root switch (S3):
+Fa0/1          Root  FWD   19     128.1     P2p   ← Root port, Forwarding
+Fa0/2          Altn  BLK   19     128.2     P2p   ← Alternate, Blocking</code></pre>
+  </div>
+
+  <p style="font-weight:700;color:var(--dark);margin:14px 0 8px;">Port role and state codes in show spanning-tree:</p>
+  <div class="tw"><table>
+    <tr><th>Code</th><th>Meaning</th></tr>
+    <tr><td><code>Root FWD</code></td><td>Root port — Forwarding</td></tr>
+    <tr><td><code>Desg FWD</code></td><td>Designated port — Forwarding</td></tr>
+    <tr><td><code>Altn BLK</code></td><td>Alternate port — Blocking (loop prevention)</td></tr>
+    <tr><td><code>Desg LIS</code></td><td>Designated port — Listening (still converging)</td></tr>
+    <tr><td><code>Desg LRN</code></td><td>Designated port — Learning (still converging)</td></tr>
+  </table></div>
+
+</div></div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- SECTION 5.5 — EXAM TRAPS -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div class="sec" id="s5">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">🎯</span><span class="ttl">Common Exam Traps — Module 5</span></span><button class="sec-check" id="sch-s5" onclick="event.stopPropagation();toggleSection('s5',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb">
+
+  <div class="ca danger"><span class="ic">❌</span><div><strong>Trap 1: Layer 2 has no TTL — that is why STP exists.</strong><br>IPv4 uses TTL, IPv6 uses Hop Limit — both decrement at every router hop and drop the packet at 0. Layer 2 frames have NO equivalent mechanism. Frames loop forever without STP.</div></div>
+
+  <div class="ca danger"><span class="ic">❌</span><div><strong>Trap 2: Lowest BID wins — lower is ALWAYS better in STP.</strong><br>Lower priority = more preferred for root bridge. Priority 0 beats everything. Priority 4096 beats the default 32768. Students often assume "higher priority = more important" — in STP the opposite is true.</div></div>
+
+  <div class="ca danger"><span class="ic">❌</span><div><strong>Trap 3: You usually see 32769 in output, not 32768.</strong><br>Default bridge priority (32768) + VLAN 1 extended system ID (1) = 32769. For VLAN 10: 32778. For VLAN 100: 32868. This is normal, not a misconfiguration. The extended system ID is automatically added and cannot be removed.</div></div>
+
+  <div class="ca danger"><span class="ic">❌</span><div><strong>Trap 4: Bridge priority must be a multiple of 4096.</strong><br>Valid values: 0, 4096, 8192, 12288, 16384, 20480, 24576, 28672, 32768, 36864, 40960, 45056, 49152, 53248, 57344, 61440. IOS rejects any other value. Priority 32000 or 33000 will fail.</div></div>
+
+  <div class="ca danger"><span class="ic">❌</span><div><strong>Trap 5: The root bridge has NO root port — all its ports are designated.</strong><br>The root bridge has zero cost to itself. It always wins cost comparisons on its own segments. Only non-root switches have root ports. Students frequently forget this.</div></div>
+
+  <div class="ca danger"><span class="ic">❌</span><div><strong>Trap 6: STP tiebreakers use the SENDER's information — not the local switch's.</strong><br>When two equal-cost paths exist, the decision is based on the neighboring switch's BID, then the neighboring switch's port priority, then the neighboring switch's port ID. The exam will present this from the wrong switch's perspective to trap you.</div></div>
+
+  <div class="ca danger"><span class="ic">❌</span><div><strong>Trap 7: PortFast is ONLY for access ports — never for uplinks to switches.</strong><br>PortFast bypasses STP convergence delays. On an access port this is safe because end devices never send BPDUs. On a switch-to-switch port, a loop can form immediately when the PortFast port starts forwarding before STP can react.</div></div>
+
+  <div class="ca danger"><span class="ic">❌</span><div><strong>Trap 8: BPDU Guard puts a port into err-disabled — it does NOT auto-recover.</strong><br>An administrator must investigate the cause, then manually re-enable with <code>shutdown</code> followed by <code>no shutdown</code>. This is intentional security behavior — a misconfigured port cannot quietly re-enable itself.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 9: STP convergence takes 30 seconds minimum without PortFast.</strong><br>Listening (15 sec) + Learning (15 sec) = 30 seconds before a port forwards. During this time DHCP fails on that port. Worst case with Max Age: up to 50 seconds total. PortFast eliminates this on access ports.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 10: Rapid PVST+ is the Cisco default on IOS 15.0+ — not original STP, not PVST+.</strong><br>This is a direct exam question. The answer is Rapid PVST+. Switches must be explicitly configured to run original STP or PVST+ — Rapid PVST+ runs automatically.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 11: RSTP has three states — Discarding, Learning, Forwarding.</strong><br>Original STP's disabled, blocking, and listening states are ALL merged into a single RSTP <strong>Discarding</strong> state. The exam will show five states and ask which are RSTP — the answer is only three of them.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 12: PVST+ and Rapid PVST+ are different protocols.</strong><br>PVST+ = per-VLAN version of original slow 802.1D STP. Rapid PVST+ = per-VLAN version of fast RSTP (802.1w). These are not interchangeable. The exam uses both terms and expects you to know the difference.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 13: The RSTP alternate port transitions immediately — no timer wait.</strong><br>This is the key speed advantage of RSTP over original STP. An alternate port replaces a failed root port without waiting for Max Age (20 sec) or transitioning through Listening/Learning (30 sec). This is why RSTP converges in milliseconds to seconds.</div></div>
+
+  <div class="ca tip"><span class="ic">✅</span><div><strong>Quick STP summary — the numbers to memorize:</strong><br><br>
+  Hello Timer: <strong>2 seconds</strong><br>
+  Forward Delay: <strong>15 seconds</strong> (Listening) + <strong>15 seconds</strong> (Learning)<br>
+  Max Age: <strong>20 seconds</strong><br>
+  Convergence time without PortFast: <strong>30 seconds typical, 50 seconds worst case</strong><br>
+  Default bridge priority: <strong>32768</strong> (appears as 32769 for VLAN 1 in output)<br>
+  Priority increment: <strong>4096</strong> (must be a multiple of this)<br>
+  root primary sets priority to: <strong>24576</strong><br>
+  root secondary sets priority to: <strong>28672</strong></div></div>
+
+</div></div>
+
+</div><!-- end .wrap -->
+
+<div class="ft">
+  CCNA 2 SRWE v7.02 — Module 5: STP Concepts v1.3<br>
+  Based on Cisco NetAcad curriculum · Study guide for personal use
+</div>
+
+<button class="tb" id="topb" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+
+<script>
+var MOD_KEY="ccna2-module5-stp-concepts";
+var SECS=["s1","s2","s3","s4","s5"];
+var checked={};
+function loadState(){
+  try{var s=localStorage.getItem(MOD_KEY);if(s)checked=JSON.parse(s);}catch(e){}
+  SECS.forEach(function(id){
+    var pill=document.getElementById('pill-'+id);
+    var row=document.getElementById('row-'+id);
+    var st=document.getElementById('st-'+id);
+    var sch=document.getElementById('sch-'+id);
+    if(checked[id]){
+      if(pill){pill.classList.add('checked');pill.querySelector('.pill-check').textContent='✓';}
+      if(row)row.classList.add('done');
+      if(st)st.textContent='✓';
+      if(sch){sch.classList.add('checked');sch.textContent='✓ Done';}
+    } else {
+      if(pill){pill.classList.remove('checked');pill.querySelector('.pill-check').textContent='○';}
+      if(row)row.classList.remove('done');
+      if(st)st.textContent='○';
+      if(sch){sch.classList.remove('checked');sch.textContent='○ Mark done';}
+    }
+  });
+}
+function toggleSection(id,btn){checked[id]=!checked[id];try{localStorage.setItem(MOD_KEY,JSON.stringify(checked));}catch(e){}loadState();}
+function toggleStudyPanel(){
+  var hdr=document.getElementById('sp-hdr');
+  var body=document.getElementById('sp-body');
+  var arr=document.getElementById('sp-arr');
+  hdr.classList.toggle('open');body.classList.toggle('open');
+  if(arr)arr.textContent=body.classList.contains('open')?'▲':'▼';
+}
+function goTo(id){var el=document.getElementById(id);if(!el)return;var h=el.querySelector('.sh,.section-header'),b=el.querySelector('.sb,.section-body');if(h&&b&&!b.classList.contains('open')){h.classList.add('open');b.classList.add('open');}setTimeout(function(){window.scrollTo({top:el.getBoundingClientRect().top+window.pageYOffset-60,behavior:'smooth'});},50);}
+function setFs(size,btn){document.documentElement.style.setProperty('--base-fs',size);document.querySelectorAll('.fs-btn').forEach(function(b){b.classList.remove('active');});btn.classList.add('active');try{localStorage.setItem('ccna-fs',size);}catch(e){}}
+(function(){try{var s=localStorage.getItem('ccna-fs');if(s){document.documentElement.style.setProperty('--base-fs',s);document.querySelectorAll('.fs-btn').forEach(function(b){b.classList.remove('active');if((b.textContent==='S'&&s==='14px')||(b.textContent==='M'&&s==='16px')||(b.textContent==='L'&&s==='18px')||(b.textContent==='XL'&&s==='20px'))b.classList.add('active');});}}catch(e){}loadState();})();
+function copyCode(b){var t=b.closest('.cw').querySelector('pre').innerText;if(navigator.clipboard){navigator.clipboard.writeText(t).then(function(){b.textContent='Copied!';setTimeout(function(){b.textContent='Copy';},1500);}).catch(function(){fb(t,b);});}else{fb(t,b);}}
+function fb(t,b){var a=document.createElement('textarea');a.value=t;a.style.position='fixed';a.style.opacity='0';document.body.appendChild(a);a.focus();a.select();document.execCommand('copy');document.body.removeChild(a);b.textContent='Copied!';setTimeout(function(){b.textContent='Copy';},1500);}
+</script>
+<script src="../../site-config.js"></script>
+</body>
+</html>

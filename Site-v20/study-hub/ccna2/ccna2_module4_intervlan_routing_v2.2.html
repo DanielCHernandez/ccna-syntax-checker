@@ -1,0 +1,913 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=2.0">
+<title>CCNA 2 Module 4: Inter-VLAN Routing v2.2</title>
+<style>
+:root{--blue:#1ba0d7;--dark:#005073;--green:#6cc24a;--light:#e8f4fb;--bg:#f4f6f8;--card:#fff;--text:#1a1a2e;--muted:#5a6a7a;--cbg:#0d1117;--ctxt:#c9d1d9;--r:12px;--sh:0 2px 12px rgba(0,0,0,.08);--base-fs:16px}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);font-size:var(--base-fs);line-height:1.7}
+/* ── Font size toggle bar ── */
+.fs-bar{position:sticky;top:0;z-index:200;background:#1a1a2e;display:flex;align-items:center;justify-content:flex-end;padding:6px 14px;gap:6px;box-shadow:0 2px 8px rgba(0,0,0,.3)}
+.fs-label{color:#8b949e;font-size:.72em;font-weight:700;letter-spacing:.5px;text-transform:uppercase;margin-right:4px}
+.fs-btn{background:#30363d;color:#c9d1d9;border:2px solid transparent;border-radius:6px;padding:4px 12px;font-size:.75em;font-weight:700;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:all .2s;line-height:1.4}
+.fs-btn:active,.fs-btn.active{background:var(--blue);color:#fff;border-color:var(--blue)}
+.hdr{background:linear-gradient(135deg,var(--dark),var(--blue));color:#fff;padding:32px 20px 24px;text-align:center}
+.hdr .badge{display:inline-block;background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.4);border-radius:20px;padding:4px 14px;font-size:.81em;margin-bottom:12px}
+.hdr h1{font-size:1.625em;font-weight:700;margin-bottom:6px}
+.hdr p{font-size:.94em;opacity:.85}
+.hdr .obj{display:inline-block;background:rgba(255,255,255,.15);border-radius:8px;padding:7px 16px;margin-top:12px;font-size:.875em;font-style:italic}
+.pb{background:var(--card);padding:14px 16px;margin:16px 16px 0;border-radius:var(--r);box-shadow:var(--sh)}
+.pbl{font-size:.81em;color:var(--muted);margin-bottom:6px;font-weight:600}
+.pbt{background:#e0e7ef;border-radius:10px;height:8px;overflow:hidden}
+.pbf{background:linear-gradient(90deg,var(--blue),var(--green));height:100%;border-radius:10px;width:0;transition:width 1s ease}
+.toc{background:var(--card);margin:16px;border-radius:var(--r);box-shadow:var(--sh);overflow:hidden}
+.toch{background:var(--dark);color:#fff;padding:14px 18px;font-weight:700;font-size:.94em;display:flex;justify-content:space-between;align-items:center;cursor:pointer;user-select:none}
+.toch .arr{transition:transform .3s}
+.toch.open .arr{transform:rotate(180deg)}
+.tocb{display:none;padding:10px 0}
+.tocb.open{display:block}
+.tocg{font-size:.69em;font-weight:800;letter-spacing:.8px;color:var(--blue);text-transform:uppercase;padding:8px 20px 2px}
+.tocb a{display:block;padding:9px 20px 9px 28px;color:var(--dark);text-decoration:none;font-size:.875em;border-left:3px solid transparent;transition:all .2s}
+.tocb a:hover,.tocb a:active{background:var(--light);border-left-color:var(--blue)}
+.tocb a .n{display:inline-block;background:var(--blue);color:#fff;border-radius:5px;padding:1px 8px;font-size:.75em;font-weight:700;margin-right:8px}
+.wrap{padding:0 16px 100px}
+.sec{background:var(--card);border-radius:var(--r);box-shadow:var(--sh);margin-bottom:16px;overflow:hidden}
+.sh{background:linear-gradient(90deg,var(--dark),var(--blue));color:#fff;padding:16px 18px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;user-select:none;-webkit-tap-highlight-color:transparent}
+.sh .ttl{font-weight:700;font-size:1em}
+.sh .nb{background:rgba(255,255,255,.25);border-radius:6px;padding:3px 10px;font-size:.81em;font-weight:700;margin-right:10px;white-space:nowrap}
+.sh .ch{font-size:1.125em;transition:transform .3s}
+.sh.open .ch{transform:rotate(180deg)}
+.sb{display:none;padding:18px}
+.sb.open{display:block}
+.sub{margin-bottom:24px}
+.sub:last-child{margin-bottom:0}
+.sub h3{font-size:.94em;font-weight:700;color:var(--dark);margin-bottom:10px;padding-bottom:6px;border-bottom:2px solid var(--light);display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.sub h3 .sn{background:var(--blue);color:#fff;border-radius:5px;padding:2px 8px;font-size:.75em;white-space:nowrap}
+.sub p{margin-bottom:10px;font-size:.94em}
+.cw{background:var(--cbg);border-radius:10px;margin:12px 0;overflow:hidden}
+.cl{background:#21262d;color:#8b949e;font-size:.69em;font-weight:700;padding:6px 14px;letter-spacing:.5px;text-transform:uppercase;display:flex;justify-content:space-between;align-items:center}
+.cpb{background:#30363d;color:#c9d1d9;border:none;border-radius:5px;padding:3px 10px;font-size:.69em;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.cpb:active{background:var(--blue);color:#fff}
+pre{margin:0;padding:14px;overflow-x:auto;-webkit-overflow-scrolling:touch}
+code{font-family:'Courier New',monospace;font-size:.81em;color:var(--ctxt);line-height:1.6}
+p code,li code,td code,.ca code,.et code{background:#c2d9ea;color:#002233;border-radius:4px;padding:1px 5px;font-size:.81em;font-family:'Courier New',monospace;font-weight:600}
+.ca{border-radius:8px;padding:12px 14px;margin:12px 0;font-size:.875em;line-height:1.6;display:flex;gap:10px;align-items:flex-start}
+.ca .ic{font-size:1.125em;flex-shrink:0;margin-top:1px}
+.ca.warn{background:#fff3cd;border-left:4px solid #b38600;color:#3d2c00}
+.ca.tip{background:#d4edda;border-left:4px solid #28a745;color:#0d3318}
+.ca.danger{background:#f8d7da;border-left:4px solid #dc3545;color:#3d0010}
+.ca.info{background:#d0e8f5;border-left:4px solid var(--blue);color:#002d44}
+.et{background:linear-gradient(135deg,#1a1a2e,var(--dark));color:#fff;border-radius:10px;padding:14px 16px;margin:14px 0;font-size:.875em;line-height:1.6}
+.et .lbl{font-size:.69em;font-weight:800;letter-spacing:1px;color:var(--green);margin-bottom:6px}
+.et ol,.et ul{padding-left:18px;margin-top:6px}
+.et li{margin-bottom:4px}
+.mg{display:grid;gap:12px;margin:12px 0}
+.mc{border-radius:10px;padding:14px;border:2px solid}
+.mc.legacy{border-color:#dc3545;background:#fff5f5}
+.mc.roas{border-color:#e07b00;background:#fff8f0}
+.mc.l3sw{border-color:#28a745;background:#f0fff4}
+.mct{font-size:.875em;font-weight:800;margin-bottom:8px;display:flex;align-items:center;gap:8px}
+.mc.legacy .mct{color:#dc3545}
+.mc.roas .mct{color:#c45200}
+.mc.l3sw .mct{color:#1a6b2a}
+.mc ul{padding-left:18px;font-size:.875em;line-height:1.8}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:12px 0;border-radius:8px}
+table{width:100%;border-collapse:collapse;font-size:.875em}
+th{background:var(--dark);color:#fff;padding:10px 12px;text-align:left;font-weight:700;font-size:.81em}
+td{padding:9px 12px;border-bottom:1px solid #e8ecf0;vertical-align:top}
+td{color:#1a1a2e}
+tr:nth-child(even) td{background:#d0e8f5;color:#002d44}
+tr:last-child td{border-bottom:none}
+.steps{counter-reset:step;list-style:none;padding:0;margin:12px 0}
+.steps li{counter-increment:step;display:flex;gap:12px;align-items:flex-start;padding:10px 0;border-bottom:1px solid #eef0f3;font-size:.875em;line-height:1.6}
+.steps li:last-child{border-bottom:none}
+.steps li::before{content:counter(step);background:var(--blue);color:#fff;border-radius:50%;min-width:26px;height:26px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.81em;flex-shrink:0;margin-top:2px}
+.dg{background:#0d1117;border-radius:10px;padding:14px;margin:12px 0;overflow-x:auto;-webkit-overflow-scrolling:touch}
+.dg pre{color:#58a6ff;font-family:'Courier New',monospace;font-size:.75em;line-height:1.6}
+.sc{background:#1a1a2e;color:#c9d1d9;border-radius:8px;padding:14px;margin:12px 0;font-size:.875em;line-height:1.6}
+.sc .scl{font-size:.69em;font-weight:800;letter-spacing:.8px;color:var(--green);margin-bottom:6px}
+.tb{position:fixed;bottom:80px;right:16px;background:var(--blue);color:#fff;border:none;border-radius:50%;width:48px;height:48px;font-size:1.375em;box-shadow:0 4px 14px rgba(0,0,0,.2);cursor:pointer;display:none;align-items:center;justify-content:center;z-index:100}
+.tb.show{display:flex}
+.ft{text-align:center;padding:24px 16px;color:var(--muted);font-size:.81em}
+/* Study progress panel */
+.sp-wrap{background:var(--card);margin:16px 16px 0;border-radius:var(--r);box-shadow:var(--sh);overflow:hidden}
+.sp-hdr{background:var(--nt);color:#fff;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;user-select:none;-webkit-tap-highlight-color:transparent;gap:10px}
+.sp-hdr .sp-title{font-weight:700;font-size:.875em;flex-shrink:0}
+.sp-hdr .sp-arr{transition:transform .3s;flex-shrink:0}
+.sp-hdr.open .sp-arr{transform:rotate(180deg)}
+.sp-body{display:none;padding:12px 14px}
+.sp-body.open{display:block}
+.sp-row{display:flex;align-items:center;gap:10px;padding:6px 4px;border-bottom:1px solid #f0f4f8;font-size:.81em}
+.sp-row:last-child{border-bottom:none}
+.sp-row .sr-status{font-size:1em;flex-shrink:0;width:20px;text-align:center}
+.sp-row .sr-nb{font-weight:800;color:var(--nt);min-width:36px;flex-shrink:0;font-size:.875em}
+.sp-row .sr-ttl{color:var(--text);flex:1}
+.sp-row.done .sr-ttl{color:var(--muted);text-decoration:line-through}
+.sc-pills{display:flex;align-items:center;gap:4px;overflow-x:auto;-webkit-overflow-scrolling:touch;flex:1;padding:0 4px}
+.sc-pill{background:#30363d;color:#8b949e;border:2px solid transparent;border-radius:6px;padding:3px 8px;font-size:.72em;font-weight:700;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:all .15s;white-space:nowrap;flex-shrink:0;line-height:1.4;display:flex;align-items:center;gap:3px}
+.sc-pill.checked{background:var(--nt);color:#fff;border-color:var(--ntd)}
+.sc-pill .pill-check{font-size:.875em}
+
+/* v2.1 — In-section check button */
+.sh{position:relative}
+.sec-check{position:absolute;right:40px;top:50%;transform:translateY(-50%);background:rgba(255,255,255,.15);border:2px solid rgba(255,255,255,.4);border-radius:6px;padding:2px 10px;font-size:.72em;font-weight:800;color:#fff;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:all .2s;white-space:nowrap;z-index:10;line-height:1.5}
+.sec-check.checked{background:var(--ntd);border-color:var(--ntd);color:#052e1e}
+.sec-check:active{opacity:.75}
+/* Sections panel + tick colours (these pages never defined --nt/--ntd, so the panel header was invisible) */
+:root{--nt:var(--dark);--ntd:#4ade80}
+</style>
+<style>.bc{background:#0d1117;padding:8px 16px;display:flex;align-items:center;flex-wrap:wrap;gap:4px;font-size:.75em;overflow-x:auto;white-space:nowrap;-webkit-overflow-scrolling:touch;border-bottom:1px solid #21262d}.bc a{color:#8b949e;text-decoration:none;font-weight:600;flex-shrink:0}.bc a:active{color:#c9d1d9}.bc .sep{color:#6e7681;flex-shrink:0}.bc .cur{color:#1ba0d7;font-weight:700;flex-shrink:0}</style>
+</head>
+<body>
+<nav class="bc"><a href="../../index.html">🏠 Home</a><span class="sep">›</span><a href="index.html">CCNA 2 — SRWE</a><span class="sep">›</span><span class="cur">M4: InterVLAN</span></nav>
+<!-- FONT SIZE TOGGLE -->
+<div class="fs-bar">
+  <div class="sc-pills" id="sc-pills">
+  <button class="sc-pill" id="pill-s1" onclick="toggleSection('s1',this)"><span class="pill-check">○</span>4.1</button>
+  <button class="sc-pill" id="pill-s2" onclick="toggleSection('s2',this)"><span class="pill-check">○</span>4.2</button>
+  <button class="sc-pill" id="pill-s3" onclick="toggleSection('s3',this)"><span class="pill-check">○</span>4.3</button>
+  <button class="sc-pill" id="pill-s4" onclick="toggleSection('s4',this)"><span class="pill-check">○</span>4.4</button>
+  <button class="sc-pill" id="pill-s-pt-4-5" onclick="toggleSection('s-pt-4-5',this)"><span class="pill-check">○</span>PT 4.5</button>
+  <button class="sc-pill" id="pill-s5" onclick="toggleSection('s5',this)"><span class="pill-check">○</span>CMD</button>
+  <button class="sc-pill" id="pill-s6" onclick="toggleSection('s6',this)"><span class="pill-check">○</span>🎯</button>
+  </div>
+  <span class="fs-label" style="flex-shrink:0;margin-left:6px">Size</span>
+  <button class="fs-btn" onclick="setFs('14px',this)">S</button>
+  <button class="fs-btn active" onclick="setFs('16px',this)">M</button>
+  <button class="fs-btn" onclick="setFs('18px',this)">L</button>
+  <button class="fs-btn" onclick="setFs('20px',this)">XL</button>
+</div>
+<div class="hdr">
+  <div class="badge">CCNA 2 — SRWE v7.02</div>
+  <h1>🔀 Module 4: Inter-VLAN Routing</h1>
+  <p>Switching, Routing &amp; Wireless Essentials · NetAcad Study Guide</p>
+  <div class="obj">Module Objective: Troubleshoot inter-VLAN routing on Layer 3 devices</div>
+</div>
+<div class="sp-wrap">
+  <div class="sp-hdr" id="sp-hdr" onclick="toggleStudyPanel()">
+    <span class="sp-title">📚 Sections</span>
+    <span class="sp-arr" id="sp-arr">▼</span>
+  </div>
+  <div class="sp-body" id="sp-body">
+    <div class="sp-row" id="row-s1"><span class="sr-status" id="st-s1">○</span><span class="sr-nb">4.1</span><span class="sr-ttl">Inter-VLAN Routing Operation</span></div>
+    <div class="sp-row" id="row-s2"><span class="sr-status" id="st-s2">○</span><span class="sr-nb">4.2</span><span class="sr-ttl">Router-on-a-Stick Configuration</span></div>
+    <div class="sp-row" id="row-s3"><span class="sr-status" id="st-s3">○</span><span class="sr-nb">4.3</span><span class="sr-ttl">Inter-VLAN Routing Using Layer 3 Switches</span></div>
+    <div class="sp-row" id="row-s4"><span class="sr-status" id="st-s4">○</span><span class="sr-nb">4.4</span><span class="sr-ttl">Troubleshoot Inter-VLAN Routing</span></div>
+    <div class="sp-row" id="row-s-pt-4-5"><span class="sr-status" id="st-s-pt-4-5">○</span><span class="sr-nb">PT 4.5</span><span class="sr-ttl">Packet Tracer — Inter-VLAN Routing Challenge</span></div>
+    <div class="sp-row" id="row-s5"><span class="sr-status" id="st-s5">○</span><span class="sr-nb">CMD</span><span class="sr-ttl">Quick Reference — All Module 4 Commands</span></div>
+    <div class="sp-row" id="row-s6"><span class="sr-status" id="st-s6">○</span><span class="sr-nb">🎯</span><span class="sr-ttl">Common Exam Traps — Module 4</span></div>
+  </div>
+</div></div>
+<div class="toc">
+  <div class="toch open" onclick="this.classList.toggle('open');document.getElementById('tb').classList.toggle('open')">📋 Table of Contents — Tap to expand <span class="arr">▼</span></div>
+  <div class="tocb open" id="tb">
+    <div class="tocg">4.1 — Inter-VLAN Routing Operation</div>
+    <a href="javascript:void(0)" onclick="goTo('s1')"><span class="n">4.1.1</span> What is Inter-VLAN Routing?</a>
+    <a href="javascript:void(0)" onclick="goTo('s1')"><span class="n">4.1.2</span> Legacy Inter-VLAN Routing</a>
+    <a href="javascript:void(0)" onclick="goTo('s1')"><span class="n">4.1.3</span> Router-on-a-Stick</a>
+    <a href="javascript:void(0)" onclick="goTo('s1')"><span class="n">4.1.4</span> Inter-VLAN Routing on a Layer 3 Switch</a>
+    <div class="tocg">4.2 — Router-on-a-Stick Configuration</div>
+    <a href="javascript:void(0)" onclick="goTo('s2')"><span class="n">4.2.1</span> Router-on-a-Stick Scenario</a>
+    <a href="javascript:void(0)" onclick="goTo('s2')"><span class="n">4.2.2</span> S1 VLAN and Trunking Configuration</a>
+    <a href="javascript:void(0)" onclick="goTo('s2')"><span class="n">4.2.3</span> S2 VLAN and Trunking Configuration</a>
+    <a href="javascript:void(0)" onclick="goTo('s2')"><span class="n">4.2.4</span> R1 Subinterface Configuration</a>
+    <a href="javascript:void(0)" onclick="goTo('s2')"><span class="n">4.2.5</span> Verify Connectivity</a>
+    <a href="javascript:void(0)" onclick="goTo('s2')"><span class="n">4.2.6</span> Verification Commands</a>
+    <div class="tocg">4.3 — Layer 3 Switch Inter-VLAN Routing</div>
+    <a href="javascript:void(0)" onclick="goTo('s3')"><span class="n">4.3.1</span> Layer 3 Switch Concepts</a>
+    <a href="javascript:void(0)" onclick="goTo('s3')"><span class="n">4.3.2</span> Layer 3 Switch Scenario</a>
+    <a href="javascript:void(0)" onclick="goTo('s3')"><span class="n">4.3.3</span> Layer 3 Switch SVI Configuration</a>
+    <a href="javascript:void(0)" onclick="goTo('s3')"><span class="n">4.3.4</span> Layer 3 Switch Verification</a>
+    <a href="javascript:void(0)" onclick="goTo('s3')"><span class="n">4.3.5</span> Routing on a Layer 3 Switch</a>
+    <a href="javascript:void(0)" onclick="goTo('s3')"><span class="n">4.3.7</span> Routed Port Configuration</a>
+    <div class="tocg">4.4 — Troubleshoot Inter-VLAN Routing</div>
+    <a href="javascript:void(0)" onclick="goTo('s4')"><span class="n">4.4.1</span> Common Inter-VLAN Issues</a>
+    <a href="javascript:void(0)" onclick="goTo('s4')"><span class="n">4.4.2</span> Structured Troubleshooting Approach</a>
+    <a href="javascript:void(0)" onclick="goTo('s4')"><span class="n">4.4.3</span> Missing VLANs</a>
+    <a href="javascript:void(0)" onclick="goTo('s4')"><span class="n">4.4.4</span> Switch Trunk Port Issues</a>
+    <a href="javascript:void(0)" onclick="goTo('s4')"><span class="n">4.4.5</span> Switch Access Port Issues</a>
+    <a href="javascript:void(0)" onclick="goTo('s4')"><span class="n">4.4.6</span> Router Configuration Issues</a>
+    <div class="tocg">Reference</div>
+    <a href="javascript:void(0)" onclick="goTo('s5')"><span class="n">CMD</span> All Module 4 Commands</a>
+    <a href="javascript:void(0)" onclick="goTo('s6')"><span class="n">🎯</span> Common Exam Traps</a>
+  </div>
+</div>
+<div class="wrap">
+
+<div class="sec" id="s1">
+<div class="sh open" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">4.1</span><span class="ttl">Inter-VLAN Routing Operation</span></span><button class="sec-check" id="sch-s1" onclick="event.stopPropagation();toggleSection('s1',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb open">
+
+<div class="sub">
+<h3><span class="sn">4.1.1</span> What is Inter-VLAN Routing?</h3>
+<p>VLANs create isolated broadcast domains — great for security, but it means <strong>hosts in different VLANs cannot communicate without a Layer 3 device</strong>. Inter-VLAN routing is the process of forwarding traffic from one VLAN to another using a router or Layer 3 switch.</p>
+<div class="mg">
+  <div class="mc legacy"><div class="mct">❌ Legacy Inter-VLAN Routing</div><ul><li>One physical router interface per VLAN</li><li>Runs out of router ports quickly</li><li>Historical context only — never used today</li></ul></div>
+  <div class="mc roas"><div class="mct">⚠️ Router-on-a-Stick (RoaS)</div><ul><li>One physical interface with subinterfaces (one per VLAN)</li><li>Good for small to medium networks (&lt;50 VLANs)</li><li>Shared link creates a bandwidth bottleneck</li></ul></div>
+  <div class="mc l3sw"><div class="mct">✅ Layer 3 Switch with SVIs</div><ul><li>Uses Switched Virtual Interfaces (SVIs)</li><li>Hardware routing at wire speed</li><li>Scales to hundreds of VLANs — enterprise preferred</li></ul></div>
+</div>
+</div>
+
+<div class="sub">
+<h3><span class="sn">4.1.2</span> Legacy Inter-VLAN Routing</h3>
+<p>The original method used one dedicated physical router interface per VLAN. Each interface connected to a switch port in that VLAN and served as the default gateway.</p>
+<div class="dg"><pre>
+  PC1 (VLAN 10: 192.168.10.10) --Fa0/11--[S1]--Fa0/1--  R1 G0/0/0 = 192.168.10.1
+  PC2 (VLAN 20: 192.168.20.10) --Fa0/24--[S1]--Fa0/12-- R1 G0/0/1 = 192.168.20.1
+  
+  PC1 sends to gateway 192.168.10.1 -> R1 routes -> out G0/0/1 -> VLAN 20 -> PC2</pre></div>
+<div class="ca danger"><span class="ic">🚫</span><div><strong>Why it was abandoned:</strong> Each VLAN needs its own physical router port. A 4-port router only supports 4 VLANs. Covered for historical context only — never used in modern networks.</div></div>
+</div>
+
+<div class="sub">
+<h3><span class="sn">4.1.3</span> Router-on-a-Stick Inter-VLAN Routing</h3>
+<p>Solves the scalability problem by using <strong>one physical router interface</strong> divided into <strong>subinterfaces</strong> — one per VLAN. The physical interface connects to a trunk port on the switch, carrying all VLAN traffic on a single cable.</p>
+<div class="dg"><pre>
+         [R1]
+          |
+          | G0/0/0  (ONE physical port -- NO IP address here)
+          |   +-- G0/0/0.10  encapsulation dot1Q 10  ip 192.168.10.1/24
+          |   +-- G0/0/0.20  encapsulation dot1Q 20  ip 192.168.20.1/24
+          |   +-- G0/0/0.30  encapsulation dot1Q 30  ip 192.168.30.1/24
+          |
+    trunk link (802.1Q tagged)
+          |
+         [S1]--trunk--[S2]
+          |                |
+     PC1 VLAN 10      PC2 VLAN 20</pre></div>
+<div class="ca warn"><span class="ic">⚠️</span><span>Does not scale beyond ~<strong>50 VLANs</strong>. Creates a bandwidth bottleneck because all inter-VLAN traffic shares one physical uplink.</span></div>
+<div class="et"><div class="lbl">🎯 EXAM TIP</div>The physical interface (G0/0/0) gets <strong>no IP address</strong> — only <code>no shutdown</code>. Only subinterfaces (G0/0/0.10, G0/0/0.20) get IP addresses. A broken config with an IP on the physical interface is a classic exam question.</div>
+</div>
+
+<div class="sub">
+<h3><span class="sn">4.1.4</span> Inter-VLAN Routing on a Layer 3 Switch</h3>
+<p>The modern preferred method. A <strong>Layer 3 switch</strong> operates at both Layer 2 and Layer 3. It uses <strong>Switched Virtual Interfaces (SVIs)</strong> — created with <code>interface vlan [id]</code> — to route between VLANs entirely inside the switch hardware.</p>
+<div class="tw"><table>
+  <tr><th>Feature</th><th>Router-on-a-Stick</th><th>Layer 3 Switch (SVI)</th></tr>
+  <tr><td>Routing speed</td><td>Limited by one physical link</td><td>Wire speed — hardware routing</td></tr>
+  <tr><td>External router needed?</td><td>Yes</td><td>No (for local VLANs)</td></tr>
+  <tr><td>Max VLANs</td><td>~50</td><td>Hundreds</td></tr>
+  <tr><td>Cost</td><td>Switch + separate router</td><td>One multilayer switch</td></tr>
+  <tr><td>Best for</td><td>Small/medium networks</td><td>Medium to large enterprise</td></tr>
+</table></div>
+</div>
+
+</div></div>
+
+<div class="sec" id="s2">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">4.2</span><span class="ttl">Router-on-a-Stick Configuration</span></span><button class="sec-check" id="sch-s2" onclick="event.stopPropagation();toggleSection('s2',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb">
+
+<div class="sub">
+<h3><span class="sn">4.2.1</span> Router-on-a-Stick Scenario</h3>
+<p>Standard NetAcad lab topology: two switches (S1, S2), one router (R1), two PCs in different VLANs:</p>
+<div class="dg"><pre>
+  PC1 (192.168.10.10/24, VLAN 10) --Fa0/6--[S1]--Gi0/1--[R1]
+  PC2 (192.168.20.10/24, VLAN 20) --Fa0/18--[S2]--Fa0/1--[S1]
+  
+  R1 Subinterfaces:
+    G0/0/0.10  192.168.10.1/24  (default gateway VLAN 10)
+    G0/0/0.20  192.168.20.1/24  (default gateway VLAN 20)
+  
+  Path: PC1 -> S1 -> trunk -> R1(.10) -> R1(.20) -> trunk -> S2 -> PC2</pre></div>
+<div class="ca info"><span class="ic">📋</span><span>All inter-VLAN traffic must travel up to R1 and back down through the trunk — even if both PCs were on the same switch. This shared link is the bandwidth bottleneck of router-on-a-stick.</span></div>
+</div>
+
+<div class="sub">
+<h3><span class="sn">4.2.2</span> S1 VLAN and Trunking Configuration</h3>
+<div class="cw">
+  <div class="cl">S1 — VLANs, Access Port, Trunk to S2 and R1 <button class="cpb" onclick="copyCode(this)">Copy</button></div>
+  <pre><code>S1# configure terminal
+
+! Create VLANs
+S1(config)# vlan 10
+S1(config-vlan)# name LAN10
+S1(config-vlan)# exit
+S1(config)# vlan 20
+S1(config-vlan)# name LAN20
+S1(config-vlan)# exit
+
+! Assign PC1 port to VLAN 10
+S1(config)# interface fa0/6
+S1(config-if)# switchport mode access
+S1(config-if)# switchport access vlan 10
+S1(config-if)# exit
+
+! Trunk to S2
+S1(config)# interface fa0/1
+S1(config-if)# switchport mode trunk
+S1(config-if)# switchport trunk native vlan 1000
+S1(config-if)# switchport trunk allowed vlan 10,20,1000
+S1(config-if)# exit
+
+! Trunk to R1
+S1(config)# interface gi0/1
+S1(config-if)# switchport mode trunk
+S1(config-if)# switchport trunk native vlan 1000
+S1(config-if)# switchport trunk allowed vlan 10,20,1000
+S1(config-if)# end</code></pre>
+</div>
+</div>
+
+<div class="sub">
+<h3><span class="sn">4.2.3</span> S2 VLAN and Trunking Configuration</h3>
+<div class="cw">
+  <div class="cl">S2 — VLANs, Access Port, Trunk to S1 <button class="cpb" onclick="copyCode(this)">Copy</button></div>
+  <pre><code>S2# configure terminal
+
+! VLANs must exist on every switch in the path
+S2(config)# vlan 10
+S2(config-vlan)# name LAN10
+S2(config-vlan)# exit
+S2(config)# vlan 20
+S2(config-vlan)# name LAN20
+S2(config-vlan)# exit
+
+! Assign PC2 port to VLAN 20
+S2(config)# interface fa0/18
+S2(config-if)# switchport mode access
+S2(config-if)# switchport access vlan 20
+S2(config-if)# exit
+
+! Trunk to S1
+S2(config)# interface fa0/1
+S2(config-if)# switchport mode trunk
+S2(config-if)# switchport trunk native vlan 1000
+S2(config-if)# switchport trunk allowed vlan 10,20,1000
+S2(config-if)# end</code></pre>
+</div>
+<div class="ca warn"><span class="ic">⚠️</span><span>VLANs must be created on <strong>every switch in the path</strong>. Forgetting VLAN 20 on S1 means VLAN 20 frames cannot transit S1 on the trunk, even if S2 is perfectly configured.</span></div>
+</div>
+
+<div class="sub">
+<h3><span class="sn">4.2.4</span> R1 Subinterface Configuration</h3>
+<p>The most exam-tested configuration in the module. Three strict rules apply:</p>
+<div class="et">
+  <div class="lbl">🎯 THREE RULES FOR SUBINTERFACES — MEMORIZE THESE</div>
+  <ol><li>Physical interface gets <code>no shutdown</code> — <strong>NO IP address</strong></li>
+  <li><code>encapsulation dot1Q [vlan-id]</code> MUST come <strong>before</strong> <code>ip address</code></li>
+  <li>VLAN number in <code>encapsulation dot1Q</code> must <strong>exactly match</strong> the switch VLAN</li></ol>
+</div>
+<div class="cw">
+  <div class="cl">R1 — Router-on-a-Stick Subinterface Configuration <button class="cpb" onclick="copyCode(this)">Copy</button></div>
+  <pre><code>R1# configure terminal
+
+! Physical interface: bring up, NO IP address
+R1(config)# interface g0/0/0
+R1(config-if)# no shutdown
+R1(config-if)# exit
+
+! Subinterface for VLAN 10
+R1(config)# interface g0/0/0.10
+R1(config-subif)# encapsulation dot1Q 10
+R1(config-subif)# ip address 192.168.10.1 255.255.255.0
+R1(config-subif)# exit
+
+! Subinterface for VLAN 20
+R1(config)# interface g0/0/0.20
+R1(config-subif)# encapsulation dot1Q 20
+R1(config-subif)# ip address 192.168.20.1 255.255.255.0
+R1(config-subif)# end</code></pre>
+</div>
+<div class="ca info"><span class="ic">💡</span><div>Cisco best practice: match the subinterface number to the VLAN ID (G0/0/0.10 for VLAN 10). This makes configs readable and easier to troubleshoot.</div></div>
+</div>
+
+<div class="sub">
+<h3><span class="sn">4.2.5</span> Verify Connectivity Between PC1 and PC2</h3>
+<div class="cw">
+  <div class="cl">PC1 — Ping across VLANs to PC2 <button class="cpb" onclick="copyCode(this)">Copy</button></div>
+  <pre><code>C:\> ping 192.168.20.10
+
+Pinging 192.168.20.10 with 32 bytes of data:
+Reply from 192.168.20.10: bytes=32 time&lt;1ms TTL=127
+Reply from 192.168.20.10: bytes=32 time&lt;1ms TTL=127
+Reply from 192.168.20.10: bytes=32 time&lt;1ms TTL=127
+Reply from 192.168.20.10: bytes=32 time&lt;1ms TTL=127
+
+Ping statistics for 192.168.20.10:
+    Packets: Sent = 4, Received = 4, Lost = 0 (0% loss)</code></pre>
+</div>
+<div class="ca tip"><span class="ic">✅</span><div><strong>TTL as a routing indicator:</strong> TTL=127 means one routing hop occurred (Windows default 128 minus 1 = 127). TTL=128 means routing never happened — traffic stayed at Layer 2. This appears on the CCNA exam as a diagnostic question.</div></div>
+</div>
+
+<div class="sub">
+<h3><span class="sn">4.2.6</span> Router-on-a-Stick Verification Commands</h3>
+<div class="cw">
+  <div class="cl">show ip route — both subnets should appear as connected <button class="cpb" onclick="copyCode(this)">Copy</button></div>
+  <pre><code>R1# show ip route
+
+      192.168.10.0/24 is variably subnetted, 2 subnets, 2 masks
+C        192.168.10.0/24 is directly connected, GigabitEthernet0/0/0.10
+L        192.168.10.1/32 is directly connected, GigabitEthernet0/0/0.10
+      192.168.20.0/24 is variably subnetted, 2 subnets, 2 masks
+C        192.168.20.0/24 is directly connected, GigabitEthernet0/0/0.20
+L        192.168.20.1/32 is directly connected, GigabitEthernet0/0/0.20</code></pre>
+</div>
+<div class="cw">
+  <div class="cl">show interfaces g0/0/0.10 — verify encapsulation and IP <button class="cpb" onclick="copyCode(this)">Copy</button></div>
+  <pre><code>R1# show interfaces g0/0/0.10
+
+GigabitEthernet0/0/0.10 is up, line protocol is up
+  Internet address is 192.168.10.1/24
+  MTU 1500 bytes, BW 100000 Kbit/sec
+  Encapsulation 802.1Q Virtual LAN, Vlan ID 10.</code></pre>
+</div>
+<div class="cw">
+  <div class="cl">show running-config — confirm no IP on physical interface <button class="cpb" onclick="copyCode(this)">Copy</button></div>
+  <pre><code>R1# show running-config | section interface
+
+interface GigabitEthernet0/0/0
+ no ip address
+ duplex auto
+ speed auto
+!
+interface GigabitEthernet0/0/0.10
+ encapsulation dot1Q 10
+ ip address 192.168.10.1 255.255.255.0
+!
+interface GigabitEthernet0/0/0.20
+ encapsulation dot1Q 20
+ ip address 192.168.20.1 255.255.255.0</code></pre>
+</div>
+</div>
+
+  <!-- SYNTAX CHECKER: 4.2.7 -->
+  <div style="margin:20px 0 6px;padding:16px;background:#0d1117;border:1px solid #30363d;border-left:3px solid #bc8cff;border-radius:8px">
+    <div style="font-size:.7em;font-weight:800;text-transform:uppercase;letter-spacing:.8px;color:#bc8cff;margin-bottom:6px">&#x1F5A5; Syntax Checker &mdash; 4.2.7</div>
+    <div style="font-size:.92em;font-weight:600;color:#e6edf3;margin-bottom:12px">Router-on-a-Stick Inter-VLAN Routing</div>
+    <div style="font-size:.82em;color:#8b949e;margin-bottom:14px">Type each command exactly as shown. Press Enter to submit. The checker validates your syntax step by step.</div>
+    <div class="tool-links" style="display:flex;flex-wrap:wrap;gap:14px">
+      <div style="flex:1 1 220px;min-width:0">
+        <a href="../../syntax-checker-simple/ccna2_syntax_checker.html?lab=4.2.7" target="_blank" rel="noopener" title="Quick, guided drill: type the exact commands for this NetAcad lab, step by step. Opens straight to lab 4.2.7." style="display:inline-flex;align-items:center;gap:8px;color:#fff;text-decoration:none;padding:8px 18px;border-radius:6px;font-size:.85em;font-weight:700;background:#238636;border:1px solid #2ea043">&#x25B6; Open Syntax Checker</a>
+        <div style="font-size:.75em;color:#8b949e;margin-top:6px">Quick, guided drill: type the exact commands for this NetAcad lab, step by step. Opens straight to lab 4.2.7.</div>
+      </div>
+      <div style="flex:1 1 220px;min-width:0">
+        <a class="cli-engine-link" href="../../cli-engine/ccna-cli-engine.html" target="_blank" rel="noopener" title="Full simulated Cisco IOS terminal: Tab completion, device state, Free Practice, Home Labs and Subnetting. In its exercise menu, pick “Course 2 · 4.2 — Router-on-a-Stick Inter-VLAN Routing”." style="display:inline-flex;align-items:center;gap:8px;color:#fff;text-decoration:none;padding:8px 18px;border-radius:6px;font-size:.85em;font-weight:700;background:#1f6feb;border:1px solid #388bfd">&#x1F4BB; Open CLI Engine</a>
+        <div style="font-size:.75em;color:#8b949e;margin-top:6px">Full simulated Cisco IOS terminal: Tab completion, device state, Free Practice, Home Labs and Subnetting. In its exercise menu, pick “Course 2 · 4.2 — Router-on-a-Stick Inter-VLAN Routing”.</div>
+      </div>
+    </div>
+    <div style="margin-top:12px;font-size:.75em"><a href="../../index.html" style="color:#58a6ff;text-decoration:none">&#x1F3E0; All study tools (home)</a></div>
+  </div>
+
+  <!-- PT INLINE -->
+  <div style="margin:20px 0 6px;padding:14px 16px;background:#0d1117;border:1px solid #30363d;border-left:3px solid #1f6feb;border-radius:6px">
+    <div style="font-size:.72em;font-weight:800;text-transform:uppercase;letter-spacing:.8px;color:#1f6feb;margin-bottom:10px">&#x1F4E6; Packet Tracer Activities</div>
+  <div style="display:flex;align-items:baseline;gap:10px;padding:6px 0;border-bottom:1px solid #21262d"><span style="font-family:monospace;font-size:.85em;color:#79c0ff;white-space:nowrap;flex-shrink:0;min-width:52px">4.2.7</span><span style="font-size:.88em;color:#c9d1d9">Configure Router-on-a-Stick Inter-VLAN Routing</span></div>
+    <div style="margin-top:10px;font-size:.78em;color:#6e7681">Full list: <a href="https://itexamanswers.net/ccna-2-packet-tracer-labs-answers-srwe-v7-02.html" target="_blank" rel="noopener" style="color:#58a6ff;word-break:break-all">https://itexamanswers.net/ccna-2-packet-tracer-labs-answers-srwe-v7-02.html</a></div>
+  </div>
+
+</div></div>
+
+<div class="sec" id="s3">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">4.3</span><span class="ttl">Inter-VLAN Routing Using Layer 3 Switches</span></span><button class="sec-check" id="sch-s3" onclick="event.stopPropagation();toggleSection('s3',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb">
+
+<div class="sub">
+<h3><span class="sn">4.3.1</span> Layer 3 Switch Inter-VLAN Routing</h3>
+<p>A <strong>Layer 3 switch</strong> performs both Layer 2 switching and Layer 3 routing. It uses <strong>Switched Virtual Interfaces (SVIs)</strong> created with <code>interface vlan [id]</code>. Each SVI acts as the default gateway for that VLAN and routing happens in switch hardware at wire speed — no external router required for local traffic.</p>
+<div class="ca info"><span class="ic">🖥️</span><div>An SVI is only up/up when both conditions are true: (1) the VLAN exists in the VLAN database, AND (2) at least one active port is assigned to that VLAN. If either condition fails, the SVI shows down/down.</div></div>
+</div>
+
+<div class="sub">
+<h3><span class="sn">4.3.2</span> Layer 3 Switch Scenario</h3>
+<div class="dg"><pre>
+  PC1 (192.168.10.10/24) --Fa0/6--+
+  PC2 (192.168.20.10/24) --Fa0/18-+-- [D1 Layer 3 Switch]
+  PC3 (192.168.30.10/24) --Fa0/11-+
+                                   |
+                        SVIs configured on D1:
+                   Vlan10  192.168.10.1/24  (gateway VLAN 10)
+                   Vlan20  192.168.20.1/24  (gateway VLAN 20)
+                   Vlan30  192.168.30.1/24  (gateway VLAN 30)
+
+  All three PCs communicate -- all routing done inside D1</pre></div>
+</div>
+
+<div class="sub">
+<h3><span class="sn">4.3.3</span> Layer 3 Switch SVI Configuration</h3>
+<p>Four steps — most students get steps 1, 2, and 4 right but miss Step 3.</p>
+<div class="cw">
+  <div class="cl">D1 — Complete Layer 3 Switch SVI Configuration <button class="cpb" onclick="copyCode(this)">Copy</button></div>
+  <pre><code>D1# configure terminal
+
+! STEP 1: Create the VLANs in the database
+D1(config)# vlan 10
+D1(config-vlan)# name LAN10
+D1(config-vlan)# exit
+D1(config)# vlan 20
+D1(config-vlan)# name LAN20
+D1(config-vlan)# exit
+D1(config)# vlan 30
+D1(config-vlan)# name LAN30
+D1(config-vlan)# exit
+
+! STEP 2: Create SVIs -- one per VLAN -- assign IP and bring up
+D1(config)# interface vlan 10
+D1(config-if)# description Default Gateway VLAN 10
+D1(config-if)# ip address 192.168.10.1 255.255.255.0
+D1(config-if)# no shutdown
+D1(config-if)# exit
+
+D1(config)# interface vlan 20
+D1(config-if)# description Default Gateway VLAN 20
+D1(config-if)# ip address 192.168.20.1 255.255.255.0
+D1(config-if)# no shutdown
+D1(config-if)# exit
+
+D1(config)# interface vlan 30
+D1(config-if)# description Default Gateway VLAN 30
+D1(config-if)# ip address 192.168.30.1 255.255.255.0
+D1(config-if)# no shutdown
+D1(config-if)# exit
+
+! STEP 3: ENABLE IP ROUTING -- THE #1 MOST FORGOTTEN COMMAND
+D1(config)# ip routing
+
+! STEP 4: Assign physical access ports to VLANs
+D1(config)# interface fa0/6
+D1(config-if)# switchport mode access
+D1(config-if)# switchport access vlan 10
+D1(config-if)# exit
+
+D1(config)# interface fa0/18
+D1(config-if)# switchport mode access
+D1(config-if)# switchport access vlan 20
+D1(config-if)# exit
+
+D1(config)# interface fa0/11
+D1(config-if)# switchport mode access
+D1(config-if)# switchport access vlan 30
+D1(config-if)# end</code></pre>
+</div>
+<div class="et">
+  <div class="lbl">🎯 THE #1 MOST FORGOTTEN COMMAND IN MODULE 4</div>
+  <p style="font-size:.94em;margin:8px 0 4px;"><code style="font-size:1em;">ip routing</code></p>
+  Without this command the Layer 3 switch acts as a pure Layer 2 device. SVIs will have correct IPs and show up/up — but inter-VLAN packets will NOT be routed. This is the number one reason Layer 3 switch inter-VLAN routing fails in both labs and on the CCNA exam.
+</div>
+</div>
+
+<div class="sub">
+<h3><span class="sn">4.3.4</span> Layer 3 Switch Verification</h3>
+<div class="cw">
+  <div class="cl">show ip route — VLANs appear as connected via Vlan interfaces <button class="cpb" onclick="copyCode(this)">Copy</button></div>
+  <pre><code>D1# show ip route
+
+      192.168.10.0/24 is variably subnetted, 2 subnets, 2 masks
+C        192.168.10.0/24 is directly connected, Vlan10
+L        192.168.10.1/32 is directly connected, Vlan10
+      192.168.20.0/24 is variably subnetted, 2 subnets, 2 masks
+C        192.168.20.0/24 is directly connected, Vlan20
+L        192.168.20.1/32 is directly connected, Vlan20
+      192.168.30.0/24 is variably subnetted, 2 subnets, 2 masks
+C        192.168.30.0/24 is directly connected, Vlan30
+L        192.168.30.1/32 is directly connected, Vlan30</code></pre>
+</div>
+<div class="cw">
+  <div class="cl">show interfaces vlan 10 — verify SVI is up/up with correct IP <button class="cpb" onclick="copyCode(this)">Copy</button></div>
+  <pre><code>D1# show interfaces vlan 10
+
+Vlan10 is up, line protocol is up
+  Hardware is CPU Interface, address is 0060.3e35.1d80
+  Description: Default Gateway VLAN 10
+  Internet address is 192.168.10.1/24
+  MTU 1500 bytes, BW 100000 Kbit/sec</code></pre>
+</div>
+<div class="ca danger"><span class="ic">🚨</span><div><strong>SVI shows down/down?</strong> Two causes:<br>1. VLAN does not exist in the database — check <code>show vlan brief</code><br>2. No active ports assigned to that VLAN<br>Fix: create the VLAN and assign at least one active access port to it.</div></div>
+</div>
+
+<div class="sub">
+<h3><span class="sn">4.3.5</span> Routing on a Layer 3 Switch</h3>
+<p>Layer 3 switches handle local inter-VLAN routing using SVIs. For traffic destined to the internet or external networks, a <strong>routed port</strong> connects the Layer 3 switch to an upstream router.</p>
+<div class="dg"><pre>
+  [Internet / WAN]
+        |
+      [R1]  -- 10.10.10.1/30
+        |
+   /30 point-to-point link
+        |
+  10.10.10.2/30 -- [D1 Layer 3 Switch] -- VLANs 10, 20, 30
+  
+  D1 routes locally between VLANs using SVIs.
+  D1 sends internet-bound traffic upstream to R1 via default route.</pre></div>
+</div>
+
+<div class="sub">
+<h3><span class="sn">4.3.7</span> Routed Port Configuration on a Layer 3 Switch</h3>
+<p>A routed port is created with <code>no switchport</code>, removing the port from Layer 2 operation entirely. It then receives an IP address like a router interface and no longer appears in <code>show vlan brief</code>.</p>
+<div class="cw">
+  <div class="cl">D1 — Routed Port + Default Route to External Router <button class="cpb" onclick="copyCode(this)">Copy</button></div>
+  <pre><code>D1# configure terminal
+
+! Convert Gi0/0/1 from a Layer 2 switchport to a Layer 3 routed port
+D1(config)# interface gi0/0/1
+D1(config-if)# no switchport
+D1(config-if)# ip address 10.10.10.2 255.255.255.252
+D1(config-if)# no shutdown
+D1(config-if)# exit
+
+! Default route -- send all non-local traffic to R1
+D1(config)# ip route 0.0.0.0 0.0.0.0 10.10.10.1
+D1(config)# end</code></pre>
+</div>
+<div class="ca info"><span class="ic">💡</span><div><code>no switchport</code> permanently converts the port from Layer 2 to Layer 3. After this command, the port disappears from <code>show vlan brief</code> and behaves exactly like a router interface — assign an IP address directly.</div></div>
+</div>
+
+  <!-- PT INLINE -->
+  <div style="margin:20px 0 6px;padding:14px 16px;background:#0d1117;border:1px solid #30363d;border-left:3px solid #1f6feb;border-radius:6px">
+    <div style="font-size:.72em;font-weight:800;text-transform:uppercase;letter-spacing:.8px;color:#1f6feb;margin-bottom:10px">&#x1F4E6; Packet Tracer Activities</div>
+  <div style="display:flex;align-items:baseline;gap:10px;padding:6px 0;border-bottom:1px solid #21262d"><span style="font-family:monospace;font-size:.85em;color:#79c0ff;white-space:nowrap;flex-shrink:0;min-width:52px">4.3.8</span><span style="font-size:.88em;color:#c9d1d9">Configure Layer 3 Switching and Inter-VLAN Routing</span></div>
+    <div style="margin-top:10px;font-size:.78em;color:#6e7681">Full list: <a href="https://itexamanswers.net/ccna-2-packet-tracer-labs-answers-srwe-v7-02.html" target="_blank" rel="noopener" style="color:#58a6ff;word-break:break-all">https://itexamanswers.net/ccna-2-packet-tracer-labs-answers-srwe-v7-02.html</a></div>
+  </div>
+
+</div></div>
+
+<div class="sec" id="s4">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">4.4</span><span class="ttl">Troubleshoot Inter-VLAN Routing</span></span><button class="sec-check" id="sch-s4" onclick="event.stopPropagation();toggleSection('s4',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb">
+
+<div class="sub">
+<h3><span class="sn">4.4.1</span> Common Inter-VLAN Issues</h3>
+<p>Troubleshoot bottom-up: physical first, then Layer 2, then Layer 3.</p>
+<div class="tw"><table>
+  <tr><th>Issue</th><th>Where It Lives</th><th>Diagnostic Command</th></tr>
+  <tr><td><strong>Missing VLANs</strong></td><td>VLAN not in database on one or more switches</td><td><code>show vlan brief</code></td></tr>
+  <tr><td><strong>Trunk Port Issues</strong></td><td>VLAN not in allowed list; native VLAN mismatch</td><td><code>show interfaces trunk</code></td></tr>
+  <tr><td><strong>Access Port Issues</strong></td><td>PC port assigned to wrong VLAN</td><td><code>show interfaces [int] switchport</code></td></tr>
+  <tr><td><strong>Router/L3 Config Issues</strong></td><td>Wrong encapsulation; IP on wrong interface; missing <code>ip routing</code></td><td><code>show ip route</code>, <code>show running-config</code></td></tr>
+</table></div>
+</div>
+
+<div class="sub">
+<h3><span class="sn">4.4.2</span> Structured Troubleshooting Approach</h3>
+<ol class="steps">
+  <li>Check physical connectivity — are cables connected? Are interfaces up/up?</li>
+  <li>Verify VLANs exist on <strong>every switch</strong> in the path using <code>show vlan brief</code></li>
+  <li>Check trunk links — correct VLANs in allowed list? Native VLANs match on both ends? Use <code>show interfaces trunk</code></li>
+  <li>Check access ports — is each PC port in the correct VLAN? Use <code>show interfaces [int] switchport</code></li>
+  <li>Check router or L3 switch — encapsulation correct? IP on right interface? <code>ip routing</code> enabled? Use <code>show ip route</code> and <code>show running-config</code></li>
+  <li>Test with <code>ping</code> and <code>traceroute</code> from end devices to isolate exactly where traffic stops</li>
+</ol>
+</div>
+
+<div class="sub">
+<h3><span class="sn">4.4.3</span> Missing VLANs</h3>
+<p>A VLAN must exist on <strong>every switch in the path</strong> — not just on the switch the PC is directly connected to.</p>
+<div class="sc"><div class="scl">🔍 TROUBLESHOOT SCENARIO</div>PC1 on VLAN 10 can ping its gateway but cannot reach PC2 on VLAN 20. Check if VLAN 20 exists on S1:</div>
+<div class="cw">
+  <div class="cl">show vlan brief — look for missing VLANs <button class="cpb" onclick="copyCode(this)">Copy</button></div>
+  <pre><code>S1# show vlan brief
+
+VLAN Name                             Status    Ports
+---- -------------------------------- --------- ----------------------------
+1    default                          active    Fa0/3, Fa0/4, Gi0/2
+10   LAN10                            active    Fa0/6
+1002 fddi-default                     act/unsup
+! NOTICE: VLAN 20 is completely missing from S1!
+! VLAN 20 frames cannot transit S1 on the trunk -- they are dropped.</code></pre>
+</div>
+<div class="cw">
+  <div class="cl">Fix — Create the missing VLAN on S1 <button class="cpb" onclick="copyCode(this)">Copy</button></div>
+  <pre><code>S1(config)# vlan 20
+S1(config-vlan)# name LAN20
+S1(config-vlan)# end</code></pre>
+</div>
+</div>
+
+<div class="sub">
+<h3><span class="sn">4.4.4</span> Switch Trunk Port Issues</h3>
+<p>Two common trunk problems: a VLAN is missing from the allowed list, or there is a native VLAN mismatch between the two ends of a trunk.</p>
+<div class="sc"><div class="scl">🔍 TROUBLESHOOT SCENARIO</div>VLANs exist. Gateways respond. But PC1 (VLAN 10 on S1) cannot reach PC2 (VLAN 20 on S2). Check the trunk:</div>
+<div class="cw">
+  <div class="cl">show interfaces trunk — check allowed VLANs <button class="cpb" onclick="copyCode(this)">Copy</button></div>
+  <pre><code>S1# show interfaces fa0/1 trunk
+
+Port        Mode         Encapsulation  Status        Native vlan
+Fa0/1       on           802.1q         trunking      1
+
+Port        Vlans allowed on trunk
+Fa0/1       1-9,11-4094
+! PROBLEM: VLAN 10 is missing (list jumps from 9 to 11)
+
+Port        Vlans allowed and active in management domain
+Fa0/1       1,20</code></pre>
+</div>
+<div class="cw">
+  <div class="cl">Fix — Add VLAN 10 to the trunk allowed list <button class="cpb" onclick="copyCode(this)">Copy</button></div>
+  <pre><code>S1(config)# interface fa0/1
+S1(config-if)# switchport trunk allowed vlan add 10
+S1(config-if)# end</code></pre>
+</div>
+<div class="ca danger"><span class="ic">🚨</span><div><strong>Critical Trap — Always Use "add":</strong> The command <code>switchport trunk allowed vlan 10</code> without <code>add</code> <strong>replaces the entire allowed list</strong> with only VLAN 10, removing all others. Always use <code>switchport trunk allowed vlan add 10</code> to safely append.</div></div>
+</div>
+
+<div class="sub">
+<h3><span class="sn">4.4.5</span> Switch Access Port Issues</h3>
+<p>If a PC port is in the wrong VLAN, the PC is in the wrong subnet and cannot reach its gateway — even if everything else is correctly configured.</p>
+<div class="sc"><div class="scl">🔍 TROUBLESHOOT SCENARIO</div>PC2 should be on VLAN 20 but cannot ping its gateway 192.168.20.1. Check the port assignment:</div>
+<div class="cw">
+  <div class="cl">show interfaces fa0/18 switchport — check VLAN assignment <button class="cpb" onclick="copyCode(this)">Copy</button></div>
+  <pre><code>S2# show interfaces fa0/18 switchport
+
+Name: Fa0/18
+Switchport: Enabled
+Administrative Mode: static access
+Operational Mode: static access
+Negotiation of Trunking: Off
+Access Mode VLAN: 1 (default)
+! PROBLEM: Port is in VLAN 1, not VLAN 20</code></pre>
+</div>
+<div class="cw">
+  <div class="cl">Fix — Assign port to the correct VLAN <button class="cpb" onclick="copyCode(this)">Copy</button></div>
+  <pre><code>S2(config)# interface fa0/18
+S2(config-if)# switchport access vlan 20
+S2(config-if)# end</code></pre>
+</div>
+</div>
+
+<div class="sub">
+<h3><span class="sn">4.4.6</span> Router Configuration Issues</h3>
+<div class="tw"><table>
+  <tr><th>Symptom</th><th>Cause</th><th>Fix</th></tr>
+  <tr><td>All subinterfaces down/down</td><td>Physical interface has <code>shutdown</code> applied</td><td><code>no shutdown</code> on physical interface</td></tr>
+  <tr><td>Wrong VLAN receives traffic</td><td><code>encapsulation dot1Q</code> has wrong VLAN ID</td><td>Correct the VLAN number in encapsulation command</td></tr>
+  <tr><td>No route in routing table</td><td>IP on physical interface instead of subinterface</td><td>Move IP to the correct subinterface</td></tr>
+  <tr><td>Subinterface down/down</td><td><code>encapsulation dot1Q</code> command is missing</td><td>Add encapsulation command to the subinterface</td></tr>
+</table></div>
+<div class="sc"><div class="scl">🔍 TROUBLESHOOT SCENARIO — Spot Both Errors</div></div>
+<div class="cw">
+  <div class="cl">show running-config — find the two misconfigurations <button class="cpb" onclick="copyCode(this)">Copy</button></div>
+  <pre><code>interface GigabitEthernet0/0/0
+ no ip address
+ shutdown                 &lt;-- ERROR 1: Physical interface is shut down!
+                              All subinterfaces go down immediately.
+!
+interface GigabitEthernet0/0/0.10
+ encapsulation dot1Q 10
+ ip address 192.168.10.1 255.255.255.0
+!
+interface GigabitEthernet0/0/0.20
+ encapsulation dot1Q 10  &lt;-- ERROR 2: Wrong VLAN ID! Should be dot1Q 20.
+ ip address 192.168.20.1 255.255.255.0</code></pre>
+</div>
+<div class="cw">
+  <div class="cl">Fix — Correct both errors <button class="cpb" onclick="copyCode(this)">Copy</button></div>
+  <pre><code>R1(config)# interface g0/0/0
+R1(config-if)# no shutdown
+R1(config-if)# exit
+
+R1(config)# interface g0/0/0.20
+R1(config-subif)# encapsulation dot1Q 20
+R1(config-subif)# end</code></pre>
+</div>
+</div>
+
+  <!-- PT INLINE -->
+  <div style="margin:20px 0 6px;padding:14px 16px;background:#0d1117;border:1px solid #30363d;border-left:3px solid #1f6feb;border-radius:6px">
+    <div style="font-size:.72em;font-weight:800;text-transform:uppercase;letter-spacing:.8px;color:#1f6feb;margin-bottom:10px">&#x1F4E6; Packet Tracer Activities</div>
+  <div style="display:flex;align-items:baseline;gap:10px;padding:6px 0;border-bottom:1px solid #21262d"><span style="font-family:monospace;font-size:.85em;color:#79c0ff;white-space:nowrap;flex-shrink:0;min-width:52px">4.4.8</span><span style="font-size:.88em;color:#c9d1d9">Troubleshoot Inter-VLAN Routing</span></div>
+  <div style="display:flex;align-items:baseline;gap:10px;padding:6px 0;border-bottom:1px solid #21262d"><span style="font-family:monospace;font-size:.85em;color:#79c0ff;white-space:nowrap;flex-shrink:0;min-width:52px">4.4.9</span><span style="font-size:.88em;color:#c9d1d9">Troubleshoot Inter-VLAN Routing (Physical Mode)</span></div>
+    <div style="margin-top:10px;font-size:.78em;color:#6e7681">Full list: <a href="https://itexamanswers.net/ccna-2-packet-tracer-labs-answers-srwe-v7-02.html" target="_blank" rel="noopener" style="color:#58a6ff;word-break:break-all">https://itexamanswers.net/ccna-2-packet-tracer-labs-answers-srwe-v7-02.html</a></div>
+  </div>
+
+</div></div>
+
+
+<div class="sec" id="s-pt-4-5">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">4.5</span><span class="ttl">Packet Tracer — Inter-VLAN Routing Challenge</span></span><button class="sec-check" id="sch-s-pt-4-5" onclick="event.stopPropagation();toggleSection('s-pt-4-5',this)">○ Mark done</button>
+</div>
+<div class="sb">
+  <div style="padding:14px 16px;background:#0d1117;border:1px solid #30363d;border-left:3px solid #1f6feb;border-radius:6px">
+    <div style="font-size:.72em;font-weight:800;text-transform:uppercase;letter-spacing:.8px;color:#1f6feb;margin-bottom:10px">&#x1F4E6; Packet Tracer Activities</div>
+    <div style="font-size:.82em;color:#6e7681;margin-bottom:10px">Open in Cisco Packet Tracer via your NetAcad course.</div>
+      <div style="display:flex;align-items:baseline;gap:10px;padding:6px 0;border-bottom:1px solid #21262d"><span style="font-family:monospace;font-size:.85em;color:#79c0ff;white-space:nowrap;flex-shrink:0;min-width:52px">4.5.1</span><span style="font-size:.88em;color:#c9d1d9">Inter-VLAN Routing Challenge</span></div>
+    <div style="margin-top:12px;font-size:.78em;color:#6e7681">Full list: <a href="https://itexamanswers.net/ccna-2-packet-tracer-labs-answers-srwe-v7-02.html" target="_blank" rel="noopener" style="color:#58a6ff;word-break:break-all">https://itexamanswers.net/ccna-2-packet-tracer-labs-answers-srwe-v7-02.html</a></div>
+  </div>
+</div>
+</div>
+<div class="sec" id="s5">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">CMD</span><span class="ttl">Quick Reference — All Module 4 Commands</span></span><button class="sec-check" id="sch-s5" onclick="event.stopPropagation();toggleSection('s5',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb">
+<p style="font-weight:700;color:var(--dark);margin-bottom:10px;">Router-on-a-Stick Commands (Router)</p>
+<div class="tw"><table>
+  <tr><th>Command</th><th>What It Does</th></tr>
+  <tr><td><code>interface g0/0/0.[num]</code></td><td>Creates a subinterface on the physical interface</td></tr>
+  <tr><td><code>encapsulation dot1Q [vlan-id]</code></td><td>Binds subinterface to VLAN — must come before ip address</td></tr>
+  <tr><td><code>encapsulation dot1Q [vlan-id] native</code></td><td>Marks subinterface as handling the native (untagged) VLAN</td></tr>
+  <tr><td><code>ip address [ip] [mask]</code></td><td>Assigns IP to subinterface — becomes the VLAN gateway</td></tr>
+  <tr><td><code>no shutdown</code> (physical int)</td><td>Brings up physical interface — subinterfaces inherit this state</td></tr>
+  <tr><td><code>show interfaces [subint]</code></td><td>Verifies subinterface status, IP, and encapsulation</td></tr>
+  <tr><td><code>show ip route</code></td><td>Confirms connected VLAN subnets in routing table</td></tr>
+  <tr><td><code>show running-config</code></td><td>Full verification of all subinterface configurations</td></tr>
+</table></div>
+<p style="font-weight:700;color:var(--dark);margin:20px 0 10px;">Layer 3 Switch / SVI Commands</p>
+<div class="tw"><table>
+  <tr><th>Command</th><th>What It Does</th></tr>
+  <tr><td><code>ip routing</code></td><td>Enables Layer 3 routing on the switch — NEVER forget this</td></tr>
+  <tr><td><code>interface vlan [id]</code></td><td>Creates an SVI for the specified VLAN</td></tr>
+  <tr><td><code>ip address [ip] [mask]</code></td><td>Assigns IP to SVI — becomes the default gateway for the VLAN</td></tr>
+  <tr><td><code>no shutdown</code></td><td>Brings the SVI up — SVIs are shutdown by default</td></tr>
+  <tr><td><code>no switchport</code></td><td>Converts a physical switch port to a Layer 3 routed port</td></tr>
+  <tr><td><code>show interfaces vlan [id]</code></td><td>Verifies SVI status, IP, and up/up state</td></tr>
+  <tr><td><code>show ip route</code></td><td>Verifies VLANs appear as directly connected routes</td></tr>
+  <tr><td><code>ip route 0.0.0.0 0.0.0.0 [next-hop]</code></td><td>Default route to external router for internet-bound traffic</td></tr>
+</table></div>
+<p style="font-weight:700;color:var(--dark);margin:20px 0 10px;">Troubleshooting Commands</p>
+<div class="tw"><table>
+  <tr><th>Command</th><th>What You Are Checking</th></tr>
+  <tr><td><code>show vlan brief</code></td><td>VLANs exist and ports are correctly assigned</td></tr>
+  <tr><td><code>show interfaces trunk</code></td><td>Trunk status, allowed VLANs, native VLAN match</td></tr>
+  <tr><td><code>show interfaces [int] switchport</code></td><td>Access port VLAN assignment</td></tr>
+  <tr><td><code>show ip route</code></td><td>All VLAN subnets present in routing table?</td></tr>
+  <tr><td><code>show interfaces [subint or vlan]</code></td><td>Is the subinterface or SVI up/up?</td></tr>
+  <tr><td><code>show running-config</code></td><td>Full config review — spot misconfigurations</td></tr>
+  <tr><td><code>ping [ip]</code></td><td>End-to-end connectivity test</td></tr>
+  <tr><td><code>traceroute [ip]</code></td><td>Hop-by-hop path — identify exactly where traffic stops</td></tr>
+</table></div>
+</div></div>
+
+<div class="sec" id="s6">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">🎯</span><span class="ttl">Common Exam Traps — Module 4</span></span><button class="sec-check" id="sch-s6" onclick="event.stopPropagation();toggleSection('s6',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb">
+<div class="ca danger"><span class="ic">❌</span><div><strong>Trap 1 (RoaS): IP address on the physical interface.</strong><br>Physical interface must have NO IP — only <code>no shutdown</code>. Only subinterfaces get IPs. The exam shows a config with an IP on G0/0/0 and asks what is wrong.</div></div>
+<div class="ca danger"><span class="ic">❌</span><div><strong>Trap 2 (RoaS): encapsulation dot1Q VLAN mismatch.</strong><br>If <code>encapsulation dot1Q 10</code> is on the subinterface for VLAN 20, traffic goes to the wrong VLAN. The encapsulation VLAN ID must exactly match the switch configuration.</div></div>
+<div class="ca danger"><span class="ic">❌</span><div><strong>Trap 3 (Layer 3 Switch): Forgetting <code>ip routing</code>.</strong><br>Without this command the switch acts as Layer 2 only. SVIs will be up/up with correct IPs — but inter-VLAN packets will NOT be routed. Always verify this is in the running config.</div></div>
+<div class="ca danger"><span class="ic">❌</span><div><strong>Trap 4: SVI shows down/down.</strong><br>An SVI is only up/up when: (a) the VLAN exists in the database AND (b) at least one active port is assigned to it. Deleting a VLAN makes its SVI go down even if the SVI has a correct IP.</div></div>
+<div class="ca danger"><span class="ic">❌</span><div><strong>Trap 5: <code>switchport trunk allowed vlan</code> without <code>add</code>.</strong><br>Replaces the entire allowed VLAN list. Always use <code>add</code> to append. This mistake removes all existing VLANs from the trunk and is one of the most destructive misconfigurations in networking.</div></div>
+<div class="ca danger"><span class="ic">❌</span><div><strong>Trap 6: Physical interface shutdown kills all subinterfaces.</strong><br>If G0/0/0 is shut down, every subinterface on it (G0/0/0.10, G0/0/0.20, etc.) goes down immediately — even if the subinterfaces themselves are not individually shut down.</div></div>
+<div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 7: VLAN missing from an intermediate switch.</strong><br>VLANs must exist on every switch in the traffic path. A VLAN missing from any intermediate switch will drop traffic for that VLAN on trunk links transiting that switch.</div></div>
+<div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 8: TTL as a routing indicator.</strong><br>TTL=127 (one less than Windows default 128) confirms one routing hop. TTL=128 means routing never happened. This appears on the exam as a diagnostic question about whether routing actually occurred.</div></div>
+<div class="ca tip"><span class="ic">✅</span><div><strong>RoaS vs Layer 3 Switch — at a glance:</strong><br><br>
+<strong>Router-on-a-Stick:</strong> <code>interface g0/0/0.[vlan]</code> + <code>encapsulation dot1Q [vlan]</code> + <code>ip address</code>. No IP on physical interface.<br><br>
+<strong>Layer 3 Switch:</strong> <code>interface vlan [id]</code> + <code>ip address</code> + <code>no shutdown</code> + <strong><code>ip routing</code></strong>.<br><br>
+The exam shows configs of both methods — know which commands belong where and immediately spot when something is misplaced.</div></div>
+</div></div>
+
+</div>
+<div class="ft">CCNA 2 SRWE v7.02 — Module 4: Inter-VLAN Routing<br>Based on Cisco NetAcad curriculum · Study guide for personal use</div>
+<button class="tb" id="topb" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+<script>
+var MOD_KEY="ccna2-module4-intervlan-routing";
+var SECS=["s1","s2","s3","s4","s-pt-4-5","s5","s6"];
+var checked={};
+function loadState(){
+  try{var s=localStorage.getItem(MOD_KEY);if(s)checked=JSON.parse(s);}catch(e){}
+  SECS.forEach(function(id){
+    var pill=document.getElementById('pill-'+id);
+    var row=document.getElementById('row-'+id);
+    var st=document.getElementById('st-'+id);
+    var sch=document.getElementById('sch-'+id);
+    if(checked[id]){
+      if(pill){pill.classList.add('checked');pill.querySelector('.pill-check').textContent='✓';}
+      if(row)row.classList.add('done');
+      if(st)st.textContent='✓';
+      if(sch){sch.classList.add('checked');sch.textContent='✓ Done';}
+    } else {
+      if(pill){pill.classList.remove('checked');pill.querySelector('.pill-check').textContent='○';}
+      if(row)row.classList.remove('done');
+      if(st)st.textContent='○';
+      if(sch){sch.classList.remove('checked');sch.textContent='○ Mark done';}
+    }
+  });
+}
+function toggleSection(id,btn){checked[id]=!checked[id];try{localStorage.setItem(MOD_KEY,JSON.stringify(checked));}catch(e){}loadState();}
+function toggleStudyPanel(){
+  var hdr=document.getElementById('sp-hdr');
+  var body=document.getElementById('sp-body');
+  var arr=document.getElementById('sp-arr');
+  hdr.classList.toggle('open');body.classList.toggle('open');
+  if(arr)arr.textContent=body.classList.contains('open')?'▲':'▼';
+}
+function goTo(id){var el=document.getElementById(id);if(!el)return;var h=el.querySelector('.sh,.section-header'),b=el.querySelector('.sb,.section-body');if(h&&b&&!b.classList.contains('open')){h.classList.add('open');b.classList.add('open');}setTimeout(function(){window.scrollTo({top:el.getBoundingClientRect().top+window.pageYOffset-60,behavior:'smooth'});},50);}
+function setFs(size,btn){document.documentElement.style.setProperty('--base-fs',size);document.querySelectorAll('.fs-btn').forEach(function(b){b.classList.remove('active');});btn.classList.add('active');try{localStorage.setItem('ccna-fs',size);}catch(e){}}
+(function(){try{var s=localStorage.getItem('ccna-fs');if(s){document.documentElement.style.setProperty('--base-fs',s);document.querySelectorAll('.fs-btn').forEach(function(b){b.classList.remove('active');if((b.textContent==='S'&&s==='14px')||(b.textContent==='M'&&s==='16px')||(b.textContent==='L'&&s==='18px')||(b.textContent==='XL'&&s==='20px'))b.classList.add('active');});}}catch(e){}loadState();})();
+function copyCode(b){var t=b.closest('.cw').querySelector('pre').innerText;if(navigator.clipboard){navigator.clipboard.writeText(t).then(function(){b.textContent='Copied!';setTimeout(function(){b.textContent='Copy';},1500);}).catch(function(){fb(t,b);});}else{fb(t,b);}}
+function fb(t,b){var a=document.createElement('textarea');a.value=t;a.style.position='fixed';a.style.opacity='0';document.body.appendChild(a);a.focus();a.select();document.execCommand('copy');document.body.removeChild(a);b.textContent='Copied!';setTimeout(function(){b.textContent='Copy';},1500);}
+</script>
+
+<!-- MODULE NAVIGATION BAR -->
+<div class="mod-nav">
+  <a class="mn-hub" href="index.html">🏠 Hub</a>
+  <div class="mn-divider"></div>
+  <a class="mn-prev" href="ccna2_module3_vlans_v2.2.html">‹</a>
+  <span class="mn-label">M4 of 16</span>
+  <a class="mn-next" href="ccna2_module5_stp_concepts_v2.2.html">›</a>
+</div>
+
+<script src="../../site-config.js"></script>
+</body>
+</html>

@@ -1,0 +1,1320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=2.0">
+<title>CCNA 2 Module 1: Basic Device Configuration v2.2</title>
+<style>
+:root{
+  --blue:#1ba0d7;--dark:#005073;--green:#6cc24a;--light:#e8f4fb;
+  --bg:#f4f6f8;--card:#fff;--text:#1a1a2e;--muted:#5a6a7a;
+  --cbg:#0d1117;--ctxt:#c9d1d9;--r:12px;--sh:0 2px 12px rgba(0,0,0,.08);
+  --base-fs:16px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);font-size:var(--base-fs);line-height:1.7}
+/* ── Font size toggle bar ── */
+.fs-bar{position:sticky;top:0;z-index:200;background:#1a1a2e;display:flex;align-items:center;justify-content:flex-end;padding:6px 14px;gap:6px;box-shadow:0 2px 8px rgba(0,0,0,.3)}
+.fs-label{color:#8b949e;font-size:.72em;font-weight:700;letter-spacing:.5px;text-transform:uppercase;margin-right:4px}
+.fs-btn{background:#30363d;color:#c9d1d9;border:2px solid transparent;border-radius:6px;padding:4px 12px;font-size:.75em;font-weight:700;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:all .2s;line-height:1.4}
+.fs-btn:active,.fs-btn.active{background:var(--blue);color:#fff;border-color:var(--blue)}
+/* ── Header ── */
+.hdr{background:linear-gradient(135deg,var(--dark),var(--blue));color:#fff;padding:32px 20px 24px;text-align:center}
+.hdr .badge{display:inline-block;background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.4);border-radius:20px;padding:4px 14px;font-size:.81em;margin-bottom:12px}
+.hdr h1{font-size:1.625em;font-weight:700;margin-bottom:6px}
+.hdr p{font-size:.94em;opacity:.85}
+.hdr .obj{display:inline-block;background:rgba(255,255,255,.15);border-radius:8px;padding:7px 16px;margin-top:12px;font-size:.875em;font-style:italic}
+.pb{background:var(--card);padding:14px 16px;margin:16px 16px 0;border-radius:var(--r);box-shadow:var(--sh)}
+.pbl{font-size:.81em;color:var(--muted);margin-bottom:6px;font-weight:600}
+.pbt{background:#e0e7ef;border-radius:10px;height:8px;overflow:hidden}
+.pbf{background:linear-gradient(90deg,var(--blue),var(--green));height:100%;border-radius:10px;width:0;transition:width 1s ease}
+.toc{background:var(--card);margin:16px;border-radius:var(--r);box-shadow:var(--sh);overflow:hidden}
+.toch{background:var(--dark);color:#fff;padding:14px 18px;font-weight:700;font-size:.94em;display:flex;justify-content:space-between;align-items:center;cursor:pointer;user-select:none}
+.toch .arr{transition:transform .3s}
+.toch.open .arr{transform:rotate(180deg)}
+.tocb{display:none;padding:10px 0}
+.tocb.open{display:block}
+.tocg{font-size:.69em;font-weight:800;letter-spacing:.8px;color:var(--dark);text-transform:uppercase;padding:8px 20px 2px}
+.tocb a{display:block;padding:9px 20px 9px 28px;color:var(--dark);text-decoration:none;font-size:.875em;border-left:3px solid transparent;transition:all .2s}
+.tocb a:hover,.tocb a:active{background:var(--light);border-left-color:var(--blue)}
+.tocb a .n{display:inline-block;background:var(--blue);color:#fff;border-radius:5px;padding:1px 8px;font-size:.75em;font-weight:700;margin-right:8px}
+.wrap{padding:0 16px 100px}
+.sec{background:var(--card);border-radius:var(--r);box-shadow:var(--sh);margin-bottom:16px;overflow:hidden}
+.sh{background:linear-gradient(90deg,var(--dark),var(--blue));color:#fff;padding:16px 18px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;user-select:none;-webkit-tap-highlight-color:transparent}
+.sh .ttl{font-weight:700;font-size:1em}
+.sh .nb{background:rgba(255,255,255,.25);border-radius:6px;padding:3px 10px;font-size:.81em;font-weight:700;margin-right:10px;white-space:nowrap}
+.sh .ch{font-size:1.125em;transition:transform .3s}
+.sh.open .ch{transform:rotate(180deg)}
+.sb{display:none;padding:18px}
+.sb.open{display:block}
+.sub{margin-bottom:24px}
+.sub:last-child{margin-bottom:0}
+.sub h3{font-size:.94em;font-weight:700;color:var(--dark);margin-bottom:10px;padding-bottom:6px;border-bottom:2px solid var(--light);display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.sub h3 .sn{background:var(--blue);color:#fff;border-radius:5px;padding:2px 8px;font-size:.75em;white-space:nowrap}
+.sub p{margin-bottom:10px;font-size:.94em}
+.cw{background:var(--cbg);border-radius:10px;margin:12px 0;overflow:hidden}
+.cl{background:#21262d;color:#c9d1d9;font-size:.78em;font-weight:700;padding:6px 14px;letter-spacing:.5px;text-transform:uppercase;display:flex;justify-content:space-between;align-items:center}
+.cpb{background:#30363d;color:#c9d1d9;border:none;border-radius:5px;padding:3px 10px;font-size:.69em;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.cpb:active{background:var(--blue);color:#fff}
+pre{margin:0;padding:14px;overflow-x:auto;-webkit-overflow-scrolling:touch}
+code{font-family:'Courier New',monospace;font-size:.81em;color:var(--ctxt);line-height:1.6}
+p code,li code,td code,h3 code,.ca code{background:#c2d9ea;color:#002233;border-radius:4px;padding:1px 5px;font-size:.81em;font-family:'Courier New',monospace;font-weight:600}
+.ca{border-radius:8px;padding:12px 14px;margin:12px 0;font-size:.875em;line-height:1.6;display:flex;gap:10px;align-items:flex-start}
+.ca .ic{font-size:1.125em;flex-shrink:0;margin-top:1px}
+.ca.warn{background:#fff3cd;border-left:4px solid #b38600;color:#3d2c00}
+.ca.tip{background:#d4edda;border-left:4px solid #28a745;color:#0d3318}
+.ca.danger{background:#f8d7da;border-left:4px solid #dc3545;color:#3d0010}
+.ca.info{background:#d0e8f5;border-left:4px solid var(--blue);color:#002d44}
+.et{background:linear-gradient(135deg,#1a1a2e,var(--dark));color:#fff;border-radius:10px;padding:14px 16px;margin:14px 0;font-size:.875em;line-height:1.6}
+.et .lbl{font-size:.69em;font-weight:800;letter-spacing:1px;color:var(--green);margin-bottom:6px}
+.et ol,.et ul{padding-left:18px;margin-top:6px}
+.et li{margin-bottom:4px}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:12px 0;border-radius:8px}
+table{width:100%;border-collapse:collapse;font-size:.875em}
+th{background:var(--dark);color:#fff;padding:10px 12px;text-align:left;font-weight:700;font-size:.81em}
+td{padding:9px 12px;border-bottom:1px solid #e8ecf0;vertical-align:top;color:#1a1a2e}
+tr:nth-child(even) td{background:#d0e8f5;color:#002d44}
+tr:last-child td{border-bottom:none}
+.steps{counter-reset:step;list-style:none;padding:0;margin:12px 0}
+.steps li{counter-increment:step;display:flex;gap:12px;align-items:flex-start;padding:10px 0;border-bottom:1px solid #eef0f3;font-size:.875em;line-height:1.6}
+.steps li:last-child{border-bottom:none}
+.steps li::before{content:counter(step);background:var(--blue);color:#fff;border-radius:50%;min-width:26px;height:26px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.81em;flex-shrink:0;margin-top:2px}
+.dg{background:#0d1117;border-radius:10px;padding:14px;margin:12px 0;overflow-x:auto;-webkit-overflow-scrolling:touch}
+.dg pre{color:#58a6ff;font-family:'Courier New',monospace;font-size:.75em;line-height:1.6}
+.sc{background:#1a1a2e;color:#c9d1d9;border-radius:8px;padding:14px;margin:12px 0;font-size:.875em;line-height:1.6}
+.sc .scl{font-size:.69em;font-weight:800;letter-spacing:.8px;color:var(--green);margin-bottom:6px}
+.boot-steps{margin:14px 0}
+.boot-step{display:flex;gap:14px;align-items:flex-start;padding:10px 0;border-bottom:1px solid #eef0f3;font-size:.875em}
+.boot-step:last-child{border-bottom:none}
+.boot-num{background:linear-gradient(135deg,var(--dark),var(--blue));color:#fff;border-radius:8px;min-width:36px;height:36px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:.94em;flex-shrink:0}
+.boot-step .bs-label{font-weight:700;color:var(--dark);margin-bottom:2px}
+.led-group{margin-bottom:16px}
+.led-group-title{font-size:.81em;font-weight:800;color:var(--dark);letter-spacing:.5px;text-transform:uppercase;margin-bottom:6px;padding:4px 0 4px 8px;border-left:3px solid var(--blue)}
+.ssh-step{background:#d0e8f5;border-radius:10px;padding:12px 14px;margin:8px 0;font-size:.875em;color:#002d44}
+.ssh-step .ss-num{background:var(--blue);color:#fff;border-radius:5px;padding:1px 8px;font-size:.75em;font-weight:700;margin-right:8px}
+.ssh-step .ss-title{font-weight:700;color:#002d44}
+.filter-badge{display:inline-block;background:var(--dark);color:#fff;border-radius:5px;padding:2px 8px;font-size:.75em;font-weight:700;font-family:'Courier New',monospace;margin-right:6px}
+.tb{position:fixed;bottom:80px;right:16px;background:var(--blue);color:#fff;border:none;border-radius:50%;width:44px;height:44px;font-size:1.25em;box-shadow:0 4px 14px rgba(0,0,0,.25);cursor:pointer;display:none;align-items:center;justify-content:center;z-index:100}
+.tb.show{display:flex}
+.ft{text-align:center;padding:24px 16px;color:var(--muted);font-size:.81em}
+/* Study progress panel */
+.sp-wrap{background:var(--card);margin:16px 16px 0;border-radius:var(--r);box-shadow:var(--sh);overflow:hidden}
+.sp-hdr{background:var(--nt);color:#fff;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;user-select:none;-webkit-tap-highlight-color:transparent;gap:10px}
+.sp-hdr .sp-title{font-weight:700;font-size:.875em;flex-shrink:0}
+.sp-hdr .sp-arr{transition:transform .3s;flex-shrink:0}
+.sp-hdr.open .sp-arr{transform:rotate(180deg)}
+.sp-body{display:none;padding:12px 14px}
+.sp-body.open{display:block}
+.sp-row{display:flex;align-items:center;gap:10px;padding:6px 4px;border-bottom:1px solid #f0f4f8;font-size:.81em}
+.sp-row:last-child{border-bottom:none}
+.sp-row .sr-status{font-size:1em;flex-shrink:0;width:20px;text-align:center}
+.sp-row .sr-nb{font-weight:800;color:var(--nt);min-width:36px;flex-shrink:0;font-size:.875em}
+.sp-row .sr-ttl{color:var(--text);flex:1}
+.sp-row.done .sr-ttl{color:var(--muted);text-decoration:line-through}
+.sc-pills{display:flex;align-items:center;gap:4px;overflow-x:auto;-webkit-overflow-scrolling:touch;flex:1;padding:0 4px}
+.sc-pill{background:#30363d;color:#8b949e;border:2px solid transparent;border-radius:6px;padding:3px 8px;font-size:.72em;font-weight:700;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:all .15s;white-space:nowrap;flex-shrink:0;line-height:1.4;display:flex;align-items:center;gap:3px}
+.sc-pill.checked{background:var(--nt);color:#fff;border-color:var(--ntd)}
+.sc-pill .pill-check{font-size:.875em}
+
+/* v2.1 — In-section check button */
+.sh{position:relative}
+.sec-check{position:absolute;right:40px;top:50%;transform:translateY(-50%);background:rgba(255,255,255,.15);border:2px solid rgba(255,255,255,.4);border-radius:6px;padding:2px 10px;font-size:.72em;font-weight:800;color:#fff;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:all .2s;white-space:nowrap;z-index:10;line-height:1.5}
+.sec-check.checked{background:var(--ntd);border-color:var(--ntd);color:#052e1e}
+.sec-check:active{opacity:.75}
+/* Sections panel + tick colours (these pages never defined --nt/--ntd, so the panel header was invisible) */
+:root{--nt:var(--dark);--ntd:#4ade80}
+</style>
+<style>.bc{background:#0d1117;padding:8px 16px;display:flex;align-items:center;flex-wrap:wrap;gap:4px;font-size:.75em;overflow-x:auto;white-space:nowrap;-webkit-overflow-scrolling:touch;border-bottom:1px solid #21262d}.bc a{color:#8b949e;text-decoration:none;font-weight:600;flex-shrink:0}.bc a:active{color:#c9d1d9}.bc .sep{color:#6e7681;flex-shrink:0}.bc .cur{color:#1ba0d7;font-weight:700;flex-shrink:0}</style>
+</head>
+<body>
+<nav class="bc"><a href="../../index.html">🏠 Home</a><span class="sep">›</span><a href="index.html">CCNA 2 — SRWE</a><span class="sep">›</span><span class="cur">M1: Device Config</span></nav>
+
+<!-- FONT SIZE TOGGLE -->
+<div class="fs-bar">
+  <div class="sc-pills" id="sc-pills">
+  <button class="sc-pill" id="pill-s-pt-1-0" onclick="toggleSection('s-pt-1-0',this)"><span class="pill-check">○</span>PT 1.0</button>
+  <button class="sc-pill" id="pill-s1" onclick="toggleSection('s1',this)"><span class="pill-check">○</span>1.1</button>
+  <button class="sc-pill" id="pill-s2" onclick="toggleSection('s2',this)"><span class="pill-check">○</span>1.2</button>
+  <button class="sc-pill" id="pill-s3" onclick="toggleSection('s3',this)"><span class="pill-check">○</span>1.3</button>
+  <button class="sc-pill" id="pill-s4" onclick="toggleSection('s4',this)"><span class="pill-check">○</span>1.4</button>
+  <button class="sc-pill" id="pill-s5" onclick="toggleSection('s5',this)"><span class="pill-check">○</span>1.5</button>
+  <button class="sc-pill" id="pill-s-pt-1-6" onclick="toggleSection('s-pt-1-6',this)"><span class="pill-check">○</span>PT 1.6</button>
+  <button class="sc-pill" id="pill-s6" onclick="toggleSection('s6',this)"><span class="pill-check">○</span>CMD</button>
+  <button class="sc-pill" id="pill-s7" onclick="toggleSection('s7',this)"><span class="pill-check">○</span>🎯</button>
+  </div>
+  <span class="fs-label" style="flex-shrink:0;margin-left:6px">Size</span>
+  <button class="fs-btn" onclick="setFs('14px',this)">S</button>
+  <button class="fs-btn active" onclick="setFs('16px',this)">M</button>
+  <button class="fs-btn" onclick="setFs('18px',this)">L</button>
+  <button class="fs-btn" onclick="setFs('20px',this)">XL</button>
+</div>
+
+<!-- HEADER -->
+<div class="hdr">
+  <div class="badge">CCNA 2 — SRWE v7.02</div>
+  <h1>⚙️ Module 1: Basic Device Configuration</h1>
+  <p>Switching, Routing &amp; Wireless Essentials · NetAcad Study Guide</p>
+  <div class="obj">Module Objective: Configure devices using security best practices</div>
+</div>
+
+<div class="sp-wrap">
+  <div class="sp-hdr" id="sp-hdr" onclick="toggleStudyPanel()">
+    <span class="sp-title">📚 Sections</span>
+    <span class="sp-arr" id="sp-arr">▼</span>
+  </div>
+  <div class="sp-body" id="sp-body">
+    <div class="sp-row" id="row-s-pt-1-0"><span class="sr-status" id="st-s-pt-1-0">○</span><span class="sr-nb">PT 1.0</span><span class="sr-ttl">Packet Tracer — Getting Started</span></div>
+    <div class="sp-row" id="row-s1"><span class="sr-status" id="st-s1">○</span><span class="sr-nb">1.1</span><span class="sr-ttl">Configure a Switch with Initial Settings</span></div>
+    <div class="sp-row" id="row-s2"><span class="sr-status" id="st-s2">○</span><span class="sr-nb">1.2</span><span class="sr-ttl">Configure Switch Ports</span></div>
+    <div class="sp-row" id="row-s3"><span class="sr-status" id="st-s3">○</span><span class="sr-nb">1.3</span><span class="sr-ttl">Secure Remote Access</span></div>
+    <div class="sp-row" id="row-s4"><span class="sr-status" id="st-s4">○</span><span class="sr-nb">1.4</span><span class="sr-ttl">Basic Router Configuration</span></div>
+    <div class="sp-row" id="row-s5"><span class="sr-status" id="st-s5">○</span><span class="sr-nb">1.5</span><span class="sr-ttl">Verify Directly Connected Networks</span></div>
+    <div class="sp-row" id="row-s-pt-1-6"><span class="sr-status" id="st-s-pt-1-6">○</span><span class="sr-nb">PT 1.6</span><span class="sr-ttl">Packet Tracer — Implement a Small Network</span></div>
+    <div class="sp-row" id="row-s6"><span class="sr-status" id="st-s6">○</span><span class="sr-nb">CMD</span><span class="sr-ttl">Quick Reference — All Module 1 Commands</span></div>
+    <div class="sp-row" id="row-s7"><span class="sr-status" id="st-s7">○</span><span class="sr-nb">🎯</span><span class="sr-ttl">Common Exam Traps — Module 1</span></div>
+  </div>
+</div>
+
+<!-- TABLE OF CONTENTS -->
+<div class="toc">
+  <div class="toch open" onclick="this.classList.toggle('open');document.getElementById('tb').classList.toggle('open')">
+    📋 Table of Contents — Tap to expand <span class="arr">▼</span>
+  </div>
+  <div class="tocb open" id="tb">
+    <div class="tocg">1.1 — Configure a Switch with Initial Settings</div>
+    <a href="javascript:void(0)" onclick="goTo('s1')"><span class="n">1.1.1</span> Switch Boot Sequence</a>
+    <a href="javascript:void(0)" onclick="goTo('s1')"><span class="n">1.1.2</span> The boot system Command</a>
+    <a href="javascript:void(0)" onclick="goTo('s1')"><span class="n">1.1.3</span> Switch LED Indicators</a>
+    <a href="javascript:void(0)" onclick="goTo('s1')"><span class="n">1.1.4</span> Recovering from a System Crash</a>
+    <a href="javascript:void(0)" onclick="goTo('s1')"><span class="n">1.1.5</span> Switch Management Access</a>
+    <a href="javascript:void(0)" onclick="goTo('s1')"><span class="n">1.1.6</span> Switch SVI Configuration Example</a>
+    <div class="tocg">1.2 — Configure Switch Ports</div>
+    <a href="javascript:void(0)" onclick="goTo('s2')"><span class="n">1.2.1</span> Duplex Communication</a>
+    <a href="javascript:void(0)" onclick="goTo('s2')"><span class="n">1.2.2</span> Configure Switch Ports at the Physical Layer</a>
+    <a href="javascript:void(0)" onclick="goTo('s2')"><span class="n">1.2.3</span> Auto-MDIX</a>
+    <a href="javascript:void(0)" onclick="goTo('s2')"><span class="n">1.2.4</span> Switch Verification Commands</a>
+    <a href="javascript:void(0)" onclick="goTo('s2')"><span class="n">1.2.6</span> Network Access Layer Issues</a>
+    <a href="javascript:void(0)" onclick="goTo('s2')"><span class="n">1.2.7</span> Interface Input and Output Errors</a>
+    <a href="javascript:void(0)" onclick="goTo('s2')"><span class="n">1.2.8</span> Troubleshooting Network Access Layer Issues</a>
+    <div class="tocg">1.3 — Secure Remote Access</div>
+    <a href="javascript:void(0)" onclick="goTo('s3')"><span class="n">1.3.1</span> Telnet Operation</a>
+    <a href="javascript:void(0)" onclick="goTo('s3')"><span class="n">1.3.2</span> SSH Operation</a>
+    <a href="javascript:void(0)" onclick="goTo('s3')"><span class="n">1.3.3</span> Verify the Switch Supports SSH</a>
+    <a href="javascript:void(0)" onclick="goTo('s3')"><span class="n">1.3.4</span> Configure SSH (6 Steps)</a>
+    <a href="javascript:void(0)" onclick="goTo('s3')"><span class="n">1.3.5</span> Verify SSH is Operational</a>
+    <div class="tocg">1.4 — Basic Router Configuration</div>
+    <a href="javascript:void(0)" onclick="goTo('s4')"><span class="n">1.4.1</span> Configure Basic Router Settings</a>
+    <a href="javascript:void(0)" onclick="goTo('s4')"><span class="n">1.4.4</span> Configure Router Interfaces (Dual Stack)</a>
+    <a href="javascript:void(0)" onclick="goTo('s4')"><span class="n">1.4.6</span> IPv4 Loopback Interfaces</a>
+    <div class="tocg">1.5 — Verify Directly Connected Networks</div>
+    <a href="javascript:void(0)" onclick="goTo('s5')"><span class="n">1.5.1</span> Interface Verification Commands</a>
+    <a href="javascript:void(0)" onclick="goTo('s5')"><span class="n">1.5.3</span> Verify IPv6 Link Local and Multicast Addresses</a>
+    <a href="javascript:void(0)" onclick="goTo('s5')"><span class="n">1.5.5</span> Verify Routes</a>
+    <a href="javascript:void(0)" onclick="goTo('s5')"><span class="n">1.5.6</span> Filter Show Command Output</a>
+    <a href="javascript:void(0)" onclick="goTo('s5')"><span class="n">1.5.8</span> Command History Feature</a>
+    <div class="tocg">Reference</div>
+    <a href="javascript:void(0)" onclick="goTo('s6')"><span class="n">CMD</span> All Module 1 Commands</a>
+    <a href="javascript:void(0)" onclick="goTo('s7')"><span class="n">🎯</span> Common Exam Traps</a>
+  </div>
+</div>
+
+<div class="wrap">
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- SECTION 1.1 -->
+<!-- ═══════════════════════════════════════════════════════ -->
+
+<div class="sec" id="s-pt-1-0">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">1.0</span><span class="ttl">Packet Tracer — Getting Started</span></span><button class="sec-check" id="sch-s-pt-1-0" onclick="event.stopPropagation();toggleSection('s-pt-1-0',this)">○ Mark done</button>
+</div>
+<div class="sb">
+  <div style="padding:14px 16px;background:#0d1117;border:1px solid #30363d;border-left:3px solid #1f6feb;border-radius:6px">
+    <div style="font-size:.72em;font-weight:800;text-transform:uppercase;letter-spacing:.8px;color:#1f6feb;margin-bottom:10px">&#x1F4E6; Packet Tracer Activities</div>
+    <div style="font-size:.82em;color:#6e7681;margin-bottom:10px">Open in Cisco Packet Tracer via your NetAcad course.</div>
+      <div style="display:flex;align-items:baseline;gap:10px;padding:6px 0;border-bottom:1px solid #21262d"><span style="font-family:monospace;font-size:.85em;color:#79c0ff;white-space:nowrap;flex-shrink:0;min-width:52px">1.0.5</span><span style="font-size:.88em;color:#c9d1d9">Logical and Physical Mode Exploration</span></div>
+    <div style="margin-top:12px;font-size:.78em;color:#6e7681">Full list: <a href="https://itexamanswers.net/ccna-2-packet-tracer-labs-answers-srwe-v7-02.html" target="_blank" rel="noopener" style="color:#58a6ff;word-break:break-all">https://itexamanswers.net/ccna-2-packet-tracer-labs-answers-srwe-v7-02.html</a></div>
+  </div>
+</div>
+</div>
+<div class="sec" id="s1">
+<div class="sh open" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">1.1</span><span class="ttl">Configure a Switch with Initial Settings</span></span><button class="sec-check" id="sch-s1" onclick="event.stopPropagation();toggleSection('s1',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb open">
+
+  <div class="sub">
+  <h3><span class="sn">1.1.1</span> Switch Boot Sequence</h3>
+  <p>When a Cisco switch is powered on it goes through a <strong>5-step boot sequence</strong> before it is ready to configure. Each step happens in a specific location — knowing which is which is an exam question.</p>
+  <div class="boot-steps">
+    <div class="boot-step"><div class="boot-num">1</div><div><div class="bs-label">POST — Power-On Self-Test (stored in ROM)</div>Tests the CPU subsystem, DRAM, and the flash file system portion. If POST fails the switch will not proceed.</div></div>
+    <div class="boot-step"><div class="boot-num">2</div><div><div class="bs-label">Boot Loader loads (stored in ROM)</div>A small program that runs immediately after POST succeeds. This is the failsafe — it can access flash even when IOS is missing or corrupt.</div></div>
+    <div class="boot-step"><div class="boot-num">3</div><div><div class="bs-label">CPU Initialization</div>Boot loader initializes CPU registers — controls physical memory mapping, quantity, and speed.</div></div>
+    <div class="boot-step"><div class="boot-num">4</div><div><div class="bs-label">Flash File System Initialization</div>Boot loader initializes the flash file system on the system board.</div></div>
+    <div class="boot-step"><div class="boot-num">5</div><div><div class="bs-label">IOS Loads (from Flash)</div>Boot loader locates and loads the IOS image from flash into memory, then hands control to IOS. IOS then initializes interfaces using startup-config.</div></div>
+  </div>
+  <div class="et">
+    <div class="lbl">🎯 EXAM TIP — Where does each thing live?</div>
+    <ul>
+      <li><strong>POST</strong> → stored in <strong>ROM</strong></li>
+      <li><strong>Boot Loader</strong> → stored in <strong>ROM</strong></li>
+      <li><strong>IOS</strong> → loaded from <strong>Flash</strong></li>
+      <li><strong>startup-config</strong> (config.text) → stored in <strong>Flash</strong></li>
+      <li><strong>running-config</strong> → stored in <strong>RAM</strong> (lost on reload)</li>
+    </ul>
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">1.1.2</span> The boot system Command</h3>
+  <p>If the BOOT environment variable is not set, the switch loads the first executable file it finds in flash. Use <code>boot system</code> to specify exactly which IOS image to load.</p>
+  <div class="cw">
+    <div class="cl">Set the IOS boot image path <button class="cpb" onclick="copyCode(this)">Copy</button></div>
+    <pre><code>S1(config)# boot system flash:/c2960-lanbasek9-mz.150-2.SE/c2960-lanbasek9-mz.150-2.SE.bin
+
+! Verify which IOS will load on next boot
+S1# show boot</code></pre>
+  </div>
+  <div class="tw"><table>
+    <tr><th>Part of Command</th><th>Meaning</th></tr>
+    <tr><td><code>boot system</code></td><td>Main command — specifies where to find IOS</td></tr>
+    <tr><td><code>flash:</code></td><td>Storage device (flash memory)</td></tr>
+    <tr><td><code>c2960-lanbasek9-mz.150-2.SE/</code></td><td>Path to the directory containing the IOS file</td></tr>
+    <tr><td><code>c2960-lanbasek9-mz.150-2.SE.bin</code></td><td>The IOS image filename</td></tr>
+  </table></div>
+  <div class="ca info"><span class="ic">💡</span><div>The startup-config file is named <code>config.text</code> and is stored in flash. After IOS loads, it reads this file to restore the device configuration.</div></div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">1.1.3</span> Switch LED Indicators</h3>
+  <p>The Cisco Catalyst 2960 has a <strong>Mode button</strong> that toggles the port LED display between STAT, DUPLX, SPEED, and PoE modes. Six status LEDs provide quick health information.</p>
+
+  <div class="led-group">
+    <div class="led-group-title">SYST — System LED</div>
+    <div class="tw"><table>
+      <tr><th>Color / State</th><th>Meaning</th></tr>
+      <tr><td>Off</td><td>No power</td></tr>
+      <tr><td>Green</td><td>Operating normally</td></tr>
+      <tr><td>Amber</td><td>Powered but malfunctioning</td></tr>
+    </table></div>
+  </div>
+
+  <div class="led-group">
+    <div class="led-group-title">RPS — Redundant Power System LED</div>
+    <div class="tw"><table>
+      <tr><th>Color / State</th><th>Meaning</th></tr>
+      <tr><td>Off</td><td>RPS is off or not connected</td></tr>
+      <tr><td>Green</td><td>RPS connected and ready to provide backup power</td></tr>
+      <tr><td>Blinking green</td><td>RPS connected but providing power to another device</td></tr>
+      <tr><td>Amber</td><td>RPS in standby or fault condition</td></tr>
+      <tr><td>Blinking amber</td><td>Internal PSU failed — RPS is now powering this switch</td></tr>
+    </table></div>
+  </div>
+
+  <div class="led-group">
+    <div class="led-group-title">STAT — Port Status LED (default mode)</div>
+    <div class="tw"><table>
+      <tr><th>Color / State</th><th>Meaning</th></tr>
+      <tr><td>Off</td><td>No link, or port was administratively shut down</td></tr>
+      <tr><td>Green</td><td>Link is present</td></tr>
+      <tr><td>Blinking green</td><td>Activity — port is sending or receiving data</td></tr>
+      <tr><td>Alternating green-amber</td><td>Link fault</td></tr>
+      <tr><td>Amber</td><td>Port blocked by STP — normal for first ~30 seconds after activation</td></tr>
+      <tr><td>Blinking amber</td><td>Port blocked to prevent a loop</td></tr>
+    </table></div>
+  </div>
+
+  <div class="led-group">
+    <div class="led-group-title">DUPLX — Port Duplex LED</div>
+    <div class="tw"><table>
+      <tr><th>Color / State</th><th>Meaning</th></tr>
+      <tr><td>Off (port LED)</td><td>Port is in half-duplex mode</td></tr>
+      <tr><td>Green (port LED)</td><td>Port is in full-duplex mode</td></tr>
+    </table></div>
+  </div>
+
+  <div class="led-group">
+    <div class="led-group-title">SPEED — Port Speed LED</div>
+    <div class="tw"><table>
+      <tr><th>Color / State</th><th>Meaning</th></tr>
+      <tr><td>Off</td><td>10 Mbps</td></tr>
+      <tr><td>Green</td><td>100 Mbps</td></tr>
+      <tr><td>Blinking green</td><td>1000 Mbps (1 Gbps)</td></tr>
+    </table></div>
+  </div>
+
+  <div class="led-group">
+    <div class="led-group-title">PoE — Power over Ethernet LED</div>
+    <div class="tw"><table>
+      <tr><th>Color / State</th><th>Meaning</th></tr>
+      <tr><td>Off (mode not selected)</td><td>PoE mode not selected, no issues</td></tr>
+      <tr><td>Blinking amber (mode not selected)</td><td>PoE not selected but at least one port has been denied power or has a PoE fault</td></tr>
+      <tr><td>Green (mode selected)</td><td>PoE mode active; port LEDs show PoE status</td></tr>
+      <tr><td>Alternating green-amber (port LED)</td><td>PoE denied — providing power would exceed switch capacity</td></tr>
+      <tr><td>Blinking amber (port LED)</td><td>PoE off due to fault</td></tr>
+      <tr><td>Amber (port LED)</td><td>PoE disabled on this specific port</td></tr>
+    </table></div>
+  </div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Amber STAT LED ≠ hardware failure.</strong> A port showing amber in STAT mode means STP is blocking it — this is completely normal for the first ~30 seconds after a port is activated. Students often panic and think something is broken. It is not.</div></div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">1.1.4</span> Recovering from a System Crash</h3>
+  <p>If IOS is missing or damaged, the <strong>boot loader</strong> provides a CLI to access flash directly. This is how you recover or replace a corrupted IOS image.</p>
+  <p><strong>Steps to enter boot loader mode:</strong></p>
+  <ol class="steps">
+    <li>Connect a PC to the switch console port. Configure terminal emulation software (PuTTY, etc.).</li>
+    <li>Unplug the switch power cord.</li>
+    <li>Reconnect the power cord — within <strong>15 seconds</strong>, press and <strong>hold the Mode button</strong> while the System LED is still flashing green.</li>
+    <li>Continue holding until the System LED briefly goes <strong>amber then solid green</strong> — then release the Mode button.</li>
+    <li>The <code>switch:</code> prompt appears in the terminal emulation software.</li>
+  </ol>
+  <div class="cw">
+    <div class="cl">Boot loader commands — recover from crash <button class="cpb" onclick="copyCode(this)">Copy</button></div>
+    <pre><code>switch: set              ! View current BOOT environment variable
+switch: flash_init       ! Initialize the flash file system
+switch: dir flash:       ! List files and directories in flash
+
+! Example output of dir flash:
+!   2  -rwx  11834846   c2960-lanbasek9-mz.150-2.SE8.bin
+!   3  -rwx  2072        multiple-fs
+
+! Set new IOS boot path
+switch: BOOT=flash:c2960-lanbasek9-mz.150-2.SE8.bin
+
+! Verify the change
+switch: set
+
+! Boot the switch with the new IOS
+switch: boot</code></pre>
+  </div>
+  <div class="ca info"><span class="ic">💡</span><div>The boot loader can also be used to recover a lost or forgotten enable password — one of the most common real-world support tasks for network administrators.</div></div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">1.1.5</span> Switch Management Access</h3>
+  <p>A switch needs an IP address to be managed remotely. This IP address is assigned to a <strong>Switch Virtual Interface (SVI)</strong> — a virtual interface, not a physical port.</p>
+  <div class="dg"><pre>
+  [Admin PC] ----console cable---- [S1 Switch]
+                                        |
+                                   VLAN 99 SVI
+                                   IP: 172.17.99.11/24
+                                   Gateway: 172.17.99.1
+
+  After initial config, manage S1 remotely via SSH to 172.17.99.11</pre></div>
+  <div class="tw"><table>
+    <tr><th>What You Need</th><th>Why</th></tr>
+    <tr><td>IP address on an SVI</td><td>Gives the switch a management address</td></tr>
+    <tr><td>Subnet mask</td><td>Defines the local network</td></tr>
+    <tr><td>Default gateway</td><td>Required only if managing from a different network</td></tr>
+  </table></div>
+  <div class="ca info"><span class="ic">🖥️</span><div><strong>Default management VLAN is VLAN 1.</strong> Best practice: use a dedicated management VLAN other than VLAN 1 (e.g., VLAN 99) for security. This keeps management traffic isolated from user data and the default VLAN.</div></div>
+  <div class="ca warn"><span class="ic">⚠️</span><div>The SVI IP address is for <strong>management access only</strong> — it does NOT enable the switch to route Layer 3 traffic between VLANs. To do inter-VLAN routing on a switch, you need <code>ip routing</code> (Module 4).</div></div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">1.1.6</span> Switch SVI Configuration Example</h3>
+  <p>Three-step process to configure remote management access on a switch:</p>
+
+  <p style="font-weight:700;color:var(--dark);margin:14px 0 4px;">Step 1 — Configure the Management SVI</p>
+  <div class="cw">
+    <div class="cl">S1 — Configure management SVI on VLAN 99 <button class="cpb" onclick="copyCode(this)">Copy</button></div>
+    <pre><code>S1# configure terminal
+S1(config)# interface vlan 99
+S1(config-if)# ip address 172.17.99.11 255.255.255.0
+S1(config-if)# ipv6 address 2001:db8:acad:99::1/64
+S1(config-if)# no shutdown
+S1(config-if)# end
+S1# copy running-config startup-config</code></pre>
+  </div>
+
+  <p style="font-weight:700;color:var(--dark);margin:14px 0 4px;">Step 2 — Configure the Default Gateway</p>
+  <div class="cw">
+    <div class="cl">S1 — Set default gateway for remote management <button class="cpb" onclick="copyCode(this)">Copy</button></div>
+    <pre><code>S1# configure terminal
+S1(config)# ip default-gateway 172.17.99.1
+S1(config)# end
+S1# copy running-config startup-config</code></pre>
+  </div>
+
+  <p style="font-weight:700;color:var(--dark);margin:14px 0 4px;">Step 3 — Verify</p>
+  <div class="cw">
+    <div class="cl">S1 — Verify SVI configuration <button class="cpb" onclick="copyCode(this)">Copy</button></div>
+    <pre><code>S1# show ip interface brief
+Interface     IP-Address     OK? Method   Status    Protocol
+Vlan99        172.17.99.11   YES manual   down      down
+
+S1# show ipv6 interface brief
+Vlan99                 [down/down]
+    FE80::C27B:BCFF:FEC4:A9C1
+    2001:DB8:ACAD:99::1</code></pre>
+  </div>
+  <div class="ca danger"><span class="ic">🚨</span><div><strong>SVI shows down/down — this is expected if:</strong><br>
+  1. VLAN 99 has not yet been created in the VLAN database, OR<br>
+  2. No device is connected to a port assigned to VLAN 99<br><br>
+  Both conditions must be true for the SVI to come up. Creating the SVI and assigning an IP is not enough by itself.</div></div>
+  </div>
+
+  <!-- PT INLINE -->
+  <div style="margin:20px 0 6px;padding:14px 16px;background:#0d1117;border:1px solid #30363d;border-left:3px solid #1f6feb;border-radius:6px">
+    <div style="font-size:.72em;font-weight:800;text-transform:uppercase;letter-spacing:.8px;color:#1f6feb;margin-bottom:10px">&#x1F4E6; Packet Tracer Activities</div>
+  <div style="display:flex;align-items:baseline;gap:10px;padding:6px 0;border-bottom:1px solid #21262d"><span style="font-family:monospace;font-size:.85em;color:#79c0ff;white-space:nowrap;flex-shrink:0;min-width:52px">1.1.7</span><span style="font-size:.88em;color:#c9d1d9">Basic Switch Configuration (Physical Mode)</span></div>
+    <div style="margin-top:10px;font-size:.78em;color:#6e7681">Full list: <a href="https://itexamanswers.net/ccna-2-packet-tracer-labs-answers-srwe-v7-02.html" target="_blank" rel="noopener" style="color:#58a6ff;word-break:break-all">https://itexamanswers.net/ccna-2-packet-tracer-labs-answers-srwe-v7-02.html</a></div>
+  </div>
+
+</div></div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- SECTION 1.2 -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div class="sec" id="s2">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">1.2</span><span class="ttl">Configure Switch Ports</span></span><button class="sec-check" id="sch-s2" onclick="event.stopPropagation();toggleSection('s2',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb">
+
+  <div class="sub">
+  <h3><span class="sn">1.2.1</span> Duplex Communication</h3>
+  <div class="tw"><table>
+    <tr><th>Mode</th><th>Description</th><th>Collision Domain?</th><th>When Used</th></tr>
+    <tr><td><strong>Full-duplex</strong></td><td>Both ends transmit and receive simultaneously</td><td>No — collision detection disabled</td><td>All modern switches, dedicated links</td></tr>
+    <tr><td><strong>Half-duplex</strong></td><td>Only one direction at a time</td><td>Yes — collisions can occur</td><td>Older hardware (hubs), legacy setups</td></tr>
+  </table></div>
+  <ul style="padding-left:20px;margin:10px 0;font-size:.875em;line-height:1.9">
+    <li>Gigabit Ethernet and 10 Gb NICs <strong>require</strong> full-duplex to operate</li>
+    <li>Full-duplex: collision detection on the NIC is <strong>disabled</strong></li>
+    <li>Full-duplex = 100% efficiency in both directions — effectively <strong>doubles</strong> usable bandwidth</li>
+    <li>Fiber-optic ports (1000BASE-SX): always full-duplex at one preset speed</li>
+  </ul>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">1.2.2</span> Configure Switch Ports at the Physical Layer</h3>
+  <div class="cw">
+    <div class="cl">S1 — Manually set duplex and speed on a port <button class="cpb" onclick="copyCode(this)">Copy</button></div>
+    <pre><code>S1# configure terminal
+S1(config)# interface FastEthernet 0/1
+S1(config-if)# duplex full
+S1(config-if)# speed 100
+S1(config-if)# end
+S1# copy running-config startup-config</code></pre>
+  </div>
+  <div class="tw"><table>
+    <tr><th>Setting</th><th>Default (Catalyst 2960/3560)</th><th>Notes</th></tr>
+    <tr><td>Duplex</td><td><code>auto</code></td><td>10/100/1000 ports: full-duplex required at 1000 Mbps</td></tr>
+    <tr><td>Speed</td><td><code>auto</code></td><td>Autonegotiates with connected device</td></tr>
+  </table></div>
+  <div class="et">
+    <div class="lbl">🎯 EXAM TIP — Duplex Mismatch</div>
+    A duplex mismatch is one of the most common causes of slow performance or intermittent connectivity. One side full-duplex, the other half-duplex:<br><br>
+    <ul>
+      <li>The <strong>half-duplex</strong> side sees <strong>collisions and late collisions</strong></li>
+      <li>The <strong>full-duplex</strong> side sees <strong>input errors and CRC errors</strong></li>
+      <li>Both sides think they are up — traffic flows, just very poorly</li>
+      <li>Root cause: autonegotiation failure on one side</li>
+    </ul>
+    <br>Fix: manually set <code>duplex full</code> and <code>speed</code> on both ends of the connection.
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">1.2.3</span> Auto-MDIX</h3>
+  <p><strong>Auto-MDIX</strong> (automatic medium-dependent interface crossover) eliminates the need to choose between straight-through and crossover cables. The interface detects the cable type automatically and adjusts.</p>
+  <div class="tw"><table>
+    <tr><th>Feature</th><th>Detail</th></tr>
+    <tr><td>Without Auto-MDIX</td><td>Must use correct cable type: straight-through (switch to host/router) or crossover (switch to switch)</td></tr>
+    <tr><td>With Auto-MDIX</td><td>Either cable type works — interface adjusts automatically</td></tr>
+    <tr><td>Requirement</td><td>Speed and duplex MUST be set to <code>auto</code> for Auto-MDIX to work</td></tr>
+    <tr><td>Default on 2960/3560</td><td>Enabled by default</td></tr>
+    <tr><td>Not available on</td><td>Older Catalyst 2950 and 3550 switches</td></tr>
+  </table></div>
+  <div class="cw">
+    <div class="cl">Enable Auto-MDIX and verify <button class="cpb" onclick="copyCode(this)">Copy</button></div>
+    <pre><code>S1(config-if)# mdix auto
+
+! Verify Auto-MDIX state on a specific interface
+S1# show controllers ethernet-controller fa0/1 phy | include MDIX
+ Auto-MDIX           :  On   [AdminState=1   Flags=0x00052248]</code></pre>
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">1.2.4</span> Switch Verification Commands</h3>
+  <div class="tw"><table>
+    <tr><th>Command</th><th>What It Shows</th></tr>
+    <tr><td><code>show interfaces [int]</code></td><td>Interface status, duplex, speed, error counters</td></tr>
+    <tr><td><code>show running-config</code></td><td>Current active configuration (in RAM)</td></tr>
+    <tr><td><code>show startup-config</code></td><td>Saved configuration in NVRAM (flash)</td></tr>
+    <tr><td><code>show flash</code></td><td>Flash file system contents and free space</td></tr>
+    <tr><td><code>show version</code></td><td>IOS version, hardware info, uptime, register value</td></tr>
+    <tr><td><code>show history</code></td><td>Previously entered commands (last 10 by default)</td></tr>
+    <tr><td><code>show ip interface [int]</code></td><td>IPv4-specific interface information</td></tr>
+    <tr><td><code>show ipv6 interface [int]</code></td><td>IPv6-specific interface information</td></tr>
+    <tr><td><code>show mac-address-table</code></td><td>MAC address table (also: <code>show mac address-table</code>)</td></tr>
+    <tr><td><code>show ip interface brief</code></td><td>Quick summary of all interfaces and their IP/status</td></tr>
+  </table></div>
+  <div class="cw">
+    <div class="cl">show interfaces fa0/18 — sample output <button class="cpb" onclick="copyCode(this)">Copy</button></div>
+    <pre><code>S1# show interfaces fastEthernet 0/18
+FastEthernet0/18 is up, line protocol is up (connected)
+  Hardware is Fast Ethernet, address is 0025.83e6.9092 (bia 0025.83e6.9092)
+  MTU 1500 bytes, BW 100000 Kbit/sec, DLY 100 usec,
+     reliability 255/255, txload 1/255, rxload 1/255
+  Encapsulation ARPA, loopback not set
+  Keepalive set (10 sec)
+  Full-duplex, 100Mb/s, media type is 10/100BaseTX</code></pre>
+  </div>
+  <div class="cw">
+    <div class="cl">show running-config — verify VLAN and gateway <button class="cpb" onclick="copyCode(this)">Copy</button></div>
+    <pre><code>S1# show running-config
+!
+interface FastEthernet0/18
+ switchport access vlan 99
+ switchport mode access
+!
+interface Vlan99
+ ip address 172.17.99.11 255.255.255.0
+ ipv6 address 2001:DB8:ACAD:99::1/64
+!
+ip default-gateway 172.17.99.1</code></pre>
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">1.2.6</span> Network Access Layer Issues</h3>
+  <p>The first line of <code>show interfaces</code> output tells you everything about the interface state. Learn to read this instantly:</p>
+  <div class="tw"><table>
+    <tr><th>Status Line</th><th>Meaning</th><th>Common Cause</th></tr>
+    <tr><td><code>up / up</code></td><td>Fully operational</td><td>Normal — interface working correctly</td></tr>
+    <tr><td><code>up / down</code></td><td>Physical layer up, data link problem</td><td>Encapsulation mismatch, error-disabled, hardware issue</td></tr>
+    <tr><td><code>down / down</code></td><td>Physical and data link both down</td><td>Cable unplugged, device powered off, other end admin-down</td></tr>
+    <tr><td><code>administratively down / down</code></td><td>Manually disabled</td><td><code>shutdown</code> command was applied to this interface</td></tr>
+  </table></div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">1.2.7</span> Interface Input and Output Errors</h3>
+  <p>The error counters in <code>show interfaces</code> output pinpoint Layer 1 and Layer 2 problems. Know these for the exam:</p>
+  <div class="tw"><table>
+    <tr><th>Error Type</th><th>Description</th><th>Common Cause</th></tr>
+    <tr><td><strong>Input Errors</strong></td><td>Total of all receive-side errors</td><td>Summary — includes all errors below</td></tr>
+    <tr><td><strong>Runts</strong></td><td>Frames shorter than 64 bytes (minimum Ethernet size)</td><td>Malfunctioning NIC, collisions</td></tr>
+    <tr><td><strong>Giants</strong></td><td>Frames larger than 1518 bytes (maximum Ethernet size)</td><td>Malfunctioning NIC, jumbo frame misconfiguration</td></tr>
+    <tr><td><strong>CRC</strong></td><td>Calculated checksum ≠ received checksum</td><td>Electrical interference, damaged cable, loose connection — <strong>cable noise</strong></td></tr>
+    <tr><td><strong>Output Errors</strong></td><td>Total transmit-side errors</td><td>Summary of transmit failures</td></tr>
+    <tr><td><strong>Collisions</strong></td><td>Normal in half-duplex; <strong>never</strong> in full-duplex</td><td>Half-duplex operation or duplex mismatch</td></tr>
+    <tr><td><strong>Late Collisions</strong></td><td>Collision occurs after first 512 bits transmitted</td><td>Cable too long, <strong>duplex mismatch</strong> (most common)</td></tr>
+  </table></div>
+  <div class="et">
+    <div class="lbl">🎯 EXAM TIP — Diagnose the Error Type</div>
+    <ul>
+      <li><strong>High CRC errors</strong> = physical cable problem or electrical interference. Check and replace the cable.</li>
+      <li><strong>Late collisions</strong> = duplex mismatch OR cable too long. First check duplex settings on both ends.</li>
+      <li><strong>Collisions on full-duplex</strong> = impossible in correct config — this is a clear sign of a duplex mismatch.</li>
+      <li>A properly designed and configured network should <strong>never have late collisions</strong>.</li>
+    </ul>
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">1.2.8</span> Troubleshooting Network Access Layer Issues</h3>
+  <p>Use this structured approach when a switch port has no connection or a bad connection:</p>
+  <div class="sc"><div class="scl">🔍 TROUBLESHOOT — Interface is DOWN</div>
+  1. Check cables — wrong type? damaged connectors? Replace if suspect.<br>
+  2. If still down: check for <strong>speed mismatch</strong> — manually set the same speed on both ends.
+  </div>
+  <div class="sc"><div class="scl">🔍 TROUBLESHOOT — Interface is UP but Performance is Bad</div>
+  1. Run <code>show interfaces</code> — look for high counts of runts, giants, CRC errors = <strong>noise on the cable</strong>. Find and remove noise source. Verify cable type and max length.<br>
+  2. Look for collisions or late collisions = <strong>duplex mismatch</strong>. Manually set <code>duplex full</code> on both ends.
+  </div>
+  <div class="cw">
+    <div class="cl">show interfaces — key counters to watch <button class="cpb" onclick="copyCode(this)">Copy</button></div>
+    <pre><code>S1# show interfaces fastEthernet 0/18
+FastEthernet0/18 is up, line protocol is up (connected)
+...
+     0 runts, 0 giants, 0 throttles
+     3 input errors, 3 CRC, 0 frame, 0 overrun, 0 ignored
+     0 watchdog, 74 multicast, 0 pause input
+     ...
+     8 output errors, 1790 collisions, 10 interface resets
+     235 late collision, 0 deferred
+
+! 3 CRC errors: possible cable noise -- inspect the cable
+! 1790 collisions + 235 late collisions: duplex mismatch suspected</code></pre>
+  </div>
+  </div>
+
+</div></div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- SECTION 1.3 -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div class="sec" id="s3">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">1.3</span><span class="ttl">Secure Remote Access</span></span><button class="sec-check" id="sch-s3" onclick="event.stopPropagation();toggleSection('s3',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb">
+
+  <div class="sub">
+  <h3><span class="sn">1.3.1</span> Telnet Operation</h3>
+  <div class="tw"><table>
+    <tr><th>Feature</th><th>Telnet</th></tr>
+    <tr><td>TCP Port</td><td>23</td></tr>
+    <tr><td>Encryption</td><td>None — everything sent in plaintext</td></tr>
+    <tr><td>What is exposed</td><td>Username, password, and all management data visible to anyone with Wireshark</td></tr>
+    <tr><td>Use in production?</td><td><strong>Never</strong> — always replace with SSH</td></tr>
+  </table></div>
+  <div class="ca danger"><span class="ic">🚫</span><div>Telnet transmits both login credentials and all management traffic in <strong>cleartext</strong>. A threat actor capturing packets can read the username and password directly from a Wireshark capture. Telnet should never be used on any production network.</div></div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">1.3.2</span> SSH Operation</h3>
+  <div class="tw"><table>
+    <tr><th>Feature</th><th>SSH</th></tr>
+    <tr><td>TCP Port</td><td>22</td></tr>
+    <tr><td>Encryption</td><td>Strong encryption for both authentication and all data</td></tr>
+    <tr><td>What is protected</td><td>Username, password, and all management data are encrypted</td></tr>
+    <tr><td>Use in production?</td><td><strong>Always</strong> — SSH replaces Telnet for all management</td></tr>
+  </table></div>
+  <div class="et">
+    <div class="lbl">🎯 MEMORIZE — TCP PORTS</div>
+    <strong>Telnet = TCP port 23</strong> (older, plaintext, insecure)<br>
+    <strong>SSH = TCP port 22</strong> (modern, encrypted, secure)<br><br>
+    Memory trick: SSH (22) came before Telnet (23) alphabetically, and is the better protocol — 22 &lt; 23.
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">1.3.3</span> Verify the Switch Supports SSH</h3>
+  <p>SSH requires an IOS image with <strong>cryptographic (crypto) features</strong>. Look for <strong>"k9"</strong> in the IOS filename — this confirms crypto capability.</p>
+  <div class="cw">
+    <div class="cl">show version — check IOS image name for k9 <button class="cpb" onclick="copyCode(this)">Copy</button></div>
+    <pre><code>S1# show version
+Cisco IOS Software, C2960 Software (C2960-LANBASEK9-M), Version 15.0(2)SE7, RELEASE SOFTWARE (fc1)
+!                                        ^^^^^^^^
+!                                    "K9" confirms crypto support -- SSH is available</code></pre>
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">1.3.4</span> Configure SSH — 6 Steps</h3>
+  <p>All six steps must be completed in order. Students most often forget Step 2 (domain name) and Step 6 (version 2).</p>
+
+  <div class="ssh-step"><span class="ss-num">Step 1</span><span class="ss-title">Verify SSH support</span>
+    <div class="cw" style="margin:8px 0 0"><div class="cl">Check if SSH is available <button class="cpb" onclick="copyCode(this)">Copy</button></div>
+    <pre><code>S1# show ip ssh
+! If the command is unrecognized, the IOS does not support crypto -- wrong image</code></pre></div>
+  </div>
+
+  <div class="ssh-step"><span class="ss-num">Step 2</span><span class="ss-title">Configure the IP domain name</span>
+    <div class="cw" style="margin:8px 0 0"><div class="cl">Set domain name — required before generating RSA keys <button class="cpb" onclick="copyCode(this)">Copy</button></div>
+    <pre><code>S1(config)# ip domain-name cisco.com
+! This is required -- crypto key generate rsa will FAIL without a domain name</code></pre></div>
+  </div>
+
+  <div class="ssh-step"><span class="ss-num">Step 3</span><span class="ss-title">Generate RSA key pair (this enables SSH)</span>
+    <div class="cw" style="margin:8px 0 0"><div class="cl">Generate RSA keys — minimum 1024 bits recommended <button class="cpb" onclick="copyCode(this)">Copy</button></div>
+    <pre><code>S1(config)# crypto key generate rsa
+How many bits in the modulus [512]: 1024
+
+! To delete the RSA key and disable SSH:
+S1(config)# crypto key zeroize rsa</code></pre></div>
+    <div class="ca info" style="margin-top:6px"><span class="ic">💡</span><span>Generating RSA keys <strong>automatically enables the SSH server</strong>. Larger key size (1024+ bits) = more secure but slightly slower to generate.</span></div>
+  </div>
+
+  <div class="ssh-step"><span class="ss-num">Step 4</span><span class="ss-title">Configure local user authentication</span>
+    <div class="cw" style="margin:8px 0 0"><div class="cl">Create local username and password <button class="cpb" onclick="copyCode(this)">Copy</button></div>
+    <pre><code>S1(config)# username admin secret ccna
+! 'secret' stores the password with MD5 hashing -- always preferred over 'password'</code></pre></div>
+  </div>
+
+  <div class="ssh-step"><span class="ss-num">Step 5</span><span class="ss-title">Configure VTY lines for SSH only</span>
+    <div class="cw" style="margin:8px 0 0"><div class="cl">Restrict VTY lines to SSH — block Telnet <button class="cpb" onclick="copyCode(this)">Copy</button></div>
+    <pre><code>S1(config)# line vty 0 15
+S1(config-line)# transport input ssh    ! Blocks all non-SSH (Telnet, etc.)
+S1(config-line)# login local            ! Authenticate using local username database
+S1(config-line)# exit</code></pre></div>
+  </div>
+
+  <div class="ssh-step"><span class="ss-num">Step 6</span><span class="ss-title">Enable SSH version 2</span>
+    <div class="cw" style="margin:8px 0 0"><div class="cl">Force SSH version 2 — version 1 has security flaws <button class="cpb" onclick="copyCode(this)">Copy</button></div>
+    <pre><code>S1(config)# ip ssh version 2
+! Without this command, both v1 and v2 are accepted
+! SSH v1 has known vulnerabilities -- always explicitly set v2</code></pre></div>
+  </div>
+
+  <div class="ca danger"><span class="ic">🚨</span><div><strong>Most common SSH configuration mistakes:</strong><br>
+  — Forgetting <code>ip domain-name</code> before trying to generate RSA keys (Step 2 before Step 3)<br>
+  — Not adding <code>ip ssh version 2</code> — leaves SSH v1 accepted<br>
+  — Using <code>login</code> instead of <code>login local</code> on VTY lines — won't authenticate against local usernames</div></div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">1.3.5</span> Verify SSH is Operational</h3>
+  <div class="cw">
+    <div class="cl">Verify SSH version and active sessions <button class="cpb" onclick="copyCode(this)">Copy</button></div>
+    <pre><code>S1# show ip ssh
+SSH Enabled - version 2.0
+Authentication timeout: 120 secs; Authentication retries: 3
+
+S1# show ssh
+%No SSHv1 server connections running.
+Connection Version Mode Encryption  Hmac         State           Username
+0          2.0     IN   aes256-cbc  hmac-sha1    Session started admin
+0          2.0     OUT  aes256-cbc  hmac-sha1    Session started admin</code></pre>
+  </div>
+  <div class="cw">
+    <div class="cl">PuTTY SSH login session — what the admin sees <button class="cpb" onclick="copyCode(this)">Copy</button></div>
+    <pre><code>! Admin connects from PC1 (172.17.99.21) to S1 SVI (172.17.99.11) via PuTTY
+! Host: 172.17.99.11  Port: 22  Connection type: SSH
+
+Login as: admin
+Using keyboard-interactive authentication.
+Password:
+S1> enable
+Password:
+S1#</code></pre>
+  </div>
+  <div class="ca tip"><span class="ic">✅</span><div>Use <code>show ip ssh</code> to confirm SSH is enabled and the version. Use <code>show ssh</code> to see currently active SSH sessions and which users are connected.</div></div>
+  </div>
+
+  <!-- SYNTAX CHECKER: 1.3.6 -->
+  <div style="margin:20px 0 6px;padding:16px;background:#0d1117;border:1px solid #30363d;border-left:3px solid #bc8cff;border-radius:8px">
+    <div style="font-size:.7em;font-weight:800;text-transform:uppercase;letter-spacing:.8px;color:#bc8cff;margin-bottom:6px">&#x1F5A5; Syntax Checker &mdash; 1.3.6</div>
+    <div style="font-size:.92em;font-weight:600;color:#e6edf3;margin-bottom:12px">Secure Remote Access on a Switch</div>
+    <div style="font-size:.82em;color:#8b949e;margin-bottom:14px">Type each command exactly as shown. Press Enter to submit. The checker validates your syntax step by step.</div>
+    <div class="tool-links" style="display:flex;flex-wrap:wrap;gap:14px">
+      <div style="flex:1 1 220px;min-width:0">
+        <a href="../../syntax-checker-simple/ccna2_syntax_checker.html?lab=1.3.6" target="_blank" rel="noopener" title="Quick, guided drill: type the exact commands for this NetAcad lab, step by step. Opens straight to lab 1.3.6." style="display:inline-flex;align-items:center;gap:8px;color:#fff;text-decoration:none;padding:8px 18px;border-radius:6px;font-size:.85em;font-weight:700;background:#238636;border:1px solid #2ea043">&#x25B6; Open Syntax Checker</a>
+        <div style="font-size:.75em;color:#8b949e;margin-top:6px">Quick, guided drill: type the exact commands for this NetAcad lab, step by step. Opens straight to lab 1.3.6.</div>
+      </div>
+      <div style="flex:1 1 220px;min-width:0">
+        <a class="cli-engine-link" href="../../cli-engine/ccna-cli-engine.html" target="_blank" rel="noopener" title="Full simulated Cisco IOS terminal: Tab completion, device state, Free Practice, Home Labs and Subnetting. In its exercise menu, pick “Course 2 · 1.3 — Secure Remote Access (Switch)”." style="display:inline-flex;align-items:center;gap:8px;color:#fff;text-decoration:none;padding:8px 18px;border-radius:6px;font-size:.85em;font-weight:700;background:#1f6feb;border:1px solid #388bfd">&#x1F4BB; Open CLI Engine</a>
+        <div style="font-size:.75em;color:#8b949e;margin-top:6px">Full simulated Cisco IOS terminal: Tab completion, device state, Free Practice, Home Labs and Subnetting. In its exercise menu, pick “Course 2 · 1.3 — Secure Remote Access (Switch)”.</div>
+      </div>
+    </div>
+    <div style="margin-top:12px;font-size:.75em"><a href="../../index.html" style="color:#58a6ff;text-decoration:none">&#x1F3E0; All study tools (home)</a></div>
+  </div>
+
+  <!-- SYNTAX CHECKER: 1.1.5 -->
+  <div style="margin:20px 0 6px;padding:16px;background:#0d1117;border:1px solid #30363d;border-left:3px solid #bc8cff;border-radius:8px">
+    <div style="font-size:.7em;font-weight:800;text-transform:uppercase;letter-spacing:.8px;color:#bc8cff;margin-bottom:6px">&#x1F5A5; Syntax Checker &mdash; 1.1.5</div>
+    <div style="font-size:.92em;font-weight:600;color:#e6edf3;margin-bottom:12px">Configure SSH on a Switch</div>
+    <div style="font-size:.82em;color:#8b949e;margin-bottom:14px">Type each command exactly as shown. Press Enter to submit. The checker validates your syntax step by step.</div>
+    <div class="tool-links" style="display:flex;flex-wrap:wrap;gap:14px">
+      <div style="flex:1 1 220px;min-width:0">
+        <a href="../../syntax-checker-simple/ccna2_syntax_checker.html?lab=1.1.5" target="_blank" rel="noopener" title="Quick, guided drill: type the exact commands for this NetAcad lab, step by step. Opens straight to lab 1.1.5." style="display:inline-flex;align-items:center;gap:8px;color:#fff;text-decoration:none;padding:8px 18px;border-radius:6px;font-size:.85em;font-weight:700;background:#238636;border:1px solid #2ea043">&#x25B6; Open Syntax Checker</a>
+        <div style="font-size:.75em;color:#8b949e;margin-top:6px">Quick, guided drill: type the exact commands for this NetAcad lab, step by step. Opens straight to lab 1.1.5.</div>
+      </div>
+      <div style="flex:1 1 220px;min-width:0">
+        <a class="cli-engine-link" href="../../cli-engine/ccna-cli-engine.html" target="_blank" rel="noopener" title="Full simulated Cisco IOS terminal: Tab completion, device state, Free Practice, Home Labs and Subnetting. In its exercise menu, pick “Course 2 · 1.1 — Configure SSH on a Switch”." style="display:inline-flex;align-items:center;gap:8px;color:#fff;text-decoration:none;padding:8px 18px;border-radius:6px;font-size:.85em;font-weight:700;background:#1f6feb;border:1px solid #388bfd">&#x1F4BB; Open CLI Engine</a>
+        <div style="font-size:.75em;color:#8b949e;margin-top:6px">Full simulated Cisco IOS terminal: Tab completion, device state, Free Practice, Home Labs and Subnetting. In its exercise menu, pick “Course 2 · 1.1 — Configure SSH on a Switch”.</div>
+      </div>
+    </div>
+    <div style="margin-top:12px;font-size:.75em"><a href="../../index.html" style="color:#58a6ff;text-decoration:none">&#x1F3E0; All study tools (home)</a></div>
+  </div>
+
+  <!-- PT INLINE -->
+  <div style="margin:20px 0 6px;padding:14px 16px;background:#0d1117;border:1px solid #30363d;border-left:3px solid #1f6feb;border-radius:6px">
+    <div style="font-size:.72em;font-weight:800;text-transform:uppercase;letter-spacing:.8px;color:#1f6feb;margin-bottom:10px">&#x1F4E6; Packet Tracer Activities</div>
+  <div style="display:flex;align-items:baseline;gap:10px;padding:6px 0;border-bottom:1px solid #21262d"><span style="font-family:monospace;font-size:.85em;color:#79c0ff;white-space:nowrap;flex-shrink:0;min-width:52px">1.3.6</span><span style="font-size:.88em;color:#c9d1d9">Configure SSH</span></div>
+    <div style="margin-top:10px;font-size:.78em;color:#6e7681">Full list: <a href="https://itexamanswers.net/ccna-2-packet-tracer-labs-answers-srwe-v7-02.html" target="_blank" rel="noopener" style="color:#58a6ff;word-break:break-all">https://itexamanswers.net/ccna-2-packet-tracer-labs-answers-srwe-v7-02.html</a></div>
+  </div>
+
+</div></div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- SECTION 1.4 -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div class="sec" id="s4">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">1.4</span><span class="ttl">Basic Router Configuration</span></span><button class="sec-check" id="sch-s4" onclick="event.stopPropagation();toggleSection('s4',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb">
+
+  <div class="sub">
+  <h3><span class="sn">1.4.1</span> Configure Basic Router Settings</h3>
+  <p>Routers and switches share the same initial configuration tasks. These should be performed on every device in every network:</p>
+  <div class="cw">
+    <div class="cl">R1 — Complete basic router initial configuration <button class="cpb" onclick="copyCode(this)">Copy</button></div>
+    <pre><code>Router# configure terminal
+Router(config)# hostname R1
+
+! Privileged EXEC password -- always use 'secret' not 'password'
+R1(config)# enable secret class
+
+! Console access password
+R1(config)# line console 0
+R1(config-line)# password cisco
+R1(config-line)# login
+R1(config-line)# exit
+
+! VTY (remote management) password -- lines 0-4 for Telnet/SSH
+R1(config)# line vty 0 4
+R1(config-line)# password cisco
+R1(config-line)# login
+R1(config-line)# exit
+
+! Encrypt all plaintext passwords stored in running-config
+R1(config)# service password-encryption
+
+! Legal warning banner -- displayed before login
+R1(config)# banner motd $ Authorized Access Only! $
+
+! Save to NVRAM
+R1# copy running-config startup-config</code></pre>
+  </div>
+  <div class="et">
+    <div class="lbl">🎯 enable secret vs enable password</div>
+    <ul>
+      <li><code>enable secret</code> → stored using <strong>MD5 hash</strong> — strongly encrypted, always use this</li>
+      <li><code>enable password</code> → stored in plaintext by default (Type 7 with service password-encryption — weak)</li>
+      <li>If <strong>both</strong> are configured: <code>enable secret</code> takes precedence — <code>enable password</code> is completely ignored</li>
+      <li>Best practice: <strong>only configure <code>enable secret</code></strong> — never configure <code>enable password</code></li>
+    </ul>
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">1.4.3–1.4.4</span> Configure Router Interfaces (Dual Stack)</h3>
+  <p>Router interfaces support both IPv4 and IPv6 (dual stack). Every interface needs at minimum an IP address and <code>no shutdown</code> to become active.</p>
+  <div class="ca danger"><span class="ic">🚨</span><div><strong>Critical difference from switches:</strong> Router interfaces are <strong>administratively down by default</strong>. Switch ports are up by default. Forgetting <code>no shutdown</code> on a router interface is the most common missed step — the interface shows down/down and nothing routes.</div></div>
+  <div class="cw">
+    <div class="cl">R1 — Configure dual-stack interfaces (IPv4 + IPv6) <button class="cpb" onclick="copyCode(this)">Copy</button></div>
+    <pre><code>R1(config)# interface gigabitethernet 0/0/0
+R1(config-if)# ip address 192.168.10.1 255.255.255.0
+R1(config-if)# ipv6 address 2001:db8:acad:1::1/64
+R1(config-if)# description Link to LAN 1
+R1(config-if)# no shutdown                    ! Required -- interfaces default to shutdown!
+R1(config-if)# exit
+
+R1(config)# interface gigabitethernet 0/0/1
+R1(config-if)# ip address 192.168.11.1 255.255.255.0
+R1(config-if)# ipv6 address 2001:db8:acad:2::1/64
+R1(config-if)# description Link to LAN 2
+R1(config-if)# no shutdown
+R1(config-if)# exit
+
+R1(config)# interface serial 0/0/0
+R1(config-if)# ip address 209.165.200.225 255.255.255.252
+R1(config-if)# ipv6 address 2001:db8:acad:3::225/64
+R1(config-if)# description Link to R2
+R1(config-if)# no shutdown
+R1(config-if)# end</code></pre>
+  </div>
+  <div class="ca info"><span class="ic">💡</span><div><strong>Interface descriptions</strong> are optional but strongly recommended in production networks. A good description (who the other end connects to, the circuit ID) saves significant time during troubleshooting. Max 240 characters.</div></div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">1.4.6</span> IPv4 Loopback Interfaces</h3>
+  <p>A <strong>loopback interface</strong> is a logical, software-only interface that is always up as long as the router is running. It can never go down due to a physical cable problem.</p>
+  <div class="tw"><table>
+    <tr><th>Property</th><th>Detail</th></tr>
+    <tr><td>Physical port?</td><td>No — it is a software interface internal to the router</td></tr>
+    <tr><td>State</td><td>Always up/up as long as the router is functioning</td></tr>
+    <tr><td>Can it fail?</td><td>Only if the router itself fails</td></tr>
+    <tr><td>Common uses</td><td>Testing routing processes, simulating networks, representing the router in routing protocols (OSPF Router ID), simulating WAN/internet links in labs</td></tr>
+  </table></div>
+  <div class="cw">
+    <div class="cl">R1 — Create loopback interface <button class="cpb" onclick="copyCode(this)">Copy</button></div>
+    <pre><code>R1(config)# interface loopback 0
+R1(config-if)# ip address 10.0.0.1 255.255.255.0
+R1(config-if)# exit
+
+! No 'no shutdown' needed -- loopbacks are automatically up
+%LINEPROTO-5-UPDOWN: Line protocol on Interface Loopback0, changed state to up</code></pre>
+  </div>
+  <div class="ca tip"><span class="ic">✅</span><div>Multiple loopback interfaces can be created on one router (Loopback0, Loopback1, etc.). Each must have a unique IP address. In CCNA labs, a loopback is commonly used to simulate a link to the internet or a remote network without additional hardware.</div></div>
+  </div>
+
+  <!-- SYNTAX CHECKER: 1.2.4 -->
+  <div style="margin:20px 0 6px;padding:16px;background:#0d1117;border:1px solid #30363d;border-left:3px solid #bc8cff;border-radius:8px">
+    <div style="font-size:.7em;font-weight:800;text-transform:uppercase;letter-spacing:.8px;color:#bc8cff;margin-bottom:6px">&#x1F5A5; Syntax Checker &mdash; 1.2.4</div>
+    <div style="font-size:.92em;font-weight:600;color:#e6edf3;margin-bottom:12px">Configure Router Interfaces</div>
+    <div style="font-size:.82em;color:#8b949e;margin-bottom:14px">Type each command exactly as shown. Press Enter to submit. The checker validates your syntax step by step.</div>
+    <div class="tool-links" style="display:flex;flex-wrap:wrap;gap:14px">
+      <div style="flex:1 1 220px;min-width:0">
+        <a href="../../syntax-checker-simple/ccna2_syntax_checker.html?lab=1.2.4" target="_blank" rel="noopener" title="Quick, guided drill: type the exact commands for this NetAcad lab, step by step. Opens straight to lab 1.2.4." style="display:inline-flex;align-items:center;gap:8px;color:#fff;text-decoration:none;padding:8px 18px;border-radius:6px;font-size:.85em;font-weight:700;background:#238636;border:1px solid #2ea043">&#x25B6; Open Syntax Checker</a>
+        <div style="font-size:.75em;color:#8b949e;margin-top:6px">Quick, guided drill: type the exact commands for this NetAcad lab, step by step. Opens straight to lab 1.2.4.</div>
+      </div>
+      <div style="flex:1 1 220px;min-width:0">
+        <a class="cli-engine-link" href="../../cli-engine/ccna-cli-engine.html" target="_blank" rel="noopener" title="Full simulated Cisco IOS terminal: Tab completion, device state, Free Practice, Home Labs and Subnetting. In its exercise menu, pick “Course 2 · 1.2 — Configure Router Interfaces”." style="display:inline-flex;align-items:center;gap:8px;color:#fff;text-decoration:none;padding:8px 18px;border-radius:6px;font-size:.85em;font-weight:700;background:#1f6feb;border:1px solid #388bfd">&#x1F4BB; Open CLI Engine</a>
+        <div style="font-size:.75em;color:#8b949e;margin-top:6px">Full simulated Cisco IOS terminal: Tab completion, device state, Free Practice, Home Labs and Subnetting. In its exercise menu, pick “Course 2 · 1.2 — Configure Router Interfaces”.</div>
+      </div>
+    </div>
+    <div style="margin-top:12px;font-size:.75em"><a href="../../index.html" style="color:#58a6ff;text-decoration:none">&#x1F3E0; All study tools (home)</a></div>
+  </div>
+
+  <!-- PT INLINE -->
+  <div style="margin:20px 0 6px;padding:14px 16px;background:#0d1117;border:1px solid #30363d;border-left:3px solid #1f6feb;border-radius:6px">
+    <div style="font-size:.72em;font-weight:800;text-transform:uppercase;letter-spacing:.8px;color:#1f6feb;margin-bottom:10px">&#x1F4E6; Packet Tracer Activities</div>
+  <div style="display:flex;align-items:baseline;gap:10px;padding:6px 0;border-bottom:1px solid #21262d"><span style="font-family:monospace;font-size:.85em;color:#79c0ff;white-space:nowrap;flex-shrink:0;min-width:52px">1.4.7</span><span style="font-size:.88em;color:#c9d1d9">Configure Router Interfaces</span></div>
+    <div style="margin-top:10px;font-size:.78em;color:#6e7681">Full list: <a href="https://itexamanswers.net/ccna-2-packet-tracer-labs-answers-srwe-v7-02.html" target="_blank" rel="noopener" style="color:#58a6ff;word-break:break-all">https://itexamanswers.net/ccna-2-packet-tracer-labs-answers-srwe-v7-02.html</a></div>
+  </div>
+
+</div></div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- SECTION 1.5 -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div class="sec" id="s5">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">1.5</span><span class="ttl">Verify Directly Connected Networks</span></span><button class="sec-check" id="sch-s5" onclick="event.stopPropagation();toggleSection('s5',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb">
+
+  <div class="sub">
+  <h3><span class="sn">1.5.1–1.5.2</span> Interface Verification Commands</h3>
+  <div class="tw"><table>
+    <tr><th>Command</th><th>Best For</th></tr>
+    <tr><td><code>show ip interface brief</code></td><td>Quick snapshot of ALL interfaces — IP address, status, protocol in one view</td></tr>
+    <tr><td><code>show ipv6 interface brief</code></td><td>Same as above but for IPv6 addresses and states</td></tr>
+    <tr><td><code>show running-config interface [int]</code></td><td>Exact IOS commands applied to one specific interface</td></tr>
+    <tr><td><code>show interfaces</code></td><td>Detailed stats and error counters for ALL interfaces</td></tr>
+    <tr><td><code>show ip interface [int]</code></td><td>IPv4-specific details for one interface</td></tr>
+    <tr><td><code>show ipv6 interface [int]</code></td><td>IPv6 link-local, global unicast, and multicast addresses for one interface</td></tr>
+    <tr><td><code>show ip route</code></td><td>IPv4 routing table — what networks the router knows about</td></tr>
+    <tr><td><code>show ipv6 route</code></td><td>IPv6 routing table</td></tr>
+  </table></div>
+  <div class="cw">
+    <div class="cl">show ip interface brief and show ipv6 interface brief <button class="cpb" onclick="copyCode(this)">Copy</button></div>
+    <pre><code>R1# show ip interface brief
+Interface              IP-Address      OK? Method Status         Protocol
+GigabitEthernet0/0/0   192.168.10.1    YES manual up            up
+GigabitEthernet0/0/1   192.168.11.1    YES manual up            up
+Serial0/1/0            209.165.200.225 YES manual up            up
+Serial0/1/1            unassigned      YES unset  admin. down   down
+
+R1# show ipv6 interface brief
+GigabitEthernet0/0/0   [up/up]
+    FE80::7279:B3FF:FE92:3130
+    2001:DB8:ACAD:1::1
+GigabitEthernet0/0/1   [up/up]
+    FE80::7279:B3FF:FE92:3131
+    2001:DB8:ACAD:2::1
+Serial0/1/1            [down/down]     Unassigned</code></pre>
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">1.5.3</span> Verify IPv6 Link Local and Multicast Addresses</h3>
+  <p>Every IPv6-enabled interface automatically gets a <strong>link-local address</strong> (FE80::/10) whenever a global unicast address is assigned. Link-local addresses are <strong>required</strong> for IPv6 — global unicast addresses are optional.</p>
+  <div class="cw">
+    <div class="cl">show ipv6 interface — see link-local, global unicast, and multicast <button class="cpb" onclick="copyCode(this)">Copy</button></div>
+    <pre><code>R1# show ipv6 interface gigabitethernet 0/0/0
+GigabitEthernet0/0/0 is up, line protocol is up
+  IPv6 is enabled, link-local address is FE80::7279:B3FF:FE92:3130
+  Global unicast address(es):
+    2001:DB8:ACAD:1::1, subnet is 2001:DB8:ACAD:1::/64
+  Joined group address(es):
+    FF02::1           (all IPv6 nodes on the local link)
+    FF02::1:FF00:1    (solicited-node multicast)
+    FF02::1:FF92:3130</code></pre>
+  </div>
+  <div class="tw"><table>
+    <tr><th>Address Type</th><th>Prefix</th><th>Purpose</th></tr>
+    <tr><td>Link-local</td><td>FE80::/10</td><td>Local segment only — required, auto-assigned</td></tr>
+    <tr><td>Global unicast</td><td>2001:DB8... etc.</td><td>Routable address — manually configured or SLAAC</td></tr>
+    <tr><td>Multicast</td><td>FF02::</td><td>Sent to groups — all nodes, solicited-node, etc.</td></tr>
+  </table></div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">1.5.5</span> Verify Routes</h3>
+  <p>In Cisco IOS 15, each active connected interface creates <strong>two routing table entries</strong>:</p>
+  <div class="tw"><table>
+    <tr><th>Code</th><th>Meaning</th><th>Mask</th></tr>
+    <tr><td><strong>C</strong></td><td>Connected — the network reachable via this interface</td><td>/24 (the full subnet)</td></tr>
+    <tr><td><strong>L</strong></td><td>Local — the router's own IP address on that interface</td><td>/32 for IPv4, /128 for IPv6</td></tr>
+  </table></div>
+  <div class="cw">
+    <div class="cl">show ip route and show ipv6 route <button class="cpb" onclick="copyCode(this)">Copy</button></div>
+    <pre><code>R1# show ip route
+Codes: L - local, C - connected, S - static ...
+Gateway of last resort is not set
+      192.168.10.0/24 is variably subnetted, 2 subnets, 2 masks
+C        192.168.10.0/24 is directly connected, GigabitEthernet0/0/0
+L        192.168.10.1/32 is directly connected, GigabitEthernet0/0/0
+      192.168.11.0/24 is variably subnetted, 2 subnets, 2 masks
+C        192.168.11.0/24 is directly connected, GigabitEthernet0/0/1
+L        192.168.11.1/32 is directly connected, GigabitEthernet0/0/1
+      209.165.200.0/24 is variably subnetted, 2 subnets, 2 masks
+C        209.165.200.224/30 is directly connected, Serial0/1/0
+L        209.165.200.225/32 is directly connected, Serial0/1/0</code></pre>
+  </div>
+  <div class="ca info"><span class="ic">💡</span><div><strong>Why two entries per interface?</strong> The C entry tells the router how to reach the network. The L entry (host route with /32) tells the router "this specific IP address is mine" — used to efficiently process packets addressed directly to the router itself, without a full routing lookup.</div></div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">1.5.6</span> Filter Show Command Output</h3>
+  <p>Use the pipe <code>|</code> character after any <code>show</code> command to filter output. Four filter options:</p>
+  <div class="tw"><table>
+    <tr><th>Filter</th><th>What It Does</th><th>Example</th></tr>
+    <tr><td><code>section</code></td><td>Shows the entire config section starting with the keyword</td><td><code>show running-config | section line vty</code></td></tr>
+    <tr><td><code>include</code></td><td>Shows only lines containing the keyword</td><td><code>show ip interface brief | include up</code></td></tr>
+    <tr><td><code>exclude</code></td><td>Hides all lines containing the keyword</td><td><code>show ip interface brief | exclude unassigned</code></td></tr>
+    <tr><td><code>begin</code></td><td>Shows output starting from the first line matching the keyword</td><td><code>show ip route | begin Gateway</code></td></tr>
+  </table></div>
+  <div class="cw">
+    <div class="cl">Filter examples — practical usage <button class="cpb" onclick="copyCode(this)">Copy</button></div>
+    <pre><code>! Show only interfaces that are up
+R1# show ip interface brief | include up
+GigabitEthernet0/0/0   192.168.10.1    YES manual up    up
+GigabitEthernet0/0/1   192.168.11.1    YES manual up    up
+Serial0/1/0            209.165.200.225 YES manual up    up
+
+! Hide unassigned interfaces
+R1# show ip interface brief | exclude unassigned
+Interface              IP-Address      OK? Method Status    Protocol
+GigabitEthernet0/0/0   192.168.10.1    YES manual up        up
+
+! Show VTY line config section
+R1# show running-config | section line vty
+line vty 0 4
+ password 7 110A1016141D
+ login
+ transport input all
+
+! Start routing table display at "Gateway"
+R1# show ip route | begin Gateway
+Gateway of last resort is not set
+      192.168.10.0/24 is variably subnetted...</code></pre>
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">1.5.8</span> Command History Feature</h3>
+  <p>The IOS CLI stores recently entered commands in a history buffer, allowing them to be recalled without retyping.</p>
+  <div class="tw"><table>
+    <tr><th>Action</th><th>Key</th></tr>
+    <tr><td>Recall previous command (older)</td><td>Ctrl+P or ↑ Up Arrow</td></tr>
+    <tr><td>Move forward (more recent)</td><td>Ctrl+N or ↓ Down Arrow</td></tr>
+    <tr><td>View history list</td><td><code>show history</code></td></tr>
+    <tr><td>Change buffer size (session only)</td><td><code>terminal history size 200</code></td></tr>
+  </table></div>
+  <div class="cw">
+    <div class="cl">Command history commands <button class="cpb" onclick="copyCode(this)">Copy</button></div>
+    <pre><code>! Default: last 10 commands stored
+R1# show history
+  show ip int brief
+  show interface g0/0/0
+  show ip route
+  show running-config
+  show history
+
+! Increase buffer to 200 commands (current session only)
+R1# terminal history size 200</code></pre>
+  </div>
+  <div class="ca info"><span class="ic">💡</span><div>Default history size is <strong>10 commands</strong>. Maximum that can be set with <code>terminal history size</code> is <strong>256</strong>. This setting is session-only — it resets when you disconnect.</div></div>
+  </div>
+
+  <!-- PT INLINE -->
+  <div style="margin:20px 0 6px;padding:14px 16px;background:#0d1117;border:1px solid #30363d;border-left:3px solid #1f6feb;border-radius:6px">
+    <div style="font-size:.72em;font-weight:800;text-transform:uppercase;letter-spacing:.8px;color:#1f6feb;margin-bottom:10px">&#x1F4E6; Packet Tracer Activities</div>
+  <div style="display:flex;align-items:baseline;gap:10px;padding:6px 0;border-bottom:1px solid #21262d"><span style="font-family:monospace;font-size:.85em;color:#79c0ff;white-space:nowrap;flex-shrink:0;min-width:52px">1.5.10</span><span style="font-size:.88em;color:#c9d1d9">Verify Directly Connected Networks</span></div>
+    <div style="margin-top:10px;font-size:.78em;color:#6e7681">Full list: <a href="https://itexamanswers.net/ccna-2-packet-tracer-labs-answers-srwe-v7-02.html" target="_blank" rel="noopener" style="color:#58a6ff;word-break:break-all">https://itexamanswers.net/ccna-2-packet-tracer-labs-answers-srwe-v7-02.html</a></div>
+  </div>
+
+</div></div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- SECTION 1.6 — COMMANDS -->
+<!-- ═══════════════════════════════════════════════════════ -->
+
+<div class="sec" id="s-pt-1-6">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">1.6</span><span class="ttl">Packet Tracer — Implement a Small Network</span></span><button class="sec-check" id="sch-s-pt-1-6" onclick="event.stopPropagation();toggleSection('s-pt-1-6',this)">○ Mark done</button>
+</div>
+<div class="sb">
+  <div style="padding:14px 16px;background:#0d1117;border:1px solid #30363d;border-left:3px solid #1f6feb;border-radius:6px">
+    <div style="font-size:.72em;font-weight:800;text-transform:uppercase;letter-spacing:.8px;color:#1f6feb;margin-bottom:10px">&#x1F4E6; Packet Tracer Activities</div>
+    <div style="font-size:.82em;color:#6e7681;margin-bottom:10px">Open in Cisco Packet Tracer via your NetAcad course.</div>
+      <div style="display:flex;align-items:baseline;gap:10px;padding:6px 0;border-bottom:1px solid #21262d"><span style="font-family:monospace;font-size:.85em;color:#79c0ff;white-space:nowrap;flex-shrink:0;min-width:52px">1.6.1</span><span style="font-size:.88em;color:#c9d1d9">Implement a Small Network</span></div>
+      <div style="display:flex;align-items:baseline;gap:10px;padding:6px 0;border-bottom:1px solid #21262d"><span style="font-family:monospace;font-size:.85em;color:#79c0ff;white-space:nowrap;flex-shrink:0;min-width:52px">1.6.2</span><span style="font-size:.88em;color:#c9d1d9">Configure Basic Router Settings (Physical Mode)</span></div>
+    <div style="margin-top:12px;font-size:.78em;color:#6e7681">Full list: <a href="https://itexamanswers.net/ccna-2-packet-tracer-labs-answers-srwe-v7-02.html" target="_blank" rel="noopener" style="color:#58a6ff;word-break:break-all">https://itexamanswers.net/ccna-2-packet-tracer-labs-answers-srwe-v7-02.html</a></div>
+  </div>
+</div>
+</div>
+<div class="sec" id="s6">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">CMD</span><span class="ttl">Quick Reference — All Module 1 Commands</span></span><button class="sec-check" id="sch-s6" onclick="event.stopPropagation();toggleSection('s6',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb">
+
+  <p style="font-weight:700;color:var(--dark);margin-bottom:10px;">Switch Initial Configuration</p>
+  <div class="tw"><table>
+    <tr><th>Command</th><th>What It Does</th></tr>
+    <tr><td><code>boot system flash:/[path]/[file].bin</code></td><td>Set IOS boot image path</td></tr>
+    <tr><td><code>show boot</code></td><td>Show current IOS boot file setting</td></tr>
+    <tr><td><code>interface vlan [id]</code></td><td>Enter management SVI configuration mode</td></tr>
+    <tr><td><code>ip address [ip] [mask]</code></td><td>Assign IPv4 address to SVI (management access)</td></tr>
+    <tr><td><code>ipv6 address [ipv6]/[prefix]</code></td><td>Assign IPv6 address to SVI</td></tr>
+    <tr><td><code>no shutdown</code></td><td>Bring SVI up (required)</td></tr>
+    <tr><td><code>ip default-gateway [ip]</code></td><td>Set default gateway for remote management from other networks</td></tr>
+    <tr><td><code>copy running-config startup-config</code></td><td>Save running config to NVRAM</td></tr>
+  </table></div>
+
+  <p style="font-weight:700;color:var(--dark);margin:20px 0 10px;">Switch Port Configuration</p>
+  <div class="tw"><table>
+    <tr><th>Command</th><th>What It Does</th></tr>
+    <tr><td><code>duplex [full|half|auto]</code></td><td>Set interface duplex mode</td></tr>
+    <tr><td><code>speed [10|100|1000|auto]</code></td><td>Set interface speed</td></tr>
+    <tr><td><code>mdix auto</code></td><td>Enable Auto-MDIX (auto cable detection)</td></tr>
+    <tr><td><code>show interfaces [int]</code></td><td>Interface status, duplex, speed, error counters</td></tr>
+    <tr><td><code>show running-config</code></td><td>Current configuration in RAM</td></tr>
+    <tr><td><code>show startup-config</code></td><td>Saved configuration in NVRAM</td></tr>
+    <tr><td><code>show flash</code></td><td>Flash contents</td></tr>
+    <tr><td><code>show version</code></td><td>IOS version and hardware info</td></tr>
+    <tr><td><code>show mac-address-table</code></td><td>MAC address table</td></tr>
+    <tr><td><code>show controllers ethernet-controller [int] phy | include MDIX</code></td><td>Verify Auto-MDIX state</td></tr>
+  </table></div>
+
+  <p style="font-weight:700;color:var(--dark);margin:20px 0 10px;">SSH Configuration</p>
+  <div class="tw"><table>
+    <tr><th>Command</th><th>What It Does</th></tr>
+    <tr><td><code>show version</code></td><td>Check IOS image name — look for "k9" for crypto support</td></tr>
+    <tr><td><code>show ip ssh</code></td><td>Verify SSH is enabled and see version</td></tr>
+    <tr><td><code>ip domain-name [name]</code></td><td>Set domain name — required before generating RSA keys</td></tr>
+    <tr><td><code>crypto key generate rsa</code></td><td>Generate RSA key pair — enables SSH server automatically</td></tr>
+    <tr><td><code>crypto key zeroize rsa</code></td><td>Delete RSA keys — disables SSH server</td></tr>
+    <tr><td><code>username [name] secret [pw]</code></td><td>Create local user for SSH authentication</td></tr>
+    <tr><td><code>line vty 0 15</code></td><td>Enter VTY line config mode (all 16 VTY lines)</td></tr>
+    <tr><td><code>transport input ssh</code></td><td>Allow SSH only — blocks Telnet</td></tr>
+    <tr><td><code>login local</code></td><td>Authenticate using local username database</td></tr>
+    <tr><td><code>ip ssh version 2</code></td><td>Force SSH version 2 only</td></tr>
+    <tr><td><code>show ssh</code></td><td>Show active SSH sessions</td></tr>
+  </table></div>
+
+  <p style="font-weight:700;color:var(--dark);margin:20px 0 10px;">Basic Router Configuration</p>
+  <div class="tw"><table>
+    <tr><th>Command</th><th>What It Does</th></tr>
+    <tr><td><code>hostname [name]</code></td><td>Set device hostname</td></tr>
+    <tr><td><code>enable secret [pw]</code></td><td>Set encrypted privileged EXEC password (MD5)</td></tr>
+    <tr><td><code>line console 0</code></td><td>Enter console line config</td></tr>
+    <tr><td><code>password [pw]</code></td><td>Set console or VTY password</td></tr>
+    <tr><td><code>login</code></td><td>Require password on console/VTY login</td></tr>
+    <tr><td><code>service password-encryption</code></td><td>Encrypt all plaintext passwords in running-config (Type 7)</td></tr>
+    <tr><td><code>banner motd $ [message] $</code></td><td>Set message-of-the-day banner (legal notice)</td></tr>
+    <tr><td><code>interface [type] [num]</code></td><td>Enter interface configuration mode</td></tr>
+    <tr><td><code>ip address [ip] [mask]</code></td><td>Assign IPv4 address to router interface</td></tr>
+    <tr><td><code>ipv6 address [ipv6]/[prefix]</code></td><td>Assign IPv6 address to router interface</td></tr>
+    <tr><td><code>description [text]</code></td><td>Add interface description (up to 240 characters)</td></tr>
+    <tr><td><code>no shutdown</code></td><td>Activate router interface — required (interfaces default to shutdown)</td></tr>
+    <tr><td><code>interface loopback [num]</code></td><td>Create a logical loopback interface</td></tr>
+  </table></div>
+
+  <p style="font-weight:700;color:var(--dark);margin:20px 0 10px;">Verification &amp; Troubleshooting</p>
+  <div class="tw"><table>
+    <tr><th>Command</th><th>What It Shows</th></tr>
+    <tr><td><code>show ip interface brief</code></td><td>All interfaces — IPv4 address, status, and protocol in one view</td></tr>
+    <tr><td><code>show ipv6 interface brief</code></td><td>All interfaces — IPv6 state summary</td></tr>
+    <tr><td><code>show running-config interface [int]</code></td><td>Commands applied to one specific interface</td></tr>
+    <tr><td><code>show interfaces [int]</code></td><td>Full interface details including error counters</td></tr>
+    <tr><td><code>show ip interface [int]</code></td><td>IPv4-specific interface information</td></tr>
+    <tr><td><code>show ipv6 interface [int]</code></td><td>IPv6 addresses including link-local and multicast</td></tr>
+    <tr><td><code>show ip route</code></td><td>IPv4 routing table</td></tr>
+    <tr><td><code>show ipv6 route</code></td><td>IPv6 routing table</td></tr>
+    <tr><td><code>show history</code></td><td>Recently entered commands</td></tr>
+    <tr><td><code>terminal history size [n]</code></td><td>Set command history buffer size (session only, max 256)</td></tr>
+    <tr><td><code>show running-config | section [keyword]</code></td><td>Show config section matching keyword</td></tr>
+    <tr><td><code>show [cmd] | include [keyword]</code></td><td>Show only lines containing keyword</td></tr>
+    <tr><td><code>show [cmd] | exclude [keyword]</code></td><td>Hide lines containing keyword</td></tr>
+    <tr><td><code>show [cmd] | begin [keyword]</code></td><td>Start output at first line matching keyword</td></tr>
+  </table></div>
+
+</div></div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- SECTION 1.7 — EXAM TRAPS -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div class="sec" id="s7">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">🎯</span><span class="ttl">Common Exam Traps — Module 1</span></span><button class="sec-check" id="sch-s7" onclick="event.stopPropagation();toggleSection('s7',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb">
+
+  <div class="ca danger"><span class="ic">❌</span><div><strong>Trap 1: IOS loads from ROM, not flash.</strong><br>POST is stored in ROM. The Boot Loader is stored in ROM. But the <strong>IOS itself loads from flash</strong>. The startup-config (config.text) is also in flash. Running-config lives in RAM and is lost on reload.</div></div>
+
+  <div class="ca danger"><span class="ic">❌</span><div><strong>Trap 2: Router interfaces default to shutdown.</strong><br>Unlike switch ports (which are up by default), <strong>all router LAN and WAN interfaces are administratively down</strong> until <code>no shutdown</code> is applied. Forgetting this is the single most common missed step when configuring router interfaces. An interface with correct IP but no <code>no shutdown</code> shows <code>administratively down / down</code> and does not route.</div></div>
+
+  <div class="ca danger"><span class="ic">❌</span><div><strong>Trap 3: Switch management SVI shows down/down.</strong><br>Two conditions BOTH must be true for the SVI to be up/up: (1) the VLAN must exist in the VLAN database, AND (2) at least one active port must be assigned to that VLAN. Creating the SVI with an IP is not enough.</div></div>
+
+  <div class="ca danger"><span class="ic">❌</span><div><strong>Trap 4: enable secret vs enable password.</strong><br>Always use <code>enable secret</code> — it uses MD5 hashing. <code>enable password</code> stores in plaintext by default (Type 7 with service password-encryption is still weak). If both are configured, <code>enable secret</code> wins — <code>enable password</code> is ignored entirely.</div></div>
+
+  <div class="ca danger"><span class="ic">❌</span><div><strong>Trap 5: SSH requires domain name BEFORE generating RSA keys.</strong><br>The command <code>crypto key generate rsa</code> will fail if no domain name has been configured with <code>ip domain-name</code>. This is Step 2 before Step 3 — students frequently skip it and wonder why key generation fails.</div></div>
+
+  <div class="ca danger"><span class="ic">❌</span><div><strong>Trap 6: transport input ssh intentionally blocks Telnet.</strong><br>Once <code>transport input ssh</code> is applied to VTY lines, Telnet is completely blocked. This is expected behavior — not a mistake. If Telnet worked before and stops working after SSH config, the configuration is correct.</div></div>
+
+  <div class="ca danger"><span class="ic">❌</span><div><strong>Trap 7: ip ssh version 2 must be explicitly set.</strong><br>Without this command, the switch accepts both SSH v1 and v2. SSH v1 has known security vulnerabilities. Always configure <code>ip ssh version 2</code> as Step 6. The exam may show a config that accepts v1 and ask what is wrong.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 8: Amber STAT LED = STP blocking, not hardware failure.</strong><br>A port showing amber in STAT mode is being blocked by Spanning Tree Protocol. This is completely normal — especially in the first ~30 seconds after a port is activated. It is not a failure, not a duplex mismatch, and not a cable problem. Ports normally transition from amber to green within 30–50 seconds.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 9: Late collisions = duplex mismatch (usually).</strong><br>Late collisions occur after the first 512 bits of a frame are transmitted. On a correctly configured network, late collisions should <strong>never occur</strong>. If you see them, the most common cause is a duplex mismatch — one end is full-duplex, the other is half-duplex. You see late collisions on the half-duplex end.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 10: High CRC errors = cable noise, not duplex.</strong><br>CRC errors indicate a checksum mismatch — the received frame was corrupted in transit. The most common cause is <strong>physical cable problems</strong>: electrical interference, damaged cable, loose connectors, or cable exceeding maximum length. CRC errors are a Layer 1 signal — start by inspecting the cable.</div></div>
+
+  <div class="ca tip"><span class="ic">✅</span><div><strong>Quick recap — where things are stored:</strong><br><br>
+  <strong>ROM</strong> → POST, Boot Loader (read-only, survives power loss)<br>
+  <strong>Flash</strong> → IOS image, startup-config (config.text), VLAN database (vlan.dat)<br>
+  <strong>RAM</strong> → running-config, ARP table, routing table, MAC address table (lost on reload)<br>
+  <strong>NVRAM</strong> → startup-config on some platforms (same as flash on 2960)<br><br>
+  This is tested directly on the CCNA exam.</div></div>
+
+</div></div>
+
+</div><!-- end .wrap -->
+<div class="ft">CCNA 2 SRWE v7.02 — Module 1: Basic Device Configuration<br>Based on Cisco NetAcad curriculum · Study guide for personal use</div>
+<button class="tb" id="topb" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+
+<script>
+var MOD_KEY="ccna2-module1-basic-device-configuration";
+var SECS=["s-pt-1-0","s1","s2","s3","s4","s5","s-pt-1-6","s6","s7"];
+var checked={};
+function loadState(){
+  try{var s=localStorage.getItem(MOD_KEY);if(s)checked=JSON.parse(s);}catch(e){}
+  SECS.forEach(function(id){
+    var pill=document.getElementById('pill-'+id);
+    var row=document.getElementById('row-'+id);
+    var st=document.getElementById('st-'+id);
+    var sch=document.getElementById('sch-'+id);
+    if(checked[id]){
+      if(pill){pill.classList.add('checked');pill.querySelector('.pill-check').textContent='✓';}
+      if(row)row.classList.add('done');
+      if(st)st.textContent='✓';
+      if(sch){sch.classList.add('checked');sch.textContent='✓ Done';}
+    } else {
+      if(pill){pill.classList.remove('checked');pill.querySelector('.pill-check').textContent='○';}
+      if(row)row.classList.remove('done');
+      if(st)st.textContent='○';
+      if(sch){sch.classList.remove('checked');sch.textContent='○ Mark done';}
+    }
+  });
+}
+function toggleSection(id,btn){checked[id]=!checked[id];try{localStorage.setItem(MOD_KEY,JSON.stringify(checked));}catch(e){}loadState();}
+function toggleStudyPanel(){
+  var hdr=document.getElementById('sp-hdr');
+  var body=document.getElementById('sp-body');
+  var arr=document.getElementById('sp-arr');
+  hdr.classList.toggle('open');body.classList.toggle('open');
+  if(arr)arr.textContent=body.classList.contains('open')?'▲':'▼';
+}
+function goTo(id){var el=document.getElementById(id);if(!el)return;var h=el.querySelector('.sh,.section-header'),b=el.querySelector('.sb,.section-body');if(h&&b&&!b.classList.contains('open')){h.classList.add('open');b.classList.add('open');}setTimeout(function(){window.scrollTo({top:el.getBoundingClientRect().top+window.pageYOffset-60,behavior:'smooth'});},50);}
+function setFs(size,btn){document.documentElement.style.setProperty('--base-fs',size);document.querySelectorAll('.fs-btn').forEach(function(b){b.classList.remove('active');});btn.classList.add('active');try{localStorage.setItem('ccna-fs',size);}catch(e){}}
+(function(){try{var s=localStorage.getItem('ccna-fs');if(s){document.documentElement.style.setProperty('--base-fs',s);document.querySelectorAll('.fs-btn').forEach(function(b){b.classList.remove('active');if((b.textContent==='S'&&s==='14px')||(b.textContent==='M'&&s==='16px')||(b.textContent==='L'&&s==='18px')||(b.textContent==='XL'&&s==='20px'))b.classList.add('active');});}}catch(e){}loadState();})();
+function copyCode(b){var t=b.closest('.cw').querySelector('pre').innerText;if(navigator.clipboard){navigator.clipboard.writeText(t).then(function(){b.textContent='Copied!';setTimeout(function(){b.textContent='Copy';},1500);}).catch(function(){fb(t,b);});}else{fb(t,b);}}
+function fb(t,b){var a=document.createElement('textarea');a.value=t;a.style.position='fixed';a.style.opacity='0';document.body.appendChild(a);a.focus();a.select();document.execCommand('copy');document.body.removeChild(a);b.textContent='Copied!';setTimeout(function(){b.textContent='Copy';},1500);}
+</script>
+
+<!-- MODULE NAVIGATION BAR -->
+<div class="mod-nav">
+  <a class="mn-hub" href="index.html">🏠 Hub</a>
+  <div class="mn-divider"></div>
+  <span class="mn-prev disabled">‹</span>
+  <span class="mn-label">M1 of 16</span>
+  <a class="mn-next" href="ccna2_module2_switching_concepts_v2.2.html">›</a>
+</div>
+
+<script src="../../site-config.js"></script>
+</body>
+</html>

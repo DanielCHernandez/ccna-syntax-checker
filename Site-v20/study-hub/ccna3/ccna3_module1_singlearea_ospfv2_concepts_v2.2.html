@@ -1,0 +1,767 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=2.0">
+<title>CCNA 3 Module 1: Single-Area OSPFv2 Concepts v2.2</title>
+<style>
+:root{
+  --blue:#1ba0d7;--dark:#005073;--green:#6cc24a;
+  --ospf:#1a3a5c;--ospfd:#38bdf8;
+  --bg:#f4f6f8;--card:#fff;--text:#1a1a2e;--muted:#5a6a7a;
+  --cbg:#0d1117;--ctxt:#c9d1d9;--r:12px;--sh:0 2px 12px rgba(0,0,0,.08);
+  --base-fs:16px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);font-size:var(--base-fs);line-height:1.7}
+
+.fs-bar{position:sticky;top:0;z-index:200;background:#1a1a2e;display:flex;align-items:center;justify-content:flex-end;padding:6px 14px;gap:6px;box-shadow:0 2px 8px rgba(0,0,0,.3)}
+.fs-label{color:#8b949e;font-size:.72em;font-weight:700;letter-spacing:.5px;text-transform:uppercase;margin-right:4px}
+.fs-btn{background:#30363d;color:#c9d1d9;border:2px solid transparent;border-radius:6px;padding:4px 12px;font-size:.75em;font-weight:700;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:all .2s;line-height:1.4}
+.fs-btn:active,.fs-btn.active{background:var(--ospf);color:#fff;border-color:var(--ospf)}
+
+.hdr{background:linear-gradient(135deg,#0f2744,var(--ospf));color:#fff;padding:32px 20px 24px;text-align:center}
+.hdr .badge{display:inline-block;background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.4);border-radius:20px;padding:4px 14px;font-size:.81em;margin-bottom:12px}
+.hdr h1{font-size:1.625em;font-weight:700;margin-bottom:6px}
+.hdr p{font-size:.94em;opacity:.85}
+.hdr .obj{display:inline-block;background:rgba(255,255,255,.15);border-radius:8px;padding:7px 16px;margin-top:12px;font-size:.875em;font-style:italic}
+
+.pb{background:var(--card);padding:14px 16px;margin:16px 16px 0;border-radius:var(--r);box-shadow:var(--sh)}
+.pbl{font-size:.81em;color:var(--muted);margin-bottom:6px;font-weight:600}
+.pbt{background:#e0e7ef;border-radius:10px;height:8px;overflow:hidden}
+.pbf{background:linear-gradient(90deg,var(--ospf),var(--ospfd));height:100%;border-radius:10px;width:0;transition:width 1s ease}
+
+.toc{background:var(--card);margin:16px;border-radius:var(--r);box-shadow:var(--sh);overflow:hidden}
+.toch{background:var(--ospf);color:#fff;padding:14px 18px;font-weight:700;font-size:.94em;display:flex;justify-content:space-between;align-items:center;cursor:pointer;user-select:none}
+.toch .arr{transition:transform .3s}
+.toch.open .arr{transform:rotate(180deg)}
+.tocb{display:none;padding:10px 0}
+.tocb.open{display:block}
+.tocg{font-size:.69em;font-weight:800;letter-spacing:.8px;color:var(--ospf);text-transform:uppercase;padding:8px 20px 2px}
+.tocb a{display:block;padding:9px 20px 9px 28px;color:var(--text);text-decoration:none;font-size:.875em;border-left:3px solid transparent;transition:all .2s}
+.tocb a:hover,.tocb a:active{background:#e0f2fe;border-left-color:var(--ospfd)}
+.tocb a .n{display:inline-block;background:var(--ospf);color:#fff;border-radius:5px;padding:1px 8px;font-size:.75em;font-weight:700;margin-right:8px}
+
+.wrap{padding:0 16px 100px}
+
+.sec{background:var(--card);border-radius:var(--r);box-shadow:var(--sh);margin-bottom:16px;overflow:hidden}
+.sh{background:linear-gradient(90deg,#0f2744,var(--ospf));color:#fff;padding:16px 18px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;user-select:none;-webkit-tap-highlight-color:transparent}
+.sh .ttl{font-weight:700;font-size:1em}
+.sh .nb{background:rgba(255,255,255,.25);border-radius:6px;padding:3px 10px;font-size:.81em;font-weight:700;margin-right:10px;white-space:nowrap}
+.sh .ch{font-size:1.125em;transition:transform .3s}
+.sh.open .ch{transform:rotate(180deg)}
+.sb{display:none;padding:18px}
+.sb.open{display:block}
+
+.sub{margin-bottom:24px}
+.sub:last-child{margin-bottom:0}
+.sub h3{font-size:.94em;font-weight:700;color:var(--ospf);margin-bottom:10px;padding-bottom:6px;border-bottom:2px solid #e0f2fe;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.sub h3 .sn{background:var(--ospf);color:#fff;border-radius:5px;padding:2px 8px;font-size:.75em;white-space:nowrap}
+.sub h4{font-size:.875em;font-weight:700;color:var(--ospf);margin:14px 0 6px}
+.sub p{margin-bottom:10px;font-size:.94em}
+.sub ul,.sub ol{padding-left:20px;margin:8px 0;font-size:.94em}
+.sub li{margin-bottom:5px}
+
+.cw{background:var(--cbg);border-radius:10px;margin:12px 0;overflow:hidden}
+.cl{background:#21262d;color:#c9d1d9;font-size:.78em;font-weight:700;padding:6px 14px;letter-spacing:.5px;text-transform:uppercase;display:flex;justify-content:space-between;align-items:center}
+.cpb{background:#30363d;color:#c9d1d9;border:none;border-radius:5px;padding:3px 10px;font-size:.69em;cursor:pointer}
+.cpb:active{background:var(--ospf);color:#fff}
+pre{margin:0;padding:14px;overflow-x:auto;-webkit-overflow-scrolling:touch}
+code{font-family:'Courier New',monospace;font-size:.81em;color:var(--ctxt);line-height:1.6}
+p code,li code,td code,.ca code,.rr-desc code,.rr-label code{background:#e0f2fe;color:#0f2744;border-radius:4px;padding:1px 5px;font-size:.81em;font-family:'Courier New',monospace;font-weight:600}
+
+.ca{border-radius:8px;padding:12px 14px;margin:12px 0;font-size:.875em;line-height:1.6;display:flex;gap:10px;align-items:flex-start}
+.ca .ic{font-size:1.125em;flex-shrink:0;margin-top:1px}
+.ca.warn  {background:#fff3cd;border-left:4px solid #b38600;color:#3d2c00}
+.ca.tip   {background:#d4edda;border-left:4px solid #28a745;color:#0d3318}
+.ca.danger{background:#f8d7da;border-left:4px solid #dc3545;color:#3d0010}
+.ca.info  {background:#e0f2fe;border-left:4px solid var(--ospf);color:#0f2744}
+
+.et{background:linear-gradient(135deg,#1a1a2e,#0f2744);color:#fff;border-radius:10px;padding:14px 16px;margin:14px 0;font-size:.875em;line-height:1.6}
+.et .lbl{font-size:.69em;font-weight:800;letter-spacing:1px;color:var(--ospfd);margin-bottom:6px}
+.et ul{padding-left:18px;margin-top:6px}
+.et li{margin-bottom:4px}
+
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:12px 0;border-radius:8px}
+table{width:100%;border-collapse:collapse;font-size:.875em}
+th{background:var(--ospf);color:#fff;padding:10px 12px;text-align:left;font-weight:700;font-size:.81em}
+td{padding:9px 12px;border-bottom:1px solid #e8ecf0;vertical-align:top;color:#1a1a2e}
+tr:nth-child(even) td{background:#e0f2fe;color:#0f2744}
+tr:last-child td{border-bottom:none}
+
+.steps{counter-reset:step;list-style:none;padding:0;margin:12px 0}
+.steps li{counter-increment:step;display:flex;gap:12px;align-items:flex-start;padding:10px 0;border-bottom:1px solid #eef0f3;font-size:.875em;line-height:1.6}
+.steps li:last-child{border-bottom:none}
+.steps li::before{content:counter(step);background:var(--ospf);color:#fff;border-radius:50%;min-width:26px;height:26px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.81em;flex-shrink:0;margin-top:2px}
+
+/* OSPF packet type cards */
+.pkt-grid{display:grid;gap:8px;margin:12px 0}
+.pkt-card{display:flex;gap:12px;align-items:flex-start;border-radius:10px;padding:12px 14px;border-left:5px solid}
+.pkt-card.t1{border-left-color:#27ae60;background:#f0fff4}
+.pkt-card.t2{border-left-color:var(--blue);background:#e8f4fb}
+.pkt-card.t3{border-left-color:#9333ea;background:#f3e8ff}
+.pkt-card.t4{border-left-color:#e07b00;background:#fff8f0}
+.pkt-card.t5{border-left-color:#0e7490;background:#e0f2fe}
+.pkt-card .pk-type{font-weight:900;font-size:1.125em;min-width:28px;flex-shrink:0;margin-top:2px}
+.pkt-card.t1 .pk-type{color:#1e8449}
+.pkt-card.t2 .pk-type{color:var(--dark)}
+.pkt-card.t3 .pk-type{color:#9333ea}
+.pkt-card.t4 .pk-type{color:#c87800}
+.pkt-card.t5 .pk-type{color:#0e7490}
+.pkt-card .pk-name{font-weight:800;font-size:.875em;margin-bottom:2px;color:#1a1a2e}
+.pkt-card .pk-desc{font-size:.81em;color:#1a1a2e;line-height:1.6}
+
+/* OSPF state flow */
+.state-flow{background:#0d1117;border:2px solid var(--ospfd);border-radius:10px;padding:16px;margin:14px 0}
+.sf-title{font-size:.75em;font-weight:800;letter-spacing:.8px;color:var(--ospfd);text-transform:uppercase;margin-bottom:10px}
+.state-row{display:flex;gap:10px;align-items:flex-start;padding:7px 0;border-bottom:1px solid #21262d;font-size:.81em;color:#c9d1d9;line-height:1.6}
+.state-row:last-child{border-bottom:none}
+.state-name{font-weight:800;min-width:90px;flex-shrink:0;font-size:.75em;padding:2px 6px;border-radius:4px;text-align:center;color:#fff;margin-top:2px}
+.state-row.s-down .state-name{background:#4b5563}
+.state-row.s-init .state-name{background:#b38600}
+.state-row.s-two .state-name{background:#1a3a5c}
+.state-row.s-exstart .state-name{background:#9333ea}
+.state-row.s-exchange .state-name{background:var(--blue)}
+.state-row.s-loading .state-name{background:#e07b00}
+.state-row.s-full .state-name{background:#27ae60}
+
+/* Hello field table rows */
+.match-yes td:last-child{color:#1e8449;font-weight:700}
+.match-no  td:last-child{color:var(--muted)}
+
+/* DR/BDR multicast boxes */
+.mc-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:12px 0}
+@media(max-width:480px){.mc-grid{grid-template-columns:1fr}}
+.mc-card{border-radius:10px;padding:14px;text-align:center;border:2px solid}
+.mc-card.all{border-color:var(--ospf);background:#e0f2fe}
+.mc-card.dr{border-color:#27ae60;background:#f0fff4}
+.mc-card .mc-addr{font-family:'Courier New',monospace;font-size:1em;font-weight:900;margin-bottom:4px}
+.mc-card.all .mc-addr{color:var(--ospf)}
+.mc-card.dr .mc-addr{color:#1a472a}
+.mc-card .mc-label{font-size:.69em;font-weight:700;color:var(--muted);text-transform:uppercase;margin-bottom:6px}
+.mc-card p{font-size:.75em;color:#1a1a2e;line-height:1.5}
+
+/* DB three table visual */
+.db-grid{display:grid;gap:10px;margin:12px 0}
+.db-card{border-radius:10px;padding:12px 14px;display:flex;gap:12px;align-items:flex-start;border-left:5px solid}
+.db-card.adj{border-left-color:#27ae60;background:#f0fff4}
+.db-card.lsdb{border-left-color:var(--ospf);background:#e0f2fe}
+.db-card.fwd{border-left-color:#e07b00;background:#fff8f0}
+.db-card .dc-icon{font-size:1.5em;flex-shrink:0}
+.db-card .dc-title{font-weight:800;font-size:.875em;margin-bottom:2px}
+.db-card.adj .dc-title{color:#1a472a}
+.db-card.lsdb .dc-title{color:var(--ospf)}
+.db-card.fwd .dc-title{color:#c87800}
+.db-card .dc-cmd{font-family:'Courier New',monospace;font-size:.75em;background:rgba(0,0,0,.08);border-radius:4px;padding:2px 6px;display:inline-block;margin-bottom:4px;color:#1a1a2e}
+.db-card p{font-size:.81em;color:#1a1a2e;line-height:1.6}
+
+/* Router ID 3-tier */
+.rid-grid{display:grid;gap:8px;margin:12px 0}
+.rid-row{display:flex;gap:10px;align-items:flex-start;border-radius:8px;padding:10px 12px;font-size:.81em}
+.rid-row.r1{background:#f0fff4;border-left:4px solid #27ae60}
+.rid-row.r2{background:#e0f2fe;border-left:4px solid var(--ospf)}
+.rid-row.r3{background:#fff8f0;border-left:4px solid #e07b00}
+.rid-row .rr-badge{font-weight:800;font-size:.75em;min-width:24px;flex-shrink:0;margin-top:2px}
+.rid-row.r1 .rr-badge{color:#1e8449}
+.rid-row.r2 .rr-badge{color:var(--ospf)}
+.rid-row.r3 .rr-badge{color:#c87800}
+.rid-row .rr-label{font-weight:700;margin-bottom:2px;color:#1a1a2e}
+.rid-row .rr-desc{color:var(--muted);font-size:.875em}
+
+/* Adjacency formula */
+.formula-box{background:#0d1117;border-radius:10px;padding:16px;margin:12px 0;text-align:center}
+.formula-box .fb-formula{font-family:'Courier New',monospace;font-size:1.125em;color:var(--ospfd);font-weight:700;margin-bottom:8px}
+.formula-box .fb-example{font-size:.81em;color:#8b949e}
+
+.tb{position:fixed;bottom:80px;right:16px;background:var(--ospf);color:#fff;border:none;border-radius:50%;width:44px;height:44px;font-size:1.25em;box-shadow:0 4px 14px rgba(0,0,0,.25);cursor:pointer;display:none;align-items:center;justify-content:center;z-index:100}
+.tb.show{display:flex}
+.ft{text-align:center;padding:24px 16px;color:var(--muted);font-size:.81em}
+
+.mod-nav{position:fixed;bottom:0;left:0;right:0;z-index:300;background:#1a1a2e;border-top:1px solid #30363d;display:flex;align-items:center;height:52px;padding:0 8px;gap:6px}
+.mn-hub{background:var(--blue);color:#fff;border:none;border-radius:8px;padding:6px 12px;font-size:.75em;font-weight:700;cursor:pointer;text-decoration:none;display:flex;align-items:center;gap:4px;white-space:nowrap;-webkit-tap-highlight-color:transparent;flex-shrink:0}
+.mn-hub:active{opacity:.8}
+.mn-divider{width:1px;height:28px;background:#30363d;flex-shrink:0}
+.mn-label{flex:1;text-align:center;font-size:.69em;color:#8b949e;font-weight:600;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding:0 4px}
+.mn-prev,.mn-next{background:#30363d;color:#c9d1d9;border:none;border-radius:8px;padding:6px 10px;font-size:.875em;font-weight:700;cursor:pointer;text-decoration:none;display:flex;align-items:center;-webkit-tap-highlight-color:transparent;flex-shrink:0}
+.mn-prev:active,.mn-next:active{background:var(--ospf);color:#fff}
+.mn-prev.disabled,.mn-next.disabled{opacity:.3;pointer-events:none}
+/* Study progress panel */
+.sp-wrap{background:var(--card);margin:16px 16px 0;border-radius:var(--r);box-shadow:var(--sh);overflow:hidden}
+.sp-hdr{background:var(--nt);color:#fff;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;user-select:none;-webkit-tap-highlight-color:transparent;gap:10px}
+.sp-hdr .sp-title{font-weight:700;font-size:.875em;flex-shrink:0}
+.sp-hdr .sp-arr{transition:transform .3s;flex-shrink:0}
+.sp-hdr.open .sp-arr{transform:rotate(180deg)}
+.sp-body{display:none;padding:12px 14px}
+.sp-body.open{display:block}
+.sp-row{display:flex;align-items:center;gap:10px;padding:6px 4px;border-bottom:1px solid #f0f4f8;font-size:.81em}
+.sp-row:last-child{border-bottom:none}
+.sp-row .sr-status{font-size:1em;flex-shrink:0;width:20px;text-align:center}
+.sp-row .sr-nb{font-weight:800;color:var(--nt);min-width:36px;flex-shrink:0;font-size:.875em}
+.sp-row .sr-ttl{color:var(--text);flex:1}
+.sp-row.done .sr-ttl{color:var(--muted);text-decoration:line-through}
+.sc-pills{display:flex;align-items:center;gap:4px;overflow-x:auto;-webkit-overflow-scrolling:touch;flex:1;padding:0 4px}
+.sc-pill{background:#30363d;color:#8b949e;border:2px solid transparent;border-radius:6px;padding:3px 8px;font-size:.72em;font-weight:700;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:all .15s;white-space:nowrap;flex-shrink:0;line-height:1.4;display:flex;align-items:center;gap:3px}
+.sc-pill.checked{background:var(--nt);color:#fff;border-color:var(--ntd)}
+.sc-pill .pill-check{font-size:.875em}
+
+/* v2.1 — In-section check button */
+.sh{position:relative}
+.sec-check{position:absolute;right:40px;top:50%;transform:translateY(-50%);background:rgba(255,255,255,.15);border:2px solid rgba(255,255,255,.4);border-radius:6px;padding:2px 10px;font-size:.72em;font-weight:800;color:#fff;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:all .2s;white-space:nowrap;z-index:10;line-height:1.5}
+.sec-check.checked{background:var(--ntd);border-color:var(--ntd);color:#052e1e}
+.sec-check:active{opacity:.75}
+/* Sections panel + tick colours (these pages never defined --nt/--ntd, so the panel header was invisible) */
+:root{--nt:var(--ospf);--ntd:#4ade80}
+</style>
+<style>.bc{background:#0d1117;padding:8px 16px;display:flex;align-items:center;flex-wrap:wrap;gap:4px;font-size:.75em;overflow-x:auto;white-space:nowrap;-webkit-overflow-scrolling:touch;border-bottom:1px solid #21262d}.bc a{color:#8b949e;text-decoration:none;font-weight:600;flex-shrink:0}.bc a:active{color:#c9d1d9}.bc .sep{color:#6e7681;flex-shrink:0}.bc .cur{color:#fbbf24;font-weight:700;flex-shrink:0;overflow:hidden;text-overflow:ellipsis;max-width:180px}</style>
+</head>
+<body>
+<nav class="bc"><a href="../../index.html">🏠 Home</a><span class="sep">›</span><a href="index.html">CCNA 3 — ENSA</a><span class="sep">›</span><span class="cur">M1: OSPFv2 Concepts</span></nav>
+
+<div class="fs-bar">
+  <div class="sc-pills" id="sc-pills">
+  <button class="sc-pill" id="pill-s1" onclick="toggleSection('s1',this)"><span class="pill-check">○</span>1.1</button>
+  <button class="sc-pill" id="pill-s2" onclick="toggleSection('s2',this)"><span class="pill-check">○</span>1.2</button>
+  <button class="sc-pill" id="pill-s3" onclick="toggleSection('s3',this)"><span class="pill-check">○</span>1.3</button>
+  <button class="sc-pill" id="pill-s4" onclick="toggleSection('s4',this)"><span class="pill-check">○</span>KEY</button>
+  <button class="sc-pill" id="pill-s5" onclick="toggleSection('s5',this)"><span class="pill-check">○</span>🎯</button>
+  </div>
+  <span class="fs-label" style="flex-shrink:0;margin-left:6px">Size</span>
+  <button class="fs-btn" onclick="setFs('14px',this)">S</button>
+  <button class="fs-btn active" onclick="setFs('16px',this)">M</button>
+  <button class="fs-btn" onclick="setFs('18px',this)">L</button>
+  <button class="fs-btn" onclick="setFs('20px',this)">XL</button>
+</div>
+
+<div class="hdr">
+  <div class="badge">CCNA 3 — ENSA v7.02</div>
+  <h1>🔗 Module 1: Single-Area OSPFv2 Concepts</h1>
+  <p>Enterprise Networking, Security &amp; Automation · NetAcad Study Guide</p>
+  <div class="obj">Module Objective: Explain how single-area OSPF operates in point-to-point and broadcast multiaccess networks</div>
+</div>
+
+<div class="sp-wrap">
+  <div class="sp-hdr" id="sp-hdr" onclick="toggleStudyPanel()">
+    <span class="sp-title">📚 Sections</span>
+    <span class="sp-arr" id="sp-arr">▼</span>
+  </div>
+  <div class="sp-body" id="sp-body">
+    <div class="sp-row" id="row-s1"><span class="sr-status" id="st-s1">○</span><span class="sr-nb">1.1</span><span class="sr-ttl">OSPF Features and Characteristics</span></div>
+    <div class="sp-row" id="row-s2"><span class="sr-status" id="st-s2">○</span><span class="sr-nb">1.2</span><span class="sr-ttl">OSPF Packets</span></div>
+    <div class="sp-row" id="row-s3"><span class="sr-status" id="st-s3">○</span><span class="sr-nb">1.3</span><span class="sr-ttl">OSPF Operation</span></div>
+    <div class="sp-row" id="row-s4"><span class="sr-status" id="st-s4">○</span><span class="sr-nb">KEY</span><span class="sr-ttl">Key Terms Glossary</span></div>
+    <div class="sp-row" id="row-s5"><span class="sr-status" id="st-s5">○</span><span class="sr-nb">🎯</span><span class="sr-ttl">Common Exam Traps — Module 1</span></div>
+  </div>
+</div></div>
+
+<div class="toc">
+  <div class="toch open" onclick="this.classList.toggle('open');document.getElementById('tocb').classList.toggle('open')">
+    📋 Table of Contents — Tap to expand <span class="arr">▼</span>
+  </div>
+  <div class="tocb open" id="tocb">
+    <div class="tocg">1.1 — OSPF Features and Characteristics</div>
+    <a href="javascript:void(0)" onclick="goTo('s1')"><span class="n">1.1.1</span> Introduction to OSPF</a>
+    <a href="javascript:void(0)" onclick="goTo('s1')"><span class="n">1.1.2</span> Three Components of OSPF</a>
+    <a href="javascript:void(0)" onclick="goTo('s1')"><span class="n">1.1.3</span> Five Steps to Convergence</a>
+    <a href="javascript:void(0)" onclick="goTo('s1')"><span class="n">1.1.4</span> Single-Area vs Multiarea OSPF</a>
+    <a href="javascript:void(0)" onclick="goTo('s1')"><span class="n">1.1.5</span> Multiarea OSPF Advantages</a>
+    <a href="javascript:void(0)" onclick="goTo('s1')"><span class="n">1.1.6</span> OSPFv3</a>
+    <div class="tocg">1.2 — OSPF Packets</div>
+    <a href="javascript:void(0)" onclick="goTo('s2')"><span class="n">1.2.2</span> Five OSPF Packet Types</a>
+    <a href="javascript:void(0)" onclick="goTo('s2')"><span class="n">1.2.3</span> LSU vs LSA — Know the Difference</a>
+    <a href="javascript:void(0)" onclick="goTo('s2')"><span class="n">1.2.4</span> Hello Packet Fields</a>
+    <div class="tocg">1.3 — OSPF Operation</div>
+    <a href="javascript:void(0)" onclick="goTo('s3')"><span class="n">1.3.2</span> Seven OSPF Operational States</a>
+    <a href="javascript:void(0)" onclick="goTo('s3')"><span class="n">1.3.3</span> Establish Neighbor Adjacencies</a>
+    <a href="javascript:void(0)" onclick="goTo('s3')"><span class="n">RID</span> Router ID — 3-Tier Selection</a>
+    <a href="javascript:void(0)" onclick="goTo('s3')"><span class="n">1.3.4</span> Synchronizing OSPF Databases</a>
+    <a href="javascript:void(0)" onclick="goTo('s3')"><span class="n">1.3.5</span> The Need for DR and BDR</a>
+    <a href="javascript:void(0)" onclick="goTo('s3')"><span class="n">1.3.6</span> LSA Flooding With a DR</a>
+    <div class="tocg">Reference</div>
+    <a href="javascript:void(0)" onclick="goTo('s4')"><span class="n">KEY</span> Key Terms Glossary</a>
+    <a href="javascript:void(0)" onclick="goTo('s5')"><span class="n">🎯</span> Common Exam Traps</a>
+  </div>
+</div>
+
+<div class="wrap">
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- SECTION 1.1 — OSPF FEATURES AND CHARACTERISTICS -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div class="sec" id="s1">
+<div class="sh open" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">1.1</span><span class="ttl">OSPF Features and Characteristics</span></span><button class="sec-check" id="sch-s1" onclick="event.stopPropagation();toggleSection('s1',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb open">
+
+  <div class="sub">
+  <h3><span class="sn">1.1.1</span> Introduction to OSPF</h3>
+  <p><strong>OSPF (Open Shortest Path First)</strong> is a <strong>link-state routing protocol</strong> developed as a scalable alternative to RIP. RIP used hop count as its only metric — it can't distinguish between a 1-hop 56K modem link and a 15-hop 10 Gbps fiber path. OSPF fixes this with a cost-based metric tied to bandwidth.</p>
+  <div class="tw"><table>
+    <tr><th>Feature</th><th>RIP</th><th>OSPF</th></tr>
+    <tr><td><strong>Type</strong></td><td>Distance vector</td><td>Link-state</td></tr>
+    <tr><td><strong>Metric</strong></td><td>Hop count</td><td>Cost (based on bandwidth)</td></tr>
+    <tr><td><strong>Max hops</strong></td><td>15 (16 = unreachable)</td><td>No limit</td></tr>
+    <tr><td><strong>Convergence</strong></td><td>Slow</td><td>Fast</td></tr>
+    <tr><td><strong>Scalability</strong></td><td>Small networks only</td><td>Large enterprise networks</td></tr>
+    <tr><td><strong>Algorithm</strong></td><td>Bellman-Ford</td><td>Dijkstra SPF</td></tr>
+    <tr><td><strong>Administrative Distance</strong></td><td>120</td><td>110</td></tr>
+  </table></div>
+  <div class="ca info">
+    <span class="ic">💡</span>
+    <div>A <strong>link</strong> in OSPF = an interface on a router, a segment connecting two routers, or a stub network (Ethernet LAN on a single router). <strong>Link-state information</strong> always includes three things: network prefix, prefix length, and <strong>cost</strong>.</div>
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">1.1.2</span> Three Components of OSPF</h3>
+  <p>All routing protocols share three components. OSPF implements each:</p>
+
+  <div class="db-grid">
+    <div class="db-card adj">
+      <div class="dc-icon">👥</div>
+      <div>
+        <div class="dc-title">1. Routing Protocol Messages (5 packet types)</div>
+        <p>Hello · DBD · LSR · LSU · LSAck — used to discover neighbors, exchange routing info, and maintain accuracy</p>
+      </div>
+    </div>
+    <div class="db-card lsdb">
+      <div class="dc-icon">🗄️</div>
+      <div>
+        <div class="dc-title">2. Data Structures — Three Databases</div>
+        <div class="dc-cmd">Adjacency DB → Neighbor Table (show ip ospf neighbor)</div><br>
+        <div class="dc-cmd">LSDB → Topology Table (show ip ospf database)</div><br>
+        <div class="dc-cmd">Forwarding DB → Routing Table (show ip route)</div>
+        <p>The <strong>LSDB must be identical on all routers in the same area</strong>. The routing table is unique per router.</p>
+      </div>
+    </div>
+    <div class="db-card fwd">
+      <div class="dc-icon">⚙️</div>
+      <div>
+        <div class="dc-title">3. Algorithm — Dijkstra SPF</div>
+        <p>Shortest Path First algorithm runs on the LSDB. Places each router at the root of an <strong>SPF tree</strong> and calculates the shortest (lowest cost) path to every network. Best paths populate the routing table.</p>
+      </div>
+    </div>
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">1.1.3</span> Link-State Operation — Five Steps to Convergence</h3>
+  <ol class="steps">
+    <li><strong>Establish Neighbor Adjacencies</strong> — OSPF sends Hello packets on all OSPF-enabled interfaces to discover neighbors and form adjacencies</li>
+    <li><strong>Exchange Link-State Advertisements (LSAs)</strong> — Routers share LSAs containing the state and cost of each connected link. LSAs are flooded throughout the area until all routers have all LSAs.</li>
+    <li><strong>Build the Link-State Database (LSDB)</strong> — Each router builds its topology table from the received LSAs. All routers in the area end up with an <strong>identical LSDB</strong>.</li>
+    <li><strong>Execute the SPF Algorithm</strong> — Each router independently runs the Dijkstra SPF algorithm on its LSDB, building an SPF tree with itself at the root.</li>
+    <li><strong>Choose the Best Route</strong> — Best paths from the SPF tree are installed in the routing table. A lower-AD route (e.g., static route AD=1) to the same network overrides the OSPF route (AD=110).</li>
+  </ol>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">1.1.4</span> Single-Area vs Multiarea OSPF</h3>
+  <div class="tw"><table>
+    <tr><th>Feature</th><th>Single-Area OSPF</th><th>Multiarea OSPF</th></tr>
+    <tr><td><strong>Structure</strong></td><td>All routers in one area (best practice: area 0)</td><td>Multiple areas; all must connect to area 0 (backbone)</td></tr>
+    <tr><td><strong>SPF recalculation</strong></td><td>Any topology change triggers SPF on ALL routers</td><td>Topology change triggers SPF only in affected area</td></tr>
+    <tr><td><strong>Suitable for</strong></td><td>Smaller networks — fewer routers</td><td>Large enterprise networks — many routers</td></tr>
+    <tr><td><strong>ABR</strong></td><td>Not needed</td><td>Area Border Routers connect areas to area 0</td></tr>
+    <tr><td><strong>LSDB size</strong></td><td>One large database for all routers</td><td>Smaller per-area databases; summarization possible</td></tr>
+  </table></div>
+  <div class="ca info">
+    <span class="ic">💡</span>
+    <div>This module covers <strong>single-area OSPFv2 only</strong>. Multiarea OSPF is covered in the CCNA 3 curriculum as background. The CCNA exam focuses on single-area configuration and concepts.</div>
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">1.1.5</span> Multiarea OSPF — Three Advantages</h3>
+  <p>Dividing a large OSPF domain into areas provides three key benefits:</p>
+  <ul>
+    <li><strong>Smaller routing tables</strong> — Route summarization between areas reduces the number of entries. Summarization is NOT enabled by default.</li>
+    <li><strong>Reduced link-state update overhead</strong> — Smaller areas mean less memory and processing per router. Each router only maintains a full LSDB for its own area.</li>
+    <li><strong>Reduced frequency of SPF calculations</strong> — A topology change in area 51 triggers SPF only in area 51. Routers in other areas receive an update but do NOT re-run SPF — they only update their routing table. LSA flooding stops at the area boundary (ABR).</li>
+  </ul>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">1.1.6</span> OSPFv3</h3>
+  <p>OSPFv3 is the IPv6 equivalent of OSPFv2:</p>
+  <div class="tw"><table>
+    <tr><th>Feature</th><th>OSPFv2</th><th>OSPFv3</th></tr>
+    <tr><td><strong>Network layer</strong></td><td>IPv4</td><td>IPv6</td></tr>
+    <tr><td><strong>Advertises</strong></td><td>IPv4 routes (networks)</td><td>IPv6 prefixes</td></tr>
+    <tr><td><strong>Peers with</strong></td><td>OSPFv2 routers only</td><td>OSPFv3 routers only</td></tr>
+    <tr><td><strong>Tables</strong></td><td>Separate neighbor, LSDB, routing table</td><td>Separate neighbor, LSDB, routing table (independent)</td></tr>
+    <tr><td><strong>Algorithm</strong></td><td>Dijkstra SPF</td><td>Dijkstra SPF (identical)</td></tr>
+  </table></div>
+  <div class="ca info"><span class="ic">💡</span><div>OSPFv2 and OSPFv3 run as completely <strong>separate, independent processes</strong> on the same router — separate neighbor tables, separate LSDBs, separate routing tables. Enabling OSPFv2 does NOT enable OSPFv3.</div></div>
+  </div>
+
+</div></div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- SECTION 1.2 — OSPF PACKETS -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div class="sec" id="s2">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">1.2</span><span class="ttl">OSPF Packets</span></span><button class="sec-check" id="sch-s2" onclick="event.stopPropagation();toggleSection('s2',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb">
+
+  <div class="sub">
+  <h3><span class="sn">1.2.2</span> Five OSPF Packet Types</h3>
+  <p>OSPF uses five specific link-state packet (LSP) types to build and maintain neighbor adjacencies and synchronize the LSDB:</p>
+
+  <div class="pkt-grid">
+    <div class="pkt-card t1">
+      <div class="pk-type">1</div>
+      <div>
+        <div class="pk-name">Hello</div>
+        <div class="pk-desc">Discovers OSPF neighbors · Establishes and maintains adjacencies · Elects DR/BDR on multiaccess networks · Sent to <strong>224.0.0.5</strong> (All OSPF Routers)</div>
+      </div>
+    </div>
+    <div class="pkt-card t2">
+      <div class="pk-type">2</div>
+      <div>
+        <div class="pk-name">Database Description (DBD)</div>
+        <div class="pk-desc">Abbreviated LSDB summary — contains LSA entry headers only (not full LSAs) · Used to check for database synchronization · Router with higher Router ID sends first during ExStart</div>
+      </div>
+    </div>
+    <div class="pkt-card t3">
+      <div class="pk-type">3</div>
+      <div>
+        <div class="pk-name">Link-State Request (LSR)</div>
+        <div class="pk-desc">Requests specific LSA entries from a neighbor · Sent when a router sees entries in the received DBD that it doesn't have or has an older version of</div>
+      </div>
+    </div>
+    <div class="pkt-card t4">
+      <div class="pk-type">4</div>
+      <div>
+        <div class="pk-name">Link-State Update (LSU)</div>
+        <div class="pk-desc">Carries one or more complete LSAs · Reply to LSRs · Also used for topology change announcements · Sent incrementally when topology changes, and every <strong>30 minutes</strong> as a refresh</div>
+      </div>
+    </div>
+    <div class="pkt-card t5">
+      <div class="pk-type">5</div>
+      <div>
+        <div class="pk-name">Link-State Acknowledgment (LSAck)</div>
+        <div class="pk-desc">Confirms receipt of an LSU · The data field is empty — just an ACK. Ensures reliable delivery of LSU packets.</div>
+      </div>
+    </div>
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">1.2.3</span> LSU vs LSA — Know the Difference</h3>
+  <div class="ca danger">
+    <span class="ic">🚨</span>
+    <div><strong>LSU ≠ LSA — these are frequently confused.</strong><br>
+    <strong>LSU (Link-State Update)</strong> = the packet — the envelope that carries routing information.<br>
+    <strong>LSA (Link-State Advertisement)</strong> = the content — the actual routing advertisement inside the LSU.<br>
+    One LSU can carry <strong>multiple LSAs</strong>. OSPFv2 defines 11 different types of LSAs. The exam uses these terms interchangeably in informal descriptions, but questions about packet types specifically mean LSU (Type 4).</div>
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">1.2.4</span> Hello Packet — Key Fields</h3>
+  <p>The Hello packet (Type 1) is the foundation of OSPF operation — neighbor discovery, adjacency maintenance, and DR/BDR election all depend on it. Sent to <code>224.0.0.5</code> every Hello interval.</p>
+
+  <div class="tw"><table>
+    <tr><th>Field</th><th>Default / Value</th><th>Must Match Between Neighbors?</th></tr>
+    <tr class="match-no"><td><strong>Router ID</strong></td><td>32-bit (looks like IPv4 address) — uniquely identifies the router</td><td>❌ Must be UNIQUE (not matching)</td></tr>
+    <tr class="match-no"><td><strong>Area ID</strong></td><td>Area number of the sending interface</td><td>✅ YES — must match</td></tr>
+    <tr class="match-no"><td><strong>Network Mask</strong></td><td>Subnet mask of the sending interface</td><td>✅ YES (on multiaccess networks)</td></tr>
+    <tr class="match-yes"><td><strong>Hello Interval</strong></td><td><strong>10 seconds</strong> (Ethernet default)</td><td>✅ YES — must match or no adjacency</td></tr>
+    <tr class="match-yes"><td><strong>Dead Interval</strong></td><td><strong>40 seconds</strong> (4 × Hello interval)</td><td>✅ YES — must match or no adjacency</td></tr>
+    <tr class="match-no"><td><strong>Router Priority</strong></td><td><strong>1</strong> (default); range 0–255; 0 = never DR/BDR</td><td>❌ Each router has its own value</td></tr>
+    <tr class="match-no"><td><strong>DR / BDR</strong></td><td>Router IDs of current DR and BDR on this link</td><td>❌ Informational only</td></tr>
+    <tr class="match-no"><td><strong>List of Neighbors</strong></td><td>Router IDs seen on this interface</td><td>❌ Informational only</td></tr>
+  </table></div>
+
+  <div class="et">
+    <div class="lbl">🎯 ADJACENCY FORMATION REQUIREMENTS</div>
+    For two OSPF routers to form an adjacency, these parameters MUST match on the connecting interfaces:<br><br>
+    ✅ <strong>Hello interval</strong> (default: 10 sec on Ethernet)<br>
+    ✅ <strong>Dead interval</strong> (default: 40 sec = 4 × Hello)<br>
+    ✅ <strong>Area ID</strong><br>
+    ✅ <strong>Subnet/Network mask</strong> (on multiaccess networks)<br>
+    ✅ <strong>Authentication</strong> (if configured)<br>
+    ✅ <strong>Stub area flag</strong><br><br>
+    Mismatched Hello/Dead timers = most common OSPF adjacency failure. No error message is shown — routers simply never form an adjacency.
+  </div>
+  </div>
+
+</div></div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- SECTION 1.3 — OSPF OPERATION -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div class="sec" id="s3">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">1.3</span><span class="ttl">OSPF Operation</span></span><button class="sec-check" id="sch-s3" onclick="event.stopPropagation();toggleSection('s3',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb">
+
+  <div class="sub">
+  <h3><span class="sn">1.3.2</span> Seven OSPF Operational States</h3>
+  <p>OSPF progresses through seven states from initial startup to full convergence. The <strong>Full state</strong> is the goal:</p>
+
+  <div class="state-flow">
+    <div class="sf-title">📶 OSPF State Machine — Down to Full</div>
+    <div class="state-row s-down"><div class="state-name">DOWN</div><div>No Hello packets received. Router begins sending Hellos on OSPF-enabled interfaces to discover neighbors.</div></div>
+    <div class="state-row s-init"><div class="state-name">INIT</div><div>Hello received from neighbor. Contains the neighbor's Router ID. Router adds neighbor to its neighbor list.</div></div>
+    <div class="state-row s-two"><div class="state-name">TWO-WAY</div><div>Router sees its own Router ID in a received Hello's neighbor list — bidirectional communication confirmed. <strong>DR/BDR election happens here</strong> on multiaccess networks. P2P links skip to ExStart.</div></div>
+    <div class="state-row s-exstart"><div class="state-name">EXSTART</div><div>Routers negotiate which one sends the first DBD packet. Router with the <strong>higher Router ID sends first</strong>. Initial DBD sequence number is set.</div></div>
+    <div class="state-row s-exchange"><div class="state-name">EXCHANGE</div><div>Routers exchange DBD packets (abbreviated LSDB summaries — LSA headers only). Each acknowledges with LSAck. Routers compare DBDs against their own LSDB.</div></div>
+    <div class="state-row s-loading"><div class="state-name">LOADING</div><div>Router sends LSR for any entries it needs (missing or outdated). Neighbor replies with full LSU. Receiving router sends LSAck. SPF algorithm begins processing received data.</div></div>
+    <div class="state-row s-full"><div class="state-name">FULL ✅</div><div>LSDB is fully synchronized. Neighbor relationship is complete. Routing table is updated. <strong>This is convergence.</strong> LSUs are only sent on topology changes or every 30 minutes.</div></div>
+  </div>
+
+  <div class="ca danger">
+    <span class="ic">🚨</span>
+    <div><strong>If neighbors are stuck in a state other than Full — there is a problem.</strong> Common causes: Hello/Dead timer mismatch, area ID mismatch, authentication mismatch, MTU mismatch (stuck in Exchange/Loading), duplicate Router ID.</div>
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">1.3.3</span> Establish Neighbor Adjacencies — Step by Step</h3>
+  <ol class="steps">
+    <li><strong>Down → Init:</strong> OSPF enabled on interface. Router sends Hello to <code>224.0.0.5</code> containing its own Router ID. No neighbors known yet.</li>
+    <li><strong>Init State:</strong> Neighbor receives Hello, adds sender's Router ID to its neighbor list, sends Hello back with: its own Router ID + sender's Router ID in its neighbor list.</li>
+    <li><strong>Two-Way State:</strong> Original router receives Hello and sees its own Router ID listed in the neighbor's Hello. Seeing your own RID in a received Hello = Two-Way state. Decision point:
+      <ul>
+        <li><strong>Point-to-point link</strong> → skip DR/BDR, proceed directly to ExStart</li>
+        <li><strong>Multiaccess network (Ethernet)</strong> → DR/BDR election must occur</li>
+      </ul>
+    </li>
+    <li><strong>DR/BDR Election (multiaccess only):</strong> Highest Router Priority wins. Tie = highest Router ID wins. Default priority = 1 for all routers. Priority 0 = never becomes DR or BDR (always DROTHER).</li>
+  </ol>
+
+  <h4>Router ID — 3-Tier Selection (Cisco)</h4>
+  <div class="rid-grid">
+    <div class="rid-row r1">
+      <div class="rr-badge">① Best</div>
+      <div><div class="rr-label">Manually configured using <code>router-id x.x.x.x</code></div><div class="rr-desc">Always preferred. Cisco best practice — always configure this for easy identification in troubleshooting. Takes effect after <code>clear ip ospf process</code>.</div></div>
+    </div>
+    <div class="rid-row r2">
+      <div class="rr-badge">② Alt</div>
+      <div><div class="rr-label">Highest IPv4 address on a loopback interface</div><div class="rr-desc">Used if no manual Router ID is configured. Loopback interfaces never go down, so this provides a stable RID.</div></div>
+    </div>
+    <div class="rid-row r3">
+      <div class="rr-badge">③ Last</div>
+      <div><div class="rr-label">Highest active physical interface IPv4 address</div><div class="rr-desc">Last resort if no manual RID and no loopbacks. Risk: if the highest-IP interface goes down, the RID could change — disrupting the OSPF process.</div></div>
+    </div>
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">1.3.4</span> Synchronizing OSPF Databases — Three Steps</h3>
+  <p>After Two-Way state, routers synchronize their LSDBs:</p>
+  <ol class="steps">
+    <li><strong>Decide First Router (ExStart):</strong> Router with the <strong>higher Router ID</strong> sends the first DBD packet. Both agree on the initial DBD sequence number.</li>
+    <li><strong>Exchange DBDs (Exchange state):</strong> Routers exchange DBD packets — abbreviated LSDB summaries with LSA headers only (not full LSAs). Each router acknowledges received DBDs with LSAck. Routers compare received DBDs against their own LSDB. Sequence numbers in LSA headers determine which entry is newer.</li>
+    <li><strong>Send LSR (Loading state):</strong> If a router finds entries it needs (missing or older versions) → sends <strong>LSR</strong> for those specific entries → neighbor replies with full <strong>LSU</strong> → router sends <strong>LSAck</strong> → process repeats until all LSRs satisfied → <strong>Full state</strong> achieved.</li>
+  </ol>
+  <div class="ca tip">
+    <span class="ic">✅</span>
+    <div>After Full state: LSUs are only sent when a <strong>topology change</strong> is detected (incremental updates) or every <strong>30 minutes</strong> (periodic refresh). OSPF does not continuously flood routing updates like distance vector protocols.</div>
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">1.3.5</span> The Need for a DR — The Adjacency Problem</h3>
+  <p>On a multiaccess Ethernet network with multiple OSPF routers, full adjacencies with every neighbor creates an explosion of LSAs:</p>
+
+  <div class="formula-box">
+    <div class="fb-formula">Adjacencies = n(n-1) ÷ 2</div>
+    <div class="fb-example">
+      5 routers: 5(4)/2 = <strong>10 adjacencies</strong><br>
+      20 routers: 20(19)/2 = <strong>190 adjacencies</strong><br>
+      Each adjacency = more LSA flooding = network chaos
+    </div>
+  </div>
+
+  <p>Two problems arise without a DR:</p>
+  <ul>
+    <li><strong>Creation of multiple adjacencies</strong> — every router forming Full adjacency with every other router creates n(n-1)/2 relationships</li>
+    <li><strong>Excessive LSA flooding</strong> — every router floods LSAs to every other router, then each of those re-floods — creating redundant, exponential traffic</li>
+  </ul>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">1.3.6</span> LSA Flooding With a DR — The Solution</h3>
+  <p>On multiaccess networks, OSPF elects a <strong>DR (Designated Router)</strong> as the central collection and distribution point for all LSAs:</p>
+
+  <div class="tw"><table>
+    <tr><th>Role</th><th>Description</th><th>Adjacencies</th></tr>
+    <tr><td><strong>DR</strong></td><td>Central LSA collection and distribution point. Floods LSAs to all routers via 224.0.0.5.</td><td>Full adjacency with ALL routers on segment</td></tr>
+    <tr><td><strong>BDR</strong></td><td>Backup — takes over immediately if the DR fails. Also listens to all LSAs.</td><td>Full adjacency with ALL routers on segment</td></tr>
+    <tr><td><strong>DROTHER</strong></td><td>All other routers — neither DR nor BDR. Send LSAs to DR/BDR only.</td><td>Full adjacency with DR and BDR only; Two-Way with other DROTHERs</td></tr>
+  </table></div>
+
+  <h4>Multicast Addresses Used</h4>
+  <div class="mc-grid">
+    <div class="mc-card all">
+      <div class="mc-label">All OSPF Routers</div>
+      <div class="mc-addr">224.0.0.5</div>
+      <p>Used for: Hello packets (all routers), DR flooding LSAs to all routers. All OSPF routers process packets to this address.</p>
+    </div>
+    <div class="mc-card dr">
+      <div class="mc-label">All DR Routers</div>
+      <div class="mc-addr">224.0.0.6</div>
+      <p>Used by DROTHERs to send LSAs — only the DR and BDR process packets to this address. DROTHERs use 224.0.0.6 to reach the DR/BDR.</p>
+    </div>
+  </div>
+
+  <div class="ca warn">
+    <span class="ic">⚠️</span>
+    <div><strong>The DR only manages LSA distribution — it does NOT forward user data packets.</strong> Routers still use the best next-hop in their routing table for actual packet forwarding. The DR election determines who manages OSPF topology information, not who forwards traffic.</div>
+  </div>
+
+  <div class="ca tip">
+    <span class="ic">✅</span>
+    <div><strong>No DR/BDR on point-to-point links.</strong> Serial (P2P) links have only two routers — no need for centralized LSA management. Both routers form a Full adjacency directly with each other, skipping the DR/BDR election step entirely.</div>
+  </div>
+  </div>
+
+</div></div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- SECTION 1.4 — KEY TERMS -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div class="sec" id="s4">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">KEY</span><span class="ttl">Key Terms Glossary</span></span><button class="sec-check" id="sch-s4" onclick="event.stopPropagation();toggleSection('s4',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb">
+  <div class="sub">
+  <div class="tw"><table>
+    <tr><th>Term</th><th>Definition</th></tr>
+    <tr><td><strong>OSPF</strong></td><td>Open Shortest Path First — link-state routing protocol. AD=110.</td></tr>
+    <tr><td><strong>Link-state</strong></td><td>Information about a link: network prefix, prefix length, and cost</td></tr>
+    <tr><td><strong>LSDB</strong></td><td>Link-State Database — the topology table. Must be identical on all routers in an area.</td></tr>
+    <tr><td><strong>LSA</strong></td><td>Link-State Advertisement — the routing information content (inside an LSU)</td></tr>
+    <tr><td><strong>LSU</strong></td><td>Link-State Update — the packet (Type 4) that carries one or more LSAs</td></tr>
+    <tr><td><strong>SPF algorithm</strong></td><td>Dijkstra's Shortest Path First — calculates best path using cumulative cost</td></tr>
+    <tr><td><strong>Cost</strong></td><td>OSPF metric — based on bandwidth. Reference bandwidth ÷ interface bandwidth. Lower = preferred.</td></tr>
+    <tr><td><strong>Router ID</strong></td><td>32-bit number (IPv4 format) — uniquely identifies a router in OSPF. Best practice: manually configure.</td></tr>
+    <tr><td><strong>Area</strong></td><td>Group of routers sharing the same LSDB</td></tr>
+    <tr><td><strong>Area 0</strong></td><td>Backbone area — all areas in multiarea OSPF must connect here</td></tr>
+    <tr><td><strong>ABR</strong></td><td>Area Border Router — connects multiple OSPF areas to area 0</td></tr>
+    <tr><td><strong>DR</strong></td><td>Designated Router — central LSA collection/distribution point on multiaccess networks</td></tr>
+    <tr><td><strong>BDR</strong></td><td>Backup Designated Router — takes over if DR fails</td></tr>
+    <tr><td><strong>DROTHER</strong></td><td>Router on multiaccess network that is neither DR nor BDR</td></tr>
+    <tr><td><strong>224.0.0.5</strong></td><td>All OSPF Routers multicast — Hellos; DR floods LSAs here</td></tr>
+    <tr><td><strong>224.0.0.6</strong></td><td>All DR Routers multicast — DROTHERs send LSAs here (DR and BDR process)</td></tr>
+    <tr><td><strong>Hello interval</strong></td><td>Default 10 sec (Ethernet); must match between neighbors</td></tr>
+    <tr><td><strong>Dead interval</strong></td><td>Default 40 sec (4× Hello); must match between neighbors</td></tr>
+    <tr><td><strong>Full state</strong></td><td>LSDB fully synchronized — convergence achieved</td></tr>
+    <tr><td><strong>OSPFv3</strong></td><td>OSPF for IPv6 — separate process, separate tables from OSPFv2</td></tr>
+  </table></div>
+  </div>
+</div></div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- SECTION 1.5 — EXAM TRAPS -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div class="sec" id="s5">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">🎯</span><span class="ttl">Common Exam Traps — Module 1</span></span><button class="sec-check" id="sch-s5" onclick="event.stopPropagation();toggleSection('s5',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb">
+
+  <div class="ca danger"><span class="ic">❌</span><div><strong>Trap 1: OSPF is link-state — NOT distance vector.</strong><br>RIP = distance vector (hop count, Bellman-Ford, AD=120). OSPF = link-state (cost/bandwidth, Dijkstra SPF, AD=110). Know the distinction — it is directly tested.</div></div>
+
+  <div class="ca danger"><span class="ic">❌</span><div><strong>Trap 2: All routers in the same OSPF area MUST have identical LSDBs.</strong><br>The LSDB (topology table) is shared and synchronized across all routers in an area. The routing table is unique per router — built individually from the LSDB using SPF. These are different things.</div></div>
+
+  <div class="ca danger"><span class="ic">❌</span><div><strong>Trap 3: Hello interval AND Dead interval MUST match between neighbors.</strong><br>Mismatched timers = no adjacency formed, with no helpful error message. Default: Hello = 10 sec, Dead = 40 sec (4 × Hello). This is the most common OSPF misconfiguration tested on the exam.</div></div>
+
+  <div class="ca danger"><span class="ic">❌</span><div><strong>Trap 4: LSU ≠ LSA.</strong><br>LSU (Type 4) = the packet/container. LSA = the routing advertisement content inside the LSU. One LSU can carry multiple LSAs. OSPFv2 defines 11 LSA types. When the exam asks about OSPF packet types — the answer is LSU (not LSA).</div></div>
+
+  <div class="ca danger"><span class="ic">❌</span><div><strong>Trap 5: Router ID selection — manual router-id is always first choice.</strong><br>Three-tier: ① manual router-id command ② highest loopback IP ③ highest active physical interface IP. Cisco best practice = always manually configure with <code>router-id</code>. Changes require <code>clear ip ospf process</code> to take effect.</div></div>
+
+  <div class="ca danger"><span class="ic">❌</span><div><strong>Trap 6: DR/BDR election — priority first, then Router ID.</strong><br>Highest priority wins (default=1). Ties broken by highest Router ID. Priority 0 = router can never become DR or BDR (DROTHER always). Know the election order.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 7: DR is per segment — not per router or per OSPF domain.</strong><br>A router can be DR on one interface and DROTHER on another. The election happens per multiaccess network segment (per interface), not globally for the entire OSPF area.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 8: No DR/BDR election on point-to-point links.</strong><br>Serial (P2P) links have only two routers — no need for centralized LSA management. DR/BDR only happens on multiaccess networks like Ethernet. On P2P links, both routers form Full adjacency directly and skip the Two-Way → DR election step.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 9: DROTHERs form Full adjacency ONLY with DR and BDR — not each other.</strong><br>On a multiaccess network, DROTHERs reach only Two-Way state with each other. They only achieve Full adjacency with the DR and BDR. This reduces the total number of Full adjacencies needed on the segment.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 10: 224.0.0.5 vs 224.0.0.6.</strong><br>224.0.0.5 = All OSPF Routers — Hellos; DR floods LSAs here to all. 224.0.0.6 = All DR Routers — DROTHERs send their LSAs here; only DR and BDR process it. Both addresses are exam-tested.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 11: The DR manages LSA distribution only — NOT packet forwarding.</strong><br>The DR election determines who distributes OSPF routing information. Routers still forward actual user data packets using the best next-hop in their own routing table. The DR does not handle user traffic.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 12: Multiarea OSPF — topology change only reruns SPF in the affected area.</strong><br>A link change in area 51 triggers SPF recalculation only in area 51. Routers in other areas receive an LSA update but only update their routing table — they do NOT re-run SPF. LSA flooding stops at the ABR (area boundary).</div></div>
+
+  <div class="ca tip"><span class="ic">✅</span><div><strong>Module 1 quick-reference summary:</strong><br><br>
+  OSPF type: <strong>link-state</strong> · AD: <strong>110</strong> · Metric: <strong>cost (bandwidth)</strong> · Algorithm: <strong>Dijkstra SPF</strong><br>
+  Five packet types: <strong>Hello(1) · DBD(2) · LSR(3) · LSU(4) · LSAck(5)</strong><br>
+  Seven states: <strong>Down→Init→Two-Way→ExStart→Exchange→Loading→Full</strong><br>
+  Hello default: <strong>10 sec</strong> · Dead default: <strong>40 sec</strong> · Both must match<br>
+  Router ID priority: <strong>manual > loopback > physical interface</strong><br>
+  DR election: <strong>highest priority → ties: highest Router ID</strong><br>
+  Priority 0 = <strong>never DR/BDR</strong> · Default priority = <strong>1</strong><br>
+  DR only on: <strong>multiaccess (Ethernet)</strong> — NOT on P2P serial links<br>
+  DROTHERs: Full adjacency with <strong>DR and BDR only</strong><br>
+  Multicast: <strong>224.0.0.5</strong> = all routers · <strong>224.0.0.6</strong> = DR/BDR only<br>
+  LSU refresh: topology changes + every <strong>30 minutes</strong></div></div>
+
+</div></div>
+
+</div><!-- end .wrap -->
+
+<div class="ft">
+  CCNA 3 ENSA v7.02 — Module 1: Single-Area OSPFv2 Concepts v2.2<br>
+  Based on Cisco NetAcad curriculum · Study guide for personal use
+</div>
+
+<button class="tb" id="topb" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+
+<div class="mod-nav">
+  <a class="mn-hub" href="index.html">🏠 Hub</a>
+  <div class="mn-divider"></div>
+  <a class="mn-prev disabled">‹</a>
+  <span class="mn-label">M1 of 14</span>
+  <a class="mn-next" href="ccna3_module2_singlearea_ospfv2_configuration_v2.2.html">›</a>
+</div>
+
+<script>
+var MOD_KEY="ccna3-module1-singlearea-ospfv2-concepts";
+var SECS=["s1","s2","s3","s4","s5"];
+var checked={};
+function loadState(){
+  try{var s=localStorage.getItem(MOD_KEY);if(s)checked=JSON.parse(s);}catch(e){}
+  SECS.forEach(function(id){
+    var pill=document.getElementById('pill-'+id);
+    var row=document.getElementById('row-'+id);
+    var st=document.getElementById('st-'+id);
+    var sch=document.getElementById('sch-'+id);
+    if(checked[id]){
+      if(pill){pill.classList.add('checked');pill.querySelector('.pill-check').textContent='✓';}
+      if(row)row.classList.add('done');
+      if(st)st.textContent='✓';
+      if(sch){sch.classList.add('checked');sch.textContent='✓ Done';}
+    } else {
+      if(pill){pill.classList.remove('checked');pill.querySelector('.pill-check').textContent='○';}
+      if(row)row.classList.remove('done');
+      if(st)st.textContent='○';
+      if(sch){sch.classList.remove('checked');sch.textContent='○ Mark done';}
+    }
+  });
+}
+function toggleSection(id,btn){checked[id]=!checked[id];try{localStorage.setItem(MOD_KEY,JSON.stringify(checked));}catch(e){}loadState();}
+function toggleStudyPanel(){
+  var hdr=document.getElementById('sp-hdr');
+  var body=document.getElementById('sp-body');
+  var arr=document.getElementById('sp-arr');
+  hdr.classList.toggle('open');body.classList.toggle('open');
+  if(arr)arr.textContent=body.classList.contains('open')?'▲':'▼';
+}
+function goTo(id){var el=document.getElementById(id);if(!el)return;var h=el.querySelector('.sh,.section-header'),b=el.querySelector('.sb,.section-body');if(h&&b&&!b.classList.contains('open')){h.classList.add('open');b.classList.add('open');}setTimeout(function(){window.scrollTo({top:el.getBoundingClientRect().top+window.pageYOffset-60,behavior:'smooth'});},50);}
+function setFs(size,btn){document.documentElement.style.setProperty('--base-fs',size);document.querySelectorAll('.fs-btn').forEach(function(b){b.classList.remove('active');});btn.classList.add('active');try{localStorage.setItem('ccna-fs',size);}catch(e){}}
+(function(){try{var s=localStorage.getItem('ccna-fs');if(s){document.documentElement.style.setProperty('--base-fs',s);document.querySelectorAll('.fs-btn').forEach(function(b){b.classList.remove('active');if((b.textContent==='S'&&s==='14px')||(b.textContent==='M'&&s==='16px')||(b.textContent==='L'&&s==='18px')||(b.textContent==='XL'&&s==='20px'))b.classList.add('active');});}}catch(e){}loadState();})();
+function copyCode(b){var t=b.closest('.cw').querySelector('pre').innerText;if(navigator.clipboard){navigator.clipboard.writeText(t).then(function(){b.textContent='Copied!';setTimeout(function(){b.textContent='Copy';},1500);}).catch(function(){fb(t,b);});}else{fb(t,b);}}
+function fb(t,b){var a=document.createElement('textarea');a.value=t;a.style.position='fixed';a.style.opacity='0';document.body.appendChild(a);a.focus();a.select();document.execCommand('copy');document.body.removeChild(a);b.textContent='Copied!';setTimeout(function(){b.textContent='Copy';},1500);}
+</script>
+<script src="../../site-config.js"></script>
+</body>
+</html>

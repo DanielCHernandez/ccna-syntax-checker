@@ -1,0 +1,693 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=2.0">
+<title>CCNA 1 Module 7: Ethernet Switching v2.2</title>
+<style>
+:root{
+  --nt:#0a6e4e;--ntd:#4ade80;--nt2:#052e1e;--nt3:#021710;
+  --bg:#f4f6f8;--card:#fff;--text:#1a1a2e;--muted:#5a6a7a;
+  --cbg:#0d1117;--ctxt:#c9d1d9;--r:12px;--sh:0 2px 12px rgba(0,0,0,.08);
+  --base-fs:20px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);font-size:var(--base-fs);line-height:1.7}
+.bc{background:#0d1117;padding:8px 16px;display:flex;align-items:center;flex-wrap:wrap;gap:4px;font-size:.75em;overflow-x:auto;white-space:nowrap;-webkit-overflow-scrolling:touch;border-bottom:1px solid #21262d}
+.bc a{color:#8b949e;text-decoration:none;font-weight:600;flex-shrink:0}
+.bc .sep{color:#6e7681;flex-shrink:0}
+.bc .cur{color:var(--ntd);font-weight:700;flex-shrink:0}
+.fs-bar{position:sticky;top:0;z-index:200;background:#1a1a2e;display:flex;align-items:center;justify-content:flex-end;padding:6px 14px;gap:6px;box-shadow:0 2px 8px rgba(0,0,0,.3)}
+.fs-label{color:#8b949e;font-size:.72em;font-weight:700;letter-spacing:.5px;text-transform:uppercase;margin-right:4px}
+.fs-btn{background:#30363d;color:#c9d1d9;border:2px solid transparent;border-radius:6px;padding:4px 12px;font-size:.75em;font-weight:700;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:all .2s;line-height:1.4}
+.fs-btn:active,.fs-btn.active{background:var(--nt);color:#fff;border-color:var(--ntd)}
+.hdr{background:linear-gradient(135deg,var(--nt3),var(--nt2),var(--nt));color:#fff;padding:32px 20px 24px;text-align:center}
+.hdr .badge{display:inline-block;background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.4);border-radius:20px;padding:4px 14px;font-size:.81em;margin-bottom:12px}
+.hdr h1{font-size:1.5em;font-weight:700;margin-bottom:6px}
+.hdr p{font-size:.94em;opacity:.85}
+.hdr .obj{display:inline-block;background:rgba(255,255,255,.15);border-radius:8px;padding:7px 16px;margin-top:12px;font-size:.875em;font-style:italic}
+/* Study progress panel */
+.sp-wrap{background:var(--card);margin:16px 16px 0;border-radius:var(--r);box-shadow:var(--sh);overflow:hidden}
+.sp-hdr{background:var(--nt);color:#fff;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;user-select:none;-webkit-tap-highlight-color:transparent;gap:10px}
+.sp-hdr .sp-title{font-weight:700;font-size:.875em;flex-shrink:0}
+.sp-hdr .sp-arr{transition:transform .3s;flex-shrink:0}
+.sp-hdr.open .sp-arr{transform:rotate(180deg)}
+.sp-body{display:none;padding:12px 14px}
+.sp-body.open{display:block}
+.sp-row{display:flex;align-items:center;gap:10px;padding:6px 4px;border-bottom:1px solid #f0f4f8;font-size:.81em}
+.sp-row:last-child{border-bottom:none}
+.sp-row .sr-status{font-size:1em;flex-shrink:0;width:20px;text-align:center}
+.sp-row .sr-nb{font-weight:800;color:var(--nt);min-width:36px;flex-shrink:0;font-size:.875em}
+.sp-row .sr-ttl{color:var(--text);flex:1}
+.sp-row.done .sr-ttl{color:var(--muted);text-decoration:line-through}
+/* Section check pills in fs-bar */
+.sc-pills{display:flex;align-items:center;gap:4px;overflow-x:auto;-webkit-overflow-scrolling:touch;flex:1;padding:0 4px}
+.sc-pill{background:#30363d;color:#8b949e;border:2px solid transparent;border-radius:6px;padding:3px 8px;font-size:.72em;font-weight:700;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:all .15s;white-space:nowrap;flex-shrink:0;line-height:1.4;display:flex;align-items:center;gap:3px}
+.sc-pill.checked{background:var(--nt);color:#fff;border-color:var(--ntd)}
+.sc-pill .pill-check{font-size:.875em}
+.toc{background:var(--card);margin:16px;border-radius:var(--r);box-shadow:var(--sh);overflow:hidden}
+.toch{background:var(--nt);color:#fff;padding:14px 18px;font-weight:700;font-size:.94em;display:flex;justify-content:space-between;align-items:center;cursor:pointer;user-select:none}
+.toch .arr{transition:transform .3s}
+.toch.open .arr{transform:rotate(180deg)}
+.tocb{display:none;padding:10px 0}
+.tocb.open{display:block}
+.tocg{font-size:.69em;font-weight:800;letter-spacing:.8px;color:var(--nt);text-transform:uppercase;padding:8px 20px 2px}
+.tocb a{display:block;padding:9px 20px 9px 28px;color:var(--text);text-decoration:none;font-size:.875em;border-left:3px solid transparent;transition:all .2s}
+.tocb a:active{background:#f0fdf4;border-left-color:var(--ntd)}
+.tocb a .n{display:inline-block;background:var(--nt);color:#fff;border-radius:5px;padding:1px 8px;font-size:.75em;font-weight:700;margin-right:8px}
+.wrap{padding:0 16px 100px}
+.sec{background:var(--card);border-radius:var(--r);box-shadow:var(--sh);margin-bottom:16px;overflow:hidden}
+.sh{background:linear-gradient(90deg,var(--nt3),var(--nt));color:#fff;padding:16px 18px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;user-select:none;-webkit-tap-highlight-color:transparent}
+.sh .ttl{font-weight:700;font-size:1em}
+.sh .nb{background:rgba(255,255,255,.25);border-radius:6px;padding:3px 10px;font-size:.81em;font-weight:700;margin-right:10px;white-space:nowrap}
+.sh .ch{font-size:1.125em;transition:transform .3s}
+.sh.open .ch{transform:rotate(180deg)}
+.sb{display:none;padding:18px}
+.sb.open{display:block}
+.sub{margin-bottom:24px}
+.sub:last-child{margin-bottom:0}
+.sub h3{font-size:.94em;font-weight:700;color:var(--nt);margin-bottom:10px;padding-bottom:6px;border-bottom:2px solid #f0fdf4;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.sub h3 .sn{background:var(--nt);color:#fff;border-radius:5px;padding:2px 8px;font-size:.75em;white-space:nowrap}
+.sub h4{font-size:.875em;font-weight:700;color:var(--nt);margin:14px 0 6px}
+.sub p{margin-bottom:10px;font-size:.94em}
+.sub ul,.sub ol{padding-left:20px;margin:8px 0;font-size:.94em}
+.sub li{margin-bottom:5px}
+.ca{border-radius:8px;padding:12px 14px;margin:12px 0;font-size:.875em;line-height:1.6;display:flex;gap:10px;align-items:flex-start}
+.ca .ic{font-size:1.125em;flex-shrink:0;margin-top:1px}
+.ca.warn  {background:#fff3cd;border-left:4px solid #b38600;color:#3d2c00}
+.ca.tip   {background:#d4edda;border-left:4px solid #28a745;color:#0d3318}
+.ca.danger{background:#f8d7da;border-left:4px solid #dc3545;color:#3d0010}
+.ca.info  {background:#f0fdf4;border-left:4px solid var(--nt);color:#052e1e}
+.ca code{color:inherit!important;background:rgba(0,0,0,.1)!important;border:1px solid rgba(0,0,0,.15)}
+.et{background:linear-gradient(135deg,#1a1a2e,var(--nt3));color:#fff;border-radius:10px;padding:14px 16px;margin:14px 0;font-size:.875em;line-height:1.6}
+.et .lbl{font-size:.69em;font-weight:800;letter-spacing:1px;color:var(--ntd);margin-bottom:6px}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:12px 0;border-radius:8px}
+table{width:100%;border-collapse:collapse;font-size:.875em}
+th{background:var(--nt);color:#fff;padding:10px 12px;text-align:left;font-weight:700;font-size:.81em}
+td{padding:9px 12px;border-bottom:1px solid #e8ecf0;vertical-align:top;color:#1a1a2e}
+tr:nth-child(even) td{background:#f0fdf4;color:#052e1e}
+tr:last-child td{border-bottom:none}
+p code,li code,td code,.ca code{background:#f0fdf4;color:#052e1e;border-radius:4px;padding:1px 5px;font-size:.81em;font-family:'Courier New',monospace;font-weight:600}
+
+/* Ethernet frame visual */
+.eth-frame{display:grid;gap:2px;margin:12px 0;border-radius:8px;overflow:hidden}
+.eth-field{padding:9px 12px;font-size:.75em;display:flex;justify-content:space-between;align-items:center;font-weight:700}
+.eth-field .ef-name{color:#fff}
+.eth-field .ef-size{background:rgba(255,255,255,.25);border-radius:4px;padding:2px 8px;font-family:'Courier New',monospace;font-size:.875em;color:#fff;white-space:nowrap}
+.eth-field .ef-note{color:rgba(255,255,255,.75);font-size:.875em;font-weight:400;margin-left:8px}
+.ef-pre  {background:#374151}
+.ef-sfd  {background:#4b5563}
+.ef-dst  {background:#1a3a5c}
+.ef-src  {background:#1e4d85}
+.ef-type {background:#5c3d00}
+.ef-data {background:var(--nt)}
+.ef-fcs  {background:#7c1e1e}
+
+/* MAC address types */
+.mac-grid{display:grid;gap:8px;margin:12px 0}
+.mac-card{border-radius:8px;padding:11px 14px;font-size:.81em;border-left:5px solid;line-height:1.6}
+.mac-card.uni{border-left-color:#1a3a5c;background:#e0f2fe}
+.mac-card.bro{border-left-color:#b38600;background:#fffbeb}
+.mac-card.mul{border-left-color:#7b2d8b;background:#f3e8ff}
+.mac-card .mc-name{font-weight:800;margin-bottom:3px}
+.mac-card.uni .mc-name{color:#1a3a5c}
+.mac-card.bro .mc-name{color:#b38600}
+.mac-card.mul .mc-name{color:#7b2d8b}
+
+/* MAC address structure */
+.mac-struct{background:#0d1117;border-radius:10px;padding:14px;margin:12px 0}
+.mac-struct .ms-title{color:var(--ntd);font-size:.69em;font-weight:800;letter-spacing:.8px;text-transform:uppercase;margin-bottom:10px}
+.mac-visual{display:grid;grid-template-columns:1fr 1fr;gap:4px}
+.mac-half{border-radius:6px;padding:10px 12px;text-align:center;font-family:'Courier New',monospace;font-size:.81em}
+.mac-half.oui{background:#1a3a5c;color:#fff}
+.mac-half.vendor{background:var(--nt);color:#fff}
+.mac-half .mh-label{font-size:.69em;font-weight:800;opacity:.75;text-transform:uppercase;margin-bottom:4px}
+.mac-half .mh-val{font-size:1em;font-weight:900;letter-spacing:1px}
+.mac-half .mh-sub{font-size:.75em;opacity:.75;margin-top:3px}
+
+/* Switch learning diagram */
+.sw-diagram{background:#0d1117;border-radius:10px;padding:14px;margin:12px 0}
+.sw-diagram .sd-title{color:var(--ntd);font-size:.69em;font-weight:800;letter-spacing:.8px;text-transform:uppercase;margin-bottom:10px}
+.sw-step{display:flex;gap:10px;align-items:flex-start;margin-bottom:10px;font-size:.81em}
+.sw-step .ss-num{background:var(--nt);color:#fff;border-radius:50%;width:24px;height:24px;display:flex;align-items:center;justify-content:center;font-weight:800;flex-shrink:0;font-size:.875em}
+.sw-step .ss-text{color:#c9d1d9;line-height:1.6;flex:1}
+.sw-step .ss-text strong{color:var(--ntd)}
+
+/* MAC table visual */
+.mac-table-box{background:#161b22;border-radius:8px;overflow:hidden;margin:12px 0}
+.mt-header{background:#21262d;color:#8b949e;display:grid;grid-template-columns:1fr 1fr;font-size:.69em;font-weight:800;letter-spacing:.5px;text-transform:uppercase;padding:6px 12px}
+.mt-row{display:grid;grid-template-columns:1fr 1fr;padding:7px 12px;border-top:1px solid #21262d;font-family:'Courier New',monospace;font-size:.75em}
+.mt-row .mt-mac{color:#fbbf24;font-weight:700}
+.mt-row .mt-port{color:#4ade80;font-weight:700}
+.mt-empty{padding:12px;text-align:center;color:#8b949e;font-size:.81em;font-style:italic}
+
+/* Forwarding method comparison */
+.fwd-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:12px 0}
+@media(max-width:480px){.fwd-grid{grid-template-columns:1fr}}
+.fwd-card{border-radius:10px;padding:12px 14px;font-size:.81em;line-height:1.7}
+.fwd-card.sf{background:#e0f2fe;border:2px solid #1a3a5c}
+.fwd-card.ct{background:#f0fdf4;border:2px solid var(--nt)}
+.fwd-card .fc-title{font-weight:800;margin-bottom:5px;font-size:.875em}
+.fwd-card.sf .fc-title{color:#1a3a5c}
+.fwd-card.ct .fc-title{color:var(--nt)}
+.fwd-card ul{padding-left:16px}
+.fwd-card li{margin-bottom:3px}
+
+/* Cut-through variants */
+.ct-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:12px 0}
+@media(max-width:480px){.ct-grid{grid-template-columns:1fr}}
+.ct-card{border-radius:8px;padding:11px 14px;font-size:.81em;border-left:4px solid;line-height:1.6}
+.ct-card.ff{border-left-color:var(--nt);background:#f0fdf4}
+.ct-card.fr{border-left-color:#b38600;background:#fffbeb}
+.ct-card .ctc-name{font-weight:800;margin-bottom:3px}
+.ct-card.ff .ctc-name{color:var(--nt)}
+.ct-card.fr .ctc-name{color:#b38600}
+
+/* Buffer methods */
+.buf-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:12px 0}
+@media(max-width:480px){.buf-grid{grid-template-columns:1fr}}
+.buf-card{border-radius:8px;padding:11px 14px;font-size:.81em;border-left:4px solid;line-height:1.6}
+.buf-card.pb{border-left-color:#7c1e1e;background:#fff5f5}
+.buf-card.sm{border-left-color:var(--nt);background:#f0fdf4}
+.buf-card .bc-name{font-weight:800;margin-bottom:3px}
+.buf-card.pb .bc-name{color:#7c1e1e}
+.buf-card.sm .bc-name{color:var(--nt)}
+
+/* EtherType quick ref */
+.etype-grid{display:grid;gap:4px;margin:12px 0}
+.etype-row{display:flex;gap:8px;align-items:center;padding:7px 12px;border-radius:6px;font-size:.81em;background:#f9fafb;border-left:3px solid var(--nt)}
+.etype-row .er-hex{font-family:'Courier New',monospace;font-weight:800;color:var(--nt);min-width:70px;flex-shrink:0}
+.etype-row .er-proto{font-weight:700;min-width:60px;flex-shrink:0}
+
+.tb-btn{position:fixed;bottom:80px;right:16px;background:var(--nt);color:#fff;border:none;border-radius:50%;width:44px;height:44px;font-size:1.25em;box-shadow:0 4px 14px rgba(0,0,0,.25);cursor:pointer;display:none;align-items:center;justify-content:center;z-index:100}
+.tb-btn.show{display:flex}
+.ft{text-align:center;padding:24px 16px;color:var(--muted);font-size:.81em}
+.mod-nav{position:fixed;bottom:0;left:0;right:0;z-index:300;background:#1a1a2e;border-top:1px solid #30363d;display:flex;align-items:center;height:52px;padding:0 8px;gap:6px}
+.mn-hub{background:#1ba0d7;color:#fff;border:none;border-radius:8px;padding:6px 12px;font-size:.75em;font-weight:700;cursor:pointer;text-decoration:none;display:flex;align-items:center;gap:4px;white-space:nowrap;-webkit-tap-highlight-color:transparent;flex-shrink:0}
+.mn-hub:active{opacity:.8}
+.mn-divider{width:1px;height:28px;background:#30363d;flex-shrink:0}
+.mn-label{flex:1;text-align:center;font-size:.69em;color:#8b949e;font-weight:600;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding:0 4px}
+.mn-prev,.mn-next{background:#30363d;color:#c9d1d9;border:none;border-radius:8px;padding:6px 10px;font-size:.875em;font-weight:700;cursor:pointer;text-decoration:none;display:flex;align-items:center;-webkit-tap-highlight-color:transparent;flex-shrink:0}
+.mn-prev:active,.mn-next:active{background:var(--nt);color:#fff}
+
+/* v2.1 — In-section check button */
+.sh{position:relative}
+.sec-check{position:absolute;right:40px;top:50%;transform:translateY(-50%);background:rgba(255,255,255,.15);border:2px solid rgba(255,255,255,.4);border-radius:6px;padding:2px 10px;font-size:.72em;font-weight:800;color:#fff;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:all .2s;white-space:nowrap;z-index:10;line-height:1.5}
+.sec-check.checked{background:var(--ntd);border-color:var(--ntd);color:#052e1e}
+.sec-check:active{opacity:.75}
+</style>
+</head>
+<body>
+<nav class="bc">
+  <a href="../../index.html">🏠 Home</a><span class="sep">›</span>
+  <a href="index.html">CCNA 1 — ITN</a><span class="sep">›</span>
+  <span class="cur">M7: Ethernet Switching</span>
+</nav>
+<div class="fs-bar">
+  <div class="sc-pills" id="sc-pills">
+  <button class="sc-pill" id="pill-s1" onclick="toggleSection('s1',this)"><span class="pill-check">○</span>7.1</button>
+  <button class="sc-pill" id="pill-s2" onclick="toggleSection('s2',this)"><span class="pill-check">○</span>7.2</button>
+  <button class="sc-pill" id="pill-s3" onclick="toggleSection('s3',this)"><span class="pill-check">○</span>7.3</button>
+  <button class="sc-pill" id="pill-s4" onclick="toggleSection('s4',this)"><span class="pill-check">○</span>7.4</button>
+  <button class="sc-pill" id="pill-s5" onclick="toggleSection('s5',this)"><span class="pill-check">○</span>🎯</button>
+  </div>
+  <span class="fs-label" style="flex-shrink:0;margin-left:6px">Size</span>
+  <button class="fs-btn" onclick="setFs('14px',this)">S</button>
+  <button class="fs-btn" onclick="setFs('16px',this)">M</button>
+  <button class="fs-btn" onclick="setFs('18px',this)">L</button>
+  <button class="fs-btn active" onclick="setFs('20px',this)">XL</button>
+</div>
+<div class="hdr">
+  <div class="badge">CCNA 1 — ITN v7.02 · Module 7</div>
+  <h1>🔀 Ethernet Switching</h1>
+  <p>Introduction to Networks · NetAcad Study Guide</p>
+  <div class="obj">Module Objective: Explain how Ethernet operates in a switched network</div>
+</div>
+<div class="sp-wrap">
+  <div class="sp-hdr" id="sp-hdr" onclick="toggleStudyPanel()">
+    <span class="sp-title">📚 Sections</span>
+    <span class="sp-arr" id="sp-arr">▼</span>
+  </div>
+  <div class="sp-body" id="sp-body">
+    <div class="sp-row" id="row-s1"><span class="sr-status" id="st-s1">○</span><span class="sr-nb">7.1</span><span class="sr-ttl">Ethernet Frames</span></div>
+    <div class="sp-row" id="row-s2"><span class="sr-status" id="st-s2">○</span><span class="sr-nb">7.2</span><span class="sr-ttl">Ethernet MAC Address</span></div>
+    <div class="sp-row" id="row-s3"><span class="sr-status" id="st-s3">○</span><span class="sr-nb">7.3</span><span class="sr-ttl">The MAC Address Table</span></div>
+    <div class="sp-row" id="row-s4"><span class="sr-status" id="st-s4">○</span><span class="sr-nb">7.4</span><span class="sr-ttl">Switch Speeds and Forwarding Methods</span></div>
+    <div class="sp-row" id="row-s5"><span class="sr-status" id="st-s5">○</span><span class="sr-nb">🎯</span><span class="sr-ttl">Common Exam Traps — Module 7</span></div>
+  </div>
+</div>
+
+<div class="toc">
+  <div class="toch open" onclick="this.classList.toggle('open');document.getElementById('tocb').classList.toggle('open')">
+    📋 Table of Contents — Tap to expand <span class="arr">▼</span>
+  </div>
+  <div class="tocb open" id="tocb">
+    <div class="tocg">7.1 — Ethernet Frames</div>
+    <a href="javascript:void(0)" onclick="goTo('s1')"><span class="n">7.1.1</span> Ethernet Overview — Standards, Speeds, Layers</a>
+    <a href="javascript:void(0)" onclick="goTo('s1')"><span class="n">7.1.2</span> LLC and MAC Sublayers in Ethernet</a>
+    <a href="javascript:void(0)" onclick="goTo('s1')"><span class="n">7.1.3</span> MAC Sublayer — Encapsulation and Media Access</a>
+    <a href="javascript:void(0)" onclick="goTo('s1')"><span class="n">7.1.4</span> Ethernet Frame Fields — All 7 Fields with Sizes</a>
+    <div class="tocg">7.2 — Ethernet MAC Address</div>
+    <a href="javascript:void(0)" onclick="goTo('s2')"><span class="n">7.2.1</span> MAC Address and Hexadecimal</a>
+    <a href="javascript:void(0)" onclick="goTo('s2')"><span class="n">7.2.2</span> MAC Address Structure — OUI + Vendor Code</a>
+    <a href="javascript:void(0)" onclick="goTo('s2')"><span class="n">7.2.3</span> Frame Processing — BIA, ROM, RAM</a>
+    <a href="javascript:void(0)" onclick="goTo('s2')"><span class="n">7.2.4</span> Unicast MAC Address</a>
+    <a href="javascript:void(0)" onclick="goTo('s2')"><span class="n">7.2.5</span> Broadcast MAC Address — FF-FF-FF-FF-FF-FF</a>
+    <a href="javascript:void(0)" onclick="goTo('s2')"><span class="n">7.2.6</span> Multicast MAC Address — 01-00-5E / 33-33</a>
+    <div class="tocg">7.3 — The MAC Address Table</div>
+    <a href="javascript:void(0)" onclick="goTo('s3')"><span class="n">7.3.1</span> Switch Fundamentals — CAM Table</a>
+    <a href="javascript:void(0)" onclick="goTo('s3')"><span class="n">7.3.2</span> Switch Learning (Source MAC) and Forwarding (Destination MAC)</a>
+    <a href="javascript:void(0)" onclick="goTo('s3')"><span class="n">7.3.3</span> Filtering Frames — Unknown Unicast vs Known Unicast</a>
+    <div class="tocg">7.4 — Switch Speeds and Forwarding Methods</div>
+    <a href="javascript:void(0)" onclick="goTo('s4')"><span class="n">7.4.1</span> Store-and-Forward vs Cut-Through Switching</a>
+    <a href="javascript:void(0)" onclick="goTo('s4')"><span class="n">7.4.2</span> Cut-Through Variants — Fast-Forward and Fragment-Free</a>
+    <a href="javascript:void(0)" onclick="goTo('s4')"><span class="n">7.4.3</span> Memory Buffering — Port-Based vs Shared</a>
+    <a href="javascript:void(0)" onclick="goTo('s4')"><span class="n">7.4.4</span> Duplex, Speed, and Autonegotiation</a>
+    <a href="javascript:void(0)" onclick="goTo('s4')"><span class="n">7.4.5</span> Auto-MDIX</a>
+    <div class="tocg">Reference</div>
+    <a href="javascript:void(0)" onclick="goTo('s5')"><span class="n">🎯</span> Common Exam Traps</a>
+  </div>
+</div>
+
+<div class="wrap">
+
+<!-- 7.1 ETHERNET FRAMES -->
+<div class="sec" id="s1">
+<div class="sh open" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">7.1</span><span class="ttl">Ethernet Frames</span></span><button class="sec-check" id="sch-s1" onclick="event.stopPropagation();toggleSection('s1',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb open">
+
+  <div class="sub">
+  <h3><span class="sn">7.1.1</span> Ethernet Overview</h3>
+  <p>Ethernet is one of two LAN technologies used today (the other being WLAN). It uses wired communications — twisted pair, fiber-optic, and coaxial cables. Ethernet operates at <strong>both the data link layer and the physical layer</strong>, defined by <strong>IEEE 802.2 and 802.3</strong> standards.</p>
+  <div class="tw"><table>
+    <tr><th>Speed</th><th>Standard Name</th></tr>
+    <tr><td>10 Mbps</td><td>10BASE-T (classic Ethernet)</td></tr>
+    <tr><td>100 Mbps</td><td>Fast Ethernet (100BASE-TX)</td></tr>
+    <tr><td>1000 Mbps (1 Gbps)</td><td>Gigabit Ethernet</td></tr>
+    <tr><td>10 Gbps</td><td>10 Gigabit Ethernet</td></tr>
+    <tr><td>40 Gbps / 100 Gbps</td><td>High-speed data center Ethernet</td></tr>
+  </table></div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">7.1.2</span> LLC and MAC Sublayers in Ethernet</h3>
+  <div class="tw"><table>
+    <tr><th>Sublayer</th><th>Standard</th><th>Where</th><th>Function</th></tr>
+    <tr><td><strong>LLC</strong></td><td>IEEE 802.2</td><td>Software</td><td>Communicates between upper-layer software and lower-layer hardware. Places information in the frame identifying which L3 protocol is used. Allows IPv4 and IPv6 to share the same NIC.</td></tr>
+    <tr><td><strong>MAC</strong></td><td>IEEE 802.3 / 802.11 / 802.15</td><td>Hardware (NIC)</td><td>Data encapsulation (frame structure, addressing, error detection) + media access control for shared media.</td></tr>
+  </table></div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">7.1.3</span> MAC Sublayer — Encapsulation and Media Access</h3>
+  <p>IEEE 802.3 data encapsulation provides three things:</p>
+  <ul>
+    <li><strong>Ethernet frame</strong> — the internal structure</li>
+    <li><strong>Ethernet addressing</strong> — source and destination MAC to deliver frame from NIC to NIC on the same LAN</li>
+    <li><strong>Ethernet error detection</strong> — FCS trailer for error detection</li>
+  </ul>
+  <div class="et"><div class="lbl">🎯 KEY — Legacy vs Modern Ethernet</div>
+  <strong>Legacy Ethernet</strong> (bus topology / hubs): half-duplex → uses <strong>CSMA/CD</strong> for media access control<br>
+  <strong>Modern Ethernet</strong> (switches): full-duplex → <strong>NO CSMA/CD needed</strong> — no shared medium, no collisions possible
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">7.1.4</span> Ethernet Frame Fields — All 7 Fields</h3>
+  <div class="et"><div class="lbl">📏 FRAME SIZE RULES</div>
+  Minimum frame = <strong>64 bytes</strong> · Maximum frame = <strong>1518 bytes</strong><br>
+  (Measured from Destination MAC through FCS — <strong>preamble NOT counted</strong>)<br>
+  &lt; 64 bytes = <strong>runt / collision fragment</strong> → automatically discarded<br>
+  &gt; 1500 bytes data = <strong>jumbo / baby giant</strong> → most switches accept these
+  </div>
+  <div class="eth-frame">
+    <div class="eth-field ef-pre"><span class="ef-name">Preamble<span class="ef-note">— Alternating 1s and 0s · Gets attention of receiving nodes · Sync</span></span><span class="ef-size">7 bytes</span></div>
+    <div class="eth-field ef-sfd"><span class="ef-name">SFD — Start Frame Delimiter<span class="ef-note">— Signals end of preamble; next byte = Destination MAC</span></span><span class="ef-size">1 byte</span></div>
+    <div class="eth-field ef-dst"><span class="ef-name">Destination MAC Address<span class="ef-note">— Unicast, multicast, or broadcast</span></span><span class="ef-size">6 bytes</span></div>
+    <div class="eth-field ef-src"><span class="ef-name">Source MAC Address<span class="ef-note">— Always unicast (originating NIC)</span></span><span class="ef-size">6 bytes</span></div>
+    <div class="eth-field ef-type"><span class="ef-name">EtherType / Type<span class="ef-note">— Identifies the Layer 3 protocol in the data field</span></span><span class="ef-size">2 bytes</span></div>
+    <div class="eth-field ef-data"><span class="ef-name">Data (Payload)<span class="ef-note">— Usually an IPv4 or IPv6 packet; padding added if &lt;46 bytes</span></span><span class="ef-size">46–1500 bytes</span></div>
+    <div class="eth-field ef-fcs"><span class="ef-name">FCS — Frame Check Sequence<span class="ef-note">— CRC value for error detection; mismatch = frame discarded</span></span><span class="ef-size">4 bytes</span></div>
+  </div>
+  <h4>EtherType Common Values</h4>
+  <div class="etype-grid">
+    <div class="etype-row"><span class="er-hex">0x0800</span><span class="er-proto">IPv4</span><div>Most common — standard IPv4 packets</div></div>
+    <div class="etype-row"><span class="er-hex">0x86DD</span><span class="er-proto">IPv6</span><div>IPv6 packets</div></div>
+    <div class="etype-row"><span class="er-hex">0x0806</span><span class="er-proto">ARP</span><div>Address Resolution Protocol requests and replies</div></div>
+  </div>
+  <div class="ca info"><span class="ic">💡</span><div>Preamble (7 bytes) + SFD (1 byte) = 8 bytes total. These are <strong>NOT included</strong> in the frame size calculation. The minimum 64-byte count starts at the Destination MAC field.</div></div>
+  </div>
+
+</div></div>
+
+<!-- 7.2 MAC ADDRESSES -->
+<div class="sec" id="s2">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">7.2</span><span class="ttl">Ethernet MAC Address</span></span><button class="sec-check" id="sch-s2" onclick="event.stopPropagation();toggleSection('s2',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb">
+
+  <div class="sub">
+  <h3><span class="sn">7.2.1</span> MAC Address and Hexadecimal</h3>
+  <p>An Ethernet MAC address is a <strong>48-bit binary value</strong>. Because 1 hex digit = 4 bits, a 48-bit address requires exactly <strong>12 hex digits</strong> to represent.</p>
+  <div class="tw"><table>
+    <tr><th>Address Type</th><th>Number System</th><th>Length</th></tr>
+    <tr><td>IPv4 address</td><td>Decimal (base 10)</td><td>4 octets (e.g., 192.168.1.1)</td></tr>
+    <tr><td>IPv6 address</td><td>Hexadecimal (base 16)</td><td>32 hex digits</td></tr>
+    <tr><td>MAC address</td><td>Hexadecimal (base 16)</td><td>12 hex digits = 6 bytes = 48 bits</td></tr>
+  </table></div>
+  <div class="ca info"><span class="ic">💡</span><div>Leading zeros are always shown in hex notation: binary <code>00001010</code> = hex <code>0A</code> (not just <code>A</code>). Hex notation variants: <code>0x73</code>, <code>73H</code>, or subscript₁₆ — all mean the same thing.</div></div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">7.2.2</span> MAC Address Structure — OUI and Vendor Code</h3>
+  <div class="mac-struct">
+    <div class="ms-title">Ethernet MAC Address Structure (48 bits = 12 hex digits)</div>
+    <div class="mac-visual">
+      <div class="mac-half oui">
+        <div class="mh-label">First 6 hex digits (24 bits)</div>
+        <div class="mh-val">OUI</div>
+        <div class="mh-sub">Organizationally Unique Identifier<br>Assigned by IEEE to vendor</div>
+      </div>
+      <div class="mac-half vendor">
+        <div class="mh-label">Last 6 hex digits (24 bits)</div>
+        <div class="mh-val">Vendor Code</div>
+        <div class="mh-sub">Assigned by vendor<br>Must be unique per device</div>
+      </div>
+    </div>
+  </div>
+  <p><strong>Example — Cisco device:</strong> Cisco OUI = <code>00-60-2F</code> · Vendor code = <code>3A-07-BC</code> · Full MAC = <code>00-60-2F-3A-07-BC</code></p>
+  <p>Every vendor selling Ethernet devices must register with IEEE to obtain their OUI. The vendor is responsible for ensuring no two devices get the same MAC. Duplicate MACs can occur from manufacturing errors, VM configurations, or software modification.</p>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">7.2.3</span> Frame Processing — BIA</h3>
+  <p>The MAC address is called a <strong>BIA (Burned-In Address)</strong> — hard-coded into the NIC's <strong>ROM</strong>. On boot: NIC copies MAC from ROM → RAM.</p>
+  <p><strong>Frame reception process:</strong></p>
+  <ol>
+    <li>NIC receives an Ethernet frame</li>
+    <li>NIC compares the <strong>destination MAC address</strong> to its own MAC stored in RAM</li>
+    <li><strong>Match</strong> → frame accepted → passed up the OSI layers for de-encapsulation</li>
+    <li><strong>No match</strong> → frame <strong>discarded</strong></li>
+    <li>Exception: NIC also accepts frames with a <strong>broadcast</strong> or <strong>multicast MAC</strong> the host belongs to</li>
+  </ol>
+  <div class="ca warn"><span class="ic">⚠️</span><div>MAC addresses can be changed in software on modern operating systems — this makes <strong>MAC-based filtering less reliable as a security control</strong>. An attacker can spoof a trusted MAC address.</div></div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">7.2.4–7.2.6</span> Three MAC Address Types</h3>
+  <div class="mac-grid">
+    <div class="mac-card uni">
+      <div class="mc-name">👤 Unicast MAC</div>
+      Frame sent from <strong>one source to one specific destination</strong>. Source MAC is always unicast. Destination unicast MAC = specific NIC's address.<br><br>
+      <strong>How destination MAC is found:</strong><br>
+      · IPv4 → uses <strong>ARP</strong> (Address Resolution Protocol)<br>
+      · IPv6 → uses <strong>Neighbor Discovery (ND)</strong>
+    </div>
+    <div class="mac-card bro">
+      <div class="mc-name">📢 Broadcast MAC — FF-FF-FF-FF-FF-FF</div>
+      Destination MAC = <strong>FF-FF-FF-FF-FF-FF</strong> (48 ones in binary). Received and processed by <strong>every device on the LAN</strong>.<br><br>
+      · Switch <strong>floods out all ports except incoming</strong><br>
+      · <strong>NOT forwarded by routers</strong> (stops at router = broadcast domain boundary)<br>
+      · Examples: DHCP requests · ARP requests
+    </div>
+    <div class="mac-card mul">
+      <div class="mc-name">👥 Multicast MAC</div>
+      Received by a <strong>specific group</strong> of devices that subscribe to that multicast address.<br><br>
+      · IPv4 multicast → MAC starts with <strong>01-00-5E</strong><br>
+      · IPv6 multicast → MAC starts with <strong>33-33</strong><br>
+      · IPv4 multicast range: <strong>224.0.0.0 – 239.255.255.255</strong><br>
+      · IPv6 multicast prefix: <strong>ff00::/8</strong><br>
+      · Flooded out all ports except incoming (unless multicast snooping)<br>
+      · <strong>NOT forwarded by routers</strong> by default<br>
+      · Source is ALWAYS unicast; only destination can be multicast
+    </div>
+  </div>
+  </div>
+
+</div></div>
+
+<!-- 7.3 MAC ADDRESS TABLE -->
+<div class="sec" id="s3">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">7.3</span><span class="ttl">The MAC Address Table</span></span><button class="sec-check" id="sch-s3" onclick="event.stopPropagation();toggleSection('s3',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb">
+
+  <div class="sub">
+  <h3><span class="sn">7.3.1</span> Switch Fundamentals — CAM Table</h3>
+  <p>A <strong>Layer 2 Ethernet switch</strong> makes forwarding decisions based <strong>solely on Layer 2 MAC addresses</strong>. It is completely unaware of the data protocol in the payload (IPv4, IPv6, ARP, etc.).</p>
+  <p>The switch maintains a <strong>MAC address table</strong> (also called a <strong>CAM table</strong> — Content Addressable Memory). A freshly powered-on switch has an <strong>empty MAC address table</strong>:</p>
+  <div class="mac-table-box">
+    <div class="mt-header"><span>MAC Address</span><span>Port</span></div>
+    <div class="mt-empty">— Table is empty — switch has not learned any MAC addresses yet —</div>
+  </div>
+  <p>Unlike a hub (which repeats frames out ALL ports), a switch uses the MAC address table to make <strong>intelligent forwarding decisions</strong> — sending frames only to the port where the destination device is located.</p>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">7.3.2</span> Switch Learning and Forwarding — Two Steps Per Frame</h3>
+  <div class="sw-diagram">
+    <div class="sd-title">Step 1 — LEARN: Examine Source MAC</div>
+    <div class="sw-step"><div class="ss-num">1</div><div class="ss-text">Frame arrives on a port. Switch reads the <strong>source MAC address</strong> + incoming port number.</div></div>
+    <div class="sw-step"><div class="ss-num">2</div><div class="ss-text"><strong>New MAC</strong> → add entry: source MAC + port number → MAC table</div></div>
+    <div class="sw-step"><div class="ss-num">3</div><div class="ss-text"><strong>MAC exists, same port</strong> → reset the <strong>5-minute aging timer</strong></div></div>
+    <div class="sw-step"><div class="ss-num">4</div><div class="ss-text"><strong>MAC exists, different port</strong> → update entry with new port (device moved)</div></div>
+  </div>
+  <div class="sw-diagram" style="margin-top:8px">
+    <div class="sd-title">Step 2 — FORWARD: Find Destination MAC</div>
+    <div class="sw-step"><div class="ss-num">✓</div><div class="ss-text"><strong>Destination MAC IS in table</strong> → forward frame out <strong>only that specific port</strong> (filtering)</div></div>
+    <div class="sw-step"><div class="ss-num">?</div><div class="ss-text"><strong>Destination MAC NOT in table</strong> → <strong>flood</strong> frame out <strong>all ports except incoming</strong> → called <strong>unknown unicast</strong></div></div>
+    <div class="sw-step"><div class="ss-num">📢</div><div class="ss-text"><strong>Destination is broadcast (FF-FF-FF-FF-FF-FF)</strong> → flood out all ports except incoming</div></div>
+    <div class="sw-step"><div class="ss-num">👥</div><div class="ss-text"><strong>Destination is multicast</strong> → flood out all ports except incoming (unless multicast snooping enabled)</div></div>
+  </div>
+  <div class="ca tip"><span class="ic">✅</span><div>MAC address table <strong>aging timer = 5 minutes</strong> by default. If no frame with that source MAC is received for 5 minutes, the entry is deleted. This prevents the table from filling with stale entries for devices that have left the network.</div></div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">7.3.3</span> Filtering Frames — How a Learned Switch Works</h3>
+  <p>As the switch receives more frames, it populates the MAC table. Once both source and destination are in the table, the switch <strong>filters</strong> — sending only to the specific destination port:</p>
+
+  <div class="mac-table-box">
+    <div class="mt-header"><span>MAC Address (learned)</span><span>Port</span></div>
+    <div class="mt-row"><span class="mt-mac">AA:AA:AA:AA:AA:AA</span><span class="mt-port">Port 1 (PC-A)</span></div>
+    <div class="mt-row"><span class="mt-mac">BB:BB:BB:BB:BB:BB</span><span class="mt-port">Port 2 (PC-B)</span></div>
+    <div class="mt-row"><span class="mt-mac">CC:CC:CC:CC:CC:CC</span><span class="mt-port">Port 3 (PC-C)</span></div>
+    <div class="mt-row"><span class="mt-mac">DD:DD:DD:DD:DD:DD</span><span class="mt-port">Port 4 (PC-D)</span></div>
+  </div>
+
+  <p>When PC-A sends to PC-D: switch looks up DD:DD:DD:DD:DD:DD → found on Port 4 → forwards ONLY out Port 4. PC-B and PC-C receive nothing.</p>
+
+  <div class="ca info"><span class="ic">💡</span><div>A single switch port can have <strong>multiple MAC addresses</strong> — this is normal when a port connects to another switch. The upstream switch learns all MAC addresses of devices behind the downstream switch, all associated with the one port connecting the two switches.<br><br><strong>Default gateway MAC:</strong> When a host needs to reach a device on a remote network, it sends the frame to the <strong>router's MAC address</strong> (default gateway). The switch forwards that frame to whichever port the router is on.</div></div>
+  </div>
+
+</div></div>
+
+<!-- 7.4 SWITCH SPEEDS AND FORWARDING -->
+<div class="sec" id="s4">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">7.4</span><span class="ttl">Switch Speeds and Forwarding Methods</span></span><button class="sec-check" id="sch-s4" onclick="event.stopPropagation();toggleSection('s4',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb">
+
+  <div class="sub">
+  <h3><span class="sn">7.4.1</span> Store-and-Forward vs Cut-Through Switching</h3>
+  <div class="fwd-grid">
+    <div class="fwd-card sf">
+      <div class="fc-title">📦 Store-and-Forward</div>
+      <ul>
+        <li>Receives the <strong>entire frame</strong> first</li>
+        <li>Computes CRC — if valid, forwards; if invalid, <strong>discards</strong></li>
+        <li>Looks up destination MAC, forwards out correct port</li>
+        <li><strong>Eliminates corrupt frames</strong> from the network</li>
+        <li>Required for <strong>QoS analysis</strong> (VoIP prioritization)</li>
+        <li>Higher latency (must wait for full frame)</li>
+      </ul>
+    </div>
+    <div class="fwd-card ct">
+      <div class="fc-title">⚡ Cut-Through</div>
+      <ul>
+        <li>Starts forwarding <strong>before entire frame received</strong></li>
+        <li>Only reads enough to get <strong>destination MAC</strong> (first 6 bytes after preamble)</li>
+        <li><strong>No CRC check</strong> — may forward corrupt frames</li>
+        <li>Lower latency</li>
+        <li>Cannot perform QoS classification</li>
+      </ul>
+    </div>
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">7.4.2</span> Cut-Through Variants</h3>
+  <div class="ct-grid">
+    <div class="ct-card ff">
+      <div class="ctc-name">⚡ Fast-Forward Switching</div>
+      Forwards immediately after reading destination MAC. <strong>Lowest latency of any method.</strong> Latency = first bit received → first bit transmitted. May relay frames with errors (infrequently). <strong>Typical cut-through method.</strong>
+    </div>
+    <div class="ct-card fr">
+      <div class="ctc-name">🔶 Fragment-Free Switching</div>
+      Stores the <strong>first 64 bytes</strong> before forwarding. Most errors and collisions occur in the first 64 bytes — this catches most problems. Compromise between store-and-forward (full integrity) and fast-forward (lowest latency). Middle ground on both latency and error checking.
+    </div>
+  </div>
+  <div class="ca info"><span class="ic">💡</span><div><strong>Adaptive switching:</strong> Some switches start in cut-through mode on a per-port basis. When errors exceed a user-defined threshold, that port automatically switches to store-and-forward. When errors drop below the threshold, it switches back to cut-through.</div></div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">7.4.3</span> Memory Buffering on Switches</h3>
+  <p>Buffering stores frames temporarily when the destination port is busy (congested). Two methods:</p>
+  <div class="buf-grid">
+    <div class="buf-card pb">
+      <div class="bc-name">🚦 Port-Based Memory</div>
+      Frames stored in <strong>queues linked to specific ports</strong>. All frames ahead in a queue must transmit before the next frame goes. One <strong>busy destination port blocks ALL frames behind it</strong> — even if other ports are free. Less efficient.
+    </div>
+    <div class="buf-card sm">
+      <div class="bc-name">💾 Shared Memory</div>
+      All frames in a <strong>common buffer shared by all ports</strong>. Memory dynamically allocated per port as needed. Frames linked to destination port dynamically — no physical moving between queues. Supports <strong>asymmetric switching</strong> (different port speeds). More efficient, fewer dropped frames.
+    </div>
+  </div>
+  <div class="ca info"><span class="ic">💡</span><div><strong>Asymmetric switching</strong> = different data rates on different ports. Example: server on 10 Gbps port, PCs on 1 Gbps ports. Shared memory buffering handles the speed difference gracefully.</div></div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">7.4.4</span> Duplex, Speed, and Autonegotiation</h3>
+  <div class="tw"><table>
+    <tr><th>Setting</th><th>Description</th></tr>
+    <tr><td><strong>Full-duplex</strong></td><td>Both ends send and receive simultaneously. No collisions possible. Default for modern switches.</td></tr>
+    <tr><td><strong>Half-duplex</strong></td><td>Only one end transmits at a time. Requires CSMA/CD. Legacy hubs and WLANs.</td></tr>
+    <tr><td><strong>Autonegotiation</strong></td><td>Two devices automatically negotiate the best speed and duplex. If both support full-duplex, it is chosen along with the highest common bandwidth.</td></tr>
+  </table></div>
+  <p><strong>Key rules:</strong></p>
+  <ul>
+    <li>Gigabit Ethernet ports <strong>only operate in full-duplex</strong></li>
+    <li>Cisco switches and NICs default to <strong>autonegotiation</strong></li>
+    <li>Best practice: <strong>explicitly configure both sides as full-duplex</strong></li>
+  </ul>
+  <div class="ca danger"><span class="ic">🚨</span><div><strong>Duplex mismatch</strong> — one port at half-duplex, the other at full-duplex. The full-duplex side sends whenever it wants. The half-duplex side sees these as collisions, backs off, and retransmits constantly. Result: <strong>severe performance degradation</strong> with high late-collision counts. Cause: autonegotiation fails when one side is disabled, or one side is manually reconfigured without updating the other.</div></div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">7.4.5</span> Auto-MDIX</h3>
+  <p><strong>Auto-MDIX (Automatic Medium-Dependent Interface Crossover)</strong> — the switch automatically detects the cable type (straight-through or crossover) attached to the port and configures the interface accordingly. Either cable type works regardless of what device is on the other end.</p>
+  <ul>
+    <li>Enabled by default on switches running <strong>Cisco IOS 12.2(18)SE or later</strong></li>
+    <li>Can be disabled — best practice: still use the correct cable type, don't rely on auto-MDIX</li>
+    <li>Re-enable with command: <code>mdix auto</code> (interface configuration mode)</li>
+    <li>Makes crossover cables <strong>legacy</strong> for most scenarios</li>
+  </ul>
+  </div>
+
+</div></div>
+
+<!-- EXAM TRAPS -->
+<div class="sec" id="s5">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">🎯</span><span class="ttl">Common Exam Traps — Module 7</span></span><button class="sec-check" id="sch-s5" onclick="event.stopPropagation();toggleSection('s5',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb">
+
+  <div class="ca danger"><span class="ic">❌</span><div><strong>Trap 1: Minimum Ethernet frame = 64 bytes. Preamble NOT counted in frame size.</strong><br>The preamble (7B) + SFD (1B) = 8 bytes are excluded from the size calculation. The 64-byte minimum starts at the Destination MAC field. Less than 64 bytes = runt/collision fragment → automatically discarded. The data field requires at least 46 bytes of payload — padding is added if the IP packet is smaller.</div></div>
+
+  <div class="ca danger"><span class="ic">❌</span><div><strong>Trap 2: Ethernet frame order — Destination MAC comes BEFORE Source MAC.</strong><br>The full order: Preamble(7B) → SFD(1B) → Destination MAC(6B) → Source MAC(6B) → EtherType(2B) → Data(46–1500B) → FCS(4B). Students commonly reverse source and destination, or forget where preamble/SFD sit.</div></div>
+
+  <div class="ca danger"><span class="ic">❌</span><div><strong>Trap 3: EtherType values — 0x0800=IPv4, 0x86DD=IPv6, 0x0806=ARP. Memorize these.</strong><br>These hex values appear in Wireshark output, frame analysis questions, and protocol identification questions. The EtherType field is also called Type, Length, or EtherType depending on the standard version referenced.</div></div>
+
+  <div class="ca danger"><span class="ic">❌</span><div><strong>Trap 4: The switch learns by examining the SOURCE MAC — not the destination.</strong><br>The switch records which port each SOURCE MAC came from. It uses this table to decide where to FORWARD frames toward the DESTINATION. Students often flip this — the learning happens from source, the forwarding decision uses destination.</div></div>
+
+  <div class="ca danger"><span class="ic">❌</span><div><strong>Trap 5: Unknown unicast = destination MAC not in table = flood all ports except incoming.</strong><br>This is NOT the same as a broadcast. An unknown unicast is flooded because the switch doesn't know where to send it yet. Once the destination device sends any frame back, its MAC is learned and future frames are filtered to one port only.</div></div>
+
+  <div class="ca danger"><span class="ic">❌</span><div><strong>Trap 6: Broadcast MAC = FF-FF-FF-FF-FF-FF. NOT forwarded by routers. Stops at the router.</strong><br>Routers separate broadcast domains. A broadcast is flooded by switches out all ports except incoming, but routers will not forward it. This is why each router interface defines a new broadcast domain.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 7: Multicast MAC for IPv4 starts with 01-00-5E. For IPv6 starts with 33-33.</strong><br>Multicast is NOT the same as broadcast. Broadcast goes to all devices. Multicast goes to devices that have joined a specific group. Source is always unicast — only destination can be multicast. Routers don't forward multicast by default.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 8: MAC address = 48 bits = 12 hex digits = 6 bytes. OUI = first 6 hex digits (assigned by IEEE). Vendor code = last 6 hex digits.</strong><br>The OUI identifies the manufacturer. The vendor is responsible for making the last 6 digits unique per device. If two devices on the same network segment have the same MAC, communication breaks for both.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 9: Store-and-forward required for QoS. Cut-through has lower latency but may forward corrupt frames.</strong><br>Store-and-forward validates the entire CRC before forwarding — this is required for QoS traffic classification (like prioritizing VoIP over web traffic). Cut-through starts forwarding after reading only the destination MAC — lower latency but no CRC validation.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 10: Fragment-free stores first 64 bytes. Fast-forward reads only destination MAC.</strong><br>Fragment-free is a compromise — it checks the first 64 bytes (where most errors and collisions occur) without checking the full frame. Fast-forward checks nothing — it's pure speed. Both are cut-through variants and neither performs a full CRC check.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 11: Shared memory buffering supports asymmetric switching. Port-based can cause head-of-line blocking.</strong><br>Port-based memory: one frame waiting for a busy port blocks all frames behind it in the queue (even if they're destined for free ports). Shared memory fixes this. Shared memory also supports different port speeds (10 Gbps server + 1 Gbps PCs).</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 12: MAC aging timer = 5 minutes. A switch port can have multiple MAC addresses.</strong><br>Entries are removed after 5 minutes of inactivity (no frame received with that source MAC). Multiple MACs per port is normal when a port connects to another switch — the upstream switch sees all MACs from devices behind the downstream switch on that one port.</div></div>
+
+  <div class="ca tip"><span class="ic">✅</span><div><strong>Module 7 quick-reference summary:</strong><br><br>
+  <strong>Ethernet:</strong> IEEE 802.2 + 802.3 · Operates at L1 and L2 · 10Mbps to 100Gbps<br>
+  <strong>LLC:</strong> Software · 802.2 · Identifies L3 protocol in frame · Allows IPv4+IPv6 on same NIC<br>
+  <strong>MAC:</strong> Hardware (NIC) · 802.3/802.11/802.15 · Encapsulation + media access<br>
+  <strong>Legacy Ethernet:</strong> Half-duplex + CSMA/CD · <strong>Modern:</strong> Full-duplex + no CSMA/CD<br>
+  <strong>Frame size:</strong> Min 64B · Max 1518B · Preamble(7B)+SFD(1B) not counted<br>
+  <strong>Runt frame:</strong> &lt;64B → auto discarded · <strong>Jumbo:</strong> &gt;1500B data → most switches accept<br>
+  <strong>Frame fields:</strong> Preamble(7B) · SFD(1B) · Dst MAC(6B) · Src MAC(6B) · EtherType(2B) · Data(46-1500B) · FCS/CRC(4B)<br>
+  <strong>EtherType:</strong> 0x0800=IPv4 · 0x86DD=IPv6 · 0x0806=ARP<br>
+  <strong>MAC address:</strong> 48 bits · 12 hex digits · 6 bytes · BIA (burned into ROM)<br>
+  <strong>OUI:</strong> First 6 hex digits (IEEE assigned) · <strong>Vendor:</strong> Last 6 hex digits<br>
+  <strong>BIA:</strong> Copied ROM→RAM on boot · NIC compares dst MAC to own MAC → match=accept, no match=discard<br>
+  <strong>Unicast MAC:</strong> Specific NIC · ARP (IPv4) or ND (IPv6) finds it · Source always unicast<br>
+  <strong>Broadcast MAC:</strong> FF-FF-FF-FF-FF-FF · Flooded all ports except incoming · NOT forwarded by routers<br>
+  <strong>Multicast MAC:</strong> IPv4=01-00-5E · IPv6=33-33 · Flooded unless snooping · NOT forwarded by default<br>
+  <strong>Switch = CAM table</strong> · Learns from SOURCE MAC + port · Forwards using DESTINATION MAC<br>
+  <strong>Unknown unicast:</strong> Dst MAC not in table → flood all ports except incoming<br>
+  <strong>Aging timer:</strong> 5 minutes · Entry refreshed each time source MAC seen · Multiple MACs per port OK (when connected to another switch)<br>
+  <strong>Store-and-forward:</strong> Full frame + CRC check → required for QoS · Higher latency · No corrupt frames forwarded<br>
+  <strong>Cut-through:</strong> Forward after reading dst MAC only · Lower latency · May forward corrupt frames<br>
+  <strong>Fast-forward:</strong> Reads only dst MAC · Lowest latency · Typical cut-through<br>
+  <strong>Fragment-free:</strong> First 64 bytes · Catches most errors · Compromise<br>
+  <strong>Port-based buffer:</strong> Per-port queues · Head-of-line blocking possible<br>
+  <strong>Shared memory buffer:</strong> Common buffer for all ports · More efficient · Supports asymmetric switching<br>
+  <strong>Duplex mismatch:</strong> Severe performance degradation · Late collision errors · Both sides must match<br>
+  <strong>Gigabit Ethernet:</strong> Full-duplex only · Cisco defaults = autonegotiation<br>
+  <strong>Auto-MDIX:</strong> Detects cable type automatically · Enabled by default IOS 12.2(18)SE+ · <code>mdix auto</code></div></div>
+
+</div></div>
+
+</div>
+<div class="ft">CCNA 1 ITN v7.02 — Module 7: Ethernet Switching v2.2<br>Based on Cisco NetAcad curriculum · Study guide for personal use</div>
+<button class="tb-btn" id="topb" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+<div class="mod-nav">
+  <a class="mn-hub" href="index.html">🏠 Hub</a>
+  <div class="mn-divider"></div>
+  <a class="mn-prev" href="ccna1_module6_data_link_layer_v2.2.html">‹</a>
+  <span class="mn-label">M7 of 17</span>
+  <a class="mn-next" href="ccna1_module8_network_layer_v2.2.html">›</a>
+</div>
+<script>
+var MOD_KEY="ccna1-module7-ethernet-switching";
+var SECS=["s1","s2","s3","s4","s5"];
+var checked={};
+function loadState(){
+  try{var s=localStorage.getItem(MOD_KEY);if(s)checked=JSON.parse(s);}catch(e){}
+  SECS.forEach(function(id){
+    var pill=document.getElementById('pill-'+id);
+    var row=document.getElementById('row-'+id);
+    var st=document.getElementById('st-'+id);
+    var sch=document.getElementById('sch-'+id);
+    if(checked[id]){
+      if(pill){pill.classList.add('checked');pill.querySelector('.pill-check').textContent='✓';}
+      if(row)row.classList.add('done');
+      if(st)st.textContent='✓';
+      if(sch){sch.classList.add('checked');sch.textContent='✓ Done';}
+    } else {
+      if(pill){pill.classList.remove('checked');pill.querySelector('.pill-check').textContent='○';}
+      if(row)row.classList.remove('done');
+      if(st)st.textContent='○';
+      if(sch){sch.classList.remove('checked');sch.textContent='○ Mark done';}
+    }
+  });
+}
+function toggleSection(id,btn){checked[id]=!checked[id];try{localStorage.setItem(MOD_KEY,JSON.stringify(checked));}catch(e){}loadState();}
+function toggleStudyPanel(){
+  var hdr=document.getElementById('sp-hdr');
+  var body=document.getElementById('sp-body');
+  var arr=document.getElementById('sp-arr');
+  hdr.classList.toggle('open');body.classList.toggle('open');
+  if(arr)arr.textContent=body.classList.contains('open')?'▲':'▼';
+}
+function goTo(id){var el=document.getElementById(id);if(!el)return;var h=el.querySelector('.sh'),b=el.querySelector('.sb');if(h&&b&&!b.classList.contains('open')){h.classList.add('open');b.classList.add('open');}setTimeout(function(){window.scrollTo({top:el.getBoundingClientRect().top+window.pageYOffset-60,behavior:'smooth'});},50);}
+function setFs(size,btn){document.documentElement.style.setProperty('--base-fs',size);document.querySelectorAll('.fs-btn').forEach(function(b){b.classList.remove('active');});btn.classList.add('active');try{localStorage.setItem('ccna-fs',size);}catch(e){}}
+(function(){try{var s=localStorage.getItem('ccna-fs');if(s){document.documentElement.style.setProperty('--base-fs',s);document.querySelectorAll('.fs-btn').forEach(function(b){b.classList.remove('active');if((b.textContent==='S'&&s==='14px')||(b.textContent==='M'&&s==='16px')||(b.textContent==='L'&&s==='18px')||(b.textContent==='XL'&&s==='20px'))b.classList.add('active');});}}catch(e){}loadState();})();
+function copyCode(btn){var pre=btn.closest('.cw').querySelector('pre');navigator.clipboard.writeText(pre.innerText||pre.textContent).then(function(){btn.textContent='Copied!';setTimeout(function(){btn.textContent='Copy';},1500);});}
+</script>
+<script src="../../site-config.js"></script>
+</body>
+</html>

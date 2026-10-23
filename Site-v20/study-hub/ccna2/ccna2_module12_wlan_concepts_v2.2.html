@@ -1,0 +1,1153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=2.0">
+<title>CCNA 2 Module 12: WLAN Concepts v2.2</title>
+<style>
+:root{
+  --blue:#1ba0d7;--dark:#005073;--green:#6cc24a;
+  --wifi:#7b2d8b;--wifid:#c084fc;
+  --bg:#f4f6f8;--card:#fff;--text:#1a1a2e;--muted:#5a6a7a;
+  --cbg:#0d1117;--ctxt:#c9d1d9;--r:12px;--sh:0 2px 12px rgba(0,0,0,.08);
+  --base-fs:16px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);font-size:var(--base-fs);line-height:1.7}
+
+/* ── Font size toggle ── */
+.fs-bar{position:sticky;top:0;z-index:200;background:#1a1a2e;display:flex;align-items:center;justify-content:flex-end;padding:6px 14px;gap:6px;box-shadow:0 2px 8px rgba(0,0,0,.3)}
+.fs-label{color:#8b949e;font-size:.72em;font-weight:700;letter-spacing:.5px;text-transform:uppercase;margin-right:4px}
+.fs-btn{background:#30363d;color:#c9d1d9;border:2px solid transparent;border-radius:6px;padding:4px 12px;font-size:.75em;font-weight:700;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:all .2s;line-height:1.4}
+.fs-btn:active,.fs-btn.active{background:var(--wifid);color:#1a1a2e;border-color:var(--wifid)}
+
+/* ── Header ── */
+.hdr{background:linear-gradient(135deg,var(--wifi),#9333ea);color:#fff;padding:32px 20px 24px;text-align:center}
+.hdr .badge{display:inline-block;background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.4);border-radius:20px;padding:4px 14px;font-size:.81em;margin-bottom:12px}
+.hdr h1{font-size:1.625em;font-weight:700;margin-bottom:6px}
+.hdr p{font-size:.94em;opacity:.85}
+.hdr .obj{display:inline-block;background:rgba(255,255,255,.15);border-radius:8px;padding:7px 16px;margin-top:12px;font-size:.875em;font-style:italic}
+
+/* ── Progress bar ── */
+.pb{background:var(--card);padding:14px 16px;margin:16px 16px 0;border-radius:var(--r);box-shadow:var(--sh)}
+.pbl{font-size:.81em;color:var(--muted);margin-bottom:6px;font-weight:600}
+.pbt{background:#e0e7ef;border-radius:10px;height:8px;overflow:hidden}
+.pbf{background:linear-gradient(90deg,var(--wifi),var(--wifid));height:100%;border-radius:10px;width:0;transition:width 1s ease}
+
+/* ── TOC ── */
+.toc{background:var(--card);margin:16px;border-radius:var(--r);box-shadow:var(--sh);overflow:hidden}
+.toch{background:var(--wifi);color:#fff;padding:14px 18px;font-weight:700;font-size:.94em;display:flex;justify-content:space-between;align-items:center;cursor:pointer;user-select:none}
+.toch .arr{transition:transform .3s}
+.toch.open .arr{transform:rotate(180deg)}
+.tocb{display:none;padding:10px 0}
+.tocb.open{display:block}
+.tocg{font-size:.69em;font-weight:800;letter-spacing:.8px;color:var(--wifi);text-transform:uppercase;padding:8px 20px 2px}
+.tocb a{display:block;padding:9px 20px 9px 28px;color:var(--text);text-decoration:none;font-size:.875em;border-left:3px solid transparent;transition:all .2s}
+.tocb a:hover,.tocb a:active{background:#f3e8ff;border-left-color:var(--wifid)}
+.tocb a .n{display:inline-block;background:var(--wifi);color:#fff;border-radius:5px;padding:1px 8px;font-size:.75em;font-weight:700;margin-right:8px}
+
+/* ── Main wrap ── */
+.wrap{padding:0 16px 100px}
+
+/* ── Section cards ── */
+.sec{background:var(--card);border-radius:var(--r);box-shadow:var(--sh);margin-bottom:16px;overflow:hidden}
+.sh{background:linear-gradient(90deg,var(--wifi),#9333ea);color:#fff;padding:16px 18px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;user-select:none;-webkit-tap-highlight-color:transparent}
+.sh .ttl{font-weight:700;font-size:1em}
+.sh .nb{background:rgba(255,255,255,.25);border-radius:6px;padding:3px 10px;font-size:.81em;font-weight:700;margin-right:10px;white-space:nowrap}
+.sh .ch{font-size:1.125em;transition:transform .3s}
+.sh.open .ch{transform:rotate(180deg)}
+.sb{display:none;padding:18px}
+.sb.open{display:block}
+
+/* ── Subsections ── */
+.sub{margin-bottom:24px}
+.sub:last-child{margin-bottom:0}
+.sub h3{font-size:.94em;font-weight:700;color:var(--wifi);margin-bottom:10px;padding-bottom:6px;border-bottom:2px solid #f3e8ff;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.sub h3 .sn{background:var(--wifi);color:#fff;border-radius:5px;padding:2px 8px;font-size:.75em;white-space:nowrap}
+.sub h4{font-size:.875em;font-weight:700;color:var(--wifi);margin:14px 0 6px}
+.sub p{margin-bottom:10px;font-size:.94em}
+.sub ul,.sub ol{padding-left:20px;margin:8px 0;font-size:.94em}
+.sub li{margin-bottom:5px}
+
+/* ── Code blocks ── */
+.cw{background:var(--cbg);border-radius:10px;margin:12px 0;overflow:hidden}
+.cl{background:#21262d;color:#c9d1d9;font-size:.78em;font-weight:700;padding:6px 14px;letter-spacing:.5px;text-transform:uppercase;display:flex;justify-content:space-between;align-items:center}
+.cpb{background:#30363d;color:#c9d1d9;border:none;border-radius:5px;padding:3px 10px;font-size:.69em;cursor:pointer}
+.cpb:active{background:var(--wifi);color:#fff}
+pre{margin:0;padding:14px;overflow-x:auto;-webkit-overflow-scrolling:touch}
+code{font-family:'Courier New',monospace;font-size:.81em;color:var(--ctxt);line-height:1.6}
+p code,li code,td code,.ca code{background:#f3e8ff;color:var(--wifi);border-radius:4px;padding:1px 5px;font-size:.81em;font-family:'Courier New',monospace;font-weight:600}
+
+/* ── Callout boxes ── */
+.ca{border-radius:8px;padding:12px 14px;margin:12px 0;font-size:.875em;line-height:1.6;display:flex;gap:10px;align-items:flex-start}
+.ca .ic{font-size:1.125em;flex-shrink:0;margin-top:1px}
+.ca.warn  {background:#fff3cd;border-left:4px solid #b38600;color:#3d2c00}
+.ca.tip   {background:#d4edda;border-left:4px solid #28a745;color:#0d3318}
+.ca.danger{background:#f8d7da;border-left:4px solid #dc3545;color:#3d0010}
+.ca.info  {background:#f3e8ff;border-left:4px solid var(--wifi);color:#3b0764}
+
+/* ── Exam tip dark box ── */
+.et{background:linear-gradient(135deg,#1a1a2e,var(--wifi));color:#fff;border-radius:10px;padding:14px 16px;margin:14px 0;font-size:.875em;line-height:1.6}
+.et .lbl{font-size:.69em;font-weight:800;letter-spacing:1px;color:var(--wifid);margin-bottom:6px}
+.et ul,.et ol{padding-left:18px;margin-top:6px}
+.et li{margin-bottom:5px}
+
+/* ── Tables ── */
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:12px 0;border-radius:8px}
+table{width:100%;border-collapse:collapse;font-size:.875em}
+th{background:var(--wifi);color:#fff;padding:10px 12px;text-align:left;font-weight:700;font-size:.81em}
+td{padding:9px 12px;border-bottom:1px solid #e8ecf0;vertical-align:top;color:#1a1a2e}
+tr:nth-child(even) td{background:#f3e8ff;color:#3b0764}
+tr:last-child td{border-bottom:none}
+
+/* ── Numbered steps ── */
+.steps{counter-reset:step;list-style:none;padding:0;margin:12px 0}
+.steps li{counter-increment:step;display:flex;gap:12px;align-items:flex-start;padding:10px 0;border-bottom:1px solid #eef0f3;font-size:.875em;line-height:1.6}
+.steps li:last-child{border-bottom:none}
+.steps li::before{content:counter(step);background:var(--wifi);color:#fff;border-radius:50%;min-width:26px;height:26px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.81em;flex-shrink:0;margin-top:2px}
+
+/* ── Diagram box ── */
+.dg{background:#0d1117;border-radius:10px;padding:14px;margin:12px 0;overflow-x:auto}
+.dg pre{color:#58a6ff;font-family:'Courier New',monospace;font-size:.75em;line-height:1.6}
+
+/* ═══════════════════════
+   ENHANCEMENT 1 — 802.11 Standard Cards
+   ═══════════════════════ */
+.std-grid{display:grid;gap:10px;margin:12px 0}
+.std-card{border-radius:10px;padding:12px 14px;border-left:5px solid;display:flex;gap:12px;align-items:flex-start}
+.std-card.band24{border-left-color:#e07b00;background:#fff8f0}
+.std-card.band5{border-left-color:var(--blue);background:#e8f4fb}
+.std-card.banddual{border-left-color:var(--wifi);background:#f3e8ff}
+.std-card .sc-std{min-width:70px;flex-shrink:0}
+.std-card .sc-name{font-weight:800;font-size:.875em;color:#1a1a2e}
+.std-card .sc-freq{font-size:.69em;font-weight:700;padding:2px 6px;border-radius:4px;display:inline-block;margin-top:2px;color:#fff}
+.std-card.band24 .sc-freq{background:#e07b00}
+.std-card.band5 .sc-freq{background:var(--blue)}
+.std-card.banddual .sc-freq{background:var(--wifi)}
+.std-card .sc-info{flex:1;font-size:.81em;color:#1a1a2e;line-height:1.6}
+.std-card .sc-speed{font-weight:800;color:#1a1a2e;font-size:.875em}
+.std-card .sc-notes{color:var(--muted);margin-top:2px}
+
+/* ═══════════════════════
+   ENHANCEMENT 2 — Security Evolution Timeline
+   ═══════════════════════ */
+.sec-timeline{margin:12px 0}
+.sec-item{display:flex;gap:0;margin-bottom:6px;border-radius:10px;overflow:hidden}
+.sec-item .si-left{min-width:90px;padding:12px 10px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;flex-shrink:0}
+.sec-item .si-name{font-weight:900;font-size:1em;color:#fff}
+.sec-item .si-enc{font-size:.63em;color:rgba(255,255,255,.8);font-weight:600;margin-top:2px}
+.sec-item .si-right{flex:1;padding:10px 12px;font-size:.81em;line-height:1.6;color:#1a1a2e}
+.sec-item .si-right .si-status{font-weight:800;font-size:.75em;padding:2px 8px;border-radius:4px;display:inline-block;margin-bottom:4px;color:#fff}
+.sec-item.wep .si-left{background:#dc3545}
+.sec-item.wep .si-right{background:#fff5f5}
+.sec-item.wep .si-status{background:#dc3545}
+.sec-item.wpa .si-left{background:#e07b00}
+.sec-item.wpa .si-right{background:#fff8f0}
+.sec-item.wpa .si-status{background:#e07b00}
+.sec-item.wpa2 .si-left{background:#28a745}
+.sec-item.wpa2 .si-right{background:#f0fff4}
+.sec-item.wpa2 .si-status{background:#28a745}
+.sec-item.wpa3 .si-left{background:var(--wifi)}
+.sec-item.wpa3 .si-right{background:#f3e8ff}
+.sec-item.wpa3 .si-status{background:var(--wifi)}
+
+/* ═══════════════════════
+   ENHANCEMENT 3 — CSMA/CA Visual Flow
+   ═══════════════════════ */
+.csma-flow{background:#0d1117;border:2px solid var(--wifid);border-radius:10px;padding:16px;margin:14px 0}
+.csma-flow .cf-title{font-size:.75em;font-weight:800;letter-spacing:.8px;color:var(--wifid);text-transform:uppercase;margin-bottom:10px}
+.csma-step{display:flex;gap:12px;align-items:flex-start;padding:8px 0;border-bottom:1px solid #21262d;font-size:.81em;color:#c9d1d9;line-height:1.6}
+.csma-step:last-child{border-bottom:none}
+.csma-step .cs-num{background:var(--wifi);color:#fff;border-radius:50%;min-width:24px;height:24px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.75em;flex-shrink:0;margin-top:1px}
+.csma-step .cs-label{color:var(--wifid);font-weight:700;min-width:60px;flex-shrink:0;font-size:.75em;text-transform:uppercase}
+.csma-step .cs-desc{flex:1}
+
+/* ── WLAN type cards ── */
+.wlan-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:12px 0}
+@media(max-width:480px){.wlan-grid{grid-template-columns:1fr}}
+.wlan-card{border-radius:10px;padding:12px;text-align:center;border:2px solid}
+.wlan-card.wpan{border-color:#e07b00;background:#fff8f0}
+.wlan-card.wlan{border-color:var(--wifi);background:#f3e8ff}
+.wlan-card.wman{border-color:var(--blue);background:#e8f4fb}
+.wlan-card.wwan{border-color:#28a745;background:#f0fff4}
+.wlan-card .wc-type{font-size:1.125em;font-weight:900;margin-bottom:4px}
+.wlan-card.wpan .wc-type{color:#c45200}
+.wlan-card.wlan .wc-type{color:var(--wifi)}
+.wlan-card.wman .wc-type{color:var(--dark)}
+.wlan-card.wwan .wc-type{color:#1e8449}
+.wlan-card .wc-name{font-size:.69em;font-weight:700;color:var(--muted);margin-bottom:6px}
+.wlan-card .wc-std{font-size:.75em;font-weight:700;padding:2px 8px;border-radius:4px;display:inline-block;margin-bottom:4px;color:#fff}
+.wlan-card.wpan .wc-std{background:#e07b00}
+.wlan-card.wlan .wc-std{background:var(--wifi)}
+.wlan-card.wman .wc-std{background:var(--blue)}
+.wlan-card.wwan .wc-std{background:#28a745}
+.wlan-card .wc-detail{font-size:.75em;color:#1a1a2e}
+
+/* ── AP type comparison ── */
+.ap-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:12px 0}
+@media(max-width:480px){.ap-grid{grid-template-columns:1fr}}
+.ap-card{border-radius:10px;overflow:hidden}
+.ap-card .ap-hdr{padding:10px 12px;font-size:.81em;font-weight:800;color:#fff;text-align:center}
+.ap-card.auto .ap-hdr{background:var(--dark)}
+.ap-card.lwap .ap-hdr{background:var(--wifi)}
+.ap-card .ap-body{padding:12px;font-size:.81em;background:#f8f9fa;color:#1a1a2e;line-height:1.7}
+
+/* ── Channel visual ── */
+.channel-box{background:#0d1117;border-radius:10px;padding:16px;margin:12px 0}
+.channel-box .cb-title{font-size:.75em;font-weight:800;letter-spacing:.8px;color:var(--wifid);text-transform:uppercase;margin-bottom:10px}
+.ch-row{display:flex;gap:8px;margin-bottom:8px;align-items:center;flex-wrap:wrap}
+.ch-label{color:#8b949e;font-size:.75em;min-width:50px;flex-shrink:0}
+.ch-band{height:28px;display:flex;align-items:center;justify-content:center;border-radius:6px;font-size:.75em;font-weight:700;color:#fff;flex:1;min-width:60px}
+.ch-band.nonov{background:#27ae60}
+.ch-band.overlap{background:#e07b00;opacity:.6}
+.ch-band.ch5{background:var(--blue)}
+
+/* ── WPA3 feature cards ── */
+.wpa3-grid{display:grid;gap:10px;margin:12px 0}
+.wpa3-card{border-radius:10px;padding:14px;border-left:5px solid var(--wifi);background:#f3e8ff}
+.wpa3-card .w3-title{font-weight:800;font-size:.875em;color:var(--wifi);margin-bottom:4px}
+.wpa3-card .w3-tech{font-size:.75em;font-weight:700;background:var(--wifi);color:#fff;padding:2px 8px;border-radius:4px;display:inline-block;margin-bottom:6px}
+.wpa3-card p{font-size:.81em;color:#1a1a2e;line-height:1.6}
+
+/* ── Threat cards ── */
+.threat-grid{display:grid;gap:10px;margin:12px 0}
+.threat-card{border-radius:10px;padding:14px;border-left:5px solid #dc3545;background:#fff5f5}
+.threat-card .tc-title{font-weight:800;font-size:.875em;color:#c0392b;margin-bottom:4px}
+.threat-card .tc-mit{font-size:.75em;font-weight:700;background:#dc3545;color:#fff;padding:2px 8px;border-radius:4px;display:inline-block;margin-bottom:6px}
+.threat-card p{font-size:.81em;color:#1a1a2e;line-height:1.6}
+
+/* ── Org cards ── */
+.org-grid{display:grid;gap:10px;margin:12px 0}
+.org-card{border-radius:10px;padding:12px 14px;background:#f3e8ff;border-left:4px solid var(--wifi)}
+.org-card .oc-name{font-weight:800;font-size:.875em;color:var(--wifi);margin-bottom:2px}
+.org-card .oc-full{font-size:.75em;color:var(--muted);margin-bottom:6px}
+.org-card p{font-size:.81em;color:#1a1a2e;line-height:1.6}
+
+/* ── Scroll to top ── */
+.tb{position:fixed;bottom:80px;right:16px;background:var(--wifi);color:#fff;border:none;border-radius:50%;width:44px;height:44px;font-size:1.25em;box-shadow:0 4px 14px rgba(0,0,0,.25);cursor:pointer;display:none;align-items:center;justify-content:center;z-index:100}
+.tb.show{display:flex}
+.ft{text-align:center;padding:24px 16px;color:var(--muted);font-size:.81em}
+
+/* ── Module nav bar ── */
+.mod-nav{position:fixed;bottom:0;left:0;right:0;z-index:300;background:#1a1a2e;border-top:1px solid #30363d;display:flex;align-items:center;height:52px;padding:0 8px;gap:6px}
+.mn-hub{background:var(--blue);color:#fff;border:none;border-radius:8px;padding:6px 12px;font-size:.75em;font-weight:700;cursor:pointer;text-decoration:none;display:flex;align-items:center;gap:4px;white-space:nowrap;-webkit-tap-highlight-color:transparent;flex-shrink:0}
+.mn-hub:active{opacity:.8}
+.mn-divider{width:1px;height:28px;background:#30363d;flex-shrink:0}
+.mn-label{flex:1;text-align:center;font-size:.69em;color:#8b949e;font-weight:600;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding:0 4px}
+.mn-prev,.mn-next{background:#30363d;color:#c9d1d9;border:none;border-radius:8px;padding:6px 10px;font-size:.875em;font-weight:700;cursor:pointer;text-decoration:none;display:flex;align-items:center;-webkit-tap-highlight-color:transparent;flex-shrink:0}
+.mn-prev:active,.mn-next:active{background:var(--wifi);color:#fff}
+.mn-prev.disabled,.mn-next.disabled{opacity:.3;pointer-events:none}
+/* Study progress panel */
+.sp-wrap{background:var(--card);margin:16px 16px 0;border-radius:var(--r);box-shadow:var(--sh);overflow:hidden}
+.sp-hdr{background:var(--nt);color:#fff;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;user-select:none;-webkit-tap-highlight-color:transparent;gap:10px}
+.sp-hdr .sp-title{font-weight:700;font-size:.875em;flex-shrink:0}
+.sp-hdr .sp-arr{transition:transform .3s;flex-shrink:0}
+.sp-hdr.open .sp-arr{transform:rotate(180deg)}
+.sp-body{display:none;padding:12px 14px}
+.sp-body.open{display:block}
+.sp-row{display:flex;align-items:center;gap:10px;padding:6px 4px;border-bottom:1px solid #f0f4f8;font-size:.81em}
+.sp-row:last-child{border-bottom:none}
+.sp-row .sr-status{font-size:1em;flex-shrink:0;width:20px;text-align:center}
+.sp-row .sr-nb{font-weight:800;color:var(--nt);min-width:36px;flex-shrink:0;font-size:.875em}
+.sp-row .sr-ttl{color:var(--text);flex:1}
+.sp-row.done .sr-ttl{color:var(--muted);text-decoration:line-through}
+.sc-pills{display:flex;align-items:center;gap:4px;overflow-x:auto;-webkit-overflow-scrolling:touch;flex:1;padding:0 4px}
+.sc-pill{background:#30363d;color:#8b949e;border:2px solid transparent;border-radius:6px;padding:3px 8px;font-size:.72em;font-weight:700;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:all .15s;white-space:nowrap;flex-shrink:0;line-height:1.4;display:flex;align-items:center;gap:3px}
+.sc-pill.checked{background:var(--nt);color:#fff;border-color:var(--ntd)}
+.sc-pill .pill-check{font-size:.875em}
+
+/* v2.1 — In-section check button */
+.sh{position:relative}
+.sec-check{position:absolute;right:40px;top:50%;transform:translateY(-50%);background:rgba(255,255,255,.15);border:2px solid rgba(255,255,255,.4);border-radius:6px;padding:2px 10px;font-size:.72em;font-weight:800;color:#fff;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:all .2s;white-space:nowrap;z-index:10;line-height:1.5}
+.sec-check.checked{background:var(--ntd);border-color:var(--ntd);color:#052e1e}
+.sec-check:active{opacity:.75}
+/* Sections panel + tick colours (these pages never defined --nt/--ntd, so the panel header was invisible) */
+:root{--nt:var(--wifi);--ntd:#4ade80}
+</style>
+<style>.bc{background:#0d1117;padding:8px 16px;display:flex;align-items:center;flex-wrap:wrap;gap:4px;font-size:.75em;overflow-x:auto;white-space:nowrap;-webkit-overflow-scrolling:touch;border-bottom:1px solid #21262d}.bc a{color:#8b949e;text-decoration:none;font-weight:600;flex-shrink:0}.bc a:active{color:#c9d1d9}.bc .sep{color:#6e7681;flex-shrink:0}.bc .cur{color:#1ba0d7;font-weight:700;flex-shrink:0}</style>
+</head>
+<body>
+<nav class="bc"><a href="../../index.html">🏠 Home</a><span class="sep">›</span><a href="index.html">CCNA 2 — SRWE</a><span class="sep">›</span><span class="cur">M12: WLAN Concepts</span></nav>
+
+<!-- FONT SIZE TOGGLE -->
+<div class="fs-bar">
+  <div class="sc-pills" id="sc-pills">
+  <button class="sc-pill" id="pill-s1" onclick="toggleSection('s1',this)"><span class="pill-check">○</span>12.1</button>
+  <button class="sc-pill" id="pill-s2" onclick="toggleSection('s2',this)"><span class="pill-check">○</span>12.2</button>
+  <button class="sc-pill" id="pill-s3" onclick="toggleSection('s3',this)"><span class="pill-check">○</span>12.3</button>
+  <button class="sc-pill" id="pill-s4" onclick="toggleSection('s4',this)"><span class="pill-check">○</span>12.4</button>
+  <button class="sc-pill" id="pill-s5" onclick="toggleSection('s5',this)"><span class="pill-check">○</span>12.5</button>
+  <button class="sc-pill" id="pill-s6" onclick="toggleSection('s6',this)"><span class="pill-check">○</span>12.6</button>
+  <button class="sc-pill" id="pill-s7" onclick="toggleSection('s7',this)"><span class="pill-check">○</span>12.7</button>
+  <button class="sc-pill" id="pill-s8" onclick="toggleSection('s8',this)"><span class="pill-check">○</span>🎯</button>
+  </div>
+  <span class="fs-label" style="flex-shrink:0;margin-left:6px">Size</span>
+  <button class="fs-btn" onclick="setFs('14px',this)">S</button>
+  <button class="fs-btn active" onclick="setFs('16px',this)">M</button>
+  <button class="fs-btn" onclick="setFs('18px',this)">L</button>
+  <button class="fs-btn" onclick="setFs('20px',this)">XL</button>
+</div>
+
+<!-- HEADER -->
+<div class="hdr">
+  <div class="badge">CCNA 2 — SRWE v7.02</div>
+  <h1>📡 Module 12: WLAN Concepts</h1>
+  <p>Switching, Routing &amp; Wireless Essentials · NetAcad Study Guide</p>
+  <div class="obj">Module Objective: Explain how WLANs enable network connectivity</div>
+</div>
+
+<div class="sp-wrap">
+  <div class="sp-hdr" id="sp-hdr" onclick="toggleStudyPanel()">
+    <span class="sp-title">📚 Sections</span>
+    <span class="sp-arr" id="sp-arr">▼</span>
+  </div>
+  <div class="sp-body" id="sp-body">
+    <div class="sp-row" id="row-s1"><span class="sr-status" id="st-s1">○</span><span class="sr-nb">12.1</span><span class="sr-ttl">Introduction to Wireless</span></div>
+    <div class="sp-row" id="row-s2"><span class="sr-status" id="st-s2">○</span><span class="sr-nb">12.2</span><span class="sr-ttl">WLAN Components</span></div>
+    <div class="sp-row" id="row-s3"><span class="sr-status" id="st-s3">○</span><span class="sr-nb">12.3</span><span class="sr-ttl">WLAN Operation</span></div>
+    <div class="sp-row" id="row-s4"><span class="sr-status" id="st-s4">○</span><span class="sr-nb">12.4</span><span class="sr-ttl">CAPWAP Operation</span></div>
+    <div class="sp-row" id="row-s5"><span class="sr-status" id="st-s5">○</span><span class="sr-nb">12.5</span><span class="sr-ttl">Channel Management</span></div>
+    <div class="sp-row" id="row-s6"><span class="sr-status" id="st-s6">○</span><span class="sr-nb">12.6</span><span class="sr-ttl">WLAN Threats</span></div>
+    <div class="sp-row" id="row-s7"><span class="sr-status" id="st-s7">○</span><span class="sr-nb">12.7</span><span class="sr-ttl">Secure WLANs</span></div>
+    <div class="sp-row" id="row-s8"><span class="sr-status" id="st-s8">○</span><span class="sr-nb">🎯</span><span class="sr-ttl">Common Exam Traps — Module 12</span></div>
+  </div>
+</div>
+
+<!-- TABLE OF CONTENTS -->
+<div class="toc">
+  <div class="toch open" onclick="this.classList.toggle('open');document.getElementById('tocb').classList.toggle('open')">
+    📋 Table of Contents — Tap to expand <span class="arr">▼</span>
+  </div>
+  <div class="tocb open" id="tocb">
+    <div class="tocg">12.1 — Introduction to Wireless</div>
+    <a href="javascript:void(0)" onclick="goTo('s1')"><span class="n">12.1.1</span> Benefits of Wireless</a>
+    <a href="javascript:void(0)" onclick="goTo('s1')"><span class="n">12.1.2</span> Types of Wireless Networks</a>
+    <a href="javascript:void(0)" onclick="goTo('s1')"><span class="n">12.1.3</span> Wireless Technologies</a>
+    <a href="javascript:void(0)" onclick="goTo('s1')"><span class="n">12.1.4</span> 802.11 Standards</a>
+    <a href="javascript:void(0)" onclick="goTo('s1')"><span class="n">12.1.5</span> Radio Frequencies</a>
+    <a href="javascript:void(0)" onclick="goTo('s1')"><span class="n">12.1.6</span> Wireless Standards Organizations</a>
+    <div class="tocg">12.2 — WLAN Components</div>
+    <a href="javascript:void(0)" onclick="goTo('s2')"><span class="n">12.2.2</span> Wireless NICs</a>
+    <a href="javascript:void(0)" onclick="goTo('s2')"><span class="n">12.2.3</span> Wireless Home Router</a>
+    <a href="javascript:void(0)" onclick="goTo('s2')"><span class="n">12.2.4</span> Wireless Access Points</a>
+    <a href="javascript:void(0)" onclick="goTo('s2')"><span class="n">12.2.5</span> AP Categories</a>
+    <a href="javascript:void(0)" onclick="goTo('s2')"><span class="n">12.2.6</span> Wireless Antennas</a>
+    <div class="tocg">12.3 — WLAN Operation</div>
+    <a href="javascript:void(0)" onclick="goTo('s3')"><span class="n">12.3.2</span> 802.11 Topology Modes</a>
+    <a href="javascript:void(0)" onclick="goTo('s3')"><span class="n">12.3.3</span> BSS and ESS</a>
+    <a href="javascript:void(0)" onclick="goTo('s3')"><span class="n">12.3.4</span> 802.11 Frame Structure</a>
+    <a href="javascript:void(0)" onclick="goTo('s3')"><span class="n">12.3.5</span> CSMA/CA</a>
+    <a href="javascript:void(0)" onclick="goTo('s3')"><span class="n">12.3.6</span> Client and AP Association</a>
+    <a href="javascript:void(0)" onclick="goTo('s3')"><span class="n">12.3.7</span> Passive and Active Discovery</a>
+    <div class="tocg">12.4 — CAPWAP Operation</div>
+    <a href="javascript:void(0)" onclick="goTo('s4')"><span class="n">12.4.2</span> Introduction to CAPWAP</a>
+    <a href="javascript:void(0)" onclick="goTo('s4')"><span class="n">12.4.3</span> Split MAC Architecture</a>
+    <a href="javascript:void(0)" onclick="goTo('s4')"><span class="n">12.4.4</span> DTLS Encryption</a>
+    <a href="javascript:void(0)" onclick="goTo('s4')"><span class="n">12.4.5</span> FlexConnect APs</a>
+    <div class="tocg">12.5 — Channel Management</div>
+    <a href="javascript:void(0)" onclick="goTo('s5')"><span class="n">12.5.1</span> Channel Saturation Techniques</a>
+    <a href="javascript:void(0)" onclick="goTo('s5')"><span class="n">12.5.2</span> Channel Selection</a>
+    <a href="javascript:void(0)" onclick="goTo('s5')"><span class="n">12.5.3</span> Plan a WLAN Deployment</a>
+    <div class="tocg">12.6 — WLAN Threats</div>
+    <a href="javascript:void(0)" onclick="goTo('s6')"><span class="n">12.6.2</span> Wireless Security Overview</a>
+    <a href="javascript:void(0)" onclick="goTo('s6')"><span class="n">12.6.3</span> DoS Attacks</a>
+    <a href="javascript:void(0)" onclick="goTo('s6')"><span class="n">12.6.4</span> Rogue Access Points</a>
+    <a href="javascript:void(0)" onclick="goTo('s6')"><span class="n">12.6.5</span> Man-in-the-Middle — Evil Twin AP</a>
+    <div class="tocg">12.7 — Secure WLANs</div>
+    <a href="javascript:void(0)" onclick="goTo('s7')"><span class="n">12.7.2</span> SSID Cloaking and MAC Filtering</a>
+    <a href="javascript:void(0)" onclick="goTo('s7')"><span class="n">12.7.3</span> Original Authentication Methods</a>
+    <a href="javascript:void(0)" onclick="goTo('s7')"><span class="n">SEC</span> Security Evolution: WEP → WPA3</a>
+    <a href="javascript:void(0)" onclick="goTo('s7')"><span class="n">12.7.5</span> Home vs Enterprise Authentication</a>
+    <a href="javascript:void(0)" onclick="goTo('s7')"><span class="n">12.7.6</span> Encryption Methods</a>
+    <a href="javascript:void(0)" onclick="goTo('s7')"><span class="n">12.7.7</span> Enterprise Authentication</a>
+    <a href="javascript:void(0)" onclick="goTo('s7')"><span class="n">12.7.8</span> WPA3 Features</a>
+    <div class="tocg">Reference</div>
+    <a href="javascript:void(0)" onclick="goTo('s8')"><span class="n">🎯</span> Common Exam Traps</a>
+  </div>
+</div>
+
+<div class="wrap">
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- SECTION 12.1 — INTRODUCTION TO WIRELESS -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div class="sec" id="s1">
+<div class="sh open" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">12.1</span><span class="ttl">Introduction to Wireless</span></span><button class="sec-check" id="sch-s1" onclick="event.stopPropagation();toggleSection('s1',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb open">
+
+  <div class="sub">
+  <h3><span class="sn">12.1.1</span> Benefits of Wireless</h3>
+  <p>A <strong>WLAN (Wireless LAN)</strong> makes mobility possible within homes and business environments. Without running cable, users connect with laptops, tablets, and smartphones from anywhere within range.</p>
+  <p>Business benefits include cost savings when relocating employees within a building, reorganizing equipment or labs, or moving to temporary locations. A wireless infrastructure adapts rapidly to changing needs without the expense of re-cabling.</p>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">12.1.2</span> Types of Wireless Networks</h3>
+  <div class="wlan-grid">
+    <div class="wlan-card wpan">
+      <div class="wc-type">WPAN</div>
+      <div class="wc-name">Wireless Personal-Area Network</div>
+      <div class="wc-std">IEEE 802.15</div>
+      <div class="wc-detail">Range: 20–30 ft (6–9 m)<br>2.4 GHz<br>Bluetooth, ZigBee</div>
+    </div>
+    <div class="wlan-card wlan">
+      <div class="wc-type">WLAN</div>
+      <div class="wc-name">Wireless Local Area Network</div>
+      <div class="wc-std">IEEE 802.11</div>
+      <div class="wc-detail">Range: up to 300 ft<br>2.4 GHz or 5 GHz<br>Home, office, campus</div>
+    </div>
+    <div class="wlan-card wman">
+      <div class="wc-type">WMAN</div>
+      <div class="wc-name">Wireless Metropolitan Area Network</div>
+      <div class="wc-std">Licensed spectrum</div>
+      <div class="wc-detail">City or district coverage<br>WiMAX (802.16)</div>
+    </div>
+    <div class="wlan-card wwan">
+      <div class="wc-type">WWAN</div>
+      <div class="wc-name">Wireless Wide Area Network</div>
+      <div class="wc-std">Licensed spectrum</div>
+      <div class="wc-detail">National / global<br>4G / 5G cellular</div>
+    </div>
+  </div>
+  <div class="ca info">
+    <span class="ic">📡</span>
+    <div><strong>Exam focus: WLAN (IEEE 802.11).</strong> WPAN (Bluetooth/ZigBee) and WWAN (cellular) are background knowledge only. The CCNA exam focuses exclusively on 802.11-based wireless LAN technology.</div>
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">12.1.3</span> Wireless Technologies</h3>
+  <div class="tw"><table>
+    <tr><th>Technology</th><th>Standard</th><th>Range</th><th>Key Notes</th></tr>
+    <tr><td><strong>Bluetooth</strong></td><td>IEEE 802.15</td><td>Up to 300 ft (100 m)</td><td>BLE = IoT/mesh; BR/EDR = point-to-point audio. Device pairing required.</td></tr>
+    <tr><td><strong>WiMAX</strong></td><td>IEEE 802.16</td><td>Up to 30 miles (50 km)</td><td>Alternative to DSL/cable; used where wired internet is unavailable; tower-based like cellular</td></tr>
+    <tr><td><strong>Cellular (4G/5G)</strong></td><td>GSM / CDMA</td><td>City-wide</td><td>4G = 10× faster than 3G; 5G = 100× faster than 4G. GSM = international; CDMA = primarily US</td></tr>
+    <tr><td><strong>Satellite</strong></td><td>Geostationary</td><td>Global</td><td>Used in rural/remote areas; expensive; requires clear line of sight; directional dish required</td></tr>
+  </table></div>
+  </div>
+
+  <!-- ENHANCEMENT 1 — 802.11 Standard Cards -->
+  <div class="sub">
+  <h3><span class="sn">12.1.4</span> 802.11 Standards</h3>
+  <p>The IEEE 802.11 standards define how radio frequencies are used for wireless links. Newer standards use <strong>MIMO (Multiple-Input Multiple-Output)</strong> — multiple antennas on both transmitter and receiver to increase throughput. Up to 8 antennas supported.</p>
+
+  <div class="std-grid">
+    <div class="std-card band24">
+      <div class="sc-std">
+        <div class="sc-name">802.11b</div>
+        <div class="sc-freq">2.4 GHz</div>
+      </div>
+      <div class="sc-info">
+        <div class="sc-speed">Max: 11 Mbps</div>
+        <div class="sc-notes">Longest range; best wall penetration; the original widely-adopted standard</div>
+      </div>
+    </div>
+    <div class="std-card band5">
+      <div class="sc-std">
+        <div class="sc-name">802.11a</div>
+        <div class="sc-freq">5 GHz</div>
+      </div>
+      <div class="sc-info">
+        <div class="sc-speed">Max: 54 Mbps</div>
+        <div class="sc-notes">Small coverage area; better at avoiding interference; NOT compatible with 802.11b/g</div>
+      </div>
+    </div>
+    <div class="std-card band24">
+      <div class="sc-std">
+        <div class="sc-name">802.11g</div>
+        <div class="sc-freq">2.4 GHz</div>
+      </div>
+      <div class="sc-info">
+        <div class="sc-speed">Max: 54 Mbps</div>
+        <div class="sc-notes">Backward compatible with 802.11b (with reduced bandwidth capacity when mixed)</div>
+      </div>
+    </div>
+    <div class="std-card banddual">
+      <div class="sc-std">
+        <div class="sc-name">802.11n</div>
+        <div class="sc-freq">Dual Band</div>
+      </div>
+      <div class="sc-info">
+        <div class="sc-speed">Max: 150–600 Mbps</div>
+        <div class="sc-notes">First dual-band standard; MIMO required; range up to 70 m; backward compatible with a/b/g</div>
+      </div>
+    </div>
+    <div class="std-card band5">
+      <div class="sc-std">
+        <div class="sc-name">802.11ac</div>
+        <div class="sc-freq">5 GHz</div>
+      </div>
+      <div class="sc-info">
+        <div class="sc-speed">Max: 1.3 Gbps</div>
+        <div class="sc-notes">Wi-Fi 5; MIMO up to 8 antennas; 450 Mbps–1.3 Gbps; backward compatible with a/n</div>
+      </div>
+    </div>
+    <div class="std-card banddual">
+      <div class="sc-std">
+        <div class="sc-name">802.11ax</div>
+        <div class="sc-freq">Dual Band</div>
+      </div>
+      <div class="sc-info">
+        <div class="sc-speed">Multi-Gbps</div>
+        <div class="sc-notes">Wi-Fi 6 / HEW (High Efficiency Wireless); released 2019; OFDMA; improved capacity, power efficiency, and dense-environment performance</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="et">
+    <div class="lbl">🎯 2.4 GHz vs 5 GHz — KNOW THE DIFFERENCE</div>
+    <strong>2.4 GHz:</strong> Longer range, better through walls, more interference (microwaves, cordless phones). Standards: b/g/n/ax<br>
+    <strong>5 GHz:</strong> Shorter range, faster speeds, far less interference, 24 non-overlapping channels. Standards: a/n/ac/ax<br><br>
+    <strong>802.11a is NOT compatible with 802.11b/g</strong> — a is 5 GHz, b/g are 2.4 GHz. They cannot communicate with each other.
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">12.1.5</span> Radio Frequencies</h3>
+  <p>WLAN networks operate in two specific bands of the radio spectrum:</p>
+  <ul>
+    <li><strong>2.4 GHz (UHF)</strong> — used by 802.11b/g/n/ax — longer range, more interference</li>
+    <li><strong>5 GHz (SHF)</strong> — used by 802.11a/n/ac/ax — shorter range, faster, less congested</li>
+  </ul>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">12.1.6</span> Wireless Standards Organizations</h3>
+  <div class="org-grid">
+    <div class="org-card">
+      <div class="oc-name">ITU-R</div>
+      <div class="oc-full">International Telecommunication Union — Radiocommunication Sector</div>
+      <p>Regulates the global allocation of the radio frequency spectrum and satellite orbits. Determines which frequencies are available for WLAN use.</p>
+    </div>
+    <div class="org-card">
+      <div class="oc-name">IEEE</div>
+      <div class="oc-full">Institute of Electrical and Electronics Engineers</div>
+      <p>Defines the 802.11 standard — specifies how radio frequencies are modulated to carry data. Maintains the 802.3 Ethernet and 802.11 WLAN standards.</p>
+    </div>
+    <div class="org-card">
+      <div class="oc-name">Wi-Fi Alliance</div>
+      <div class="oc-full">Global non-profit industry trade association</div>
+      <p>Certifies vendor products for 802.11 interoperability. Awards the "Wi-Fi Certified" designation — ensures devices from different manufacturers work together.</p>
+    </div>
+  </div>
+  </div>
+
+</div></div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- SECTION 12.2 — WLAN COMPONENTS -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div class="sec" id="s2">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">12.2</span><span class="ttl">WLAN Components</span></span><button class="sec-check" id="sch-s2" onclick="event.stopPropagation();toggleSection('s2',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb">
+
+  <div class="sub">
+  <h3><span class="sn">12.2.2</span> Wireless NICs</h3>
+  <p>Wireless communication requires at minimum two devices: one with a wireless NIC (transmitter + receiver) and one network device (AP or wireless router). Most modern devices — laptops, tablets, smartphones — include integrated wireless NICs. Devices without one can use a <strong>USB wireless adapter</strong>.</p>
+  <div class="ca info"><span class="ic">💡</span><div>Most device antennas are embedded internally — you cannot see them on smartphones and laptops. They are not absent, just hidden inside the device casing.</div></div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">12.2.3</span> Wireless Home Router</h3>
+  <p>A home wireless router serves three roles in a single device:</p>
+  <ul>
+    <li><strong>Access Point</strong> — provides 802.11 wireless access and broadcasts the SSID</li>
+    <li><strong>Switch</strong> — typically a 4-port Ethernet switch for wired devices</li>
+    <li><strong>Router</strong> — provides the default gateway for internet access</li>
+  </ul>
+  <p>Wi-Fi range extenders can extend coverage by connecting wirelessly to the router and re-broadcasting the signal — but a dedicated AP provides better performance.</p>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">12.2.4</span> Wireless Access Points</h3>
+  <p>A dedicated AP provides wireless access independently of a router. Clients use their wireless NIC to discover nearby APs by their SSID, then associate and authenticate. After authentication, the client has access to network resources.</p>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">12.2.5</span> AP Categories</h3>
+  <div class="ap-grid">
+    <div class="ap-card auto">
+      <div class="ap-hdr">Autonomous AP</div>
+      <div class="ap-body">
+        <strong>Standalone device</strong> — entire config stored on the AP itself.<br><br>
+        Managed individually via CLI or GUI.<br><br>
+        <strong>Use when:</strong> Only 1–2 APs needed. Each AP must be manually configured and managed.<br><br>
+        <strong>Example:</strong> Home wireless router — a classic autonomous AP.
+      </div>
+    </div>
+    <div class="ap-card lwap">
+      <div class="ap-hdr">Controller-Based AP (LAP)</div>
+      <div class="ap-body">
+        <strong>Lightweight AP (LAP)</strong> — no initial config needed.<br><br>
+        Uses <strong>LWAPP</strong> to communicate with a <strong>WLC (Wireless LAN Controller)</strong>.<br><br>
+        <strong>Use when:</strong> Many APs needed — WLC automatically configures each new AP added.<br><br>
+        WLC connects via <strong>LAG</strong> (Link Aggregation Group) — like EtherChannel, but WLC does NOT support PAgP or LACP.
+      </div>
+    </div>
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">12.2.6</span> Wireless Antennas</h3>
+  <div class="tw"><table>
+    <tr><th>Antenna Type</th><th>Coverage</th><th>Best For</th></tr>
+    <tr><td><strong>Omnidirectional</strong></td><td>360° in all directions equally</td><td>Open offices, conference rooms, hallways, outdoor areas — general coverage</td></tr>
+    <tr><td><strong>Directional</strong> (Yagi, Parabolic dish)</td><td>Focused beam in one direction — stronger in target direction, reduced elsewhere</td><td>Point-to-point links, long-distance connections between buildings</td></tr>
+    <tr><td><strong>MIMO</strong></td><td>Multiple antennas transmit and receive simultaneously</td><td>802.11n/ac/ax APs requiring high throughput — up to 8 antennas supported</td></tr>
+  </table></div>
+  </div>
+
+</div></div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- SECTION 12.3 — WLAN OPERATION -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div class="sec" id="s3">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">12.3</span><span class="ttl">WLAN Operation</span></span><button class="sec-check" id="sch-s3" onclick="event.stopPropagation();toggleSection('s3',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb">
+
+  <div class="sub">
+  <h3><span class="sn">12.3.2</span> 802.11 Wireless Topology Modes</h3>
+  <div class="tw"><table>
+    <tr><th>Mode</th><th>Description</th><th>IEEE Name</th></tr>
+    <tr><td><strong>Ad hoc</strong></td><td>Two devices connect directly peer-to-peer without an AP — e.g., Bluetooth, Wi-Fi Direct</td><td>IBSS (Independent Basic Service Set)</td></tr>
+    <tr><td><strong>Infrastructure</strong></td><td>Wireless clients connect through an AP or wireless router to the wired distribution system</td><td>BSS or ESS</td></tr>
+    <tr><td><strong>Tethering</strong></td><td>A smartphone creates a personal hotspot — other devices connect through its cellular data connection</td><td>Variation of ad hoc</td></tr>
+  </table></div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">12.3.3</span> BSS and ESS</h3>
+  <div class="tw"><table>
+    <tr><th>Term</th><th>What It Is</th><th>Identifier</th><th>Coverage Area</th></tr>
+    <tr><td><strong>BSS</strong> (Basic Service Set)</td><td>A single AP and all its associated wireless clients</td><td><strong>BSSID</strong> = MAC address of the AP — unique per device</td><td>BSA (Basic Service Area)</td></tr>
+    <tr><td><strong>ESS</strong> (Extended Service Set)</td><td>Two or more BSSs joined through a common wired Distribution System (DS)</td><td><strong>SSID</strong> = human-readable name shared by all APs in the ESS</td><td>ESA (Extended Service Area)</td></tr>
+  </table></div>
+
+  <div class="ca danger">
+    <span class="ic">🚨</span>
+    <div><strong>SSID vs BSSID — most confused terms in Module 12.</strong><br>
+    <strong>SSID</strong> = the network name (e.g., "CiscoWiFi") — shared by ALL APs in an ESS. Clients see this name.<br>
+    <strong>BSSID</strong> = the MAC address of ONE specific AP — unique per physical device. Clients don't see this directly.<br>
+    In an ESS, many APs share one SSID but each has its own unique BSSID.</div>
+  </div>
+
+  <div class="ca tip"><span class="ic">✅</span><div><strong>Roaming within an ESS is seamless.</strong> When a client moves from one BSA to another within the same ESS (same SSID, wired DS connecting the APs), it can hand off without losing connectivity. This is how enterprise Wi-Fi allows walking between rooms without dropping the connection.</div></div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">12.3.4</span> 802.11 Frame Structure</h3>
+  <p>Similar to an Ethernet frame but with up to <strong>four address fields</strong> (Ethernet has two) and additional control fields:</p>
+  <div class="tw"><table>
+    <tr><th>Field</th><th>Purpose</th></tr>
+    <tr><td><strong>Frame Control</strong></td><td>Frame type, protocol version, address type, power management, security settings</td></tr>
+    <tr><td><strong>Duration</strong></td><td>Remaining time to receive the next frame transmission</td></tr>
+    <tr><td><strong>Address 1</strong></td><td>MAC address of the receiving device or AP</td></tr>
+    <tr><td><strong>Address 2</strong></td><td>MAC address of the transmitting device or AP</td></tr>
+    <tr><td><strong>Address 3</strong></td><td>MAC address of destination (e.g., default gateway router interface)</td></tr>
+    <tr><td><strong>Sequence Control</strong></td><td>Controls sequencing and fragmented frames</td></tr>
+    <tr><td><strong>Address 4</strong></td><td>Used only in ad hoc (IBSS) mode — usually absent</td></tr>
+    <tr><td><strong>Payload</strong></td><td>Data being transmitted</td></tr>
+    <tr><td><strong>FCS</strong></td><td>Frame Check Sequence — Layer 2 error control</td></tr>
+  </table></div>
+  </div>
+
+  <!-- ENHANCEMENT 3 — CSMA/CA Visual Flow -->
+  <div class="sub">
+  <h3><span class="sn">12.3.5</span> CSMA/CA</h3>
+  <p>WLANs are <strong>half-duplex, shared media</strong> — only one device transmits at a time, and all devices share the same radio channel. A wireless client <strong>cannot detect collisions</strong> because it cannot hear while transmitting.</p>
+  <p>WLANs use <strong>CSMA/CA (Carrier Sense Multiple Access with Collision Avoidance)</strong> — not CSMA/CD used by wired Ethernet:</p>
+
+  <div class="csma-flow">
+    <div class="cf-title">📻 CSMA/CA Process — Six Steps</div>
+    <div class="csma-step"><div class="cs-num">1</div><div class="cs-label">LISTEN</div><div class="cs-desc">Client listens to the channel to see if it is idle — sensing no other traffic currently on the carrier (channel)</div></div>
+    <div class="csma-step"><div class="cs-num">2</div><div class="cs-label">RTS</div><div class="cs-desc">Client sends a <strong style="color:#c084fc">Ready to Send (RTS)</strong> message to the AP requesting dedicated access to the network</div></div>
+    <div class="csma-step"><div class="cs-num">3</div><div class="cs-label">CTS</div><div class="cs-desc">AP replies with a <strong style="color:#6cc24a">Clear to Send (CTS)</strong> message granting the client permission to transmit</div></div>
+    <div class="csma-step"><div class="cs-num">4</div><div class="cs-label">BACKOFF</div><div class="cs-desc">If no CTS is received, client waits a <strong style="color:#f39c12">random backoff time</strong> then restarts the process from Step 1</div></div>
+    <div class="csma-step"><div class="cs-num">5</div><div class="cs-label">TRANSMIT</div><div class="cs-desc">After receiving CTS, client transmits the data frame</div></div>
+    <div class="csma-step"><div class="cs-num">6</div><div class="cs-label">ACK</div><div class="cs-desc">All transmissions must be <strong style="color:#c084fc">acknowledged (ACK)</strong>. If no ACK received, a collision is assumed and the entire process restarts from Step 1</div></div>
+  </div>
+
+  <div class="et">
+    <div class="lbl">🎯 CSMA/CD vs CSMA/CA — KEY DISTINCTION</div>
+    <strong>CSMA/CD</strong> (Collision Detection) = wired Ethernet — detects collisions <em>after</em> they happen, then retransmits.<br><br>
+    <strong>CSMA/CA</strong> (Collision Avoidance) = wireless — tries to <em>prevent</em> collisions before they happen using the RTS/CTS handshake reservation system.<br><br>
+    Wireless uses CA instead of CD because a transmitting wireless client cannot hear other transmissions at the same time — making collision detection impossible.
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">12.3.6</span> Wireless Client and AP Association</h3>
+  <p>Three-stage process for a wireless client to connect:</p>
+  <ol class="steps">
+    <li><strong>Discover</strong> a wireless AP — passive (receive beacons) or active (send probe requests)</li>
+    <li><strong>Authenticate</strong> with the AP — verify identity using the configured security method</li>
+    <li><strong>Associate</strong> with the AP — negotiate parameters and establish the connection</li>
+  </ol>
+  <p>Parameters that must match for successful association:</p>
+  <div class="tw"><table>
+    <tr><th>Parameter</th><th>Description</th></tr>
+    <tr><td><strong>SSID</strong></td><td>Network name — must match; in enterprise, each SSID may map to a VLAN</td></tr>
+    <tr><td><strong>Password</strong></td><td>Pre-shared key required from the client to authenticate</td></tr>
+    <tr><td><strong>Network mode</strong></td><td>802.11 standard — APs in mixed mode support multiple standards simultaneously</td></tr>
+    <tr><td><strong>Security mode</strong></td><td>WEP, WPA, WPA2, or WPA3 — always enable the highest supported</td></tr>
+    <tr><td><strong>Channel settings</strong></td><td>Frequency band — can be automatic or manually configured</td></tr>
+  </table></div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">12.3.7</span> Passive and Active Discovery Mode</h3>
+  <div class="tw"><table>
+    <tr><th>Mode</th><th>Who Initiates</th><th>How It Works</th><th>When Required</th></tr>
+    <tr><td><strong>Passive</strong></td><td>AP broadcasts</td><td>AP continuously sends <strong>beacon frames</strong> with SSID, supported standards, and security settings. Clients listen and choose which network to join.</td><td>Default — always active when SSID broadcast is enabled</td></tr>
+    <tr><td><strong>Active</strong></td><td>Client initiates</td><td>Client sends a <strong>probe request</strong> on multiple channels with the SSID name. APs with that SSID reply with a <strong>probe response</strong>. Client can also probe with no SSID to discover all nearby networks.</td><td>Required when AP has SSID broadcast disabled (SSID cloaking)</td></tr>
+  </table></div>
+  </div>
+
+</div></div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- SECTION 12.4 — CAPWAP OPERATION -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div class="sec" id="s4">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">12.4</span><span class="ttl">CAPWAP Operation</span></span><button class="sec-check" id="sch-s4" onclick="event.stopPropagation();toggleSection('s4',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb">
+
+  <div class="sub">
+  <h3><span class="sn">12.4.2</span> Introduction to CAPWAP</h3>
+  <p><strong>CAPWAP (Control and Provisioning of Wireless Access Points)</strong> is an IEEE standard protocol enabling a WLC to manage multiple APs and WLANs. It encapsulates and forwards WLAN client traffic between APs and the WLC through tunnels.</p>
+  <div class="tw"><table>
+    <tr><th>CAPWAP Fact</th><th>Detail</th></tr>
+    <tr><td><strong>Based on</strong></td><td>LWAPP — but adds DTLS security</td></tr>
+    <tr><td><strong>Transport</strong></td><td>UDP — ports <strong>5246</strong> (control) and <strong>5247</strong> (data)</td></tr>
+    <tr><td><strong>IP version</strong></td><td>IPv4 by default (can use IPv6)</td></tr>
+    <tr><td><strong>IP protocols</strong></td><td>IPv4 = IP protocol 17; IPv6 = IP protocol 136</td></tr>
+  </table></div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">12.4.3</span> Split MAC Architecture</h3>
+  <p>CAPWAP distributes MAC functions between the AP and the WLC — time-sensitive real-time tasks stay at the AP; management-level functions are centralized at the WLC:</p>
+  <div class="tw"><table>
+    <tr><th>AP MAC Functions</th><th>WLC MAC Functions</th></tr>
+    <tr><td>Beacons and probe responses</td><td>Authentication</td></tr>
+    <tr><td>Packet acknowledgements and retransmissions</td><td>Association and re-association of roaming clients</td></tr>
+    <tr><td>Frame queueing and packet prioritization</td><td>Frame translation to other protocols</td></tr>
+    <tr><td>MAC layer data encryption and decryption</td><td>Termination of 802.11 traffic on a wired interface</td></tr>
+  </table></div>
+  <div class="ca info"><span class="ic">💡</span><div>The AP handles everything that needs to happen in real time (acknowledgements, beacons). The WLC handles everything that can be centralized (authentication, roaming, management). This split allows one WLC to manage hundreds of APs simultaneously.</div></div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">12.4.4</span> DTLS Encryption</h3>
+  <p><strong>DTLS (Datagram Transport Layer Security)</strong> provides encryption between the AP and the WLC — prevents eavesdropping and MITM attacks on the management tunnel.</p>
+  <div class="tw"><table>
+    <tr><th>Channel</th><th>DTLS Default</th><th>Notes</th></tr>
+    <tr><td><strong>Control channel</strong> (CAPWAP management)</td><td>✅ <strong>Enabled by default</strong></td><td>All management traffic between AP and WLC is always encrypted</td></tr>
+    <tr><td><strong>Data channel</strong> (WLAN client traffic)</td><td>❌ <strong>Disabled by default</strong></td><td>Optional — requires a DTLS license on the WLC; when enabled, all client traffic is encrypted at the AP before forwarding to WLC</td></tr>
+  </table></div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">12.4.5</span> FlexConnect APs</h3>
+  <p><strong>FlexConnect</strong> enables branch office AP management from a corporate WLC over a WAN link — no local WLC needed at each branch.</p>
+  <div class="tw"><table>
+    <tr><th>Mode</th><th>WLC Status</th><th>AP Behavior</th></tr>
+    <tr><td><strong>Connected mode</strong></td><td>WLC reachable</td><td>Full CAPWAP tunnel operational; WLC performs all management functions normally</td></tr>
+    <tr><td><strong>Standalone mode</strong></td><td>WLC unreachable</td><td>AP operates independently; authenticates clients locally; switches data traffic locally — branch stays operational even if WAN link fails</td></tr>
+  </table></div>
+  <div class="ca tip"><span class="ic">✅</span><div><strong>Standalone mode is the key FlexConnect advantage.</strong> If the WAN link to the corporate office goes down, branch wireless clients can still authenticate and access local resources. Without FlexConnect, WAN failure = no wireless at the branch.</div></div>
+  </div>
+
+</div></div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- SECTION 12.5 — CHANNEL MANAGEMENT -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div class="sec" id="s5">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">12.5</span><span class="ttl">Channel Management</span></span><button class="sec-check" id="sch-s5" onclick="event.stopPropagation();toggleSection('s5',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb">
+
+  <div class="sub">
+  <h3><span class="sn">12.5.1</span> Frequency Channel Saturation Techniques</h3>
+  <div class="tw"><table>
+    <tr><th>Technique</th><th>How It Works</th><th>Used By</th></tr>
+    <tr><td><strong>DSSS</strong><br>Direct-Sequence Spread Spectrum</td><td>Spreads the signal across a wider frequency band — hides the discernible peak, harder to intercept or jam</td><td>802.11b</td></tr>
+    <tr><td><strong>FHSS</strong><br>Frequency-Hopping Spread Spectrum</td><td>Rapidly switches transmissions across many channels in a synchronized pattern — sender and receiver jump together</td><td>Original 802.11; Bluetooth; 900 MHz cordless phones</td></tr>
+    <tr><td><strong>OFDM</strong><br>Orthogonal Frequency-Division Multiplexing</td><td>Uses multiple sub-channels on adjacent frequencies that are precisely orthogonal — can overlap without interfering</td><td>802.11a/g/n/ac; 802.11ax uses OFDMA (variant)</td></tr>
+  </table></div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">12.5.2</span> Channel Selection</h3>
+
+  <div class="channel-box">
+    <div class="cb-title">📻 2.4 GHz — Non-Overlapping Channels</div>
+    <div class="ch-row">
+      <span class="ch-label">Non-overlap:</span>
+      <div class="ch-band nonov">Ch 1</div>
+      <div class="ch-band nonov">Ch 6</div>
+      <div class="ch-band nonov">Ch 11</div>
+    </div>
+    <div class="ch-row">
+      <span class="ch-label">Overlap zone:</span>
+      <div class="ch-band overlap">Ch 2</div>
+      <div class="ch-band overlap">Ch 3</div>
+      <div class="ch-band overlap">Ch 4</div>
+      <div class="ch-band overlap">Ch 5</div>
+      <div class="ch-band overlap">Ch 7</div>
+      <div class="ch-band overlap">Ch 8</div>
+    </div>
+    <p style="color:#8b949e;font-size:.75em;margin-top:8px">11 channels total in North America (13 in Europe, 14 in Japan). Each channel is 22 MHz wide, separated by 5 MHz. Only channels 1, 6, and 11 are non-overlapping.</p>
+  </div>
+
+  <div class="channel-box" style="border-color:#1ba0d7;margin-top:10px">
+    <div class="cb-title" style="color:#1ba0d7">📶 5 GHz — 24 Non-Overlapping Channels</div>
+    <div class="ch-row">
+      <span class="ch-label">All clear:</span>
+      <div class="ch-band ch5">Ch 36</div>
+      <div class="ch-band ch5">Ch 40</div>
+      <div class="ch-band ch5">Ch 44</div>
+      <div class="ch-band ch5">Ch 48</div>
+      <div class="ch-band ch5">Ch 52</div>
+      <div class="ch-band ch5">Ch 56</div>
+    </div>
+    <p style="color:#8b949e;font-size:.75em;margin-top:8px">24 channels total, separated by 20 MHz. None overlap. Much less interference than 2.4 GHz. The large number of clean channels makes 5 GHz ideal for dense deployments.</p>
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">12.5.3</span> Plan a WLAN Deployment</h3>
+  <p>Best practices for AP placement:</p>
+  <ul>
+    <li>Note existing wiring and locations where APs cannot physically be placed</li>
+    <li>Identify interference sources: <strong>microwave ovens, cordless phones, baby monitors, fluorescent lights, motion detectors, wireless video cameras</strong> — all operate in or near 2.4 GHz</li>
+    <li>Position APs <strong>above obstructions</strong></li>
+    <li>Position APs <strong>vertically near the ceiling</strong> in the center of each coverage area</li>
+    <li>Place APs where users gather — <strong>conference rooms are better than hallways</strong></li>
+    <li>Use <strong>non-overlapping channels</strong> for adjacent APs (channels 1, 6, 11 for 2.4 GHz)</li>
+  </ul>
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Mixed-mode networks run at the speed of the slowest connected client.</strong> If an 802.11n AP also supports 802.11b/g clients, the presence of even one slower client forces the AP to accommodate that older standard — reducing overall network performance for all clients.</div></div>
+  </div>
+
+</div></div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- SECTION 12.6 — WLAN THREATS -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div class="sec" id="s6">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">12.6</span><span class="ttl">WLAN Threats</span></span><button class="sec-check" id="sch-s6" onclick="event.stopPropagation();toggleSection('s6',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb">
+
+  <div class="sub">
+  <h3><span class="sn">12.6.2</span> Wireless Security Overview</h3>
+  <p>A WLAN is open to anyone within range of an AP — an attacker does not need physical access to the building to capture wireless traffic. Attacks come from outsiders, disgruntled employees, and even accidentally from legitimate employees.</p>
+  <div class="tw"><table>
+    <tr><th>Threat</th><th>Description</th><th>Mitigation</th></tr>
+    <tr><td><strong>Interception of data</strong></td><td>Eavesdroppers capture wireless frames without encryption</td><td>Encrypt all wireless traffic — WPA2/WPA3</td></tr>
+    <tr><td><strong>Wireless intruders</strong></td><td>Unauthorized users attempt to access network resources</td><td>Strong authentication (802.1X / WPA2 Enterprise)</td></tr>
+    <tr><td><strong>DoS attacks</strong></td><td>Interference that disrupts or disables WLAN services</td><td>Use 5 GHz; RF monitoring; WLC management</td></tr>
+    <tr><td><strong>Rogue APs</strong></td><td>Unauthorized APs connected to the corporate network</td><td>WLC rogue AP detection; RF spectrum monitoring</td></tr>
+  </table></div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">12.6.3</span> DoS Attacks</h3>
+  <p>Wireless DoS attacks result from three sources:</p>
+  <ul>
+    <li><strong>Improperly configured devices</strong> — admin error or intentional misconfiguration by an intruder with admin access</li>
+    <li><strong>Malicious interference</strong> — attacker deliberately generates RF interference to prevent legitimate wireless communication</li>
+    <li><strong>Accidental interference</strong> — microwave ovens, cordless phones, baby monitors, motion detectors, other 2.4 GHz devices</li>
+  </ul>
+  <div class="ca info"><span class="ic">💡</span><div>The <strong>2.4 GHz band is far more prone to accidental interference</strong> than the 5 GHz band — one major reason to prefer 5 GHz when higher speeds and reliability are needed.</div></div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">12.6.4</span> Rogue Access Points</h3>
+  <p>A <strong>rogue AP</strong> is an AP or wireless router connected to the corporate network <strong>without explicit authorization</strong>. Can be installed maliciously or by a well-intentioned employee wanting better coverage.</p>
+  <p>Once connected, a rogue AP can be used to:</p>
+  <ul>
+    <li>Capture MAC addresses and data packets</li>
+    <li>Gain access to network resources behind the AP</li>
+    <li>Launch a man-in-the-middle attack</li>
+  </ul>
+  <p>A user's personal smartphone hotspot also qualifies as a rogue AP if it circumvents corporate security — other devices sharing through it bypass the corporate security infrastructure entirely.</p>
+  <div class="ca tip"><span class="ic">✅</span><div><strong>Mitigation:</strong> Configure the WLC with rogue AP detection policies and use wireless management software to actively monitor the RF spectrum for unauthorized APs.</div></div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">12.6.5</span> Man-in-the-Middle — The Evil Twin AP Attack</h3>
+  <p>The most common wireless MITM attack uses an <strong>evil twin AP</strong>:</p>
+  <ol class="steps">
+    <li>Attacker sets up a rogue AP configured with the <strong>exact same SSID</strong> as a legitimate AP in a public location (airport, cafe, hotel)</li>
+    <li>Clients near the rogue AP see a stronger signal and associate with the evil twin instead of the legitimate AP</li>
+    <li>All client traffic flows to the rogue AP — attacker <strong>captures passwords, credentials, and data</strong></li>
+    <li>Rogue AP forwards traffic to the legitimate AP — return traffic is captured and forwarded back to the client</li>
+    <li>Neither the client nor the legitimate AP is aware — the attacker reads everything silently</li>
+  </ol>
+  <div class="ca danger"><span class="ic">🚨</span><div><strong>Open Wi-Fi environments are the primary target.</strong> Airports, cafes, and restaurants use open authentication with no PSK — making it trivial to impersonate the SSID. Any device that connects based purely on SSID name and signal strength is vulnerable. Mitigation: authenticate all wireless devices; WLC rogue AP detection; RF monitoring for duplicate SSIDs.</div></div>
+  </div>
+
+</div></div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- SECTION 12.7 — SECURE WLANs -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div class="sec" id="s7">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">12.7</span><span class="ttl">Secure WLANs</span></span><button class="sec-check" id="sch-s7" onclick="event.stopPropagation();toggleSection('s7',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb">
+
+  <div class="sub">
+  <h3><span class="sn">12.7.2</span> SSID Cloaking and MAC Address Filtering</h3>
+  <p>Two early security features still available on most APs — but both are weak and easily defeated:</p>
+  <div class="tw"><table>
+    <tr><th>Feature</th><th>How It Works</th><th>Weakness</th></tr>
+    <tr><td><strong>SSID Cloaking</strong></td><td>Disables SSID broadcast in AP beacon frames. Clients must manually configure the SSID to connect.</td><td>SSIDs are still discoverable using wireless scanners — probe requests and responses still reveal the SSID. Security by obscurity only.</td></tr>
+    <tr><td><strong>MAC Address Filtering</strong></td><td>Admin manually permits or denies clients based on their MAC address. Only listed MACs can associate.</td><td>MAC addresses can be spoofed — attacker captures a valid MAC and impersonates it. Maintaining the list is also labor-intensive.</td></tr>
+  </table></div>
+  <div class="ca danger"><span class="ic">🚨</span><div>Neither SSID cloaking nor MAC address filtering are real security controls. Both are easily defeated by any attacker with basic tools. They are NOT substitutes for proper encryption and authentication. Always use WPA2 or WPA3.</div></div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">12.7.3</span> Original 802.11 Authentication Methods</h3>
+  <div class="tw"><table>
+    <tr><th>Method</th><th>Description</th><th>Use Case</th></tr>
+    <tr><td><strong>Open system authentication</strong></td><td>No real authentication — any client can connect</td><td>Public Wi-Fi where security is the user's responsibility (they should use a VPN)</td></tr>
+    <tr><td><strong>Shared key authentication</strong></td><td>Mechanisms including WEP, WPA, WPA2, WPA3 — authenticate and encrypt with a pre-shared password</td><td>All scenarios where network security is required</td></tr>
+  </table></div>
+  </div>
+
+  <!-- ENHANCEMENT 2 — Security Evolution Timeline -->
+  <div class="sub">
+  <h3><span class="sn">SEC</span> Security Evolution: WEP → WPA → WPA2 → WPA3</h3>
+  <p>Each generation addressed critical weaknesses in the previous standard:</p>
+
+  <div class="sec-timeline">
+    <div class="sec-item wep">
+      <div class="si-left">
+        <div class="si-name">WEP</div>
+        <div class="si-enc">RC4 static</div>
+      </div>
+      <div class="si-right">
+        <div class="si-status">❌ NEVER USE</div>
+        <strong>Wired Equivalent Privacy</strong> — Original 802.11 spec. Uses RC4 encryption with a <strong>static key that never changes</strong> between packets. Trivially crackable in minutes with freely available tools. The key never rotates, so capturing enough traffic reveals the key completely.
+      </div>
+    </div>
+    <div class="sec-item wpa">
+      <div class="si-left">
+        <div class="si-name">WPA</div>
+        <div class="si-enc">TKIP</div>
+      </div>
+      <div class="si-right">
+        <div class="si-status">⚠️ DEPRECATED</div>
+        <strong>Wi-Fi Protected Access</strong> — Introduced <strong>TKIP (Temporal Key Integrity Protocol)</strong> which changes the encryption key <strong>per packet</strong>. Addressed WEP's static key flaw. Also added a Message Integrity Check (MIC). Still uses RC4 under the hood — now considered deprecated and insecure.
+      </div>
+    </div>
+    <div class="sec-item wpa2">
+      <div class="si-left">
+        <div class="si-name">WPA2</div>
+        <div class="si-enc">AES/CCMP</div>
+      </div>
+      <div class="si-right">
+        <div class="si-status">✅ RECOMMENDED</div>
+        <strong>Wi-Fi Protected Access 2</strong> — Uses <strong>AES (Advanced Encryption Standard)</strong> with <strong>CCMP</strong> (Counter Cipher Mode with Block Chaining Message Authentication Code Protocol). Currently the industry standard. AES is considered the strongest encryption method. Detects if encrypted or unencrypted bits have been altered. Use WPA2 when WPA3 is not available.
+      </div>
+    </div>
+    <div class="sec-item wpa3">
+      <div class="si-left">
+        <div class="si-name">WPA3</div>
+        <div class="si-enc">SAE/192-bit</div>
+      </div>
+      <div class="si-right">
+        <div class="si-status">✅ BEST — USE IF AVAILABLE</div>
+        <strong>Wi-Fi Protected Access 3</strong> — Uses <strong>SAE (Simultaneous Authentication of Equals)</strong> for personal networks. The PSK is <strong>never exposed during the handshake</strong> — prevents brute force attacks that captured and analyzed the WPA2 handshake offline. Enterprise mode requires a 192-bit cryptographic suite. Open networks use OWE encryption. IoT devices use DPP for onboarding.
+      </div>
+    </div>
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">12.7.5</span> Home vs Enterprise Authentication</h3>
+  <div class="tw"><table>
+    <tr><th>Mode</th><th>Authentication</th><th>Infrastructure Needed</th><th>Best For</th></tr>
+    <tr><td><strong>WPA2 Personal</strong></td><td>Pre-shared key (PSK) — same password configured on AP and given to users</td><td>No server required</td><td>Home, small office — simple and convenient</td></tr>
+    <tr><td><strong>WPA2 Enterprise</strong></td><td>802.1X / EAP — individual user credentials via RADIUS server</td><td>Requires RADIUS authentication server (e.g., Cisco ISE)</td><td>Enterprise — per-user authentication, full AAA logging</td></tr>
+  </table></div>
+  <div class="ca info"><span class="ic">💡</span><div>In WPA2 Personal, the "shared key" is the pre-shared password given to everyone. In WPA2 Enterprise, the "shared key" is between the AP and the RADIUS server only — end users never see or use it. Users authenticate with their individual 802.1X credentials.</div></div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">12.7.6</span> Encryption Methods</h3>
+  <div class="tw"><table>
+    <tr><th>Protocol</th><th>Used By</th><th>Mechanism</th><th>Status</th></tr>
+    <tr><td><strong>TKIP</strong><br>Temporal Key Integrity Protocol</td><td>WPA</td><td>Changes key per packet; Message Integrity Check (MIC); built on RC4</td><td>⚠️ Deprecated</td></tr>
+    <tr><td><strong>AES</strong><br>Advanced Encryption Standard</td><td>WPA2</td><td>CCMP — Counter Cipher Mode with Block Chaining Message Authentication; detects altered bits; strongest widely-used protocol</td><td>✅ Current standard</td></tr>
+  </table></div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">12.7.7</span> Authentication in the Enterprise (RADIUS)</h3>
+  <p>Enterprise WPA2 requires a RADIUS server. Three parameters must be configured on the AP:</p>
+  <div class="tw"><table>
+    <tr><th>Parameter</th><th>Value</th></tr>
+    <tr><td><strong>RADIUS server IP</strong></td><td>IP address of the authentication server</td></tr>
+    <tr><td><strong>UDP ports</strong></td><td><strong>1812</strong> (authentication) and <strong>1813</strong> (accounting) — or legacy 1645/1646</td></tr>
+    <tr><td><strong>Shared key</strong></td><td>Used between the AP and RADIUS server only — not given to end users</td></tr>
+  </table></div>
+  <p>End users authenticate via <strong>802.1X/EAP (Extensible Authentication Protocol)</strong> — a flexible framework that provides the actual authentication mechanism and negotiates a secure session key for WPA2 AES encryption.</p>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">12.7.8</span> WPA3 Features</h3>
+  <div class="wpa3-grid">
+    <div class="wpa3-card">
+      <div class="w3-title">WPA3-Personal</div>
+      <div class="w3-tech">SAE — Simultaneous Authentication of Equals</div>
+      <p>Replaces WPA2's PSK handshake. The password is never exposed during the handshake — prevents brute force attacks. Even if an attacker captures the handshake, they cannot perform offline dictionary attacks. Specified in IEEE 802.11-2016.</p>
+    </div>
+    <div class="wpa3-card">
+      <div class="w3-title">WPA3-Enterprise</div>
+      <div class="w3-tech">192-bit cryptographic suite (CNSA)</div>
+      <p>Still uses 802.1X/EAP but requires a minimum 192-bit cryptographic suite. Adheres to the Commercial National Security Algorithm (CNSA) Suite. Eliminates mixing of legacy security protocols. For high-security Wi-Fi networks.</p>
+    </div>
+    <div class="wpa3-card">
+      <div class="w3-title">Open Networks</div>
+      <div class="w3-tech">OWE — Opportunistic Wireless Encryption</div>
+      <p>WPA2 open networks send traffic in clear text. WPA3 open networks use OWE to encrypt all traffic even without authentication. Users still don't need a password, but their traffic is protected from passive eavesdropping.</p>
+    </div>
+    <div class="wpa3-card">
+      <div class="w3-title">IoT Onboarding</div>
+      <div class="w3-tech">DPP — Device Provisioning Protocol</div>
+      <p>Replaces the vulnerable WPS. Headless IoT devices have a hardcoded public key — usually as a QR code on the device. Admin scans the QR code to onboard the device automatically. No manual configuration needed. DPP will replace WPS over time.</p>
+    </div>
+  </div>
+  </div>
+
+</div></div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- SECTION 12.8 — EXAM TRAPS -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div class="sec" id="s8">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">🎯</span><span class="ttl">Common Exam Traps — Module 12</span></span><button class="sec-check" id="sch-s8" onclick="event.stopPropagation();toggleSection('s8',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb">
+
+  <div class="ca danger"><span class="ic">❌</span><div><strong>Trap 1: SSID vs BSSID — the most confused terms in this module.</strong><br>SSID = the human-readable network name shared by all APs in an ESS. BSSID = the MAC address of one specific AP — unique per device. Many APs share one SSID; each has its own BSSID.</div></div>
+
+  <div class="ca danger"><span class="ic">❌</span><div><strong>Trap 2: CSMA/CA — NOT CSMA/CD.</strong><br>Wired Ethernet uses CSMA/CD (Collision Detection — detects after). Wireless uses CSMA/CA (Collision Avoidance — prevents before). The difference: wireless clients cannot detect collisions because they cannot hear while transmitting. The RTS/CTS reservation system is the avoidance mechanism.</div></div>
+
+  <div class="ca danger"><span class="ic">❌</span><div><strong>Trap 3: 2.4 GHz non-overlapping channels = 1, 6, and 11 only.</strong><br>Only these three channels in North America don't overlap. All others interfere with adjacent channels. Adjacent APs must use channels 1, 6, and 11 to avoid mutual interference. The 5 GHz band has 24 non-overlapping channels and avoids this problem entirely.</div></div>
+
+  <div class="ca danger"><span class="ic">❌</span><div><strong>Trap 4: 802.11a is NOT compatible with 802.11b or 802.11g.</strong><br>802.11a operates at 5 GHz. 802.11b/g operate at 2.4 GHz. They cannot communicate with each other because they use completely different frequency bands. 802.11n was the first standard to span both bands.</div></div>
+
+  <div class="ca danger"><span class="ic">❌</span><div><strong>Trap 5: WEP is completely broken — never the correct answer for security.</strong><br>WEP uses a static RC4 key that never changes. It is trivially crackable in minutes. When the exam asks for a secure authentication method, WEP is always wrong. Never recommend WEP under any circumstance.</div></div>
+
+  <div class="ca danger"><span class="ic">❌</span><div><strong>Trap 6: WPA uses TKIP — WPA2 uses AES.</strong><br>Always match encryption to the correct protocol. TKIP = WPA (deprecated). AES with CCMP = WPA2 (current standard). These are frequently reversed on the exam.</div></div>
+
+  <div class="ca danger"><span class="ic">❌</span><div><strong>Trap 7: CAPWAP ports are UDP 5246 and 5247.</strong><br>Control channel = 5246. Data channel = 5247. These are frequently tested. CAPWAP is built on LWAPP but adds DTLS security. Default IP version is IPv4.</div></div>
+
+  <div class="ca danger"><span class="ic">❌</span><div><strong>Trap 8: DTLS is ON by default for CAPWAP control — OFF for data.</strong><br>Management traffic between AP and WLC is always encrypted. Client data forwarded through the tunnel is NOT encrypted by default — requires a DTLS license and explicit enablement.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 9: Autonomous AP vs Lightweight AP (LAP).</strong><br>Autonomous = standalone, full config on the device, home router is the classic example, good for 1-2 APs. Lightweight = no initial config, managed by WLC via CAPWAP, automatically configured, scales to hundreds of APs.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 10: SSID cloaking and MAC filtering are not real security.</strong><br>SSID cloaking: SSIDs are still discoverable with a wireless scanner — probe requests reveal the SSID even without beacons. MAC filtering: MAC addresses are easily spoofed. Neither is a substitute for WPA2/WPA3 authentication and encryption.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 11: WPA3-Personal uses SAE — not PSK.</strong><br>SAE is the key improvement over WPA2-Personal. The pre-shared password is never transmitted during the SAE handshake — preventing offline brute force attacks that could crack WPA2 PSK from a captured handshake.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 12: FlexConnect standalone mode keeps branch wireless up when WAN fails.</strong><br>In connected mode, the WLC does everything. In standalone mode (WAN link down), the FlexConnect AP handles local authentication and data switching independently — branch stays operational.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 13: RADIUS ports for wireless enterprise — 1812 auth, 1813 accounting.</strong><br>Same ports as wired 802.1X (Module 10). Alternative legacy ports: 1645 and 1646. Know both sets. The shared key between AP and RADIUS is NOT given to end users — it only authenticates the AP to the server.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 14: Mixed-mode networks run at the speed of the slowest client.</strong><br>A single 802.11b client connecting to an 802.11n AP in mixed mode degrades performance for all other clients. When possible, configure APs for single-standard operation to maintain maximum throughput.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 15: BSS vs ESS and roaming.</strong><br>BSS = one AP + its clients. ESS = multiple APs sharing the same SSID connected by a wired DS. Seamless roaming is only possible within an ESS — moving between BSSs in the same ESS maintains connectivity. Moving between different SSIDs breaks the connection.</div></div>
+
+  <div class="ca tip"><span class="ic">✅</span><div><strong>Module 12 quick-reference summary:</strong><br><br>
+  Non-overlapping 2.4 GHz channels: <strong>1, 6, 11</strong><br>
+  5 GHz non-overlapping channels: <strong>24 total</strong> — no overlap problem<br>
+  CAPWAP ports: <strong>UDP 5246 (control) / 5247 (data)</strong><br>
+  DTLS: <strong>control ON by default / data OFF by default</strong><br>
+  WEP = RC4 static → <strong>Never use</strong><br>
+  WPA = TKIP → <strong>Deprecated</strong><br>
+  WPA2 = AES/CCMP → <strong>Recommended</strong><br>
+  WPA3 = SAE/OWE/DPP → <strong>Best — use when available</strong><br>
+  CSMA/CA: Listen → RTS → CTS → Transmit → ACK<br>
+  SSID = network name (ESS-wide); BSSID = MAC of one AP</div></div>
+
+</div></div>
+
+</div><!-- end .wrap -->
+
+<div class="ft">
+  CCNA 2 SRWE v7.02 — Module 12: WLAN Concepts v2.2<br>
+  Based on Cisco NetAcad curriculum · Study guide for personal use
+</div>
+
+<button class="tb" id="topb" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+
+<!-- MODULE NAVIGATION BAR -->
+<div class="mod-nav">
+  <a class="mn-hub" href="index.html">🏠 Hub</a>
+  <div class="mn-divider"></div>
+  <a class="mn-prev" href="ccna2_module11_switch_security_configuration_v2.2.html">‹</a>
+  <span class="mn-label">M12 of 16</span>
+  <a class="mn-next" href="ccna2_module13_wlan_configuration_v2.2.html">›</a>
+</div>
+
+<script>
+var MOD_KEY="ccna2-module12-wlan-concepts";
+var SECS=["s1","s2","s3","s4","s5","s6","s7","s8"];
+var checked={};
+function loadState(){
+  try{var s=localStorage.getItem(MOD_KEY);if(s)checked=JSON.parse(s);}catch(e){}
+  SECS.forEach(function(id){
+    var pill=document.getElementById('pill-'+id);
+    var row=document.getElementById('row-'+id);
+    var st=document.getElementById('st-'+id);
+    var sch=document.getElementById('sch-'+id);
+    if(checked[id]){
+      if(pill){pill.classList.add('checked');pill.querySelector('.pill-check').textContent='✓';}
+      if(row)row.classList.add('done');
+      if(st)st.textContent='✓';
+      if(sch){sch.classList.add('checked');sch.textContent='✓ Done';}
+    } else {
+      if(pill){pill.classList.remove('checked');pill.querySelector('.pill-check').textContent='○';}
+      if(row)row.classList.remove('done');
+      if(st)st.textContent='○';
+      if(sch){sch.classList.remove('checked');sch.textContent='○ Mark done';}
+    }
+  });
+}
+function toggleSection(id,btn){checked[id]=!checked[id];try{localStorage.setItem(MOD_KEY,JSON.stringify(checked));}catch(e){}loadState();}
+function toggleStudyPanel(){
+  var hdr=document.getElementById('sp-hdr');
+  var body=document.getElementById('sp-body');
+  var arr=document.getElementById('sp-arr');
+  hdr.classList.toggle('open');body.classList.toggle('open');
+  if(arr)arr.textContent=body.classList.contains('open')?'▲':'▼';
+}
+function goTo(id){var el=document.getElementById(id);if(!el)return;var h=el.querySelector('.sh,.section-header'),b=el.querySelector('.sb,.section-body');if(h&&b&&!b.classList.contains('open')){h.classList.add('open');b.classList.add('open');}setTimeout(function(){window.scrollTo({top:el.getBoundingClientRect().top+window.pageYOffset-60,behavior:'smooth'});},50);}
+function setFs(size,btn){document.documentElement.style.setProperty('--base-fs',size);document.querySelectorAll('.fs-btn').forEach(function(b){b.classList.remove('active');});btn.classList.add('active');try{localStorage.setItem('ccna-fs',size);}catch(e){}}
+(function(){try{var s=localStorage.getItem('ccna-fs');if(s){document.documentElement.style.setProperty('--base-fs',s);document.querySelectorAll('.fs-btn').forEach(function(b){b.classList.remove('active');if((b.textContent==='S'&&s==='14px')||(b.textContent==='M'&&s==='16px')||(b.textContent==='L'&&s==='18px')||(b.textContent==='XL'&&s==='20px'))b.classList.add('active');});}}catch(e){}loadState();})();
+function copyCode(b){var t=b.closest('.cw').querySelector('pre').innerText;if(navigator.clipboard){navigator.clipboard.writeText(t).then(function(){b.textContent='Copied!';setTimeout(function(){b.textContent='Copy';},1500);}).catch(function(){fb(t,b);});}else{fb(t,b);}}
+function fb(t,b){var a=document.createElement('textarea');a.value=t;a.style.position='fixed';a.style.opacity='0';document.body.appendChild(a);a.focus();a.select();document.execCommand('copy');document.body.removeChild(a);b.textContent='Copied!';setTimeout(function(){b.textContent='Copy';},1500);}
+</script>
+<script src="../../site-config.js"></script>
+</body>
+</html>

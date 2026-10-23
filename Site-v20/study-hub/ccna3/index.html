@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=2.0">
+<title>CCNA 3 ENSA — Study Guide Hub</title>
+<style>
+:root{--blue:#1ba0d7;--dark:#005073;--green:#6cc24a;--bg:#f4f6f8;--card:#fff;--text:#1a1a2e;--muted:#5a6a7a;--r:12px;--sh:0 2px 12px rgba(0,0,0,.08);--base-fs:16px}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);font-size:var(--base-fs);line-height:1.6;padding-bottom:40px}
+.hdr{background:linear-gradient(135deg,#1a3a5c,var(--dark));color:#fff;padding:28px 20px 22px;text-align:center}
+.hdr .course-badge{display:inline-block;background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.4);border-radius:20px;padding:4px 14px;font-size:.81em;margin-bottom:10px}
+.hdr h1{font-size:1.5em;font-weight:700;margin-bottom:4px}
+.hdr .subtitle{display:inline-block;background:rgba(255,255,255,.15);border-radius:8px;padding:5px 14px;margin-top:10px;font-size:.81em}
+.wrap{padding:0 16px}
+.group{background:var(--card);border-radius:var(--r);box-shadow:var(--sh);margin-bottom:14px;overflow:hidden}
+.group-title{font-size:.69em;font-weight:800;letter-spacing:.8px;text-transform:uppercase;color:var(--dark);padding:6px 12px;background:#d0e8f5;border-radius:6px;display:flex;justify-content:space-between;align-items:center}
+.group-badge{background:var(--dark);color:#fff;border-radius:4px;padding:1px 8px;font-size:.875em}
+.card{background:var(--card);border-radius:var(--r);box-shadow:var(--sh);display:flex;align-items:center;gap:14px;padding:14px 16px;text-decoration:none;color:var(--text);transition:transform .15s,box-shadow .15s;-webkit-tap-highlight-color:transparent;border-left:5px solid var(--blue)}
+.card:active{transform:scale(.98);box-shadow:0 1px 4px rgba(0,0,0,.1)}
+.card.coming{border-left-color:#c8d6e0;opacity:.65}
+.card .num{background:var(--dark);color:#fff;border-radius:8px;min-width:38px;height:38px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:1em;flex-shrink:0}
+.card.coming .num{background:#b0bec5}
+.card .info{flex:1;min-width:0}
+.card .mod-title{font-weight:700;font-size:.94em;margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.card .mod-sub{font-size:.75em;color:var(--muted)}
+.card .status{font-size:.69em;font-weight:700;border-radius:6px;padding:3px 8px;white-space:nowrap;flex-shrink:0}
+.card .status.ready{background:#d4edda;color:#0d3318}
+.card .status.soon{background:#e0e7ef;color:var(--muted)}
+.card.coming .arrow{color:#b0bec5}
+.card .arrow{color:var(--blue);font-size:1.125em;flex-shrink:0}
+.group .card{border-radius:0;box-shadow:none;border-bottom:1px solid #f0f2f5;border-left:5px solid var(--blue)}
+.group .card:last-child{border-bottom:none}
+.group .card.coming{border-left-color:#c8d6e0}
+.ft{text-align:center;padding:20px 16px;color:var(--muted);font-size:.75em}
+.fs-bar{position:sticky;top:0;z-index:200;background:#1a1a2e;display:flex;align-items:center;justify-content:flex-end;padding:6px 14px;gap:6px;box-shadow:0 2px 8px rgba(0,0,0,.3)}
+.fs-label{color:#8b949e;font-size:.72em;font-weight:700;letter-spacing:.5px;text-transform:uppercase;margin-right:4px}
+.fs-btn{background:#30363d;color:#c9d1d9;border:2px solid transparent;border-radius:6px;padding:4px 12px;font-size:.75em;font-weight:700;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:all .2s;line-height:1.4}
+.fs-btn:active,.fs-btn.active{background:var(--blue);color:#fff;border-color:var(--blue)}
+.group-title-row{padding:8px 16px;margin:0}
+
+
+.card .status{display:none}
+</style>
+<style>.bc{background:#0d1117;padding:8px 16px;display:flex;align-items:center;flex-wrap:wrap;gap:4px;font-size:.75em;overflow-x:auto;white-space:nowrap;-webkit-overflow-scrolling:touch;border-bottom:1px solid #21262d}.bc a{color:#8b949e;text-decoration:none;font-weight:600;flex-shrink:0}.bc a:active{color:#c9d1d9}.bc .sep{color:#6e7681;flex-shrink:0}.bc .cur{color:#fbbf24;font-weight:700;flex-shrink:0;overflow:hidden;text-overflow:ellipsis;max-width:180px}</style>
+</head>
+<body>
+<nav class="bc"><a href="../../index.html">🏠 Home</a><span class="sep">›</span><span class="cur">CCNA 3 — ENSA</span></nav>
+
+<div class="fs-bar">
+  <span class="fs-label">Text size</span>
+  <button class="fs-btn active" onclick="setFs('14px',this)">S</button>
+  <button class="fs-btn" onclick="setFs('16px',this)">M</button>
+  <button class="fs-btn" onclick="setFs('18px',this)">L</button>
+  <button class="fs-btn" onclick="setFs('20px',this)">XL</button>
+</div>
+
+<div class="hdr">
+  <div class="course-badge">CCNA 3 — ENSA v7.02</div>
+  <h1>🌐 Enterprise Networking, Security &amp; Automation</h1>
+  <div class="subtitle">Interactive Study Guide — NetAcad Curriculum Reference</div>
+</div>
+
+
+<div class="wrap">
+
+<!-- GROUP 1 -->
+<div class="group">
+  <div class="group-title-row"><div class="group-title">Single-Area OSPFv2 <span class="group-badge">Modules 1–2</span></div></div>
+  <a class="card" href="ccna3_module1_singlearea_ospfv2_concepts_v2.2.html">
+    <div class="num">1</div>
+    <div class="info">
+      <div class="mod-title">Single-Area OSPFv2 Concepts</div>
+      <div class="mod-sub">Link-state · SPF · LSDB · Hello/Dead · DR/BDR · 7 states</div>
+    </div>
+    <span class="arrow">›</span>
+  </a>
+  <a class="card" href="ccna3_module2_singlearea_ospfv2_configuration_v2.2.html">
+    <div class="num">2</div>
+    <div class="info">
+      <div class="mod-title">Single-Area OSPFv2 Configuration</div>
+      <div class="mod-sub">router ospf · network · router-id · passive-interface · DR/BDR config</div>
+    </div>
+    <span class="arrow">›</span>
+  </a>
+</div>
+
+
+<!-- GROUP 2 -->
+<div class="group">
+  <div class="group-title-row"><div class="group-title">Network Security <span class="group-badge">Modules 3–5</span></div></div>
+  <a class="card" href="ccna3_module3_network_security_concepts_v2.2.html">
+    <div class="num">3</div>
+    <div class="info">
+      <div class="mod-title">Network Security Concepts</div>
+      <div class="mod-sub">CIA triad · Malware · Attack types · ARP/DNS/DHCP attacks · Cryptography</div>
+    </div>
+    <span class="arrow">›</span>
+  </a>
+  <a class="card" href="ccna3_module4_acl_concepts_v2.2.html">
+    <div class="num">4</div>
+    <div class="info">
+      <div class="mod-title">ACL Concepts</div>
+      <div class="mod-sub">ACE logic · Implicit deny · Wildcard masks · Standard vs Extended · Placement rules</div>
+    </div>
+    <span class="arrow">›</span>
+  </a>
+  <a class="card" href="ccna3_module5_acls_ipv4_configuration_v2.2.html">
+    <div class="num">5</div>
+    <div class="info">
+      <div class="mod-title">ACLs for IPv4 Configuration</div>
+      <div class="mod-sub">Standard · Extended · access-class · established · Sequence edit · VTY security</div>
+    </div>
+    <span class="arrow">›</span>
+  </a>
+</div>
+
+<!-- GROUP 3 -->
+<div class="group">
+  <div class="group-title-row"><div class="group-title">WAN Concepts <span class="group-badge">Modules 6–8</span></div></div>
+  <a class="card" href="ccna3_module6_nat_for_ipv4_v2.2.html">
+    <div class="num">6</div>
+    <div class="info">
+      <div class="mod-title">NAT for IPv4</div>
+      <div class="mod-sub">Static NAT · Dynamic NAT · PAT overload · NAT64 · show ip nat</div>
+    </div>
+    <span class="arrow">›</span>
+  </a>
+  <a class="card" href="ccna3_module7_wan_concepts_v2.2.html">
+    <div class="num">7</div>
+    <div class="info">
+      <div class="mod-title">WAN Concepts</div>
+      <div class="mod-sub">DTE/DCE · Topologies · MPLS · Metro Ethernet · DSL · Cable · ISP options</div>
+    </div>
+    <span class="arrow">›</span>
+  </a>
+  <a class="card" href="ccna3_module8_vpn_ipsec_concepts_v2.2.html">
+    <div class="num">8</div>
+    <div class="info">
+      <div class="mod-title">VPN and IPsec Concepts</div>
+      <div class="mod-sub">GRE · IPsec · AH vs ESP · DMVPN · VTI · DH groups · PSK vs RSA · MPLS VPN</div>
+    </div>
+    <span class="arrow">›</span>
+  </a>
+</div>
+
+<!-- GROUP 4 -->
+<div class="group">
+  <div class="group-title-row"><div class="group-title">Optimize, Monitor &amp; Troubleshoot Networks <span class="group-badge">Modules 9–12</span></div></div>
+  <a class="card" href="ccna3_module9_qos_concepts_v2.2.html">
+    <div class="num">9</div>
+    <div class="info">
+      <div class="mod-title">QoS Concepts</div>
+      <div class="mod-sub">FIFO · WFQ · CBWFQ · LLQ · CoS · DSCP · EF · AF · WRED · Shaping · Policing</div>
+    </div>
+    <span class="arrow">›</span>
+  </a>
+  <a class="card" href="ccna3_module10_network_management_v2.2.html">
+    <div class="num">10</div>
+    <div class="info">
+      <div class="mod-title">Network Management</div>
+      <div class="mod-sub">CDP · LLDP · NTP stratum · SNMP v1/v2c/v3 · Syslog · IOS backup · Password recovery</div>
+    </div>
+    <span class="arrow">›</span>
+  </a>
+  <a class="card" href="ccna3_module11_network_design_v2.2.html">
+    <div class="num">11</div>
+    <div class="info">
+      <div class="mod-title">Network Design</div>
+      <div class="mod-sub">Three-tier · Collapsed core · EtherChannel · Switch/Router hardware · PoE · Multilayer</div>
+    </div>
+    <span class="arrow">›</span>
+  </a>
+  <a class="card" href="ccna3_module12_network_troubleshooting_v2.2.html">
+    <div class="num">12</div>
+    <div class="info">
+      <div class="mod-title">Network Troubleshooting</div>
+      <div class="mod-sub">Troubleshoot methodology · IP connectivity · Routing · ACL · NAT issues</div>
+    </div>
+    <span class="arrow">›</span>
+  </a>
+</div>
+
+<!-- GROUP 5 -->
+<div class="group">
+  <div class="group-title-row"><div class="group-title">Emerging Network Technologies <span class="group-badge">Modules 13–14</span></div></div>
+  <a class="card" href="ccna3_module13_network_virtualization_v2.2.html">
+    <div class="num">13</div>
+    <div class="info">
+      <div class="mod-title">Network Virtualization</div>
+      <div class="mod-sub">Cloud SaaS/PaaS/IaaS · Hypervisors T1/T2 · SDN · ACI · Spine-Leaf · APIC-EM</div>
+    </div>
+    <span class="arrow">›</span>
+  </a>
+  <a class="card" href="ccna3_module14_network_automation_v2.2.html">
+    <div class="num">14</div>
+    <div class="info">
+      <div class="mod-title">Network Automation</div>
+      <div class="mod-sub">JSON/YAML/XML · REST APIs · CRUD · Ansible/Chef/Puppet/Salt · IBN · DNA Center</div>
+    </div>
+    <span class="arrow">›</span>
+  </a>
+</div>
+
+</div><!-- end .wrap -->
+
+<div class="ft">
+  CCNA 3 ENSA v7.02 — Enterprise Networking, Security, and Automation<br>
+  Based on Cisco NetAcad curriculum · Study guide for personal use
+</div>
+
+<script>
+function setFs(size,btn){document.documentElement.style.setProperty('--base-fs',size);document.querySelectorAll('.fs-btn').forEach(function(b){b.classList.remove('active');});btn.classList.add('active');try{localStorage.setItem('ccna-fs',size);}catch(e){}}
+(function(){try{var s=localStorage.getItem('ccna-fs');if(s){document.documentElement.style.setProperty('--base-fs',s);document.querySelectorAll('.fs-btn').forEach(function(b){b.classList.remove('active');if((b.textContent==='S'&&s==='14px')||(b.textContent==='M'&&s==='16px')||(b.textContent==='L'&&s==='18px')||(b.textContent==='XL'&&s==='20px'))b.classList.add('active');});}}catch(e){}})();
+</script>
+</body>
+</html>

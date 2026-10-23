@@ -1,0 +1,1015 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=2.0">
+<title>CCNA 3 Module 12: Network Troubleshooting v2.2</title>
+<style>
+:root{
+  --blue:#1ba0d7;--dark:#005073;--green:#6cc24a;
+  --tr:#7c4d00;--trd:#fb923c;--tr2:#3d2500;
+  --bg:#f4f6f8;--card:#fff;--text:#1a1a2e;--muted:#5a6a7a;
+  --cbg:#0d1117;--ctxt:#c9d1d9;--r:12px;--sh:0 2px 12px rgba(0,0,0,.08);
+  --base-fs:16px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);font-size:var(--base-fs);line-height:1.7}
+.bc{background:#0d1117;padding:8px 16px;display:flex;align-items:center;flex-wrap:wrap;gap:4px;font-size:.75em;overflow-x:auto;white-space:nowrap;-webkit-overflow-scrolling:touch;border-bottom:1px solid #21262d}
+.bc a{color:#8b949e;text-decoration:none;font-weight:600;flex-shrink:0}
+.bc .sep{color:#6e7681;flex-shrink:0}
+.bc .cur{color:var(--trd);font-weight:700;flex-shrink:0}
+.fs-bar{position:sticky;top:0;z-index:200;background:#1a1a2e;display:flex;align-items:center;justify-content:flex-end;padding:6px 14px;gap:6px;box-shadow:0 2px 8px rgba(0,0,0,.3)}
+.fs-label{color:#8b949e;font-size:.72em;font-weight:700;letter-spacing:.5px;text-transform:uppercase;margin-right:4px}
+.fs-btn{background:#30363d;color:#c9d1d9;border:2px solid transparent;border-radius:6px;padding:4px 12px;font-size:.75em;font-weight:700;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:all .2s;line-height:1.4}
+.fs-btn:active,.fs-btn.active{background:var(--tr);color:#fff;border-color:var(--trd)}
+.hdr{background:linear-gradient(135deg,#1a0a00,var(--tr2),var(--tr));color:#fff;padding:32px 20px 24px;text-align:center}
+.hdr .badge{display:inline-block;background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.4);border-radius:20px;padding:4px 14px;font-size:.81em;margin-bottom:12px}
+.hdr h1{font-size:1.625em;font-weight:700;margin-bottom:6px}
+.hdr p{font-size:.94em;opacity:.85}
+.hdr .obj{display:inline-block;background:rgba(255,255,255,.15);border-radius:8px;padding:7px 16px;margin-top:12px;font-size:.875em;font-style:italic}
+.pb-wrap{background:var(--card);padding:14px 16px;margin:16px 16px 0;border-radius:var(--r);box-shadow:var(--sh)}
+.pb-lbl{font-size:.81em;color:var(--muted);margin-bottom:6px;font-weight:600}
+.pb-track{background:#e0e7ef;border-radius:10px;height:8px;overflow:hidden}
+.pb-fill{background:linear-gradient(90deg,var(--tr),var(--trd));height:100%;border-radius:10px;width:0;transition:width 1s ease}
+.toc{background:var(--card);margin:16px;border-radius:var(--r);box-shadow:var(--sh);overflow:hidden}
+.toch{background:var(--tr);color:#fff;padding:14px 18px;font-weight:700;font-size:.94em;display:flex;justify-content:space-between;align-items:center;cursor:pointer;user-select:none}
+.toch .arr{transition:transform .3s}
+.toch.open .arr{transform:rotate(180deg)}
+.tocb{display:none;padding:10px 0}
+.tocb.open{display:block}
+.tocg{font-size:.69em;font-weight:800;letter-spacing:.8px;color:var(--tr);text-transform:uppercase;padding:8px 20px 2px}
+.tocb a{display:block;padding:9px 20px 9px 28px;color:var(--text);text-decoration:none;font-size:.875em;border-left:3px solid transparent;transition:all .2s}
+.tocb a:active{background:#fff7ed;border-left-color:var(--trd)}
+.tocb a .n{display:inline-block;background:var(--tr);color:#fff;border-radius:5px;padding:1px 8px;font-size:.75em;font-weight:700;margin-right:8px}
+.wrap{padding:0 16px 100px}
+.sec{background:var(--card);border-radius:var(--r);box-shadow:var(--sh);margin-bottom:16px;overflow:hidden}
+.sh{background:linear-gradient(90deg,#1a0a00,var(--tr));color:#fff;padding:16px 18px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;user-select:none;-webkit-tap-highlight-color:transparent}
+.sh .ttl{font-weight:700;font-size:1em}
+.sh .nb{background:rgba(255,255,255,.25);border-radius:6px;padding:3px 10px;font-size:.81em;font-weight:700;margin-right:10px;white-space:nowrap}
+.sh .ch{font-size:1.125em;transition:transform .3s}
+.sh.open .ch{transform:rotate(180deg)}
+.sb{display:none;padding:18px}
+.sb.open{display:block}
+.sub{margin-bottom:24px}
+.sub:last-child{margin-bottom:0}
+.sub h3{font-size:.94em;font-weight:700;color:var(--tr);margin-bottom:10px;padding-bottom:6px;border-bottom:2px solid #fff7ed;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.sub h3 .sn{background:var(--tr);color:#fff;border-radius:5px;padding:2px 8px;font-size:.75em;white-space:nowrap}
+.sub h4{font-size:.875em;font-weight:700;color:var(--tr);margin:14px 0 6px}
+.sub p{margin-bottom:10px;font-size:.94em}
+.sub ul,.sub ol{padding-left:20px;margin:8px 0;font-size:.94em}
+.sub li{margin-bottom:5px}
+.cw{background:var(--cbg);border-radius:10px;margin:12px 0;overflow:hidden}
+.cl{background:#21262d;color:#c9d1d9;font-size:.78em;font-weight:700;padding:6px 14px;letter-spacing:.5px;text-transform:uppercase;display:flex;justify-content:space-between;align-items:center}
+.cpb{background:#30363d;color:#c9d1d9;border:none;border-radius:5px;padding:3px 10px;font-size:.69em;cursor:pointer}
+.cpb:active{background:var(--tr);color:#fff}
+pre{margin:0;padding:14px;overflow-x:auto;-webkit-overflow-scrolling:touch}
+code{font-family:'Courier New',monospace;font-size:.81em;color:var(--ctxt);line-height:1.6}
+p code,li code,td code,.ca code,.sb-body code{background:#fff7ed;color:#7c2d12;border-radius:4px;padding:1px 5px;font-size:.81em;font-family:'Courier New',monospace;font-weight:600}
+.ca{border-radius:8px;padding:12px 14px;margin:12px 0;font-size:.875em;line-height:1.6;display:flex;gap:10px;align-items:flex-start}
+.ca .ic{font-size:1.125em;flex-shrink:0;margin-top:1px}
+.ca.warn  {background:#fff3cd;border-left:4px solid #b38600;color:#3d2c00}
+.ca.tip   {background:#d4edda;border-left:4px solid #28a745;color:#0d3318}
+.ca.danger{background:#f8d7da;border-left:4px solid #dc3545;color:#3d0010}
+.ca.info  {background:#fff7ed;border-left:4px solid var(--tr);color:#3d2500}
+.et{background:linear-gradient(135deg,#1a1a2e,#1a0a00);color:#fff;border-radius:10px;padding:14px 16px;margin:14px 0;font-size:.875em;line-height:1.6}
+.et .lbl{font-size:.69em;font-weight:800;letter-spacing:1px;color:var(--trd);margin-bottom:6px}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:12px 0;border-radius:8px}
+table{width:100%;border-collapse:collapse;font-size:.875em}
+th{background:var(--tr);color:#fff;padding:10px 12px;text-align:left;font-weight:700;font-size:.81em}
+td{padding:9px 12px;border-bottom:1px solid #e8ecf0;vertical-align:top;color:#1a1a2e}
+tr:nth-child(even) td{background:#fff7ed;color:#3d2500}
+tr:last-child td{border-bottom:none}
+
+/* Seven-step process */
+.steps-list{counter-reset:step;list-style:none;padding:0;margin:12px 0}
+.steps-list li{counter-increment:step;display:flex;gap:12px;align-items:flex-start;padding:10px 0;border-bottom:1px solid #f0ece8;font-size:.875em;line-height:1.6}
+.steps-list li:last-child{border-bottom:none}
+.steps-list li::before{content:counter(step);background:var(--tr);color:#fff;border-radius:50%;min-width:26px;height:26px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.81em;flex-shrink:0;margin-top:2px}
+.steps-list li strong{color:var(--tr)}
+
+/* Troubleshooting methods */
+.method-grid{display:grid;gap:8px;margin:12px 0}
+.method-card{border-radius:8px;padding:11px 14px;font-size:.81em;border-left:4px solid;line-height:1.6}
+.method-card.bu  {border-left-color:#1a3a5c;background:#e0f2fe}
+.method-card.td  {border-left-color:#1a4731;background:#f0fdf4}
+.method-card.dc  {border-left-color:var(--tr);background:#fff7ed}
+.method-card.fp  {border-left-color:#7b2d8b;background:#f3e8ff}
+.method-card.sub {border-left-color:#5c3d00;background:#fffbeb}
+.method-card.cmp {border-left-color:#7c1e1e;background:#fff5f5}
+.method-card.eg  {border-left-color:#374151;background:#f9fafb}
+.method-card .mc-name{font-weight:800;margin-bottom:3px}
+.method-card.bu  .mc-name{color:#1a3a5c}
+.method-card.td  .mc-name{color:#1a4731}
+.method-card.dc  .mc-name{color:var(--tr)}
+.method-card.fp  .mc-name{color:#7b2d8b}
+.method-card.sub .mc-name{color:#5c3d00}
+.method-card.cmp .mc-name{color:#7c1e1e}
+.method-card.eg  .mc-name{color:#374151}
+
+/* Layer symptoms */
+.layer-grid{display:grid;gap:10px;margin:12px 0}
+.layer-card{border-radius:10px;overflow:hidden}
+.layer-card .lc-hdr{padding:9px 14px;font-weight:800;font-size:.875em;color:#fff}
+.layer-card.l1 .lc-hdr{background:#7c0000}
+.layer-card.l2 .lc-hdr{background:#1a3a5c}
+.layer-card.l3 .lc-hdr{background:#1a4731}
+.layer-card.l4 .lc-hdr{background:#5c3d00}
+.layer-card.l7 .lc-hdr{background:#7b2d8b}
+.layer-card .lc-body{padding:12px 14px;font-size:.81em;line-height:1.7;background:#f9fafb}
+.layer-card .lc-body strong{color:#1a1a2e}
+.layer-card .lc-body ul{padding-left:16px}
+.layer-card .lc-body li{margin-bottom:3px}
+
+/* 8-step connectivity */
+.step-box{border-radius:10px;overflow:hidden;margin:10px 0}
+.step-box .sb-hdr{padding:9px 14px;font-weight:800;font-size:.875em;color:#fff;background:var(--tr);display:flex;align-items:center;gap:8px}
+.step-box .sb-hdr .snum{background:rgba(255,255,255,.3);border-radius:50%;width:22px;height:22px;display:flex;align-items:center;justify-content:center;font-size:.75em;flex-shrink:0}
+.step-box .sb-body{padding:12px 14px;font-size:.81em;line-height:1.7;background:#fff7ed}
+.step-box .sb-body ul{padding-left:16px}
+.step-box .sb-body li{margin-bottom:4px}
+
+/* Tools grid */
+.tools-grid{display:grid;gap:8px;margin:12px 0}
+.tool-row{display:flex;gap:10px;align-items:flex-start;padding:9px 12px;border-radius:8px;font-size:.81em;line-height:1.6;border-left:4px solid}
+.tool-row.sw  {border-left-color:#1a3a5c;background:#e0f2fe}
+.tool-row.hw  {border-left-color:#1a4731;background:#f0fdf4}
+.tool-row.pa  {border-left-color:var(--tr);background:#fff7ed}
+.tool-row .tr-name{font-weight:800;min-width:120px;flex-shrink:0;color:#1a1a2e;line-height:1.5}
+.tool-row .tr-desc{color:#374151}
+
+/* Syslog destinations */
+.syslog-dest{display:grid;gap:6px;margin:12px 0}
+.sd-row{display:flex;gap:10px;align-items:flex-start;padding:8px 12px;border-radius:8px;font-size:.81em;line-height:1.6;border-left:3px solid}
+.sd-row.d1{border-left-color:#7c0000;background:#fff5f5}
+.sd-row.d2{border-left-color:#c87800;background:#fffbeb}
+.sd-row.d3{border-left-color:#1a3a5c;background:#e0f2fe}
+.sd-row.d4{border-left-color:#1a4731;background:#f0fdf4}
+.sd-row.d5{border-left-color:var(--tr);background:#fff7ed}
+.sd-row .dr-name{font-weight:800;min-width:120px;flex-shrink:0;color:#1a1a2e}
+
+.tb-btn{position:fixed;bottom:80px;right:16px;background:var(--tr);color:#fff;border:none;border-radius:50%;width:44px;height:44px;font-size:1.25em;box-shadow:0 4px 14px rgba(0,0,0,.25);cursor:pointer;display:none;align-items:center;justify-content:center;z-index:100}
+.tb-btn.show{display:flex}
+.ft{text-align:center;padding:24px 16px;color:var(--muted);font-size:.81em}
+.mod-nav{position:fixed;bottom:0;left:0;right:0;z-index:300;background:#1a1a2e;border-top:1px solid #30363d;display:flex;align-items:center;height:52px;padding:0 8px;gap:6px}
+.mn-hub{background:var(--blue);color:#fff;border:none;border-radius:8px;padding:6px 12px;font-size:.75em;font-weight:700;cursor:pointer;text-decoration:none;display:flex;align-items:center;gap:4px;white-space:nowrap;-webkit-tap-highlight-color:transparent;flex-shrink:0}
+.mn-hub:active{opacity:.8}
+.mn-divider{width:1px;height:28px;background:#30363d;flex-shrink:0}
+.mn-label{flex:1;text-align:center;font-size:.69em;color:#8b949e;font-weight:600;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding:0 4px}
+.mn-prev,.mn-next{background:#30363d;color:#c9d1d9;border:none;border-radius:8px;padding:6px 10px;font-size:.875em;font-weight:700;cursor:pointer;text-decoration:none;display:flex;align-items:center;-webkit-tap-highlight-color:transparent;flex-shrink:0}
+.mn-prev:active,.mn-next:active{background:var(--tr);color:#fff}
+/* Study progress panel */
+.sp-wrap{background:var(--card);margin:16px 16px 0;border-radius:var(--r);box-shadow:var(--sh);overflow:hidden}
+.sp-hdr{background:var(--nt);color:#fff;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;user-select:none;-webkit-tap-highlight-color:transparent;gap:10px}
+.sp-hdr .sp-title{font-weight:700;font-size:.875em;flex-shrink:0}
+.sp-hdr .sp-arr{transition:transform .3s;flex-shrink:0}
+.sp-hdr.open .sp-arr{transform:rotate(180deg)}
+.sp-body{display:none;padding:12px 14px}
+.sp-body.open{display:block}
+.sp-row{display:flex;align-items:center;gap:10px;padding:6px 4px;border-bottom:1px solid #f0f4f8;font-size:.81em}
+.sp-row:last-child{border-bottom:none}
+.sp-row .sr-status{font-size:1em;flex-shrink:0;width:20px;text-align:center}
+.sp-row .sr-nb{font-weight:800;color:var(--nt);min-width:36px;flex-shrink:0;font-size:.875em}
+.sp-row .sr-ttl{color:var(--text);flex:1}
+.sp-row.done .sr-ttl{color:var(--muted);text-decoration:line-through}
+.sc-pills{display:flex;align-items:center;gap:4px;overflow-x:auto;-webkit-overflow-scrolling:touch;flex:1;padding:0 4px}
+.sc-pill{background:#30363d;color:#8b949e;border:2px solid transparent;border-radius:6px;padding:3px 8px;font-size:.72em;font-weight:700;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:all .15s;white-space:nowrap;flex-shrink:0;line-height:1.4;display:flex;align-items:center;gap:3px}
+.sc-pill.checked{background:var(--nt);color:#fff;border-color:var(--ntd)}
+.sc-pill .pill-check{font-size:.875em}
+
+/* v2.1 — In-section check button */
+.sh{position:relative}
+.sec-check{position:absolute;right:40px;top:50%;transform:translateY(-50%);background:rgba(255,255,255,.15);border:2px solid rgba(255,255,255,.4);border-radius:6px;padding:2px 10px;font-size:.72em;font-weight:800;color:#fff;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:all .2s;white-space:nowrap;z-index:10;line-height:1.5}
+.sec-check.checked{background:var(--ntd);border-color:var(--ntd);color:#052e1e}
+.sec-check:active{opacity:.75}
+/* Sections panel + tick colours (these pages never defined --nt/--ntd, so the panel header was invisible) */
+:root{--nt:var(--tr);--ntd:#4ade80}
+</style>
+</head>
+<body>
+<nav class="bc">
+  <a href="../../index.html">🏠 Home</a><span class="sep">›</span>
+  <a href="index.html">CCNA 3 — ENSA</a><span class="sep">›</span>
+  <span class="cur">M12: Network Troubleshooting</span>
+</nav>
+<div class="fs-bar">
+  <div class="sc-pills" id="sc-pills">
+  <button class="sc-pill" id="pill-s1" onclick="toggleSection('s1',this)"><span class="pill-check">○</span>12.1</button>
+  <button class="sc-pill" id="pill-s2" onclick="toggleSection('s2',this)"><span class="pill-check">○</span>12.2</button>
+  <button class="sc-pill" id="pill-s3" onclick="toggleSection('s3',this)"><span class="pill-check">○</span>12.3</button>
+  <button class="sc-pill" id="pill-s4" onclick="toggleSection('s4',this)"><span class="pill-check">○</span>12.4</button>
+  <button class="sc-pill" id="pill-s5" onclick="toggleSection('s5',this)"><span class="pill-check">○</span>12.5</button>
+  <button class="sc-pill" id="pill-s-pt-12-6" onclick="toggleSection('s-pt-12-6',this)"><span class="pill-check">○</span>PT 12.6</button>
+  <button class="sc-pill" id="pill-s6" onclick="toggleSection('s6',this)"><span class="pill-check">○</span>🎯</button>
+  </div>
+  <span class="fs-label" style="flex-shrink:0;margin-left:6px">Size</span>
+  <button class="fs-btn" onclick="setFs('14px',this)">S</button>
+  <button class="fs-btn active" onclick="setFs('16px',this)">M</button>
+  <button class="fs-btn" onclick="setFs('18px',this)">L</button>
+  <button class="fs-btn" onclick="setFs('20px',this)">XL</button>
+</div>
+<div class="hdr">
+  <div class="badge">CCNA 3 — ENSA v7.02</div>
+  <h1>🔧 Module 12: Network Troubleshooting</h1>
+  <p>Enterprise Networking, Security &amp; Automation · NetAcad Study Guide</p>
+  <div class="obj">Module Objective: Troubleshoot enterprise networks</div>
+</div>
+<div class="sp-wrap">
+  <div class="sp-hdr" id="sp-hdr" onclick="toggleStudyPanel()">
+    <span class="sp-title">📚 Sections</span>
+    <span class="sp-arr" id="sp-arr">▼</span>
+  </div>
+  <div class="sp-body" id="sp-body">
+    <div class="sp-row" id="row-s1"><span class="sr-status" id="st-s1">○</span><span class="sr-nb">12.1</span><span class="sr-ttl">Network Documentation</span></div>
+    <div class="sp-row" id="row-s2"><span class="sr-status" id="st-s2">○</span><span class="sr-nb">12.2</span><span class="sr-ttl">Troubleshooting Process</span></div>
+    <div class="sp-row" id="row-s3"><span class="sr-status" id="st-s3">○</span><span class="sr-nb">12.3</span><span class="sr-ttl">Troubleshooting Tools</span></div>
+    <div class="sp-row" id="row-s4"><span class="sr-status" id="st-s4">○</span><span class="sr-nb">12.4</span><span class="sr-ttl">Symptoms and Causes by OSI Layer</span></div>
+    <div class="sp-row" id="row-s5"><span class="sr-status" id="st-s5">○</span><span class="sr-nb">12.5</span><span class="sr-ttl">Troubleshooting IP Connectivity — 8 Steps</span></div>
+    <div class="sp-row" id="row-s-pt-12-6"><span class="sr-status" id="st-s-pt-12-6">○</span><span class="sr-nb">PT 12.6</span><span class="sr-ttl">Packet Tracer — Troubleshooting Challenges</span></div>
+    <div class="sp-row" id="row-s6"><span class="sr-status" id="st-s6">○</span><span class="sr-nb">🎯</span><span class="sr-ttl">Common Exam Traps — Module 12</span></div>
+  </div>
+</div>
+
+<div class="toc">
+  <div class="toch open" onclick="this.classList.toggle('open');document.getElementById('tocb').classList.toggle('open')">
+    📋 Table of Contents — Tap to expand <span class="arr">▼</span>
+  </div>
+  <div class="tocb open" id="tocb">
+    <div class="tocg">12.1 — Network Documentation</div>
+    <a href="javascript:void(0)" onclick="goTo('s1')"><span class="n">12.1.1</span> Documentation Overview — Three Types</a>
+    <a href="javascript:void(0)" onclick="goTo('s1')"><span class="n">12.1.2</span> Physical and Logical Topology Diagrams</a>
+    <a href="javascript:void(0)" onclick="goTo('s1')"><span class="n">12.1.3</span> Network Device Documentation</a>
+    <a href="javascript:void(0)" onclick="goTo('s1')"><span class="n">12.1.4</span> Establishing a Network Baseline</a>
+    <a href="javascript:void(0)" onclick="goTo('s1')"><span class="n">12.1.8</span> Data Measurement — IOS Commands</a>
+    <div class="tocg">12.2 — Troubleshooting Process</div>
+    <a href="javascript:void(0)" onclick="goTo('s2')"><span class="n">12.2.2</span> Seven-Step Troubleshooting Process</a>
+    <a href="javascript:void(0)" onclick="goTo('s2')"><span class="n">12.2.3</span> Questioning End Users</a>
+    <a href="javascript:void(0)" onclick="goTo('s2')"><span class="n">12.2.5</span> Troubleshooting with Layered Models</a>
+    <a href="javascript:void(0)" onclick="goTo('s2')"><span class="n">12.2.6</span> Seven Structured Troubleshooting Methods</a>
+    <a href="javascript:void(0)" onclick="goTo('s2')"><span class="n">12.2.7</span> Selecting the Right Method</a>
+    <div class="tocg">12.3 — Troubleshooting Tools</div>
+    <a href="javascript:void(0)" onclick="goTo('s3')"><span class="n">12.3.1</span> Software Tools — NMS, Knowledge Bases, Baselining</a>
+    <a href="javascript:void(0)" onclick="goTo('s3')"><span class="n">12.3.2</span> Protocol Analyzers — Wireshark</a>
+    <a href="javascript:void(0)" onclick="goTo('s3')"><span class="n">12.3.3</span> Hardware Tools — DMM, Cable Testers, TDR, NAM</a>
+    <a href="javascript:void(0)" onclick="goTo('s3')"><span class="n">12.3.4</span> Syslog as a Troubleshooting Tool</a>
+    <div class="tocg">12.4 — Symptoms and Causes by Layer</div>
+    <a href="javascript:void(0)" onclick="goTo('s4')"><span class="n">12.4.1</span> Physical Layer (Layer 1)</a>
+    <a href="javascript:void(0)" onclick="goTo('s4')"><span class="n">12.4.2</span> Data Link Layer (Layer 2)</a>
+    <a href="javascript:void(0)" onclick="goTo('s4')"><span class="n">12.4.3</span> Network Layer (Layer 3)</a>
+    <a href="javascript:void(0)" onclick="goTo('s4')"><span class="n">12.4.4</span> Transport Layer — ACL Issues</a>
+    <a href="javascript:void(0)" onclick="goTo('s4')"><span class="n">12.4.5</span> Transport Layer — NAT Issues</a>
+    <a href="javascript:void(0)" onclick="goTo('s4')"><span class="n">12.4.6</span> Application Layer (Layer 7)</a>
+    <div class="tocg">12.5 — Troubleshooting IP Connectivity</div>
+    <a href="javascript:void(0)" onclick="goTo('s5')"><span class="n">Step 1</span> Verify Physical Layer</a>
+    <a href="javascript:void(0)" onclick="goTo('s5')"><span class="n">Step 2</span> Check Duplex Mismatches</a>
+    <a href="javascript:void(0)" onclick="goTo('s5')"><span class="n">Step 3</span> Verify Local Network Addressing</a>
+    <a href="javascript:void(0)" onclick="goTo('s5')"><span class="n">Step 4</span> Verify Default Gateway</a>
+    <a href="javascript:void(0)" onclick="goTo('s5')"><span class="n">Step 5</span> Verify Correct Path</a>
+    <a href="javascript:void(0)" onclick="goTo('s5')"><span class="n">Step 6</span> Verify Transport Layer</a>
+    <a href="javascript:void(0)" onclick="goTo('s5')"><span class="n">Step 7</span> Verify ACLs</a>
+    <a href="javascript:void(0)" onclick="goTo('s5')"><span class="n">Step 8</span> Verify DNS</a>
+    <div class="tocg">Reference</div>
+    <a href="javascript:void(0)" onclick="goTo('s6')"><span class="n">🎯</span> Common Exam Traps</a>
+  </div>
+</div>
+
+<div class="wrap">
+
+<!-- 12.1 DOCUMENTATION -->
+<div class="sec" id="s1">
+<div class="sh open" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">12.1</span><span class="ttl">Network Documentation</span></span><button class="sec-check" id="sch-s1" onclick="event.stopPropagation();toggleSection('s1',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb open">
+
+  <div class="sub">
+  <h3><span class="sn">12.1.1</span> Documentation Overview</h3>
+  <p>Three types of required network documentation:</p>
+  <ol>
+    <li><strong>Physical and logical network topology diagrams</strong></li>
+    <li><strong>Network device documentation</strong> — accurate, up-to-date records of hardware and software</li>
+    <li><strong>Network performance baseline documentation</strong></li>
+  </ol>
+  <div class="ca info"><span class="ic">💡</span><div>All documentation stored in one central location (hard copy or protected server). Backup copy maintained at a <strong>separate location</strong>. Without good documentation, troubleshooting is guesswork.</div></div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">12.1.2</span> Physical vs Logical Topology Diagrams</h3>
+  <div class="tw"><table>
+    <tr><th>Topology Type</th><th>Contains</th></tr>
+    <tr><td><strong>Physical Topology</strong></td><td>Device name · Device location (address, room, rack) · Interface and ports used · Cable type</td></tr>
+    <tr><td><strong>Logical IPv4 Topology</strong></td><td>Device identifiers · IP addresses and prefix lengths · Interface identifiers · Routing protocols/static routes · Layer 2 info: VLANs, trunks, EtherChannels</td></tr>
+    <tr><td><strong>Logical IPv6 Topology</strong></td><td>Same as logical IPv4 but with IPv6 addressing — may be kept separate for clarity</td></tr>
+  </table></div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">12.1.3</span> Network Device Documentation</h3>
+  <div class="tw"><table>
+    <tr><th>Device Type</th><th>Fields to Document</th></tr>
+    <tr><td><strong>Router</strong></td><td>Interface · IPv4 address · IPv6 address · MAC address · Routing protocol</td></tr>
+    <tr><td><strong>Switch</strong></td><td>Port · Access/Trunk · VLAN · EtherChannel · Native VLAN · Enabled/disabled</td></tr>
+    <tr><td><strong>End System</strong></td><td>Device name · OS · Services · MAC address · IPv4/IPv6 addresses · Default gateway · DNS server</td></tr>
+  </table></div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">12.1.4–12.1.7</span> Establishing a Network Baseline</h3>
+  <p>A <strong>baseline</strong> establishes normal ("average day") network performance. Used to detect deviations that indicate problems.</p>
+  <p><strong>Baseline must answer:</strong></p>
+  <ul>
+    <li>How does the network perform during a normal or average day?</li>
+    <li>Where are the most errors occurring?</li>
+    <li>What part of the network is most heavily / least used?</li>
+    <li>Which devices should be monitored and what alert thresholds set?</li>
+    <li>Can the network meet identified policies?</li>
+  </ul>
+
+  <h4>Three Steps to Establish a Baseline</h4>
+  <ol class="steps-list">
+    <li><strong>Determine what data to collect</strong> — start simple: interface utilization and CPU utilization. Too many variables = overwhelming data; fine-tune over time.</li>
+    <li><strong>Identify devices and ports of interest</strong> — ports connecting to other network devices, servers, key users, critical resources. Use logical topology to identify candidates. Keep list concise to minimize management load.</li>
+    <li><strong>Determine baseline duration</strong> — minimum <strong>7 days</strong> (captures daily trends); typically <strong>2–4 weeks</strong>; maximum <strong>6 weeks</strong> unless long-term trends needed. Do NOT measure during unique traffic periods (holidays, events).</li>
+  </ol>
+  <div class="et"><div class="lbl">🎯 BASELINE DURATION RULES — EXAM KEY</div>
+  Minimum: <strong>7 days</strong> — captures daily AND weekly patterns (e.g., weekend backup surge)<br>
+  Typical: <strong>2–4 weeks</strong> adequate for most networks<br>
+  Maximum: <strong>6 weeks</strong> unless measuring specific long-term trends<br>
+  Monthly trends reveal recurring patterns that 7-day baselines miss. Annual analysis or rotating baseline per section recommended.
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">12.1.8</span> Data Measurement — IOS Commands</h3>
+  <div class="tw"><table>
+    <tr><th>Command</th><th>Description</th></tr>
+    <tr><td><code>show version</code></td><td>Uptime, hardware/software version info</td></tr>
+    <tr><td><code>show ip interface [brief]</code></td><td>Interface config; brief = up/down + IP address only</td></tr>
+    <tr><td><code>show interfaces</code></td><td>Detailed per-interface output including error counters</td></tr>
+    <tr><td><code>show ip route</code> / <code>show ipv6 route</code></td><td>Routing table; append <code>static</code>, <code>ospf</code>, <code>eigrp</code> to filter</td></tr>
+    <tr><td><code>show cdp neighbors detail</code></td><td>Detailed info about directly connected Cisco neighbors</td></tr>
+    <tr><td><code>show arp</code> / <code>show ipv6 neighbors</code></td><td>ARP table (IPv4) / neighbor table (IPv6)</td></tr>
+    <tr><td><code>show running-config</code></td><td>Current running configuration</td></tr>
+    <tr><td><code>show vlan</code></td><td>VLAN status on a switch</td></tr>
+    <tr><td><code>show tech-support</code></td><td>Runs many show commands at once — used for TAC support reports; very large output</td></tr>
+  </table></div>
+  </div>
+
+</div></div>
+
+<!-- 12.2 TROUBLESHOOTING PROCESS -->
+<div class="sec" id="s2">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">12.2</span><span class="ttl">Troubleshooting Process</span></span><button class="sec-check" id="sch-s2" onclick="event.stopPropagation();toggleSection('s2',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb">
+
+  <div class="sub">
+  <h3><span class="sn">12.2.2</span> Seven-Step Troubleshooting Process</h3>
+  <ol class="steps-list">
+    <li><strong>Define the Problem</strong> — Verify the problem exists; determine symptoms from user reports, console messages, NMS alerts. Localize scope: single device? Subnet? Entire network? Use trouble ticketing software to track progress.</li>
+    <li><strong>Gather Information</strong> — Identify target devices; obtain access; collect and document symptoms using IOS commands, logs, packet captures. If issue is outside the org, contact external admin first.</li>
+    <li><strong>Analyze Information</strong> — Interpret gathered data using network docs, baselines, knowledge base, internet research, and consulting other technicians. Identify possible causes.</li>
+    <li><strong>Eliminate Possible Causes</strong> — Progressively eliminate causes to identify the most probable one. Troubleshooting experience is critical here for quickly ruling out false leads.</li>
+    <li><strong>Propose Hypothesis</strong> — Formulate a solution based on the most probable cause. Experience is valuable for proposing an effective plan.</li>
+    <li><strong>Test Hypothesis</strong> — Assess impact and urgency first. <strong>Create a rollback plan</strong> before changing anything. Implement and verify. If solution fails: document it, remove changes, return to Step 2. Consider a workaround if downtime is unacceptable.</li>
+    <li><strong>Solve the Problem</strong> — Inform users and all IT staff involved. Document cause and fix for knowledge base — helps prevent and solve similar problems in future.</li>
+  </ol>
+  <div class="ca warn"><span class="ic">⚠️</span><div>Steps are not always executed in exact order. Experienced admins can jump between steps. However, <strong>all steps must be documented</strong> throughout the process.</div></div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">12.2.3</span> Questioning End Users</h3>
+  <p>When interviewing users: speak at their technical level, listen carefully, take notes, be considerate — users under stress want rapid resolution.</p>
+  <div class="tw"><table>
+    <tr><th>Question Type</th><th>Purpose</th><th>Examples</th></tr>
+    <tr><td><strong>Open questions</strong></td><td>Gather detailed information; determine scope and timing</td><td>"What exactly is the problem?" · "When did you first notice it?" · "What has changed recently?"</td></tr>
+    <tr><td><strong>Closed questions</strong></td><td>Confirm specific facts; yes/no answers</td><td>"Can you reproduce the problem?" · "Were error messages displayed?" · "Does it affect only you?"</td></tr>
+  </table></div>
+  <div class="ca info"><span class="ic">💡</span><div>After interviewing, <strong>repeat your understanding of the problem back to the user</strong> to confirm you both agree on what is being reported. This prevents working on the wrong problem.</div></div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">12.2.5</span> Troubleshooting with Layered Models</h3>
+  <p>OSI and TCP/IP models allow you to isolate the troubleshooting scope to specific layers:</p>
+  <ul>
+    <li><strong>Layer 1 (Physical):</strong> cables, power, hardware NICs, attenuation, noise</li>
+    <li><strong>Layer 2 (Data Link):</strong> encapsulation, STP loops, frame errors, ARP/MAC issues</li>
+    <li><strong>Layer 3 (Network):</strong> IP addressing, routing table, OSPF/EIGRP adjacency</li>
+    <li><strong>Layer 4 (Transport):</strong> ACL misconfigurations, NAT issues</li>
+    <li><strong>Layer 7 (Application):</strong> service failures, application-specific issues</li>
+  </ul>
+  <div class="ca info"><span class="ic">💡</span><div><strong>Routers and multilayer switches appear at Layer 4</strong> in troubleshooting diagrams because ACLs can filter traffic using Layer 4 (TCP/UDP port) information — even though routing decisions occur at Layer 3.</div></div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">12.2.6</span> Seven Structured Troubleshooting Methods</h3>
+  <div class="method-grid">
+    <div class="method-card bu"><div class="mc-name">⬆️ Bottom-Up</div>Start at Layer 1 (physical), work up through OSI layers. Best when physical problem suspected. Most networking problems reside at lower layers. Drawback: must check every device and interface systematically.</div>
+    <div class="method-card td"><div class="mc-name">⬇️ Top-Down</div>Start at Layer 7 (application), work down. Best for software or application problems; simpler issues. Drawback: must check every application until cause found.</div>
+    <div class="method-card dc"><div class="mc-name">✂️ Divide and Conquer</div>Start at a middle layer (often Layer 3). Test in both directions based on results. If ping works → problem is Layer 4+. If ping fails → Layer 3 or below. Best for experienced admins with new/complex problems.</div>
+    <div class="method-card fp"><div class="mc-name">🗺️ Follow the Path</div>Trace the actual traffic path from source to destination. Eliminates irrelevant links and devices from the troubleshooting scope. Usually used alongside another method.</div>
+    <div class="method-card sub"><div class="mc-name">🔄 Substitution (Swap)</div>Physically replace suspected device with a known-working unit. If fixed → bad device. Quick for single points of failure. Drawback: doesn't work well when multiple devices may be involved.</div>
+    <div class="method-card cmp"><div class="mc-name">🔍 Comparison (Spot-the-Difference)</div>Compare configs, software versions, and hardware between working and non-working states. Find significant differences. Weakness: may find a fix without revealing the root cause.</div>
+    <div class="method-card eg"><div class="mc-name">🎯 Educated Guess</div>"Shoot-from-the-hip" — educated guess based on experience and symptoms. Effective for seasoned technicians. Less reliable for newer admins — may become random troubleshooting.</div>
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">12.2.7</span> Selecting the Right Method</h3>
+  <div class="tw"><table>
+    <tr><th>Situation</th><th>Recommended Method</th></tr>
+    <tr><td>Hardware / physical problem suspected</td><td><strong>Bottom-Up</strong></td></tr>
+    <tr><td>Software / application problem suspected</td><td><strong>Top-Down</strong></td></tr>
+    <tr><td>Experienced admin; new or complex problem</td><td><strong>Divide and Conquer</strong></td></tr>
+    <tr><td>Less-experienced admin; new problem</td><td><strong>Bottom-Up</strong></td></tr>
+    <tr><td>Critical single point of failure; speed needed</td><td><strong>Substitution</strong></td></tr>
+    <tr><td>Working vs non-working comparison available</td><td><strong>Comparison</strong></td></tr>
+  </table></div>
+  </div>
+
+</div></div>
+
+<!-- 12.3 TOOLS -->
+<div class="sec" id="s3">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">12.3</span><span class="ttl">Troubleshooting Tools</span></span><button class="sec-check" id="sch-s3" onclick="event.stopPropagation();toggleSection('s3',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb">
+
+  <div class="sub">
+  <h3><span class="sn">12.3.1</span> Software Troubleshooting Tools</h3>
+  <div class="tools-grid">
+    <div class="tool-row sw"><div class="tr-name">NMS Tools</div><div class="tr-desc">Network Management System — device-level monitoring, config, fault management. Graphically displays physical network; monitors remote devices automatically. Example: <strong>WhatsUp Gold</strong>.</div></div>
+    <div class="tool-row sw"><div class="tr-name">Knowledge Bases</div><div class="tr-desc">Cisco Tools &amp; Resources (cisco.com Support menu), internet search engines. Provides access to vast pool of experience-based troubleshooting information.</div></div>
+    <div class="tool-row sw"><div class="tr-name">Baselining Tools</div><div class="tr-desc">Automate network documentation and baselining. Draw topology diagrams, track software/hardware versions, measure baseline bandwidth. Search: "Network Performance Monitoring Tools."</div></div>
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">12.3.2</span> Protocol Analyzers — Wireshark</h3>
+  <ul>
+    <li>Captures and decodes frames at each OSI layer</li>
+    <li>Displays physical layer bits, data link info, protocol headers, frame descriptions</li>
+    <li>Filters traffic by device, protocol, port, or other criteria</li>
+    <li>Helps troubleshoot network performance and application-level issues</li>
+    <li>Requires strong TCP/IP knowledge to interpret output effectively</li>
+  </ul>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">12.3.3</span> Hardware Troubleshooting Tools</h3>
+  <div class="tw"><table>
+    <tr><th>Tool</th><th>Purpose</th></tr>
+    <tr><td><strong>Digital Multimeter (DMM)</strong></td><td>Measures voltage, current, resistance. Check power supply levels and that devices receive power. Example: Fluke 179.</td></tr>
+    <tr><td><strong>Cable Tester</strong></td><td>Detects broken wires, crossed-over wiring, shorted connections, improperly paired connections. Example: Fluke LinkRunner AT.</td></tr>
+    <tr><td><strong>TDR (Time-Domain Reflectometer)</strong></td><td>Pinpoints <strong>distance to a cable break</strong> — sends signal, measures time to receive reflection. Packaged with cable analyzers.</td></tr>
+    <tr><td><strong>OTDR (Optical TDR)</strong></td><td>Same as TDR but for <strong>fiber-optic cables</strong>.</td></tr>
+    <tr><td><strong>Cable Analyzer</strong></td><td>Tests and certifies copper and fiber for different standards. Measures NEXT (near-end crosstalk) and RL (return loss). Example: Fluke DTX Cable Analyzer.</td></tr>
+    <tr><td><strong>Portable Network Analyzer</strong></td><td>Plugs into any switch port; shows port/VLAN config, average/peak utilization, top talkers, interface details. Example: Fluke OptiView.</td></tr>
+    <tr><td><strong>Cisco Prime NAM</strong></td><td>Hardware + software for performance analysis in switching/routing environments. Browser-based interface; captures and decodes packets; generates traffic reports; tracks application response times.</td></tr>
+  </table></div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">12.3.4</span> Syslog as a Troubleshooting Tool</h3>
+  <p>Cisco devices can log configuration changes, ACL violations, interface status, and other events to multiple destinations:</p>
+  <div class="syslog-dest">
+    <div class="sd-row d1"><div class="dr-name">Console</div><div>Default; viewable during live terminal session. Not stored — lost when session ends.</div></div>
+    <div class="sd-row d2"><div class="dr-name">Terminal Lines</div><div>Active Telnet/SSH sessions only. Not stored on device.</div></div>
+    <div class="sd-row d3"><div class="dr-name">Buffered (RAM)</div><div>Stored in RAM during operation; <strong>cleared on reboot</strong>. Useful for recent events.</div></div>
+    <div class="sd-row d4"><div class="dr-name">SNMP Traps</div><div>Forwarded to NMS when thresholds exceeded. Requires SNMP configuration.</div></div>
+    <div class="sd-row d5"><div class="dr-name">Syslog Server ⭐</div><div><strong>Most useful</strong> — long-term storage, central location for all router messages, viewable without device access, not lost on reboot.</div></div>
+  </div>
+  <div class="cw"><div class="cl">Configure syslog server and limit message level <button class="cpb" onclick="copyCode(this)">Copy</button></div>
+  <pre><code>! Send to syslog server:
+R1(config)# logging host 192.168.1.100
+
+! Limit to levels 0-5 (Notifications and above = more critical):
+R1(config)# logging trap notifications
+
+! Enable logging:
+R1(config)# logging on
+
+! Result: levels 0 (Emergency) through 5 (Notification) sent to server
+! Levels 6 (Informational) and 7 (Debugging) are NOT sent</code></pre></div>
+  <div class="ca info"><span class="ic">💡</span><div><code>logging trap</code> level: only messages <strong>equal to or numerically lower</strong> than specified level are logged. Lower number = more critical. <code>notifications</code> = level 5, so levels 0–5 are sent.</div></div>
+  </div>
+
+</div></div>
+
+<!-- 12.4 SYMPTOMS AND CAUSES -->
+<div class="sec" id="s4">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">12.4</span><span class="ttl">Symptoms and Causes by OSI Layer</span></span><button class="sec-check" id="sch-s4" onclick="event.stopPropagation();toggleSection('s4',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb">
+
+  <div class="sub">
+  <h3><span class="sn">12.4.1</span> Physical Layer (Layer 1)</h3>
+  <div class="layer-grid">
+    <div class="layer-card l1">
+      <div class="lc-hdr">🔴 Layer 1 — Physical</div>
+      <div class="lc-body">
+        <strong>Symptoms:</strong>
+        <ul>
+          <li>Performance lower than baseline (requires baseline for comparison)</li>
+          <li>Loss of connectivity (cable fault — verify with ping)</li>
+          <li>Network bottlenecks or congestion</li>
+          <li>High CPU utilization</li>
+          <li>Console error messages</li>
+        </ul>
+        <strong>Common Causes:</strong>
+        <ul>
+          <li><strong>Power failures</strong> — most fundamental; check fans and power supply</li>
+          <li><strong>Hardware faults (NIC)</strong> — late collisions, short frames, <strong>jabber</strong> (device transmitting random data continuously); caused by faulty NIC, corrupt driver, bad cabling, grounding problems</li>
+          <li><strong>Cabling faults</strong> — damaged cables, wrong cable type, bad RJ-45 crimp, partially disconnected</li>
+          <li><strong>Attenuation</strong> — cable exceeds design length; poor connections; receiving device cannot distinguish bits</li>
+          <li><strong>Noise/EMI</strong> — FM radio, police radio, electric motors, crosstalk, grounding problems</li>
+          <li><strong>Interface config errors</strong> — wrong clock rate/source, interface not enabled (no shutdown)</li>
+          <li><strong>Exceeding design limits</strong> — component operating beyond capacity; increasing interface error counters</li>
+          <li><strong>CPU overload</strong> — input queue drops, SNMP timeouts, slow ping, DHCP/Telnet failures; on switches: STP reconvergence, EtherChannel bounce, UDLD flapping; on routers: route flapping, HSRP flapping</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">12.4.2</span> Data Link Layer (Layer 2)</h3>
+  <div class="layer-grid">
+    <div class="layer-card l2">
+      <div class="lc-hdr">🔵 Layer 2 — Data Link</div>
+      <div class="lc-body">
+        <strong>Symptoms:</strong>
+        <ul>
+          <li>No functionality or connectivity at Layer 3 or above (all L2 frames blocked)</li>
+          <li>Network operating below baseline — frames taking suboptimal path, or being dropped (visible via error counters)</li>
+          <li>Excessive broadcasts — STP loops, route flapping, poorly programmed apps, large L2 broadcast domain</li>
+          <li>Console messages — "line protocol down," encapsulation errors, keepalive failures</li>
+        </ul>
+        <strong>Common Causes:</strong>
+        <ul>
+          <li><strong>Encapsulation errors</strong> — mismatch in encapsulation type between WAN link ends</li>
+          <li><strong>Address mapping errors</strong> — stale ARP cache, failed ARP reply, misconfiguration, or ARP spoofing attack</li>
+          <li><strong>Framing errors</strong> — frame not ending on 8-bit byte boundary; caused by noisy serial line, bad cable, NIC fault, duplex mismatch, incorrect CSU line clock</li>
+          <li><strong>STP failures or loops</strong> — no ports blocked in redundant topology → infinite flooding; port flapping causes repetitive topology changes; well-configured networks have rare topology changes</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">12.4.3</span> Network Layer (Layer 3)</h3>
+  <div class="layer-grid">
+    <div class="layer-card l3">
+      <div class="lc-hdr">🟢 Layer 3 — Network</div>
+      <div class="lc-body">
+        <strong>Symptoms:</strong> Network failure (non-functional for all users) · Suboptimal performance (subset of users/apps/destinations)
+        <br><br>
+        <strong>Common Causes:</strong>
+        <ul>
+          <li><strong>General network issues</strong> — recent topology changes (link down), new routes added/removed, someone working on infrastructure</li>
+          <li><strong>Connectivity issues</strong> — power outage, overheating, Layer 1 cabling, bad ports, ISP problems</li>
+          <li><strong>Routing table problems</strong> — missing routes or unexpected routes; use <code>debug</code> to view routing updates and table maintenance</li>
+          <li><strong>Neighbor issues</strong> — OSPF/EIGRP neighbor adjacency not formed; check neighbor table</li>
+          <li><strong>Topology database issues</strong> — missing or unexpected entries in OSPF LSDB or EIGRP topology table</li>
+        </ul>
+        Improperly configured static routes can create routing loops making parts of the network unreachable. No single template for L3 troubleshooting — use methodical show commands.
+      </div>
+    </div>
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">12.4.4</span> Transport Layer — ACL Issues</h3>
+  <div class="layer-grid">
+    <div class="layer-card l4">
+      <div class="lc-hdr">🟠 Layer 4 — Transport (ACLs)</div>
+      <div class="lc-body">
+        <strong>Common ACL Misconfiguration Areas:</strong>
+        <ul>
+          <li><strong>Wrong interface or direction</strong> — ACL applied to wrong interface or wrong direction (in vs out)</li>
+          <li><strong>Order of entries</strong> — must be specific-to-general; more specific entries BEFORE broader ones; first match wins</li>
+          <li><strong>Implicit deny any</strong> — at end of every ACL; blocks all traffic not explicitly permitted</li>
+          <li><strong>Wildcard mask errors</strong> — complex wildcards are error-prone; verify calculations</li>
+          <li><strong>Protocol selection</strong> — specifying both TCP and UDP when only one applies opens unnecessary holes</li>
+          <li><strong>Source and destination ports</strong> — inbound and outbound ACLs must mirror each other for bidirectional traffic</li>
+          <li><strong>established keyword</strong> — incorrect use causes unexpected behavior in return traffic filtering</li>
+          <li><strong>Uncommon protocols</strong> — VPN and encryption protocols often blocked or misconfigured</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="et"><div class="lbl">🎯 ACL + NAT PROCESSING ORDER — EXAM KEY</div>
+  <strong>Inbound traffic:</strong> inbound ACL processed FIRST → then outside-to-inside NAT<br>
+  <strong>Outbound traffic:</strong> inside-to-outside NAT processed FIRST → then outbound ACL<br><br>
+  <strong><code>log</code> keyword:</strong> instructs router to log an entry whenever that ACE is matched. Useful for troubleshooting and detecting intrusion attempts.
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">12.4.5</span> Transport Layer — NAT Issues</h3>
+  <div class="tw"><table>
+    <tr><th>Protocol</th><th>NAT Interoperability Problem</th><th>Fix</th></tr>
+    <tr><td><strong>BOOTP/DHCP</strong></td><td>DHCP-Request uses source 0.0.0.0 — NAT requires valid source/dest IP addresses</td><td><code>ip helper-address</code></td></tr>
+    <tr><td><strong>DNS</strong></td><td>NAT changes IP addresses but cannot update addressing info in DNS payload</td><td><code>ip helper-address</code></td></tr>
+    <tr><td><strong>SNMP</strong></td><td>SNMP agents/managers on opposite sides of NAT may not communicate</td><td><code>ip helper-address</code></td></tr>
+    <tr><td><strong>IPsec/GRE (VPN)</strong></td><td>Encryption/tunneling protocols use specific ports/protocols that NAT cannot process; VPN traffic cannot traverse standard NAT</td><td>NAT-T or other VPN workarounds</td></tr>
+  </table></div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">12.4.6</span> Application Layer (Layer 7)</h3>
+  <div class="layer-grid">
+    <div class="layer-card l7">
+      <div class="lc-hdr">🟣 Layer 7 — Application</div>
+      <div class="lc-body">
+        <strong>Common Application Protocols:</strong> SSH/Telnet · HTTP · FTP · TFTP · SMTP · POP · SNMP · DNS · NFS<br><br>
+        <strong>Key point:</strong> Application layer problems can exist even when Layers 1–4 are fully functional. Full network connectivity exists but the application cannot deliver data.<br><br>
+        <strong>Symptoms:</strong> Users report application is slow, sluggish, or not working at all — even though pings succeed and routing is correct.<br><br>
+        <strong>Approach:</strong> Once you verify Layers 1–4 are working (ping succeeds, traceroute completes, routing table correct, no ACL blocks), focus troubleshooting on the application or server itself.
+      </div>
+    </div>
+  </div>
+  </div>
+
+</div></div>
+
+<!-- 12.5 IP CONNECTIVITY -->
+<div class="sec" id="s5">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">12.5</span><span class="ttl">Troubleshooting IP Connectivity — 8 Steps</span></span><button class="sec-check" id="sch-s5" onclick="event.stopPropagation();toggleSection('s5',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb">
+
+  <div class="sub">
+  <h3><span class="sn">Overview</span> Primary Diagnostic Utilities</h3>
+  <div class="tw"><table>
+    <tr><th>Utility</th><th>Platform</th><th>Purpose</th></tr>
+    <tr><td><code>ping</code></td><td>IOS + Windows</td><td>ICMP Echo Request/Reply — tests Layer 3 connectivity; works for IPv4 and IPv6</td></tr>
+    <tr><td><code>traceroute</code></td><td>Cisco IOS</td><td>Traces hop-by-hop path; shows last router reached when connectivity fails</td></tr>
+    <tr><td><code>tracert</code></td><td>Windows</td><td>Windows equivalent of IOS traceroute</td></tr>
+  </table></div>
+  <div class="ca info"><span class="ic">💡</span><div>Cisco IOS automatically detects whether an address is IPv4 or IPv6 and uses the appropriate protocol for both <code>ping</code> and <code>traceroute</code>. <code>traceroute</code> is commonly performed <em>when ping fails</em>. If ping succeeds, traceroute is usually not needed.</div></div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">Step 1</span> Verify the Physical Layer</h3>
+  <div class="step-box">
+    <div class="sb-hdr"><span class="snum">1</span> Verify Physical Layer — show interfaces</div>
+    <div class="sb-body">
+      Key commands: <code>show interfaces</code> · <code>show processes cpu</code> · <code>show memory</code>
+      <ul>
+        <li><strong>Input queue drops</strong> — router received more traffic than it could process; if consistently high → CPU bottleneck</li>
+        <li><strong>Output queue drops</strong> — congestion on outbound interface; normal during peaks; consistently high → implement QoS</li>
+        <li><strong>Input errors / CRC errors</strong> — cabling problems, hardware issues, or <strong>duplex mismatch</strong></li>
+        <li><strong>Output errors / late collisions</strong> — in full-duplex networks, collisions should NOT occur; late collisions = duplex mismatch</li>
+      </ul>
+    </div>
+  </div>
+  <div class="cw"><div class="cl">show interfaces — read key counters <button class="cpb" onclick="copyCode(this)">Copy</button></div>
+  <pre><code>R1# show interfaces GigabitEthernet 0/0/0
+GigabitEthernet0/0/0 is up, line protocol is up
+  ...
+  Input queue: 0/75/0/0 (size/max/drops/flushes); Total output drops: 0
+  0 runts, 0 giants, 0 throttles
+  0 input errors, 0 CRC, 0 frame, 0 overrun, 0 ignored
+  0 output errors, 0 collisions, 1 interface resets
+
+! drops > 0 consistently = CPU bottleneck
+! CRC errors = cabling or duplex mismatch
+! late collisions in full-duplex = duplex mismatch</code></pre></div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">Step 2</span> Check for Duplex Mismatches</h3>
+  <div class="step-box">
+    <div class="sb-hdr"><span class="snum">2</span> Check Duplex — show interfaces / duplex auto</div>
+    <div class="sb-body">
+      <ul>
+        <li>Autonegotiation recommended (IEEE 802.3ab mandates autoneg for Gigabit Ethernet)</li>
+        <li>If autoneg fails → manually set speed and duplex on <strong>both ends</strong></li>
+        <li>Point-to-point Ethernet should always run <strong>full-duplex</strong></li>
+        <li>In full-duplex, collisions should NEVER occur — collisions = duplex mismatch</li>
+        <li>CDP detects and logs mismatches: <code>%CDP-4-DUPLEX_MISMATCH: duplex mismatch discovered on...</code></li>
+      </ul>
+    </div>
+  </div>
+  <div class="cw"><div class="cl">Diagnose and fix duplex mismatch <button class="cpb" onclick="copyCode(this)">Copy</button></div>
+  <pre><code>! Check duplex on S1 port:
+S1# show interface fa 0/20
+FastEthernet0/20 is up, line protocol is up (connected)
+  Full-duplex, Auto-speed, media type is 10/100BaseTX
+
+! Check other side on S2:
+S2# show interface fa 0/20
+FastEthernet0/20 is up, line protocol is up (connected)
+  Half-duplex, Auto-speed    ← MISMATCH!
+
+! Fix: set both sides to autonegotiate (or both to full-duplex):
+S2(config)# interface fa 0/20
+S2(config-if)# duplex auto</code></pre></div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">Step 3</span> Verify Addressing on the Local Network</h3>
+  <div class="step-box">
+    <div class="sb-hdr"><span class="snum">3</span> Verify L2/L3 Address Mappings — ARP, MAC table, VLAN</div>
+    <div class="sb-body">
+      <div class="tw"><table>
+        <tr><th>Command</th><th>Platform</th><th>Purpose</th></tr>
+        <tr><td><code>arp -a</code></td><td>Windows</td><td>Display IPv4 ARP cache (IP → MAC mappings)</td></tr>
+        <tr><td><code>arp -d</code></td><td>Windows</td><td>Clear ARP cache to force re-resolution</td></tr>
+        <tr><td><code>netsh interface ipv6 show neighbor</code></td><td>Windows</td><td>Display IPv6 neighbor table</td></tr>
+        <tr><td><code>ip neigh show</code></td><td>Linux/macOS</td><td>Display IPv6 neighbor table</td></tr>
+        <tr><td><code>show arp</code></td><td>Cisco IOS</td><td>Router ARP table</td></tr>
+        <tr><td><code>show ipv6 neighbors</code></td><td>Cisco IOS</td><td>Router IPv6 neighbor table</td></tr>
+        <tr><td><code>show mac address-table</code></td><td>Cisco IOS</td><td>Switch MAC table — MAC address, VLAN, port</td></tr>
+      </table></div>
+    </div>
+  </div>
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>VLAN mismatch:</strong> If a host's default gateway is on a different VLAN than the host, communication beyond the local network fails — even if IP addresses look correct. Use <code>show mac address-table</code> to verify VLAN assignments. Fix: <code>switchport access vlan [id]</code>.</div></div>
+  <div class="cw"><div class="cl">Fix VLAN mismatch on switch <button class="cpb" onclick="copyCode(this)">Copy</button></div>
+  <pre><code>! Verify VLAN assignments:
+S1# show mac address-table
+Vlan  Mac Address      Type     Ports
+1     d48c.b5ce.a0c0   DYNAMIC  Fa0/1   ← R1 is in VLAN 1
+10    5475.d08e.9ad8   DYNAMIC  Fa0/13  ← PC1 is in VLAN 10
+
+! R1 and PC1 are in different VLANs — fix:
+S1(config)# interface fa0/1
+S1(config-if)# switchport mode access
+S1(config-if)# switchport access vlan 10</code></pre></div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">Step 4</span> Verify Default Gateway</h3>
+  <div class="step-box">
+    <div class="sb-hdr"><span class="snum">4</span> Verify Default Gateway — show ip route / ipconfig</div>
+    <div class="sb-body">
+      <ul>
+        <li>On router: <code>show ip route | include Gateway|0.0.0.0</code> — verify gateway of last resort</li>
+        <li>On Windows (IPv4): <code>route print</code> — verify default gateway</li>
+        <li>On Windows (IPv6): <code>ipconfig</code> — verify IPv6 GUA and default gateway</li>
+        <li>On Linux/macOS: <code>ifconfig</code></li>
+      </ul>
+    </div>
+  </div>
+  <div class="cw"><div class="cl">IPv6 default gateway troubleshooting — ipv6 unicast-routing <button class="cpb" onclick="copyCode(this)">Copy</button></div>
+  <pre><code>! PC has link-local but no global IPv6 = router not sending RAs
+C:\> ipconfig
+  Link-local IPv6 Address: fe80::5075:d0ff:fe8e:9ad8%13
+  IPv6 Address: (none)       ← missing global address
+  Default Gateway: (none)    ← missing gateway
+
+! Check if R1 is enabled as IPv6 router:
+R1# show ipv6 interface GigabitEthernet 0/0/0
+  Joined group address(es):
+    FF02::1                  ← NOT in FF02::2 = not an IPv6 router!
+
+! Fix: enable IPv6 routing (causes R1 to join FF02::2 and send RAs):
+R1(config)# ipv6 unicast-routing
+
+! Verify after fix:
+R1# show ipv6 interface GigabitEthernet 0/0/0
+  Joined group address(es):
+    FF02::1
+    FF02::2                  ← now a member = sends RA messages</code></pre></div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">Step 5</span> Verify Correct Path</h3>
+  <div class="step-box">
+    <div class="sb-hdr"><span class="snum">5</span> Verify Routing Table — show ip route / show ipv6 route</div>
+    <div class="sb-body">
+      <ul>
+        <li><code>show ip route | begin Gateway</code> — full IPv4 routing table starting from gateway of last resort</li>
+        <li><code>show ipv6 route</code> — full IPv6 routing table</li>
+        <li>Routing table populated by: directly connected · local host routes · static · dynamic (OSPF/EIGRP) · default routes</li>
+        <li><strong>Longest prefix match</strong> — router selects route with most matching leftmost bits; if no match → use default route; if no default → packet discarded</li>
+      </ul>
+    </div>
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">Step 6</span> Verify the Transport Layer</h3>
+  <div class="step-box">
+    <div class="sb-hdr"><span class="snum">6</span> Test Transport Layer — Telnet to specific TCP port</div>
+    <div class="sb-body">
+      <ul>
+        <li>If ping succeeds but connection fails → Layer 4+ problem (ACL, NAT, or application)</li>
+        <li><code>telnet [ip]</code> — tests basic TCP transport layer connectivity (port 23)</li>
+        <li><code>telnet [ip] [port]</code> — tests specific TCP port (e.g., 80 for HTTP, 443 for HTTPS)</li>
+        <li>If "Open" appears → transport layer accepted connection on that port</li>
+        <li>⚠️ Use SSH for actual device management; Telnet is unencrypted — use for testing only</li>
+      </ul>
+    </div>
+  </div>
+  <div class="cw"><div class="cl">Test specific TCP port with Telnet <button class="cpb" onclick="copyCode(this)">Copy</button></div>
+  <pre><code>! Test Layer 3 first:
+R1# ping 2001:db8:acad:2::2
+Success rate is 100 percent (5/5)   ← L3 and below working
+
+! Test transport layer on port 23 (Telnet):
+R1# telnet 2001:db8:acad:2::2
+Trying ... Open                     ← transport layer working
+
+! Test port 80 (HTTP):
+R1# telnet 2001:db8:acad:2::2 80
+Trying ... Open
+HTTP/1.1 400 Bad Request            ← port 80 open, but refusing request
+                                    ← problem is application layer, not transport</code></pre></div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">Step 7</span> Verify ACLs</h3>
+  <div class="step-box">
+    <div class="sb-hdr"><span class="snum">7</span> Verify ACLs — show ip access-lists / show ip interface</div>
+    <div class="sb-body">
+      <ul>
+        <li><code>show ip access-lists</code> — displays all IPv4 ACLs; match counters in parentheses show how many packets hit each ACE</li>
+        <li><code>show ipv6 access-list</code> — displays all IPv6 ACLs</li>
+        <li><code>show ip interface [intf] | include access list</code> — verifies which interfaces have ACLs applied and in which direction</li>
+        <li>Common error: ACL applied to wrong interface or wrong direction (in vs out)</li>
+      </ul>
+    </div>
+  </div>
+  <div class="cw"><div class="cl">Diagnose and fix wrongly-placed ACL <button class="cpb" onclick="copyCode(this)">Copy</button></div>
+  <pre><code>! Check ACL contents and match counters:
+R3# show ip access-lists
+Extended IP access list 100
+  10 deny ip any (108 matches)
+  20 permit ip any any (28 matches)
+
+! Check which interface has the ACL applied:
+R3# show ip interface serial 0/1/1 | include access list
+  Inbound access list is not set    ← ACL NOT where intended!
+
+R3# show ip interface gig 0/0/0 | include access list
+  Inbound access list is 100        ← ACL applied to wrong interface!
+
+! Fix: remove from wrong interface, apply to correct one:
+R3(config)# interface GigabitEthernet 0/0/0
+R3(config-if)# no ip access-group 100 in
+R3(config-if)# exit
+R3(config)# interface serial 0/1/1
+R3(config-if)# ip access-group 100 in</code></pre></div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">Step 8</span> Verify DNS</h3>
+  <div class="step-box">
+    <div class="sb-hdr"><span class="snum">8</span> Verify DNS — show running-config / ip host / nslookup</div>
+    <div class="sb-body">
+      <ul>
+        <li><code>show running-config</code> — view DNS server configuration on router/switch</li>
+        <li><code>ip host [name] [ip]</code> — manually add hostname-to-IP mapping on router/switch (no DNS server needed)</li>
+        <li><code>nslookup [hostname]</code> — Windows command to test DNS resolution from a PC</li>
+        <li>DNS problems: wrong DNS server IP, unreachable DNS server, missing DNS record</li>
+      </ul>
+    </div>
+  </div>
+  <div class="cw"><div class="cl">Manual hostname mapping and DNS test <button class="cpb" onclick="copyCode(this)">Copy</button></div>
+  <pre><code>! Add manual name-to-IP mapping (no DNS server required):
+R1(config)# ip host ipv4-server
+
+! Test using hostname instead of IP:
+R1# ping ipv4-server
+Sending 5, 100-byte ICMP Echos to, timeout is 2 seconds:
+Success rate is 100 percent (5/5)
+
+! On Windows — test DNS resolution:
+C:\> nslookup server.example.com</code></pre></div>
+  </div>
+
+  <!-- PT INLINE -->
+  <div style="margin:20px 0 6px;padding:14px 16px;background:#0d1117;border:1px solid #30363d;border-left:3px solid #1f6feb;border-radius:6px">
+    <div style="font-size:.72em;font-weight:800;text-transform:uppercase;letter-spacing:.8px;color:#1f6feb;margin-bottom:10px">&#x1F4E6; Packet Tracer Activities</div>
+  <div style="display:flex;align-items:baseline;gap:10px;padding:6px 0;border-bottom:1px solid #21262d"><span style="font-family:monospace;font-size:.85em;color:#79c0ff;white-space:nowrap;flex-shrink:0;min-width:52px">12.5.13</span><span style="font-size:.88em;color:#c9d1d9">Troubleshoot Enterprise Networks</span></div>
+    <div style="margin-top:10px;font-size:.78em;color:#6e7681">Full list: <a href="https://itexamanswers.net/ccna-3-packet-tracer-labs-answers-ensa-v7-02.html" target="_blank" rel="noopener" style="color:#58a6ff;word-break:break-all">https://itexamanswers.net/ccna-3-packet-tracer-labs-answers-ensa-v7-02.html</a></div>
+  </div>
+
+</div></div>
+
+<!-- 12.6 EXAM TRAPS -->
+
+<div class="sec" id="s-pt-12-6">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">12.6</span><span class="ttl">Packet Tracer — Troubleshooting Challenges</span></span><button class="sec-check" id="sch-s-pt-12-6" onclick="event.stopPropagation();toggleSection('s-pt-12-6',this)">○ Mark done</button>
+</div>
+<div class="sb">
+  <div style="padding:14px 16px;background:#0d1117;border:1px solid #30363d;border-left:3px solid #1f6feb;border-radius:6px">
+    <div style="font-size:.72em;font-weight:800;text-transform:uppercase;letter-spacing:.8px;color:#1f6feb;margin-bottom:10px">&#x1F4E6; Packet Tracer Activities</div>
+    <div style="font-size:.82em;color:#6e7681;margin-bottom:10px">Open in Cisco Packet Tracer via your NetAcad course.</div>
+      <div style="display:flex;align-items:baseline;gap:10px;padding:6px 0;border-bottom:1px solid #21262d"><span style="font-family:monospace;font-size:.85em;color:#79c0ff;white-space:nowrap;flex-shrink:0;min-width:52px">12.6.1</span><span style="font-size:.88em;color:#c9d1d9">Troubleshooting Challenge — Document the Network</span></div>
+      <div style="display:flex;align-items:baseline;gap:10px;padding:6px 0;border-bottom:1px solid #21262d"><span style="font-family:monospace;font-size:.85em;color:#79c0ff;white-space:nowrap;flex-shrink:0;min-width:52px">12.6.2</span><span style="font-size:.88em;color:#c9d1d9">Troubleshooting Challenge — Use Documentation to Solve Issues</span></div>
+    <div style="margin-top:12px;font-size:.78em;color:#6e7681">Full list: <a href="https://itexamanswers.net/ccna-3-packet-tracer-labs-answers-ensa-v7-02.html" target="_blank" rel="noopener" style="color:#58a6ff;word-break:break-all">https://itexamanswers.net/ccna-3-packet-tracer-labs-answers-ensa-v7-02.html</a></div>
+  </div>
+</div>
+</div>
+<div class="sec" id="s6">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">🎯</span><span class="ttl">Common Exam Traps — Module 12</span></span><button class="sec-check" id="sch-s6" onclick="event.stopPropagation();toggleSection('s6',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb">
+
+  <div class="ca danger"><span class="ic">❌</span><div><strong>Trap 1: Baseline minimum = 7 days; typical = 2–4 weeks; max = 6 weeks.</strong><br>A 7-day minimum captures daily AND weekly patterns (e.g., a backup job that runs every Saturday night is invisible in a 5-day baseline). Never baseline during holidays or unique traffic events — gives inaccurate "normal" picture.</div></div>
+
+  <div class="ca danger"><span class="ic">❌</span><div><strong>Trap 2: Seven-step process — know each step and its name.</strong><br>Define → Gather → Analyze → Eliminate → Propose → Test → Solve. Step 6 (Test) requires a <strong>rollback plan before any changes</strong>. If solution fails, remove changes and return to Step 2 (Gather). Steps can be executed non-linearly by experienced admins.</div></div>
+
+  <div class="ca danger"><span class="ic">❌</span><div><strong>Trap 3: Bottom-up = hardware/physical. Top-down = software/application. Divide-and-conquer = experienced admin, new problem.</strong><br>Less-experienced admins with new problems should use bottom-up. The substitution method (swap) is best for critical single points of failure where speed matters more than root cause analysis.</div></div>
+
+  <div class="ca danger"><span class="ic">❌</span><div><strong>Trap 4: TDR pinpoints distance to cable break. OTDR does same for fiber-optic.</strong><br>TDRs send signals and measure reflection time, converting it to distance. Packaged with cable analyzers/testers. DMMs measure voltage/current/resistance — used for power checks, not cable breaks. Wireshark is a protocol analyzer, not a cable tool.</div></div>
+
+  <div class="ca danger"><span class="ic">❌</span><div><strong>Trap 5: WhatsUp Gold = NMS tool (not a protocol analyzer). Wireshark = protocol analyzer.</strong><br>NMS tools monitor and graphically display network devices. Protocol analyzers capture and decode individual frames/packets. Cisco Prime NAM = hardware/software for performance analysis in Cisco switching/routing environments.</div></div>
+
+  <div class="ca danger"><span class="ic">❌</span><div><strong>Trap 6: duplex mismatch → collisions and late collisions in full-duplex networks.</strong><br>Full-duplex links should never have collisions. Seeing collision counters increasing = duplex mismatch. CDP logs this automatically: <code>%CDP-4-DUPLEX_MISMATCH</code>. Fix: <code>duplex auto</code> on both sides (or <code>duplex full</code> on both). Both sides must match.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 7: Syslog <code>logging trap</code> — only levels equal to or numerically LOWER than specified are sent.</strong><br><code>logging trap notifications</code> (level 5) sends levels 0–5 to the syslog server. Levels 6 (Informational) and 7 (Debugging) are NOT sent. Lower number = more critical = more likely to be included at any trap level setting.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 8: Jabber = device transmitting random meaningless data continuously.</strong><br>Caused by faulty NIC, corrupt NIC driver, bad cabling, or grounding problems. A Layer 1 physical symptom. Distinguished from normal high traffic — jabber is random and continuous regardless of network load.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 9: ACL + NAT processing order — inbound: ACL first, then NAT. Outbound: NAT first, then ACL.</strong><br>Getting this order wrong causes misconfigured ACLs that appear to work but block or allow the wrong traffic. Most exam questions about ACL + NAT interactions test this processing order.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 10: ACL order = specific-to-general. First match wins. Implicit deny any at end.</strong><br>A specific permit will never be reached if a broader deny appears before it. Always place more specific ACEs above broader ones. The implicit deny any at the bottom blocks everything not explicitly permitted — a common source of "mysterious" connectivity failures.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 11: NAT breaks DHCP (source 0.0.0.0), DNS (payload addressing), SNMP, and IPsec/GRE.</strong><br>Fix for DHCP/DNS/SNMP: <code>ip helper-address</code>. Fix for IPsec/GRE: NAT Traversal (NAT-T) or place VPN endpoint outside NAT. Standard NAT cannot process VPN tunnel protocols because they encrypt the transport/network layer headers that NAT needs to modify.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 12: VLAN mismatch — same IP subnet but different VLANs = cannot communicate.</strong><br>VLAN isolation is Layer 2 — even if two hosts have IPs in the same subnet, different VLANs prevent communication without a router. Symptom: ARP table missing default gateway entry. Diagnosis: <code>show mac address-table</code>. Fix: <code>switchport access vlan [correct-vlan]</code>.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 13: IPv6 SLAAC issue — PC has link-local but no GUA = router not sending RAs.</strong><br>A PC always auto-generates a link-local address. A global unicast address via SLAAC requires the router to send RA messages. If the router is not enabled with <code>ipv6 unicast-routing</code>, it does not send RAs, does not join FF02::2, and hosts cannot get IPv6 addresses or default gateways via SLAAC.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 14: <code>show ip access-lists</code> shows match counters in parentheses.</strong><br>Each ACE shows how many packets matched it: <code>10 deny ip any any (108 matches)</code>. This is essential for identifying which ACE is blocking traffic. Zero matches on a deny = that rule hasn't been hit yet. <code>show ip interface [intf] | include access list</code> reveals which interface/direction has the ACL applied.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 15: Application layer problems can exist with full Layers 1–4 connectivity.</strong><br>Ping works, routing works, no ACL blocks → but users still can't access the application. This points to Layer 7 — the application server, service configuration, or app-specific issues. Don't keep troubleshooting the network if all layers below 7 are verified functional.</div></div>
+
+  <div class="ca tip"><span class="ic">✅</span><div><strong>Module 12 quick-reference summary:</strong><br><br>
+  <strong>Documentation:</strong> Physical topology (cables/ports) · Logical topology (IPs/VLANs/routing) · Baseline<br>
+  <strong>Baseline duration:</strong> Min 7 days · Typical 2–4 weeks · Max 6 weeks · NOT during unique traffic events<br>
+  <strong>7-step process:</strong> Define → Gather → Analyze → Eliminate → Propose → <strong>Test (rollback plan first!)</strong> → Solve<br>
+  <strong>Methods:</strong> Bottom-up (L1 up, hardware) · Top-down (L7 down, software) · Divide-and-conquer (middle layer, experienced) · Follow-path · Substitution (swap) · Comparison · Educated guess<br>
+  <strong>Software tools:</strong> NMS (WhatsUp Gold) · Knowledge base · Baselining tools · Wireshark (protocol analyzer)<br>
+  <strong>Hardware tools:</strong> DMM (voltage/current) · Cable tester · TDR (copper cable break distance) · OTDR (fiber break distance) · Cable analyzer · Portable network analyzer · Cisco Prime NAM<br>
+  <strong>Syslog destinations:</strong> Console · Terminal · Buffered (RAM, lost on reboot) · SNMP traps · Syslog server (best)<br>
+  <strong>L1 causes:</strong> Power · Hardware/NIC · Cabling · Attenuation · Noise · Config errors · Overload · Jabber<br>
+  <strong>L2 causes:</strong> Encapsulation mismatch · ARP failure · Framing errors · STP loops/flapping<br>
+  <strong>L3 causes:</strong> Missing/wrong routes · Neighbor adjacency failure · Topology DB errors<br>
+  <strong>L4 ACL:</strong> Wrong intf/direction · Entry order · Implicit deny · Wildcard errors · ACL+NAT order (in: ACL→NAT; out: NAT→ACL)<br>
+  <strong>L4 NAT:</strong> Breaks DHCP (0.0.0.0) · DNS · SNMP · IPsec/GRE → fix: ip helper-address or NAT-T<br>
+  <strong>8-step IP troubleshooting:</strong> Physical → Duplex → Local addressing/VLAN → Default gateway → Routing path → Transport (telnet port) → ACLs → DNS</div></div>
+
+</div></div>
+
+</div>
+<div class="ft">CCNA 3 ENSA v7.02 — Module 12: Network Troubleshooting v2.2<br>Based on Cisco NetAcad curriculum · Study guide for personal use</div>
+<button class="tb-btn" id="topb" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+<div class="mod-nav">
+  <a class="mn-hub" href="index.html">🏠 Hub</a>
+  <div class="mn-divider"></div>
+  <a class="mn-prev" href="ccna3_module11_network_design_v2.2.html">‹</a>
+  <span class="mn-label">M12 of 14</span>
+  <a class="mn-next" href="ccna3_module13_network_virtualization_v2.2.html">›</a>
+</div>
+<script>
+var MOD_KEY="ccna3-module12-network-troubleshooting";
+var SECS=["s1","s2","s3","s4","s5","s-pt-12-6","s6"];
+var checked={};
+function loadState(){
+  try{var s=localStorage.getItem(MOD_KEY);if(s)checked=JSON.parse(s);}catch(e){}
+  SECS.forEach(function(id){
+    var pill=document.getElementById('pill-'+id);
+    var row=document.getElementById('row-'+id);
+    var st=document.getElementById('st-'+id);
+    var sch=document.getElementById('sch-'+id);
+    if(checked[id]){
+      if(pill){pill.classList.add('checked');pill.querySelector('.pill-check').textContent='✓';}
+      if(row)row.classList.add('done');
+      if(st)st.textContent='✓';
+      if(sch){sch.classList.add('checked');sch.textContent='✓ Done';}
+    } else {
+      if(pill){pill.classList.remove('checked');pill.querySelector('.pill-check').textContent='○';}
+      if(row)row.classList.remove('done');
+      if(st)st.textContent='○';
+      if(sch){sch.classList.remove('checked');sch.textContent='○ Mark done';}
+    }
+  });
+}
+function toggleSection(id,btn){checked[id]=!checked[id];try{localStorage.setItem(MOD_KEY,JSON.stringify(checked));}catch(e){}loadState();}
+function toggleStudyPanel(){
+  var hdr=document.getElementById('sp-hdr');
+  var body=document.getElementById('sp-body');
+  var arr=document.getElementById('sp-arr');
+  hdr.classList.toggle('open');body.classList.toggle('open');
+  if(arr)arr.textContent=body.classList.contains('open')?'▲':'▼';
+}
+function goTo(id){var el=document.getElementById(id);if(!el)return;var h=el.querySelector('.sh,.section-header'),b=el.querySelector('.sb,.section-body');if(h&&b&&!b.classList.contains('open')){h.classList.add('open');b.classList.add('open');}setTimeout(function(){window.scrollTo({top:el.getBoundingClientRect().top+window.pageYOffset-60,behavior:'smooth'});},50);}
+function setFs(size,btn){document.documentElement.style.setProperty('--base-fs',size);document.querySelectorAll('.fs-btn').forEach(function(b){b.classList.remove('active');});btn.classList.add('active');try{localStorage.setItem('ccna-fs',size);}catch(e){}}
+(function(){try{var s=localStorage.getItem('ccna-fs');if(s){document.documentElement.style.setProperty('--base-fs',s);document.querySelectorAll('.fs-btn').forEach(function(b){b.classList.remove('active');if((b.textContent==='S'&&s==='14px')||(b.textContent==='M'&&s==='16px')||(b.textContent==='L'&&s==='18px')||(b.textContent==='XL'&&s==='20px'))b.classList.add('active');});}}catch(e){}loadState();})();
+function copyCode(b){var t=b.closest('.cw').querySelector('pre').innerText;if(navigator.clipboard){navigator.clipboard.writeText(t).then(function(){b.textContent='Copied!';setTimeout(function(){b.textContent='Copy';},1500);}).catch(function(){fb(t,b);});}else{fb(t,b);}}
+function fb(t,b){var a=document.createElement('textarea');a.value=t;a.style.position='fixed';a.style.opacity='0';document.body.appendChild(a);a.focus();a.select();document.execCommand('copy');document.body.removeChild(a);b.textContent='Copied!';setTimeout(function(){b.textContent='Copy';},1500);}
+</script>
+<script src="../../site-config.js"></script>
+</body>
+</html>

@@ -1,0 +1,1061 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=2.0">
+<title>CCNA 3 Module 6: NAT for IPv4 v2.2</title>
+<style>
+:root{
+  --blue:#1ba0d7;--dark:#005073;--green:#6cc24a;
+  --nat:#5c3d00;--natd:#fbbf24;--nat2:#7c5a00;
+  --bg:#f4f6f8;--card:#fff;--text:#1a1a2e;--muted:#5a6a7a;
+  --cbg:#0d1117;--ctxt:#c9d1d9;--r:12px;--sh:0 2px 12px rgba(0,0,0,.08);
+  --base-fs:16px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);font-size:var(--base-fs);line-height:1.7}
+
+.fs-bar{position:sticky;top:0;z-index:200;background:#1a1a2e;display:flex;align-items:center;justify-content:flex-end;padding:6px 14px;gap:6px;box-shadow:0 2px 8px rgba(0,0,0,.3)}
+.fs-label{color:#8b949e;font-size:.72em;font-weight:700;letter-spacing:.5px;text-transform:uppercase;margin-right:4px}
+.fs-btn{background:#30363d;color:#c9d1d9;border:2px solid transparent;border-radius:6px;padding:4px 12px;font-size:.75em;font-weight:700;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:all .2s;line-height:1.4}
+.fs-btn:active,.fs-btn.active{background:var(--nat);color:#fff;border-color:var(--nat)}
+
+.hdr{background:linear-gradient(135deg,#2d1f00,var(--nat));color:#fff;padding:32px 20px 24px;text-align:center}
+.hdr .badge{display:inline-block;background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.4);border-radius:20px;padding:4px 14px;font-size:.81em;margin-bottom:12px}
+.hdr h1{font-size:1.625em;font-weight:700;margin-bottom:6px}
+.hdr p{font-size:.94em;opacity:.85}
+.hdr .obj{display:inline-block;background:rgba(255,255,255,.15);border-radius:8px;padding:7px 16px;margin-top:12px;font-size:.875em;font-style:italic}
+
+.pb{background:var(--card);padding:14px 16px;margin:16px 16px 0;border-radius:var(--r);box-shadow:var(--sh)}
+.pbl{font-size:.81em;color:var(--muted);margin-bottom:6px;font-weight:600}
+.pbt{background:#e0e7ef;border-radius:10px;height:8px;overflow:hidden}
+.pbf{background:linear-gradient(90deg,var(--nat),var(--natd));height:100%;border-radius:10px;width:0;transition:width 1s ease}
+
+.toc{background:var(--card);margin:16px;border-radius:var(--r);box-shadow:var(--sh);overflow:hidden}
+.toch{background:var(--nat);color:#fff;padding:14px 18px;font-weight:700;font-size:.94em;display:flex;justify-content:space-between;align-items:center;cursor:pointer;user-select:none}
+.toch .arr{transition:transform .3s}
+.toch.open .arr{transform:rotate(180deg)}
+.tocb{display:none;padding:10px 0}
+.tocb.open{display:block}
+.tocg{font-size:.69em;font-weight:800;letter-spacing:.8px;color:var(--nat);text-transform:uppercase;padding:8px 20px 2px}
+.tocb a{display:block;padding:9px 20px 9px 28px;color:var(--text);text-decoration:none;font-size:.875em;border-left:3px solid transparent;transition:all .2s}
+.tocb a:hover,.tocb a:active{background:#fffbeb;border-left-color:var(--natd)}
+.tocb a .n{display:inline-block;background:var(--nat);color:#fff;border-radius:5px;padding:1px 8px;font-size:.75em;font-weight:700;margin-right:8px}
+
+.wrap{padding:0 16px 100px}
+
+.sec{background:var(--card);border-radius:var(--r);box-shadow:var(--sh);margin-bottom:16px;overflow:hidden}
+.sh{background:linear-gradient(90deg,#2d1f00,var(--nat));color:#fff;padding:16px 18px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;user-select:none;-webkit-tap-highlight-color:transparent}
+.sh .ttl{font-weight:700;font-size:1em}
+.sh .nb{background:rgba(255,255,255,.25);border-radius:6px;padding:3px 10px;font-size:.81em;font-weight:700;margin-right:10px;white-space:nowrap}
+.sh .ch{font-size:1.125em;transition:transform .3s}
+.sh.open .ch{transform:rotate(180deg)}
+.sb{display:none;padding:18px}
+.sb.open{display:block}
+
+.sub{margin-bottom:24px}
+.sub:last-child{margin-bottom:0}
+.sub h3{font-size:.94em;font-weight:700;color:var(--nat);margin-bottom:10px;padding-bottom:6px;border-bottom:2px solid #fffbeb;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.sub h3 .sn{background:var(--nat);color:#fff;border-radius:5px;padding:2px 8px;font-size:.75em;white-space:nowrap}
+.sub h4{font-size:.875em;font-weight:700;color:var(--nat);margin:14px 0 6px}
+.sub p{margin-bottom:10px;font-size:.94em}
+.sub ul,.sub ol{padding-left:20px;margin:8px 0;font-size:.94em}
+.sub li{margin-bottom:5px}
+
+.cw{background:var(--cbg);border-radius:10px;margin:12px 0;overflow:hidden}
+.cl{background:#21262d;color:#c9d1d9;font-size:.78em;font-weight:700;padding:6px 14px;letter-spacing:.5px;text-transform:uppercase;display:flex;justify-content:space-between;align-items:center}
+.cpb{background:#30363d;color:#c9d1d9;border:none;border-radius:5px;padding:3px 10px;font-size:.69em;cursor:pointer}
+.cpb:active{background:var(--nat);color:#fff}
+pre{margin:0;padding:14px;overflow-x:auto;-webkit-overflow-scrolling:touch}
+code{font-family:'Courier New',monospace;font-size:.81em;color:var(--ctxt);line-height:1.6}
+p code,li code,td code,.ca code{background:#fffbeb;color:#2d1f00;border-radius:4px;padding:1px 5px;font-size:.81em;font-family:'Courier New',monospace;font-weight:600}
+
+.ca{border-radius:8px;padding:12px 14px;margin:12px 0;font-size:.875em;line-height:1.6;display:flex;gap:10px;align-items:flex-start}
+.ca .ic{font-size:1.125em;flex-shrink:0;margin-top:1px}
+.ca.warn  {background:#fff3cd;border-left:4px solid #b38600;color:#3d2c00}
+.ca.tip   {background:#d4edda;border-left:4px solid #28a745;color:#0d3318}
+.ca.danger{background:#f8d7da;border-left:4px solid #dc3545;color:#3d0010}
+.ca.info  {background:#fffbeb;border-left:4px solid var(--nat);color:#2d1f00}
+
+.et{background:linear-gradient(135deg,#1a1a2e,#2d1f00);color:#fff;border-radius:10px;padding:14px 16px;margin:14px 0;font-size:.875em;line-height:1.6}
+.et .lbl{font-size:.69em;font-weight:800;letter-spacing:1px;color:var(--natd);margin-bottom:6px}
+.et ul{padding-left:18px;margin-top:6px}
+.et li{margin-bottom:4px}
+
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:12px 0;border-radius:8px}
+table{width:100%;border-collapse:collapse;font-size:.875em}
+th{background:var(--nat);color:#fff;padding:10px 12px;text-align:left;font-weight:700;font-size:.81em}
+td{padding:9px 12px;border-bottom:1px solid #e8ecf0;vertical-align:top;color:#1a1a2e}
+tr:nth-child(even) td{background:#fffbeb;color:#2d1f00}
+tr:last-child td{border-bottom:none}
+
+.steps{counter-reset:step;list-style:none;padding:0;margin:12px 0}
+.steps li{counter-increment:step;display:flex;gap:12px;align-items:flex-start;padding:10px 0;border-bottom:1px solid #eef0f3;font-size:.875em;line-height:1.6}
+.steps li:last-child{border-bottom:none}
+.steps li::before{content:counter(step);background:var(--nat);color:#fff;border-radius:50%;min-width:26px;height:26px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.81em;flex-shrink:0;margin-top:2px}
+
+/* NAT address type cards */
+.addr-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:12px 0}
+@media(max-width:480px){.addr-grid{grid-template-columns:1fr}}
+.addr-card{border-radius:10px;padding:14px;border:2px solid}
+.addr-card.il{border-color:#1a4731;background:#f0fdf4}
+.addr-card.ig{border-color:#1a3a5c;background:#e0f2fe}
+.addr-card.ol{border-color:#7b2d8b;background:#f3e8ff}
+.addr-card.og{border-color:#e07b00;background:#fff8f0}
+.addr-card .ac-term{font-weight:800;font-size:.875em;margin-bottom:4px}
+.addr-card.il .ac-term{color:#1a4731}
+.addr-card.ig .ac-term{color:#1a3a5c}
+.addr-card.ol .ac-term{color:#7b2d8b}
+.addr-card.og .ac-term{color:#e07b00}
+.addr-card .ac-tag{font-size:.69em;font-weight:700;padding:2px 8px;border-radius:4px;display:inline-block;margin-bottom:6px;color:#fff}
+.addr-card.il .ac-tag{background:#1a4731}
+.addr-card.ig .ac-tag{background:#1a3a5c}
+.addr-card.ol .ac-tag{background:#7b2d8b}
+.addr-card.og .ac-tag{background:#e07b00}
+.addr-card p{font-size:.81em;color:#1a1a2e;line-height:1.6}
+
+/* NAT type comparison */
+.nat-type-grid{display:grid;gap:10px;margin:12px 0}
+.nat-type-card{border-radius:10px;overflow:hidden;border:2px solid #e8ecf0}
+.nat-type-card .ntc-hdr{padding:10px 14px;font-size:.875em;font-weight:800;color:#fff;display:flex;align-items:center;gap:8px}
+.nat-type-card.static .ntc-hdr{background:#1a3a5c}
+.nat-type-card.dynamic .ntc-hdr{background:#1a4731}
+.nat-type-card.pat .ntc-hdr{background:var(--nat)}
+.nat-type-card .ntc-body{padding:12px 14px;font-size:.81em;color:#1a1a2e;line-height:1.7;background:#f9fafb}
+.nat-type-card .ntc-body ul{padding-left:16px}
+.nat-type-card .ntc-body li{margin-bottom:4px}
+.nat-type-card .ntc-tag{font-size:.69em;font-weight:700;padding:2px 8px;border-radius:4px;color:#fff;display:inline-block;margin-bottom:6px}
+.nat-type-card.static .ntc-tag{background:#1a3a5c}
+.nat-type-card.dynamic .ntc-tag{background:#1a4731}
+.nat-type-card.pat .ntc-tag{background:var(--nat)}
+
+/* PAT vs NAT comparison table visual */
+.vs-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:12px 0}
+@media(max-width:480px){.vs-grid{grid-template-columns:1fr}}
+.vs-panel{border-radius:10px;overflow:hidden}
+.vs-panel .vp-hdr{padding:8px 12px;font-size:.81em;font-weight:800;color:#fff;text-align:center}
+.vs-panel.nat-p .vp-hdr{background:#1a3a5c}
+.vs-panel.pat-p .vp-hdr{background:var(--nat)}
+.vs-panel .vp-body{padding:12px;font-size:.81em;color:#1a1a2e;line-height:1.7;background:var(--cbg);font-family:'Courier New',monospace;color:var(--ctxt);overflow-x:auto}
+
+/* Config steps flow */
+.cfg-flow{background:#0d1117;border:2px solid var(--natd);border-radius:10px;padding:14px;margin:12px 0}
+.cf-title{font-size:.75em;font-weight:800;letter-spacing:.8px;color:var(--natd);text-transform:uppercase;margin-bottom:10px}
+.cf-step{display:flex;gap:10px;align-items:flex-start;padding:7px 0;border-bottom:1px solid #21262d;font-size:.81em;color:#c9d1d9;line-height:1.6}
+.cf-step:last-child{border-bottom:none}
+.cf-num{background:var(--nat);color:#fff;border-radius:50%;min-width:26px;height:26px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.75em;flex-shrink:0;margin-top:1px}
+.cf-cmd{font-family:'Courier New',monospace;color:var(--natd);font-size:.875em;display:block;margin-top:3px}
+
+/* Advantage/disadvantage cards */
+.adv-grid{display:grid;gap:8px;margin:12px 0}
+.adv-row{display:flex;gap:10px;align-items:flex-start;padding:9px 12px;border-radius:8px;font-size:.81em;line-height:1.6}
+.adv-row.pro{background:#f0fdf4;border-left:4px solid #27ae60}
+.adv-row.con{background:#fff5f5;border-left:4px solid #dc3545}
+.adv-row .ar-icon{font-size:1em;flex-shrink:0;width:20px;text-align:center}
+.adv-row.pro .ar-text{color:#0d3318}
+.adv-row.con .ar-text{color:#3d0010}
+
+/* Show command rows */
+.show-grid{display:grid;gap:8px;margin:12px 0}
+.show-row{display:flex;gap:10px;align-items:flex-start;padding:10px 12px;border-radius:8px;font-size:.81em;border-left:4px solid}
+.show-row.tr{background:#fffbeb;border-left-color:var(--nat)}
+.show-row.st{background:#e0f2fe;border-left-color:#1a3a5c}
+.show-row.cl{background:#f3e8ff;border-left-color:#7b2d8b}
+.show-row .sr-cmd{font-family:'Courier New',monospace;font-weight:700;min-width:0;flex:1.2;color:#1a1a2e;line-height:1.5;font-size:.875em}
+.show-row .sr-desc{flex:2;color:#374151;line-height:1.6}
+
+/* NAT64 transition cards */
+.trans-grid{display:grid;gap:8px;margin:12px 0}
+.trans-card{border-radius:8px;padding:11px 14px;font-size:.81em;border-left:5px solid}
+.trans-card.ds{border-left-color:#1a3a5c;background:#e0f2fe}
+.trans-card.tn{border-left-color:#1a4731;background:#f0fdf4}
+.trans-card.n64{border-left-color:var(--nat);background:#fffbeb}
+.trans-card .tc-title{font-weight:800;margin-bottom:3px}
+.trans-card.ds .tc-title{color:#1a3a5c}
+.trans-card.tn .tc-title{color:#1a4731}
+.trans-card.n64 .tc-title{color:var(--nat)}
+
+/* RFC 1918 visual */
+.rfc-grid{display:grid;gap:8px;margin:12px 0}
+.rfc-row{display:flex;gap:10px;align-items:center;padding:9px 12px;border-radius:8px;font-size:.81em}
+.rfc-row.a{background:#e0f2fe;border-left:4px solid #1a3a5c}
+.rfc-row.b{background:#f3e8ff;border-left:4px solid #7b2d8b}
+.rfc-row.c{background:#f0fdf4;border-left:4px solid #1a4731}
+.rfc-row .rc-class{font-weight:900;font-size:1.125em;min-width:20px;text-align:center;flex-shrink:0}
+.rfc-row.a .rc-class{color:#1a3a5c}
+.rfc-row.b .rc-class{color:#7b2d8b}
+.rfc-row.c .rc-class{color:#1a4731}
+.rfc-row .rc-range{font-family:'Courier New',monospace;font-weight:700;font-size:.875em;flex:1;color:#1a1a2e}
+.rfc-row .rc-prefix{font-family:'Courier New',monospace;font-size:.75em;color:var(--muted);font-weight:600;min-width:80px;text-align:right;flex-shrink:0}
+
+.tb{position:fixed;bottom:80px;right:16px;background:var(--nat);color:#fff;border:none;border-radius:50%;width:44px;height:44px;font-size:1.25em;box-shadow:0 4px 14px rgba(0,0,0,.25);cursor:pointer;display:none;align-items:center;justify-content:center;z-index:100}
+.tb.show{display:flex}
+.ft{text-align:center;padding:24px 16px;color:var(--muted);font-size:.81em}
+
+.mod-nav{position:fixed;bottom:0;left:0;right:0;z-index:300;background:#1a1a2e;border-top:1px solid #30363d;display:flex;align-items:center;height:52px;padding:0 8px;gap:6px}
+.mn-hub{background:var(--blue);color:#fff;border:none;border-radius:8px;padding:6px 12px;font-size:.75em;font-weight:700;cursor:pointer;text-decoration:none;display:flex;align-items:center;gap:4px;white-space:nowrap;-webkit-tap-highlight-color:transparent;flex-shrink:0}
+.mn-hub:active{opacity:.8}
+.mn-divider{width:1px;height:28px;background:#30363d;flex-shrink:0}
+.mn-label{flex:1;text-align:center;font-size:.69em;color:#8b949e;font-weight:600;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding:0 4px}
+.mn-prev,.mn-next{background:#30363d;color:#c9d1d9;border:none;border-radius:8px;padding:6px 10px;font-size:.875em;font-weight:700;cursor:pointer;text-decoration:none;display:flex;align-items:center;-webkit-tap-highlight-color:transparent;flex-shrink:0}
+.mn-prev:active,.mn-next:active{background:var(--nat);color:#fff}
+/* Study progress panel */
+.sp-wrap{background:var(--card);margin:16px 16px 0;border-radius:var(--r);box-shadow:var(--sh);overflow:hidden}
+.sp-hdr{background:var(--nt);color:#fff;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;user-select:none;-webkit-tap-highlight-color:transparent;gap:10px}
+.sp-hdr .sp-title{font-weight:700;font-size:.875em;flex-shrink:0}
+.sp-hdr .sp-arr{transition:transform .3s;flex-shrink:0}
+.sp-hdr.open .sp-arr{transform:rotate(180deg)}
+.sp-body{display:none;padding:12px 14px}
+.sp-body.open{display:block}
+.sp-row{display:flex;align-items:center;gap:10px;padding:6px 4px;border-bottom:1px solid #f0f4f8;font-size:.81em}
+.sp-row:last-child{border-bottom:none}
+.sp-row .sr-status{font-size:1em;flex-shrink:0;width:20px;text-align:center}
+.sp-row .sr-nb{font-weight:800;color:var(--nt);min-width:36px;flex-shrink:0;font-size:.875em}
+.sp-row .sr-ttl{color:var(--text);flex:1}
+.sp-row.done .sr-ttl{color:var(--muted);text-decoration:line-through}
+.sc-pills{display:flex;align-items:center;gap:4px;overflow-x:auto;-webkit-overflow-scrolling:touch;flex:1;padding:0 4px}
+.sc-pill{background:#30363d;color:#8b949e;border:2px solid transparent;border-radius:6px;padding:3px 8px;font-size:.72em;font-weight:700;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:all .15s;white-space:nowrap;flex-shrink:0;line-height:1.4;display:flex;align-items:center;gap:3px}
+.sc-pill.checked{background:var(--nt);color:#fff;border-color:var(--ntd)}
+.sc-pill .pill-check{font-size:.875em}
+
+/* v2.1 — In-section check button */
+.sh{position:relative}
+.sec-check{position:absolute;right:40px;top:50%;transform:translateY(-50%);background:rgba(255,255,255,.15);border:2px solid rgba(255,255,255,.4);border-radius:6px;padding:2px 10px;font-size:.72em;font-weight:800;color:#fff;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:all .2s;white-space:nowrap;z-index:10;line-height:1.5}
+.sec-check.checked{background:var(--ntd);border-color:var(--ntd);color:#052e1e}
+.sec-check:active{opacity:.75}
+/* Sections panel + tick colours (these pages never defined --nt/--ntd, so the panel header was invisible) */
+:root{--nt:var(--nat);--ntd:#4ade80}
+</style>
+<style>.bc{background:#0d1117;padding:8px 16px;display:flex;align-items:center;flex-wrap:wrap;gap:4px;font-size:.75em;overflow-x:auto;white-space:nowrap;-webkit-overflow-scrolling:touch;border-bottom:1px solid #21262d}.bc a{color:#8b949e;text-decoration:none;font-weight:600;flex-shrink:0}.bc a:active{color:#c9d1d9}.bc .sep{color:#6e7681;flex-shrink:0}.bc .cur{color:#fbbf24;font-weight:700;flex-shrink:0;overflow:hidden;text-overflow:ellipsis;max-width:180px}</style>
+</head>
+<body>
+<nav class="bc"><a href="../../index.html">🏠 Home</a><span class="sep">›</span><a href="index.html">CCNA 3 — ENSA</a><span class="sep">›</span><span class="cur">M6: NAT for IPv4</span></nav>
+
+<div class="fs-bar">
+  <div class="sc-pills" id="sc-pills">
+  <button class="sc-pill" id="pill-s1" onclick="toggleSection('s1',this)"><span class="pill-check">○</span>6.1</button>
+  <button class="sc-pill" id="pill-s2" onclick="toggleSection('s2',this)"><span class="pill-check">○</span>6.2</button>
+  <button class="sc-pill" id="pill-s3" onclick="toggleSection('s3',this)"><span class="pill-check">○</span>6.3</button>
+  <button class="sc-pill" id="pill-s4" onclick="toggleSection('s4',this)"><span class="pill-check">○</span>6.4</button>
+  <button class="sc-pill" id="pill-s5" onclick="toggleSection('s5',this)"><span class="pill-check">○</span>6.5</button>
+  <button class="sc-pill" id="pill-s6" onclick="toggleSection('s6',this)"><span class="pill-check">○</span>6.6</button>
+  <button class="sc-pill" id="pill-s7" onclick="toggleSection('s7',this)"><span class="pill-check">○</span>6.7</button>
+  <button class="sc-pill" id="pill-s-pt-6-8" onclick="toggleSection('s-pt-6-8',this)"><span class="pill-check">○</span>PT 6.8</button>
+  <button class="sc-pill" id="pill-s8" onclick="toggleSection('s8',this)"><span class="pill-check">○</span>CMD</button>
+  <button class="sc-pill" id="pill-s9" onclick="toggleSection('s9',this)"><span class="pill-check">○</span>🎯</button>
+  </div>
+  <span class="fs-label" style="flex-shrink:0;margin-left:6px">Size</span>
+  <button class="fs-btn" onclick="setFs('14px',this)">S</button>
+  <button class="fs-btn active" onclick="setFs('16px',this)">M</button>
+  <button class="fs-btn" onclick="setFs('18px',this)">L</button>
+  <button class="fs-btn" onclick="setFs('20px',this)">XL</button>
+</div>
+
+<div class="hdr">
+  <div class="badge">CCNA 3 — ENSA v7.02</div>
+  <h1>🔄 Module 6: NAT for IPv4</h1>
+  <p>Enterprise Networking, Security &amp; Automation · NetAcad Study Guide</p>
+  <div class="obj">Module Objective: Configure NAT services on the edge router to provide IPv4 address scalability</div>
+</div>
+
+<div class="sp-wrap">
+  <div class="sp-hdr" id="sp-hdr" onclick="toggleStudyPanel()">
+    <span class="sp-title">📚 Sections</span>
+    <span class="sp-arr" id="sp-arr">▼</span>
+  </div>
+  <div class="sp-body" id="sp-body">
+    <div class="sp-row" id="row-s1"><span class="sr-status" id="st-s1">○</span><span class="sr-nb">6.1</span><span class="sr-ttl">NAT Characteristics</span></div>
+    <div class="sp-row" id="row-s2"><span class="sr-status" id="st-s2">○</span><span class="sr-nb">6.2</span><span class="sr-ttl">Types of NAT</span></div>
+    <div class="sp-row" id="row-s3"><span class="sr-status" id="st-s3">○</span><span class="sr-nb">6.3</span><span class="sr-ttl">NAT Advantages and Disadvantages</span></div>
+    <div class="sp-row" id="row-s4"><span class="sr-status" id="st-s4">○</span><span class="sr-nb">6.4</span><span class="sr-ttl">Static NAT Configuration</span></div>
+    <div class="sp-row" id="row-s5"><span class="sr-status" id="st-s5">○</span><span class="sr-nb">6.5</span><span class="sr-ttl">Dynamic NAT Configuration</span></div>
+    <div class="sp-row" id="row-s6"><span class="sr-status" id="st-s6">○</span><span class="sr-nb">6.6</span><span class="sr-ttl">PAT Configuration</span></div>
+    <div class="sp-row" id="row-s7"><span class="sr-status" id="st-s7">○</span><span class="sr-nb">6.7</span><span class="sr-ttl">NAT64 — IPv4 to IPv6 Transition</span></div>
+    <div class="sp-row" id="row-s-pt-6-8"><span class="sr-status" id="st-s-pt-6-8">○</span><span class="sr-nb">PT 6.8</span><span class="sr-ttl">Packet Tracer — Configure NAT for IPv4</span></div>
+    <div class="sp-row" id="row-s8"><span class="sr-status" id="st-s8">○</span><span class="sr-nb">CMD</span><span class="sr-ttl">Complete NAT Command Reference</span></div>
+    <div class="sp-row" id="row-s9"><span class="sr-status" id="st-s9">○</span><span class="sr-nb">🎯</span><span class="sr-ttl">Common Exam Traps — Module 6</span></div>
+  </div>
+</div></div>
+
+<div class="toc">
+  <div class="toch open" onclick="this.classList.toggle('open');document.getElementById('tocb').classList.toggle('open')">
+    📋 Table of Contents — Tap to expand <span class="arr">▼</span>
+  </div>
+  <div class="tocb open" id="tocb">
+    <div class="tocg">6.1 — NAT Characteristics</div>
+    <a href="javascript:void(0)" onclick="goTo('s1')"><span class="n">6.1.1</span> RFC 1918 Private Address Space</a>
+    <a href="javascript:void(0)" onclick="goTo('s1')"><span class="n">6.1.2</span> What Is NAT and How It Works</a>
+    <a href="javascript:void(0)" onclick="goTo('s1')"><span class="n">6.1.4</span> Four NAT Address Types</a>
+    <div class="tocg">6.2 — Types of NAT</div>
+    <a href="javascript:void(0)" onclick="goTo('s2')"><span class="n">6.2.1</span> Static NAT</a>
+    <a href="javascript:void(0)" onclick="goTo('s2')"><span class="n">6.2.2</span> Dynamic NAT</a>
+    <a href="javascript:void(0)" onclick="goTo('s2')"><span class="n">6.2.3</span> PAT — NAT Overload</a>
+    <a href="javascript:void(0)" onclick="goTo('s2')"><span class="n">6.2.5</span> NAT vs PAT Comparison</a>
+    <div class="tocg">6.3 — NAT Advantages and Disadvantages</div>
+    <a href="javascript:void(0)" onclick="goTo('s3')"><span class="n">6.3.1</span> Advantages of NAT</a>
+    <a href="javascript:void(0)" onclick="goTo('s3')"><span class="n">6.3.2</span> Disadvantages of NAT</a>
+    <div class="tocg">6.4 — Static NAT Configuration</div>
+    <a href="javascript:void(0)" onclick="goTo('s4')"><span class="n">6.4.2</span> Configure Static NAT — Two Steps</a>
+    <a href="javascript:void(0)" onclick="goTo('s4')"><span class="n">6.4.3</span> Static NAT Translation Process</a>
+    <a href="javascript:void(0)" onclick="goTo('s4')"><span class="n">6.4.4</span> Verify Static NAT</a>
+    <div class="tocg">6.5 — Dynamic NAT Configuration</div>
+    <a href="javascript:void(0)" onclick="goTo('s5')"><span class="n">6.5.2</span> Configure Dynamic NAT — Four Steps</a>
+    <a href="javascript:void(0)" onclick="goTo('s5')"><span class="n">6.5.5</span> Verify Dynamic NAT</a>
+    <div class="tocg">6.6 — PAT Configuration</div>
+    <a href="javascript:void(0)" onclick="goTo('s6')"><span class="n">6.6.2</span> PAT — Single Public IP (Interface)</a>
+    <a href="javascript:void(0)" onclick="goTo('s6')"><span class="n">6.6.3</span> PAT — Address Pool with Overload</a>
+    <a href="javascript:void(0)" onclick="goTo('s6')"><span class="n">6.6.6</span> Verify PAT</a>
+    <div class="tocg">6.7 — NAT64</div>
+    <a href="javascript:void(0)" onclick="goTo('s7')"><span class="n">6.7.2</span> IPv4→IPv6 Transition Strategies</a>
+    <div class="tocg">Reference</div>
+    <a href="javascript:void(0)" onclick="goTo('s8')"><span class="n">CMD</span> Complete NAT Command Reference</a>
+    <a href="javascript:void(0)" onclick="goTo('s9')"><span class="n">🎯</span> Common Exam Traps</a>
+  </div>
+</div>
+
+<div class="wrap">
+
+<!-- ═══════════════════ SECTION 6.1 — NAT CHARACTERISTICS ═══════════════════ -->
+<div class="sec" id="s1">
+<div class="sh open" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">6.1</span><span class="ttl">NAT Characteristics</span></span><button class="sec-check" id="sch-s1" onclick="event.stopPropagation();toggleSection('s1',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb open">
+
+  <div class="sub">
+  <h3><span class="sn">6.1.1</span> RFC 1918 Private Address Space</h3>
+  <p>Private IPv4 addresses <strong>cannot be routed on the internet</strong>. They are used internally within an organization. To reach outside resources, private addresses must be translated to a public address via NAT.</p>
+  <div class="rfc-grid">
+    <div class="rfc-row a"><div class="rc-class">A</div><div class="rc-range">10.0.0.0 – 10.255.255.255</div><div class="rc-prefix">10.0.0.0/8</div></div>
+    <div class="rfc-row b"><div class="rc-class">B</div><div class="rc-range">172.16.0.0 – 172.31.255.255</div><div class="rc-prefix">172.16.0.0/12</div></div>
+    <div class="rfc-row c"><div class="rc-class">C</div><div class="rc-range">192.168.0.0 – 192.168.255.255</div><div class="rc-prefix">192.168.0.0/16</div></div>
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">6.1.2</span> What Is NAT and How It Works</h3>
+  <p>NAT's <strong>primary purpose is to conserve public IPv4 addresses</strong>. A single public IPv4 address can be shared by hundreds or thousands of devices, each using a unique private address internally.</p>
+  <p>NAT-enabled routers operate at the <strong>border of a stub network</strong> — a network with a single connection in and out. The NAT router is the demarcation point between the <strong>inside</strong> (private) and <strong>outside</strong> (internet) networks.</p>
+  <div class="ca info">
+    <span class="ic">💡</span>
+    <div>When an internal device sends traffic out, the NAT router replaces the private source IP with a public IP from the NAT pool. When return traffic arrives, the NAT router translates the destination public IP back to the private IP and forwards the packet to the internal host.</div>
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">6.1.4</span> Four NAT Address Types</h3>
+  <p>NAT terminology is always applied <strong>from the perspective of the inside device being translated</strong>:</p>
+  <ul>
+    <li><strong>Inside/Outside</strong> — which side of the NAT router is the device on?</li>
+    <li><strong>Local/Global</strong> — is this address visible on the inside (local) or on the internet (global)?</li>
+  </ul>
+  <div class="addr-grid">
+    <div class="addr-card il">
+      <div class="ac-term">Inside Local</div>
+      <div class="ac-tag">Private · Before Translation</div>
+      <p>The private IPv4 address assigned to an inside host. This is what the host uses internally — never seen by the internet. Example: <code>192.168.10.10</code></p>
+    </div>
+    <div class="addr-card ig">
+      <div class="ac-term">Inside Global</div>
+      <div class="ac-tag">Public · After Translation</div>
+      <p>The public IPv4 address of the inside host as seen from the internet. This is what the ISP and destination servers see as the source. Example: <code>209.165.200.226</code></p>
+    </div>
+    <div class="addr-card ol">
+      <div class="ac-term">Outside Local</div>
+      <div class="ac-tag">Destination · Inside View</div>
+      <p>The destination address as seen from inside the network. Usually the same as the outside global address — the outside host is typically not translated.</p>
+    </div>
+    <div class="addr-card og">
+      <div class="ac-term">Outside Global</div>
+      <div class="ac-tag">Destination · Real Address</div>
+      <p>The actual public IPv4 address of the destination host on the internet. Example: <code>209.165.201.1</code> (web server)</p>
+    </div>
+  </div>
+  <div class="et">
+    <div class="lbl">🎯 EXAM-CRITICAL — INSIDE GLOBAL IS THE KEY TERM</div>
+    <strong>Inside global = what the internet sees as the source of inside traffic.</strong><br>
+    Example: PC1 (192.168.10.10) → NAT → internet sees source as 209.165.200.226<br>
+    · PC1's inside local = <strong>192.168.10.10</strong> (private, inside)<br>
+    · PC1's inside global = <strong>209.165.200.226</strong> (public, translated — what ISP sees)<br><br>
+    On <code>show ip nat translations</code> — the <strong>Inside global</strong> column shows the public IP the internet sees.
+  </div>
+  </div>
+
+</div></div>
+
+<!-- ═══════════════════ SECTION 6.2 — TYPES OF NAT ═══════════════════ -->
+<div class="sec" id="s2">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">6.2</span><span class="ttl">Types of NAT</span></span><button class="sec-check" id="sch-s2" onclick="event.stopPropagation();toggleSection('s2',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb">
+
+  <div class="sub">
+  <h3><span class="sn">6.2.1–6.2.3</span> Three Types of NAT</h3>
+  <div class="nat-type-grid">
+    <div class="nat-type-card static">
+      <div class="ntc-hdr">🔒 Static NAT</div>
+      <div class="ntc-body">
+        <div class="ntc-tag">One-to-One · Permanent</div>
+        <ul>
+          <li>One inside local ↔ one inside global — <strong>never changes</strong></li>
+          <li>Manually configured by administrator — always in NAT table</li>
+          <li>Allows <strong>external hosts to initiate connections to internal servers</strong></li>
+          <li>Use case: web servers, mail servers accessible from internet</li>
+          <li>Requires <strong>one public IP per device</strong> using static NAT</li>
+          <li>Static entries <strong>never time out</strong></li>
+        </ul>
+      </div>
+    </div>
+    <div class="nat-type-card dynamic">
+      <div class="ntc-hdr">🔄 Dynamic NAT</div>
+      <div class="ntc-body">
+        <div class="ntc-tag">One-to-One · Temporary · First-Come First-Served</div>
+        <ul>
+          <li>Uses a <strong>pool of public addresses</strong> — assigned on demand</li>
+          <li>One inside local → one inside global (still one-to-one)</li>
+          <li>Mappings created automatically when inside host initiates traffic</li>
+          <li>If pool is exhausted, hosts <strong>must wait</strong> for a free address</li>
+          <li>Default timeout: <strong>24 hours</strong> (86400 seconds)</li>
+          <li>Requires enough pool addresses for all simultaneous sessions</li>
+        </ul>
+      </div>
+    </div>
+    <div class="nat-type-card pat">
+      <div class="ntc-hdr">🌐 PAT — Port Address Translation (NAT Overload)</div>
+      <div class="ntc-body">
+        <div class="ntc-tag">Many-to-One · Uses Port Numbers · Most Common</div>
+        <ul>
+          <li>Maps <strong>many private IPs to one (or few) public IPs</strong></li>
+          <li>Sessions distinguished by <strong>TCP/UDP source port numbers</strong></li>
+          <li>ICMP: uses <strong>Query ID</strong> instead of port numbers</li>
+          <li>Most common NAT: home routers and enterprise networks</li>
+          <li>ISP gives one public IP → hundreds of internal hosts share it</li>
+          <li>If source port already in use, PAT assigns next available from group (0–511, 512–1023, 1024–65535)</li>
+          <li>Configured by adding <code>overload</code> keyword to the NAT command</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">6.2.5</span> NAT vs PAT — Key Differences</h3>
+  <div class="tw"><table>
+    <tr><th>Feature</th><th>NAT (Static / Dynamic)</th><th>PAT (NAT Overload)</th></tr>
+    <tr><td><strong>Mapping</strong></td><td>One-to-one: one Inside Local → one Inside Global</td><td>Many-to-one: many Inside Local → one Inside Global</td></tr>
+    <tr><td><strong>Translation basis</strong></td><td>IPv4 addresses only</td><td>IPv4 addresses + TCP/UDP source port numbers</td></tr>
+    <tr><td><strong>Public IP requirement</strong></td><td>One unique public IP per simultaneous session</td><td>One public IP can serve many simultaneous sessions</td></tr>
+    <tr><td><strong>show ip nat translations</strong></td><td>Shows <code>---</code> in port columns</td><td>Shows port numbers (e.g., <code>209.165.200.225:1444</code>)</td></tr>
+  </table></div>
+  </div>
+
+  <!-- PT INLINE -->
+  <div style="margin:20px 0 6px;padding:14px 16px;background:#0d1117;border:1px solid #30363d;border-left:3px solid #1f6feb;border-radius:6px">
+    <div style="font-size:.72em;font-weight:800;text-transform:uppercase;letter-spacing:.8px;color:#1f6feb;margin-bottom:10px">&#x1F4E6; Packet Tracer Activities</div>
+  <div style="display:flex;align-items:baseline;gap:10px;padding:6px 0;border-bottom:1px solid #21262d"><span style="font-family:monospace;font-size:.85em;color:#79c0ff;white-space:nowrap;flex-shrink:0;min-width:52px">6.2.7</span><span style="font-size:.88em;color:#c9d1d9">Investigate NAT Operations</span></div>
+    <div style="margin-top:10px;font-size:.78em;color:#6e7681">Full list: <a href="https://itexamanswers.net/ccna-3-packet-tracer-labs-answers-ensa-v7-02.html" target="_blank" rel="noopener" style="color:#58a6ff;word-break:break-all">https://itexamanswers.net/ccna-3-packet-tracer-labs-answers-ensa-v7-02.html</a></div>
+  </div>
+
+</div></div>
+
+<!-- ═══════════════════ SECTION 6.3 — ADVANTAGES AND DISADVANTAGES ═══════════════════ -->
+<div class="sec" id="s3">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">6.3</span><span class="ttl">NAT Advantages and Disadvantages</span></span><button class="sec-check" id="sch-s3" onclick="event.stopPropagation();toggleSection('s3',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb">
+
+  <div class="sub">
+  <h3><span class="sn">6.3.1–6.3.2</span> NAT Pros and Cons</h3>
+  <div class="adv-grid">
+    <div class="adv-row pro"><div class="ar-icon">✅</div><div class="ar-text"><strong>Conserves public IPv4 addresses</strong> — allows many devices to share one public IP via PAT overload</div></div>
+    <div class="adv-row pro"><div class="ar-icon">✅</div><div class="ar-text"><strong>Increases connection flexibility</strong> — multiple pools, backup pools, and load-balancing pools possible</div></div>
+    <div class="adv-row pro"><div class="ar-icon">✅</div><div class="ar-text"><strong>Consistent internal addressing</strong> — can change ISPs without re-addressing all internal hosts</div></div>
+    <div class="adv-row pro"><div class="ar-icon">✅</div><div class="ar-text"><strong>Hides internal IPv4 addresses</strong> — private addresses not visible on internet (perceived privacy; not true security)</div></div>
+    <div class="adv-row con"><div class="ar-icon">❌</div><div class="ar-text"><strong>Increases forwarding delays</strong> — every packet header must be translated; first packet is always process-switched through the slower path</div></div>
+    <div class="adv-row con"><div class="ar-icon">❌</div><div class="ar-text"><strong>Carrier Grade NAT (CGN)</strong> — when ISPs use private addressing for customers too, double NAT occurs (customer + ISP), causing extra delay and complexity</div></div>
+    <div class="adv-row con"><div class="ar-icon">❌</div><div class="ar-text"><strong>Breaks end-to-end addressing</strong> — applications relying on unchanged source-to-destination IPs fail; digital signatures fail when source IP changes in transit</div></div>
+    <div class="adv-row con"><div class="ar-icon">❌</div><div class="ar-text"><strong>Loses end-to-end traceability</strong> — tracing packets across multiple NAT hops is very difficult; complicates troubleshooting</div></div>
+    <div class="adv-row con"><div class="ar-icon">❌</div><div class="ar-text"><strong>Breaks IPsec tunneling</strong> — NAT modifies IP header values; IPsec integrity checks fail because the header values no longer match the original hash</div></div>
+    <div class="adv-row con"><div class="ar-icon">❌</div><div class="ar-text"><strong>Disrupts services requiring inbound TCP connections</strong> — stateless UDP protocols and services needing externally-initiated connections (e.g., passive FTP) can fail without static NAT mappings</div></div>
+  </div>
+  <div class="ca danger">
+    <span class="ic">🚨</span>
+    <div><strong>NAT does NOT provide real security.</strong> NAT hides internal addresses as a side effect, but security experts agree that NAT is not a security mechanism. A <strong>stateful firewall</strong> provides security at the edge — not NAT.</div>
+  </div>
+  </div>
+
+</div></div>
+
+<!-- ═══════════════════ SECTION 6.4 — STATIC NAT ═══════════════════ -->
+<div class="sec" id="s4">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">6.4</span><span class="ttl">Static NAT Configuration</span></span><button class="sec-check" id="sch-s4" onclick="event.stopPropagation();toggleSection('s4',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb">
+
+  <div class="sub">
+  <h3><span class="sn">6.4.2</span> Configure Static NAT — Two Steps</h3>
+  <div class="cfg-flow">
+    <div class="cf-title">⚙️ Static NAT — Two-Step Configuration</div>
+    <div class="cf-step">
+      <div class="cf-num">1</div>
+      <div>
+        <strong>Create the static mapping</strong> between inside local and inside global address:
+        <span class="cf-cmd">R2(config)# ip nat inside source static [inside-local-ip] [inside-global-ip]</span>
+      </div>
+    </div>
+    <div class="cf-step">
+      <div class="cf-num">2</div>
+      <div>
+        <strong>Mark interfaces</strong> as inside or outside relative to NAT:
+        <span class="cf-cmd">R2(config-if)# ip nat inside    ← on private-side interface</span>
+        <span class="cf-cmd">R2(config-if)# ip nat outside   ← on public-side (ISP) interface</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="cw"><div class="cl">Static NAT — complete configuration example <button class="cpb" onclick="copyCode(this)">Copy</button></div>
+  <pre><code>! Step 1 — Create static mapping (inside local → inside global):
+R2(config)# ip nat inside source static 192.168.10.254 209.165.201.5
+!                                        ^inside local  ^inside global
+
+! Step 2 — Mark interfaces:
+R2(config)# interface serial 0/1/0
+R2(config-if)# ip address 192.168.1.2 255.255.255.252
+R2(config-if)# ip nat inside            ← connected to private/inside network
+R2(config-if)# exit
+R2(config)# interface serial 0/1/1
+R2(config-if)# ip address 209.165.200.1 255.255.255.252
+R2(config-if)# ip nat outside           ← connected to internet/ISP</code></pre></div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">6.4.3</span> Static NAT Translation Process</h3>
+  <ol class="steps">
+    <li>External client sends packet to the web server's <strong>inside global</strong> address (209.165.201.5) — the public address</li>
+    <li>R2 receives packet on outside interface, checks NAT table — finds 209.165.201.5 → translates destination to <strong>inside local</strong> 192.168.10.254</li>
+    <li>R2 forwards packet to web server using private address 192.168.10.254</li>
+    <li>Web server replies using its private IP (192.168.10.254) as source</li>
+    <li>R2 receives reply on inside interface, translates source from 192.168.10.254 → 209.165.201.5 (inside global) and forwards to client</li>
+  </ol>
+  <div class="ca tip">
+    <span class="ic">✅</span>
+    <div>Static NAT is bidirectional — external hosts can initiate connections to internal servers using the inside global (public) address. The NAT router translates in both directions.</div>
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">6.4.4</span> Verify Static NAT</h3>
+  <div class="cw"><div class="cl">show ip nat translations — static NAT verification <button class="cpb" onclick="copyCode(this)">Copy</button></div>
+  <pre><code>! Static entry always present (no active session needed):
+R2# show ip nat translations
+Pro  Inside global      Inside local       Outside local      Outside global
+---  209.165.201.5      192.168.10.254     ---                ---
+Total number of translations: 1
+
+! During an active session — also shows outside device address:
+Pro  Inside global       Inside local       Outside local       Outside global
+tcp  209.165.201.5       192.168.10.254     209.165.200.254     209.165.200.254
+---  209.165.201.5       192.168.10.254     ---                 ---
+Total number of translations: 2
+
+! Statistics — clear before testing for accurate results:
+R2# clear ip nat statistics
+R2# show ip nat statistics
+Total active translations: 1 (1 static, 0 dynamic; 0 extended)
+Outside interfaces: Serial0/1/1
+Inside interfaces: Serial0/1/0
+Hits: 4   Misses: 1</code></pre></div>
+  </div>
+
+  <!-- SYNTAX CHECKER: 6.4.4 -->
+  <div style="margin:20px 0 6px;padding:16px;background:#0d1117;border:1px solid #30363d;border-left:3px solid #bc8cff;border-radius:8px">
+    <div style="font-size:.7em;font-weight:800;text-transform:uppercase;letter-spacing:.8px;color:#bc8cff;margin-bottom:6px">&#x1F5A5; Syntax Checker &mdash; 6.4.4</div>
+    <div style="font-size:.92em;font-weight:600;color:#e6edf3;margin-bottom:12px">Configure Static NAT</div>
+    <div style="font-size:.82em;color:#8b949e;margin-bottom:14px">Type each command exactly as shown. Press Enter to submit. The checker validates your syntax step by step.</div>
+    <div class="tool-links" style="display:flex;flex-wrap:wrap;gap:14px">
+      <div style="flex:1 1 220px;min-width:0">
+        <a href="../../syntax-checker-simple/ccna3_syntax_checker.html?lab=6.4.4" target="_blank" rel="noopener" title="Quick, guided drill: type the exact commands for this NetAcad lab, step by step. Opens straight to lab 6.4.4." style="display:inline-flex;align-items:center;gap:8px;color:#fff;text-decoration:none;padding:8px 18px;border-radius:6px;font-size:.85em;font-weight:700;background:#238636;border:1px solid #2ea043">&#x25B6; Open Syntax Checker</a>
+        <div style="font-size:.75em;color:#8b949e;margin-top:6px">Quick, guided drill: type the exact commands for this NetAcad lab, step by step. Opens straight to lab 6.4.4.</div>
+      </div>
+      <div style="flex:1 1 220px;min-width:0">
+        <a class="cli-engine-link" href="../../cli-engine/ccna-cli-engine.html" target="_blank" rel="noopener" title="Full simulated Cisco IOS terminal: Tab completion, device state, Free Practice, Home Labs and Subnetting. In its exercise menu, pick “Course 3 · 6.4 — Configure Static NAT”." style="display:inline-flex;align-items:center;gap:8px;color:#fff;text-decoration:none;padding:8px 18px;border-radius:6px;font-size:.85em;font-weight:700;background:#1f6feb;border:1px solid #388bfd">&#x1F4BB; Open CLI Engine</a>
+        <div style="font-size:.75em;color:#8b949e;margin-top:6px">Full simulated Cisco IOS terminal: Tab completion, device state, Free Practice, Home Labs and Subnetting. In its exercise menu, pick “Course 3 · 6.4 — Configure Static NAT”.</div>
+      </div>
+    </div>
+    <div style="margin-top:12px;font-size:.75em"><a href="../../index.html" style="color:#58a6ff;text-decoration:none">&#x1F3E0; All study tools (home)</a></div>
+  </div>
+
+  <!-- PT INLINE -->
+  <div style="margin:20px 0 6px;padding:14px 16px;background:#0d1117;border:1px solid #30363d;border-left:3px solid #1f6feb;border-radius:6px">
+    <div style="font-size:.72em;font-weight:800;text-transform:uppercase;letter-spacing:.8px;color:#1f6feb;margin-bottom:10px">&#x1F4E6; Packet Tracer Activities</div>
+  <div style="display:flex;align-items:baseline;gap:10px;padding:6px 0;border-bottom:1px solid #21262d"><span style="font-family:monospace;font-size:.85em;color:#79c0ff;white-space:nowrap;flex-shrink:0;min-width:52px">6.4.5</span><span style="font-size:.88em;color:#c9d1d9">Configure Static NAT</span></div>
+    <div style="margin-top:10px;font-size:.78em;color:#6e7681">Full list: <a href="https://itexamanswers.net/ccna-3-packet-tracer-labs-answers-ensa-v7-02.html" target="_blank" rel="noopener" style="color:#58a6ff;word-break:break-all">https://itexamanswers.net/ccna-3-packet-tracer-labs-answers-ensa-v7-02.html</a></div>
+  </div>
+
+</div></div>
+
+<!-- ═══════════════════ SECTION 6.5 — DYNAMIC NAT ═══════════════════ -->
+<div class="sec" id="s5">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">6.5</span><span class="ttl">Dynamic NAT Configuration</span></span><button class="sec-check" id="sch-s5" onclick="event.stopPropagation();toggleSection('s5',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb">
+
+  <div class="sub">
+  <h3><span class="sn">6.5.2</span> Configure Dynamic NAT — Four Steps</h3>
+  <div class="cfg-flow">
+    <div class="cf-title">⚙️ Dynamic NAT — Four-Step Configuration</div>
+    <div class="cf-step">
+      <div class="cf-num">1</div>
+      <div>
+        <strong>Define the pool</strong> of public IP addresses available for translation:
+        <span class="cf-cmd">R2(config)# ip nat pool NAT-POOL1 209.165.200.226 209.165.200.240 netmask 255.255.255.224</span>
+      </div>
+    </div>
+    <div class="cf-step">
+      <div class="cf-num">2</div>
+      <div>
+        <strong>Create a standard ACL</strong> to identify which inside hosts get translated:
+        <span class="cf-cmd">R2(config)# access-list 1 permit 192.168.0.0 0.0.255.255</span>
+      </div>
+    </div>
+    <div class="cf-step">
+      <div class="cf-num">3</div>
+      <div>
+        <strong>Bind the ACL to the pool</strong>:
+        <span class="cf-cmd">R2(config)# ip nat inside source list 1 pool NAT-POOL1</span>
+      </div>
+    </div>
+    <div class="cf-step">
+      <div class="cf-num">4</div>
+      <div>
+        <strong>Mark interfaces</strong> as inside or outside:
+        <span class="cf-cmd">R2(config-if)# ip nat inside    ← on inside interface</span>
+        <span class="cf-cmd">R2(config-if)# ip nat outside   ← on outside interface</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="cw"><div class="cl">Dynamic NAT — complete configuration example <button class="cpb" onclick="copyCode(this)">Copy</button></div>
+  <pre><code>! Step 1 — Define pool of public addresses:
+R2(config)# ip nat pool NAT-POOL1 209.165.200.226 209.165.200.240 netmask 255.255.255.224
+
+! Step 2 — Standard ACL identifies inside hosts to translate:
+R2(config)# access-list 1 permit 192.168.0.0 0.0.255.255
+
+! Step 3 — Bind ACL to pool:
+R2(config)# ip nat inside source list 1 pool NAT-POOL1
+
+! Step 4 — Mark interfaces:
+R2(config)# interface serial 0/1/0
+R2(config-if)# ip nat inside
+R2(config)# interface serial 0/1/1
+R2(config-if)# ip nat outside</code></pre></div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">6.5.5</span> Verify Dynamic NAT</h3>
+  <div class="cw"><div class="cl">show ip nat translations — dynamic NAT verification <button class="cpb" onclick="copyCode(this)">Copy</button></div>
+  <pre><code>! Dynamic entries — created when hosts generate traffic:
+R2# show ip nat translations
+Pro  Inside global      Inside local       Outside local      Outside global
+---  209.165.200.228    192.168.10.10      ---                ---
+---  209.165.200.229    192.168.11.10      ---                ---
+
+! Verbose adds timing info:
+R2# show ip nat translations verbose
+! Shows: create time, last use time, timeout remaining (default 86400s = 24hr)
+
+! Pool usage statistics:
+R2# show ip nat statistics
+Total active translations: 4 (0 static, 4 dynamic; 0 extended)
+Inside interfaces: Serial0/1/0
+Outside interfaces: Serial0/1/1
+Dynamic mappings:
+-- Inside Source [Id: 1] access-list 1 pool NAT-POOL1 refcount 4
+   pool NAT-POOL1: netmask 255.255.255.224
+   start 209.165.200.226 end 209.165.200.240
+   type generic, total addresses 15, allocated 2 (13%), misses 0
+
+! Clear dynamic translations (static entries cannot be cleared):
+R2# clear ip nat translation *                        ! Clear ALL dynamic
+R2# clear ip nat translation inside 209.165.200.228 192.168.10.10   ! Clear specific
+
+! Change default 24-hour timeout:
+R2(config)# ip nat translation timeout 3600           ! Change to 1 hour</code></pre></div>
+  <div class="ca warn">
+    <span class="ic">⚠️</span>
+    <div><strong>Only dynamic translations can be cleared with <code>clear ip nat translation</code>.</strong> Static NAT entries are permanent — they can only be removed by deleting the <code>ip nat inside source static</code> command from the configuration.</div>
+  </div>
+  </div>
+
+  <!-- SYNTAX CHECKER: 6.5.7 -->
+  <div style="margin:20px 0 6px;padding:16px;background:#0d1117;border:1px solid #30363d;border-left:3px solid #bc8cff;border-radius:8px">
+    <div style="font-size:.7em;font-weight:800;text-transform:uppercase;letter-spacing:.8px;color:#bc8cff;margin-bottom:6px">&#x1F5A5; Syntax Checker &mdash; 6.5.7</div>
+    <div style="font-size:.92em;font-weight:600;color:#e6edf3;margin-bottom:12px">Configure Dynamic NAT</div>
+    <div style="font-size:.82em;color:#8b949e;margin-bottom:14px">Type each command exactly as shown. Press Enter to submit. The checker validates your syntax step by step.</div>
+    <div class="tool-links" style="display:flex;flex-wrap:wrap;gap:14px">
+      <div style="flex:1 1 220px;min-width:0">
+        <a href="../../syntax-checker-simple/ccna3_syntax_checker.html?lab=6.5.7" target="_blank" rel="noopener" title="Quick, guided drill: type the exact commands for this NetAcad lab, step by step. Opens straight to lab 6.5.7." style="display:inline-flex;align-items:center;gap:8px;color:#fff;text-decoration:none;padding:8px 18px;border-radius:6px;font-size:.85em;font-weight:700;background:#238636;border:1px solid #2ea043">&#x25B6; Open Syntax Checker</a>
+        <div style="font-size:.75em;color:#8b949e;margin-top:6px">Quick, guided drill: type the exact commands for this NetAcad lab, step by step. Opens straight to lab 6.5.7.</div>
+      </div>
+      <div style="flex:1 1 220px;min-width:0">
+        <a class="cli-engine-link" href="../../cli-engine/ccna-cli-engine.html" target="_blank" rel="noopener" title="Full simulated Cisco IOS terminal: Tab completion, device state, Free Practice, Home Labs and Subnetting. In its exercise menu, pick “Course 3 · 6.5 — Configure Dynamic NAT”." style="display:inline-flex;align-items:center;gap:8px;color:#fff;text-decoration:none;padding:8px 18px;border-radius:6px;font-size:.85em;font-weight:700;background:#1f6feb;border:1px solid #388bfd">&#x1F4BB; Open CLI Engine</a>
+        <div style="font-size:.75em;color:#8b949e;margin-top:6px">Full simulated Cisco IOS terminal: Tab completion, device state, Free Practice, Home Labs and Subnetting. In its exercise menu, pick “Course 3 · 6.5 — Configure Dynamic NAT”.</div>
+      </div>
+    </div>
+    <div style="margin-top:12px;font-size:.75em"><a href="../../index.html" style="color:#58a6ff;text-decoration:none">&#x1F3E0; All study tools (home)</a></div>
+  </div>
+
+  <!-- PT INLINE -->
+  <div style="margin:20px 0 6px;padding:14px 16px;background:#0d1117;border:1px solid #30363d;border-left:3px solid #1f6feb;border-radius:6px">
+    <div style="font-size:.72em;font-weight:800;text-transform:uppercase;letter-spacing:.8px;color:#1f6feb;margin-bottom:10px">&#x1F4E6; Packet Tracer Activities</div>
+  <div style="display:flex;align-items:baseline;gap:10px;padding:6px 0;border-bottom:1px solid #21262d"><span style="font-family:monospace;font-size:.85em;color:#79c0ff;white-space:nowrap;flex-shrink:0;min-width:52px">6.5.6</span><span style="font-size:.88em;color:#c9d1d9">Configure Dynamic NAT</span></div>
+    <div style="margin-top:10px;font-size:.78em;color:#6e7681">Full list: <a href="https://itexamanswers.net/ccna-3-packet-tracer-labs-answers-ensa-v7-02.html" target="_blank" rel="noopener" style="color:#58a6ff;word-break:break-all">https://itexamanswers.net/ccna-3-packet-tracer-labs-answers-ensa-v7-02.html</a></div>
+  </div>
+
+</div></div>
+
+<!-- ═══════════════════ SECTION 6.6 — PAT ═══════════════════ -->
+<div class="sec" id="s6">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">6.6</span><span class="ttl">PAT Configuration</span></span><button class="sec-check" id="sch-s6" onclick="event.stopPropagation();toggleSection('s6',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb">
+
+  <div class="sub">
+  <h3><span class="sn">6.6.2</span> PAT — Single Public IP (Interface Reference)</h3>
+  <p>When the ISP assigns only <strong>one public IP</strong> — the most common home/enterprise scenario. The router's outside interface IP is used as the single inside global address. Add <code>interface [intf]</code> instead of a pool, plus the <code>overload</code> keyword:</p>
+  <div class="cw"><div class="cl">PAT — single interface IP (most common) <button class="cpb" onclick="copyCode(this)">Copy</button></div>
+  <pre><code>! ACL identifies inside hosts:
+R2(config)# access-list 1 permit 192.168.0.0 0.0.255.255
+
+! Bind to INTERFACE (not pool) + overload keyword:
+R2(config)# ip nat inside source list 1 interface serial 0/1/1 overload
+!                                                    ^outside intf  ^PAT keyword
+
+! Mark interfaces:
+R2(config)# interface serial 0/1/0
+R2(config-if)# ip nat inside
+R2(config)# interface serial 0/1/1
+R2(config-if)# ip nat outside</code></pre></div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">6.6.3</span> PAT — Address Pool with Overload</h3>
+  <p>When the ISP assigns a <strong>small pool of public IPs</strong> — all hosts in the inside network share the pool via port multiplexing. Same as dynamic NAT but adds <code>overload</code>:</p>
+  <div class="cw"><div class="cl">PAT — address pool with overload keyword <button class="cpb" onclick="copyCode(this)">Copy</button></div>
+  <pre><code>! Define pool:
+R2(config)# ip nat pool NAT-POOL2 209.165.200.226 209.165.200.240 netmask 255.255.255.224
+
+! ACL identifies inside hosts:
+R2(config)# access-list 1 permit 192.168.0.0 0.0.255.255
+
+! Bind to pool + overload keyword:
+R2(config)# ip nat inside source list 1 pool NAT-POOL2 overload
+!                                                        ^pool name  ^PAT keyword
+
+! Mark interfaces:
+R2(config)# interface serial 0/1/0
+R2(config-if)# ip nat inside
+R2(config)# interface serial 0/1/1
+R2(config-if)# ip nat outside</code></pre></div>
+  <div class="et">
+    <div class="lbl">🎯 PAT COMMAND COMPARISON — KNOW BOTH FORMS</div>
+    <strong>Single IP (interface):</strong><br>
+    <code>ip nat inside source list 1 interface serial 0/1/1 overload</code><br><br>
+    <strong>Address pool:</strong><br>
+    <code>ip nat inside source list 1 pool NAT-POOL2 overload</code><br><br>
+    The only differences: <code>interface [intf]</code> vs <code>pool [name]</code>, and both end with <code>overload</code>.
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">6.6.6</span> Verify PAT</h3>
+  <div class="cw"><div class="cl">show ip nat translations — PAT output with port numbers <button class="cpb" onclick="copyCode(this)">Copy</button></div>
+  <pre><code>! PAT entries — note port numbers distinguishing sessions:
+R2# show ip nat translations
+Pro  Inside global             Inside local         Outside local        Outside global
+tcp  209.165.200.225:1444      192.168.10.10:1444   209.165.201.1:80     209.165.201.1:80
+tcp  209.165.200.225:1445      192.168.11.10:1444   209.165.202.129:80   209.165.202.129:80
+!    ^same public IP ^diff port ^diff inside hosts               ^different servers
+
+! Key insight:
+! - Both inside hosts translated to SAME public IP (209.165.200.225)
+! - Port 1444 → 192.168.10.10, Port 1445 → 192.168.11.10
+! - Port numbers make each entry UNIQUE in the NAT table
+
+! PAT statistics — pool shows only 1 address allocated for multiple sessions:
+R2# show ip nat statistics
+Total active translations: 4 (0 static, 2 dynamic; 2 extended)
+Hits: 4   Misses: 0
+Dynamic mappings:
+-- Inside Source [Id: 3] access-list 1 pool NAT-POOL2 refcount 2
+   pool NAT-POOL2: netmask 255.255.255.224
+   start 209.165.200.225 end 209.165.200.240
+   type generic, total addresses 15, allocated 1 (6%), misses 0
+!                                                  ^only 1 public IP used for 2 sessions</code></pre></div>
+  <div class="ca info">
+    <span class="ic">💡</span>
+    <div><strong>PAT entries are "extended" translations</strong> — the <code>show ip nat statistics</code> shows <code>2 extended</code> meaning these entries include port number information in addition to IP addresses. Non-PAT entries show <code>0 extended</code>.</div>
+  </div>
+  </div>
+
+  <!-- SYNTAX CHECKER: 6.6.7 -->
+  <div style="margin:20px 0 6px;padding:16px;background:#0d1117;border:1px solid #30363d;border-left:3px solid #bc8cff;border-radius:8px">
+    <div style="font-size:.7em;font-weight:800;text-transform:uppercase;letter-spacing:.8px;color:#bc8cff;margin-bottom:6px">&#x1F5A5; Syntax Checker &mdash; 6.6.7</div>
+    <div style="font-size:.92em;font-weight:600;color:#e6edf3;margin-bottom:12px">Configure PAT (Single Address)</div>
+    <div style="font-size:.82em;color:#8b949e;margin-bottom:14px">Type each command exactly as shown. Press Enter to submit. The checker validates your syntax step by step.</div>
+    <div class="tool-links" style="display:flex;flex-wrap:wrap;gap:14px">
+      <div style="flex:1 1 220px;min-width:0">
+        <a href="../../syntax-checker-simple/ccna3_syntax_checker.html?lab=6.6.7" target="_blank" rel="noopener" title="Quick, guided drill: type the exact commands for this NetAcad lab, step by step. Opens straight to lab 6.6.7." style="display:inline-flex;align-items:center;gap:8px;color:#fff;text-decoration:none;padding:8px 18px;border-radius:6px;font-size:.85em;font-weight:700;background:#238636;border:1px solid #2ea043">&#x25B6; Open Syntax Checker</a>
+        <div style="font-size:.75em;color:#8b949e;margin-top:6px">Quick, guided drill: type the exact commands for this NetAcad lab, step by step. Opens straight to lab 6.6.7.</div>
+      </div>
+      <div style="flex:1 1 220px;min-width:0">
+        <a class="cli-engine-link" href="../../cli-engine/ccna-cli-engine.html" target="_blank" rel="noopener" title="Full simulated Cisco IOS terminal: Tab completion, device state, Free Practice, Home Labs and Subnetting. In its exercise menu, pick “Course 3 · 6.6 — Configure PAT Using a Single Interface Address”." style="display:inline-flex;align-items:center;gap:8px;color:#fff;text-decoration:none;padding:8px 18px;border-radius:6px;font-size:.85em;font-weight:700;background:#1f6feb;border:1px solid #388bfd">&#x1F4BB; Open CLI Engine</a>
+        <div style="font-size:.75em;color:#8b949e;margin-top:6px">Full simulated Cisco IOS terminal: Tab completion, device state, Free Practice, Home Labs and Subnetting. In its exercise menu, pick “Course 3 · 6.6 — Configure PAT Using a Single Interface Address”.</div>
+      </div>
+    </div>
+    <div style="margin-top:12px;font-size:.75em"><a href="../../index.html" style="color:#58a6ff;text-decoration:none">&#x1F3E0; All study tools (home)</a></div>
+  </div>
+
+  <!-- SYNTAX CHECKER: 6.6.6 -->
+  <div style="margin:20px 0 6px;padding:16px;background:#0d1117;border:1px solid #30363d;border-left:3px solid #bc8cff;border-radius:8px">
+    <div style="font-size:.7em;font-weight:800;text-transform:uppercase;letter-spacing:.8px;color:#bc8cff;margin-bottom:6px">&#x1F5A5; Syntax Checker &mdash; 6.6.6</div>
+    <div style="font-size:.92em;font-weight:600;color:#e6edf3;margin-bottom:12px">Configure PAT (Address Pool)</div>
+    <div style="font-size:.82em;color:#8b949e;margin-bottom:14px">Type each command exactly as shown. Press Enter to submit. The checker validates your syntax step by step.</div>
+    <div class="tool-links" style="display:flex;flex-wrap:wrap;gap:14px">
+      <div style="flex:1 1 220px;min-width:0">
+        <a href="../../syntax-checker-simple/ccna3_syntax_checker.html?lab=6.6.6" target="_blank" rel="noopener" title="Quick, guided drill: type the exact commands for this NetAcad lab, step by step. Opens straight to lab 6.6.6." style="display:inline-flex;align-items:center;gap:8px;color:#fff;text-decoration:none;padding:8px 18px;border-radius:6px;font-size:.85em;font-weight:700;background:#238636;border:1px solid #2ea043">&#x25B6; Open Syntax Checker</a>
+        <div style="font-size:.75em;color:#8b949e;margin-top:6px">Quick, guided drill: type the exact commands for this NetAcad lab, step by step. Opens straight to lab 6.6.6.</div>
+      </div>
+      <div style="flex:1 1 220px;min-width:0">
+        <a class="cli-engine-link" href="../../cli-engine/ccna-cli-engine.html" target="_blank" rel="noopener" title="Full simulated Cisco IOS terminal: Tab completion, device state, Free Practice, Home Labs and Subnetting. In its exercise menu, pick “Course 3 · 6.6 — Configure PAT Using an Address Pool”." style="display:inline-flex;align-items:center;gap:8px;color:#fff;text-decoration:none;padding:8px 18px;border-radius:6px;font-size:.85em;font-weight:700;background:#1f6feb;border:1px solid #388bfd">&#x1F4BB; Open CLI Engine</a>
+        <div style="font-size:.75em;color:#8b949e;margin-top:6px">Full simulated Cisco IOS terminal: Tab completion, device state, Free Practice, Home Labs and Subnetting. In its exercise menu, pick “Course 3 · 6.6 — Configure PAT Using an Address Pool”.</div>
+      </div>
+    </div>
+    <div style="margin-top:12px;font-size:.75em"><a href="../../index.html" style="color:#58a6ff;text-decoration:none">&#x1F3E0; All study tools (home)</a></div>
+  </div>
+
+  <!-- PT INLINE -->
+  <div style="margin:20px 0 6px;padding:14px 16px;background:#0d1117;border:1px solid #30363d;border-left:3px solid #1f6feb;border-radius:6px">
+    <div style="font-size:.72em;font-weight:800;text-transform:uppercase;letter-spacing:.8px;color:#1f6feb;margin-bottom:10px">&#x1F4E6; Packet Tracer Activities</div>
+  <div style="display:flex;align-items:baseline;gap:10px;padding:6px 0;border-bottom:1px solid #21262d"><span style="font-family:monospace;font-size:.85em;color:#79c0ff;white-space:nowrap;flex-shrink:0;min-width:52px">6.6.7</span><span style="font-size:.88em;color:#c9d1d9">Configure PAT</span></div>
+    <div style="margin-top:10px;font-size:.78em;color:#6e7681">Full list: <a href="https://itexamanswers.net/ccna-3-packet-tracer-labs-answers-ensa-v7-02.html" target="_blank" rel="noopener" style="color:#58a6ff;word-break:break-all">https://itexamanswers.net/ccna-3-packet-tracer-labs-answers-ensa-v7-02.html</a></div>
+  </div>
+
+</div></div>
+
+<!-- ═══════════════════ SECTION 6.7 — NAT64 ═══════════════════ -->
+<div class="sec" id="s7">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">6.7</span><span class="ttl">NAT64 — IPv4 to IPv6 Transition</span></span><button class="sec-check" id="sch-s7" onclick="event.stopPropagation();toggleSection('s7',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb">
+
+  <div class="sub">
+  <h3><span class="sn">6.7.1–6.7.2</span> IPv4 → IPv6 Transition Strategies</h3>
+  <p>IPv6 (128-bit addresses) was designed to make NAT unnecessary. However, during the long transition from IPv4 to IPv6, three coexistence strategies exist:</p>
+  <div class="trans-grid">
+    <div class="trans-card ds">
+      <div class="tc-title">🔵 Dual-Stack</div>
+      Devices run <strong>both IPv4 and IPv6 simultaneously</strong>. The preferred approach — IPv6 devices communicate natively using IPv6 while still supporting IPv4 when needed.
+    </div>
+    <div class="trans-card tn">
+      <div class="tc-title">🟢 Tunneling</div>
+      <strong>IPv6 packets encapsulated inside IPv4 packets</strong> to cross IPv4-only networks. The IPv6 packet is treated as payload inside the IPv4 tunnel — transparent to IPv4 infrastructure.
+    </div>
+    <div class="trans-card n64">
+      <div class="tc-title">🟡 NAT64</div>
+      <strong>Protocol translation</strong> between IPv6-only and IPv4-only networks. Different from IPv4 NAT — it translates between protocol versions, not just addresses. <strong>NAT-PT</strong> (older) was deprecated by IETF; <strong>NAT64</strong> replaced it.
+    </div>
+  </div>
+  <div class="ca warn">
+    <span class="ic">⚠️</span>
+    <div><strong>NAT64 is a temporary migration tool — not a long-term strategy.</strong> The goal is native IPv6 everywhere. IPv6 ULAs (Unique Local Addresses) are similar to RFC 1918 private addresses but are for local-only site communications — they are NOT intended to extend address space or provide security.</div>
+  </div>
+  <div class="et">
+    <div class="lbl">🎯 NAT64 EXAM KEY POINTS</div>
+    <ul>
+      <li>NAT64 translates between <strong>IPv6-only ↔ IPv4-only networks</strong> — not private-to-public IPv6</li>
+      <li>NAT-PT (older) was <strong>deprecated by IETF</strong> — replaced by NAT64</li>
+      <li>IPv6 ULAs ≠ RFC 1918 purpose — ULAs are for local site communication only, not address space extension</li>
+      <li>NAT64 is a <strong>temporary mechanism</strong> for the IPv4→IPv6 migration period</li>
+      <li>Dual-stack = run both protocols; Tunneling = encapsulate IPv6 in IPv4; NAT64 = translate between</li>
+    </ul>
+  </div>
+  </div>
+
+</div></div>
+
+<!-- ═══════════════════ SECTION 6.8 — COMMAND REFERENCE ═══════════════════ -->
+
+<div class="sec" id="s-pt-6-8">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">6.8</span><span class="ttl">Packet Tracer — Configure NAT for IPv4</span></span><button class="sec-check" id="sch-s-pt-6-8" onclick="event.stopPropagation();toggleSection('s-pt-6-8',this)">○ Mark done</button>
+</div>
+<div class="sb">
+  <div style="padding:14px 16px;background:#0d1117;border:1px solid #30363d;border-left:3px solid #1f6feb;border-radius:6px">
+    <div style="font-size:.72em;font-weight:800;text-transform:uppercase;letter-spacing:.8px;color:#1f6feb;margin-bottom:10px">&#x1F4E6; Packet Tracer Activities</div>
+    <div style="font-size:.82em;color:#6e7681;margin-bottom:10px">Open in Cisco Packet Tracer via your NetAcad course.</div>
+      <div style="display:flex;align-items:baseline;gap:10px;padding:6px 0;border-bottom:1px solid #21262d"><span style="font-family:monospace;font-size:.85em;color:#79c0ff;white-space:nowrap;flex-shrink:0;min-width:52px">6.8.1</span><span style="font-size:.88em;color:#c9d1d9">Configure NAT for IPv4</span></div>
+    <div style="margin-top:12px;font-size:.78em;color:#6e7681">Full list: <a href="https://itexamanswers.net/ccna-3-packet-tracer-labs-answers-ensa-v7-02.html" target="_blank" rel="noopener" style="color:#58a6ff;word-break:break-all">https://itexamanswers.net/ccna-3-packet-tracer-labs-answers-ensa-v7-02.html</a></div>
+  </div>
+</div>
+</div>
+<div class="sec" id="s8">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">CMD</span><span class="ttl">Complete NAT Command Reference</span></span><button class="sec-check" id="sch-s8" onclick="event.stopPropagation();toggleSection('s8',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb">
+  <div class="sub">
+  <h4>Static NAT</h4>
+  <div class="cw"><div class="cl">Static NAT commands <button class="cpb" onclick="copyCode(this)">Copy</button></div>
+  <pre><code>ip nat inside source static [inside-local-ip] [inside-global-ip]
+ip nat inside                  ! on inside (private) interface
+ip nat outside                 ! on outside (public/ISP) interface</code></pre></div>
+
+  <h4>Dynamic NAT</h4>
+  <div class="cw"><div class="cl">Dynamic NAT commands <button class="cpb" onclick="copyCode(this)">Copy</button></div>
+  <pre><code>ip nat pool [name] [start-ip] [end-ip] netmask [subnet-mask]
+access-list [num] permit [network] [wildcard]
+ip nat inside source list [acl-num] pool [pool-name]
+ip nat inside                  ! on inside interface
+ip nat outside                 ! on outside interface</code></pre></div>
+
+  <h4>PAT</h4>
+  <div class="cw"><div class="cl">PAT commands — single IP and pool forms <button class="cpb" onclick="copyCode(this)">Copy</button></div>
+  <pre><code>! PAT using single interface IP:
+ip nat inside source list [acl] interface [outside-intf] overload
+
+! PAT using address pool:
+ip nat pool [name] [start-ip] [end-ip] netmask [mask]
+ip nat inside source list [acl] pool [pool-name] overload</code></pre></div>
+
+  <h4>Verification Commands</h4>
+  <div class="show-grid">
+    <div class="show-row tr"><div class="sr-cmd">show ip nat translations</div><div class="sr-desc">All current NAT table entries — inside global, inside local, outside addresses. PAT entries include port numbers.</div></div>
+    <div class="show-row tr"><div class="sr-cmd">show ip nat translations verbose</div><div class="sr-desc">Adds timing info — when entry was created, last used, time remaining before timeout.</div></div>
+    <div class="show-row st"><div class="sr-cmd">show ip nat statistics</div><div class="sr-desc">Total translations (static/dynamic/extended), pool name/range/allocation, hit/miss counters, inside/outside interfaces.</div></div>
+    <div class="show-row st"><div class="sr-cmd">show running-config | include NAT</div><div class="sr-desc">Quick view of all NAT-related configuration lines (pool, source list, inside/outside).</div></div>
+  </div>
+
+  <h4>Maintenance Commands</h4>
+  <div class="cw"><div class="cl">NAT maintenance and clearing commands <button class="cpb" onclick="copyCode(this)">Copy</button></div>
+  <pre><code>clear ip nat translation *                              ! Clear ALL dynamic entries
+clear ip nat translation inside [global-ip] [local-ip]  ! Clear specific entry
+clear ip nat statistics                                  ! Reset hit/miss counters
+
+ip nat translation timeout [seconds]   ! Change dynamic NAT timeout (default 86400 = 24hr)
+</code></pre></div>
+  </div>
+</div></div>
+
+<!-- ═══════════════════ SECTION 6.9 — EXAM TRAPS ═══════════════════ -->
+<div class="sec" id="s9">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">🎯</span><span class="ttl">Common Exam Traps — Module 6</span></span><button class="sec-check" id="sch-s9" onclick="event.stopPropagation();toggleSection('s9',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb">
+
+  <div class="ca danger"><span class="ic">❌</span><div><strong>Trap 1: Inside local = private IP before translation. Inside global = public IP after translation.</strong><br>The most confused NAT terms. Inside local is what the host uses internally (private). Inside global is what the internet sees (public). Apply the perspective from the inside device being translated. On <code>show ip nat translations</code>, "Inside global" is the public address column.</div></div>
+
+  <div class="ca danger"><span class="ic">❌</span><div><strong>Trap 2: PAT requires the <code>overload</code> keyword — without it, it's dynamic NAT (one-to-one).</strong><br><code>ip nat inside source list 1 pool POOL</code> = dynamic NAT (one host per pool address). <code>ip nat inside source list 1 pool POOL overload</code> = PAT (many hosts per pool address). The single word <code>overload</code> is the entire difference between these two NAT types.</div></div>
+
+  <div class="ca danger"><span class="ic">❌</span><div><strong>Trap 3: PAT using a single IP references the interface — not a pool.</strong><br>Single IP PAT: <code>ip nat inside source list 1 interface serial 0/1/1 overload</code>. Pool PAT: <code>ip nat inside source list 1 pool NAT-POOL2 overload</code>. The key difference: <code>interface [intf]</code> vs <code>pool [name]</code>.</div></div>
+
+  <div class="ca danger"><span class="ic">❌</span><div><strong>Trap 4: Both interfaces MUST be marked — ip nat inside AND ip nat outside.</strong><br>Forgetting either mark is the most common NAT configuration error. Without <code>ip nat inside</code>, the router doesn't know which traffic to translate. Without <code>ip nat outside</code>, it doesn't know where to send translated packets. Both commands are mandatory.</div></div>
+
+  <div class="ca danger"><span class="ic">❌</span><div><strong>Trap 5: Static NAT entries are permanent — cannot be cleared with clear ip nat translation.</strong><br><code>clear ip nat translation *</code> only removes dynamic (and PAT) entries. Static entries remain in the table until the <code>ip nat inside source static</code> command is removed from the configuration.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 6: Dynamic NAT pool must have enough addresses for simultaneous sessions.</strong><br>If the pool runs out of addresses, new inside hosts must wait until an address becomes free (after 24-hour timeout or manual clearing). This is a key difference from PAT — PAT never runs out because it multiplexes port numbers on top of addresses.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 7: Dynamic NAT requires an ACL — the ACL identifies inside hosts, not outside.</strong><br>The standard ACL bound to the NAT pool specifies which inside hosts are <em>permitted</em> to be translated. This is NOT a security ACL — it just identifies which source addresses should trigger NAT translation.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 8: PAT show ip nat translations output includes port numbers — NAT output shows "---".</strong><br>Static/dynamic NAT: <code>--- 209.165.201.5 192.168.10.254 --- ---</code>. PAT: <code>tcp 209.165.200.225:1444 192.168.10.10:1444 209.165.201.1:80 209.165.201.1:80</code>. The port numbers in the inside global column are the key indicator of PAT.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 9: show ip nat statistics tells you pool usage — look for "allocated X (%)".</strong><br>For dynamic NAT, this shows how many pool addresses are in use. For PAT, even with many sessions, "allocated 1 (6%)" means only one public IP was used — because PAT multiplexes all sessions through one address using different ports.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 10: NAT does NOT provide security — a stateful firewall does.</strong><br>NAT hides internal addresses as a side effect, but experts agree NAT is not a security mechanism. The Cisco curriculum specifically states: "A stateful firewall is what provides security on the edge of the network" — not NAT.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 11: Carrier Grade NAT (CGN) = double NAT = ISP also uses private IPs.</strong><br>When ISPs run out of public IPs, they assign customers private IPs, then NAT again at the ISP. Two NAT translations occur per packet (customer router + ISP router). This adds delay and makes troubleshooting very difficult.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 12: NAT-PT is deprecated — NAT64 replaced it.</strong><br>For the IPv4→IPv6 transition: NAT-PT (older) was deprecated by IETF. NAT64 is the current standard. NAT64 translates between IPv6-only and IPv4-only networks — it is NOT the same as IPv4 NAT and should not be used as a long-term solution.</div></div>
+
+  <div class="ca tip"><span class="ic">✅</span><div><strong>Module 6 quick-reference summary:</strong><br><br>
+  <strong>RFC 1918 private ranges:</strong> 10.0.0.0/8 · 172.16.0.0/12 · 192.168.0.0/16<br>
+  <strong>4 NAT address types:</strong> Inside Local (private before) · Inside Global (public after) · Outside Local · Outside Global<br>
+  <strong>Static NAT:</strong> 1:1 permanent · <code>ip nat inside source static local global</code> + mark interfaces<br>
+  <strong>Dynamic NAT:</strong> pool, first-come first-served · pool cmd + ACL + <code>ip nat inside source list acl pool name</code><br>
+  <strong>PAT single IP:</strong> <code>ip nat inside source list acl interface intf overload</code><br>
+  <strong>PAT pool:</strong> <code>ip nat inside source list acl pool name overload</code><br>
+  <strong>Required on both interfaces:</strong> <code>ip nat inside</code> + <code>ip nat outside</code><br>
+  <strong>Verify:</strong> <code>show ip nat translations</code> · <code>show ip nat statistics</code><br>
+  <strong>Clear dynamic:</strong> <code>clear ip nat translation *</code> (static entries NOT cleared)<br>
+  <strong>Default dynamic timeout:</strong> 24 hours (86400 sec)<br>
+  <strong>PAT key:</strong> <code>overload</code> keyword · port numbers in show output · "extended" in statistics<br>
+  <strong>NAT64:</strong> IPv6↔IPv4 translation · temporary · NAT-PT deprecated → NAT64</div></div>
+
+</div></div>
+
+</div><!-- end .wrap -->
+
+<div class="ft">
+  CCNA 3 ENSA v7.02 — Module 6: NAT for IPv4 v2.2<br>
+  Based on Cisco NetAcad curriculum · Study guide for personal use
+</div>
+
+<button class="tb" id="topb" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+
+<div class="mod-nav">
+  <a class="mn-hub" href="index.html">🏠 Hub</a>
+  <div class="mn-divider"></div>
+  <a class="mn-prev" href="ccna3_module5_acls_ipv4_configuration_v2.2.html">‹</a>
+  <span class="mn-label">M6 of 14</span>
+  <a class="mn-next" href="ccna3_module7_wan_concepts_v2.2.html">›</a>
+</div>
+
+<script>
+var MOD_KEY="ccna3-module6-nat-for-ipv4";
+var SECS=["s1","s2","s3","s4","s5","s6","s7","s-pt-6-8","s8","s9"];
+var checked={};
+function loadState(){
+  try{var s=localStorage.getItem(MOD_KEY);if(s)checked=JSON.parse(s);}catch(e){}
+  SECS.forEach(function(id){
+    var pill=document.getElementById('pill-'+id);
+    var row=document.getElementById('row-'+id);
+    var st=document.getElementById('st-'+id);
+    var sch=document.getElementById('sch-'+id);
+    if(checked[id]){
+      if(pill){pill.classList.add('checked');pill.querySelector('.pill-check').textContent='✓';}
+      if(row)row.classList.add('done');
+      if(st)st.textContent='✓';
+      if(sch){sch.classList.add('checked');sch.textContent='✓ Done';}
+    } else {
+      if(pill){pill.classList.remove('checked');pill.querySelector('.pill-check').textContent='○';}
+      if(row)row.classList.remove('done');
+      if(st)st.textContent='○';
+      if(sch){sch.classList.remove('checked');sch.textContent='○ Mark done';}
+    }
+  });
+}
+function toggleSection(id,btn){checked[id]=!checked[id];try{localStorage.setItem(MOD_KEY,JSON.stringify(checked));}catch(e){}loadState();}
+function toggleStudyPanel(){
+  var hdr=document.getElementById('sp-hdr');
+  var body=document.getElementById('sp-body');
+  var arr=document.getElementById('sp-arr');
+  hdr.classList.toggle('open');body.classList.toggle('open');
+  if(arr)arr.textContent=body.classList.contains('open')?'▲':'▼';
+}
+function goTo(id){var el=document.getElementById(id);if(!el)return;var h=el.querySelector('.sh,.section-header'),b=el.querySelector('.sb,.section-body');if(h&&b&&!b.classList.contains('open')){h.classList.add('open');b.classList.add('open');}setTimeout(function(){window.scrollTo({top:el.getBoundingClientRect().top+window.pageYOffset-60,behavior:'smooth'});},50);}
+function setFs(size,btn){document.documentElement.style.setProperty('--base-fs',size);document.querySelectorAll('.fs-btn').forEach(function(b){b.classList.remove('active');});btn.classList.add('active');try{localStorage.setItem('ccna-fs',size);}catch(e){}}
+(function(){try{var s=localStorage.getItem('ccna-fs');if(s){document.documentElement.style.setProperty('--base-fs',s);document.querySelectorAll('.fs-btn').forEach(function(b){b.classList.remove('active');if((b.textContent==='S'&&s==='14px')||(b.textContent==='M'&&s==='16px')||(b.textContent==='L'&&s==='18px')||(b.textContent==='XL'&&s==='20px'))b.classList.add('active');});}}catch(e){}loadState();})();
+function copyCode(b){var t=b.closest('.cw').querySelector('pre').innerText;if(navigator.clipboard){navigator.clipboard.writeText(t).then(function(){b.textContent='Copied!';setTimeout(function(){b.textContent='Copy';},1500);}).catch(function(){fb(t,b);});}else{fb(t,b);}}
+function fb(t,b){var a=document.createElement('textarea');a.value=t;a.style.position='fixed';a.style.opacity='0';document.body.appendChild(a);a.focus();a.select();document.execCommand('copy');document.body.removeChild(a);b.textContent='Copied!';setTimeout(function(){b.textContent='Copy';},1500);}
+</script>
+<script src="../../site-config.js"></script>
+</body>
+</html>

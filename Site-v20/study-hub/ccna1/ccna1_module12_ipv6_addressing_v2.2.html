@@ -1,0 +1,833 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=2.0">
+<title>CCNA 1 Module 12: IPv6 Addressing v2.2</title>
+<style>
+:root{
+  --nt:#0a6e4e;--ntd:#4ade80;--nt2:#052e1e;--nt3:#021710;
+  --bg:#f4f6f8;--card:#fff;--text:#1a1a2e;--muted:#5a6a7a;
+  --cbg:#0d1117;--ctxt:#c9d1d9;--r:12px;--sh:0 2px 12px rgba(0,0,0,.08);
+  --base-fs:20px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);font-size:var(--base-fs);line-height:1.7}
+.bc{background:#0d1117;padding:8px 16px;display:flex;align-items:center;flex-wrap:wrap;gap:4px;font-size:.75em;overflow-x:auto;white-space:nowrap;-webkit-overflow-scrolling:touch;border-bottom:1px solid #21262d}
+.bc a{color:#8b949e;text-decoration:none;font-weight:600;flex-shrink:0}
+.bc .sep{color:#6e7681;flex-shrink:0}
+.bc .cur{color:var(--ntd);font-weight:700;flex-shrink:0}
+.fs-bar{position:sticky;top:0;z-index:200;background:#1a1a2e;display:flex;align-items:center;justify-content:flex-end;padding:6px 14px;gap:6px;box-shadow:0 2px 8px rgba(0,0,0,.3)}
+.fs-label{color:#8b949e;font-size:.72em;font-weight:700;letter-spacing:.5px;text-transform:uppercase;margin-right:4px}
+.fs-btn{background:#30363d;color:#c9d1d9;border:2px solid transparent;border-radius:6px;padding:4px 12px;font-size:.75em;font-weight:700;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:all .2s;line-height:1.4}
+.fs-btn:active,.fs-btn.active{background:var(--nt);color:#fff;border-color:var(--ntd)}
+.hdr{background:linear-gradient(135deg,var(--nt3),var(--nt2),var(--nt));color:#fff;padding:32px 20px 24px;text-align:center}
+.hdr .badge{display:inline-block;background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.4);border-radius:20px;padding:4px 14px;font-size:.81em;margin-bottom:12px}
+.hdr h1{font-size:1.5em;font-weight:700;margin-bottom:6px}
+.hdr p{font-size:.94em;opacity:.85}
+.hdr .obj{display:inline-block;background:rgba(255,255,255,.15);border-radius:8px;padding:7px 16px;margin-top:12px;font-size:.875em;font-style:italic}
+/* Study progress panel */
+.sp-wrap{background:var(--card);margin:16px 16px 0;border-radius:var(--r);box-shadow:var(--sh);overflow:hidden}
+.sp-hdr{background:var(--nt);color:#fff;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;user-select:none;-webkit-tap-highlight-color:transparent;gap:10px}
+.sp-hdr .sp-title{font-weight:700;font-size:.875em;flex-shrink:0}
+.sp-hdr .sp-arr{transition:transform .3s;flex-shrink:0}
+.sp-hdr.open .sp-arr{transform:rotate(180deg)}
+.sp-body{display:none;padding:12px 14px}
+.sp-body.open{display:block}
+.sp-row{display:flex;align-items:center;gap:10px;padding:6px 4px;border-bottom:1px solid #f0f4f8;font-size:.81em}
+.sp-row:last-child{border-bottom:none}
+.sp-row .sr-status{font-size:1em;flex-shrink:0;width:20px;text-align:center}
+.sp-row .sr-nb{font-weight:800;color:var(--nt);min-width:36px;flex-shrink:0;font-size:.875em}
+.sp-row .sr-ttl{color:var(--text);flex:1}
+.sp-row.done .sr-ttl{color:var(--muted);text-decoration:line-through}
+/* Section check pills in fs-bar */
+.sc-pills{display:flex;align-items:center;gap:4px;overflow-x:auto;-webkit-overflow-scrolling:touch;flex:1;padding:0 4px}
+.sc-pill{background:#30363d;color:#8b949e;border:2px solid transparent;border-radius:6px;padding:3px 8px;font-size:.72em;font-weight:700;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:all .15s;white-space:nowrap;flex-shrink:0;line-height:1.4;display:flex;align-items:center;gap:3px}
+.sc-pill.checked{background:var(--nt);color:#fff;border-color:var(--ntd)}
+.sc-pill .pill-check{font-size:.875em}
+.toc{background:var(--card);margin:16px;border-radius:var(--r);box-shadow:var(--sh);overflow:hidden}
+.toch{background:var(--nt);color:#fff;padding:14px 18px;font-weight:700;font-size:.94em;display:flex;justify-content:space-between;align-items:center;cursor:pointer;user-select:none}
+.toch .arr{transition:transform .3s}
+.toch.open .arr{transform:rotate(180deg)}
+.tocb{display:none;padding:10px 0}
+.tocb.open{display:block}
+.tocg{font-size:.69em;font-weight:800;letter-spacing:.8px;color:var(--nt);text-transform:uppercase;padding:8px 20px 2px}
+.tocb a{display:block;padding:9px 20px 9px 28px;color:var(--text);text-decoration:none;font-size:.875em;border-left:3px solid transparent;transition:all .2s}
+.tocb a:active{background:#f0fdf4;border-left-color:var(--ntd)}
+.tocb a .n{display:inline-block;background:var(--nt);color:#fff;border-radius:5px;padding:1px 8px;font-size:.75em;font-weight:700;margin-right:8px}
+.wrap{padding:0 16px 100px}
+.sec{background:var(--card);border-radius:var(--r);box-shadow:var(--sh);margin-bottom:16px;overflow:hidden}
+.sh{background:linear-gradient(90deg,var(--nt3),var(--nt));color:#fff;padding:16px 18px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;user-select:none;-webkit-tap-highlight-color:transparent}
+.sh .ttl{font-weight:700;font-size:1em}
+.sh .nb{background:rgba(255,255,255,.25);border-radius:6px;padding:3px 10px;font-size:.81em;font-weight:700;margin-right:10px;white-space:nowrap}
+.sh .ch{font-size:1.125em;transition:transform .3s}
+.sh.open .ch{transform:rotate(180deg)}
+.sb{display:none;padding:18px}
+.sb.open{display:block}
+.sub{margin-bottom:24px}
+.sub:last-child{margin-bottom:0}
+.sub h3{font-size:.94em;font-weight:700;color:var(--nt);margin-bottom:10px;padding-bottom:6px;border-bottom:2px solid #f0fdf4;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.sub h3 .sn{background:var(--nt);color:#fff;border-radius:5px;padding:2px 8px;font-size:.75em;white-space:nowrap}
+.sub h4{font-size:.875em;font-weight:700;color:var(--nt);margin:14px 0 6px}
+.sub p{margin-bottom:10px;font-size:.94em}
+.sub ul,.sub ol{padding-left:20px;margin:8px 0;font-size:.94em}
+.sub li{margin-bottom:5px}
+.cw{background:var(--cbg);border-radius:10px;margin:12px 0;overflow:hidden}
+.cl{background:#21262d;color:#c9d1d9;font-size:.78em;font-weight:700;padding:6px 14px;letter-spacing:.5px;text-transform:uppercase;display:flex;justify-content:space-between;align-items:center}
+.cl .copy-btn{background:var(--nt);color:#fff;border:none;border-radius:4px;padding:2px 10px;font-size:.875em;cursor:pointer;font-weight:700}
+.cl .copy-btn:active{opacity:.7}
+pre{margin:0;padding:14px;overflow-x:auto;-webkit-overflow-scrolling:touch}
+code{font-family:'Courier New',monospace;font-size:.81em;color:var(--ctxt);line-height:1.6}
+.ca{border-radius:8px;padding:12px 14px;margin:12px 0;font-size:.875em;line-height:1.6;display:flex;gap:10px;align-items:flex-start}
+.ca .ic{font-size:1.125em;flex-shrink:0;margin-top:1px}
+.ca.warn  {background:#fff3cd;border-left:4px solid #b38600;color:#3d2c00}
+.ca.tip   {background:#d4edda;border-left:4px solid #28a745;color:#0d3318}
+.ca.danger{background:#f8d7da;border-left:4px solid #dc3545;color:#3d0010}
+.ca.info  {background:#f0fdf4;border-left:4px solid var(--nt);color:#052e1e}
+.ca code{color:inherit!important;background:rgba(0,0,0,.1)!important;border:1px solid rgba(0,0,0,.15)}
+.et{background:linear-gradient(135deg,#1a1a2e,var(--nt3));color:#fff;border-radius:10px;padding:14px 16px;margin:14px 0;font-size:.875em;line-height:1.6}
+.et .lbl{font-size:.69em;font-weight:800;letter-spacing:1px;color:var(--ntd);margin-bottom:6px}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:12px 0;border-radius:8px}
+table{width:100%;border-collapse:collapse;font-size:.875em}
+th{background:var(--nt);color:#fff;padding:10px 12px;text-align:left;font-weight:700;font-size:.81em}
+td{padding:9px 12px;border-bottom:1px solid #e8ecf0;vertical-align:top;color:#1a1a2e}
+tr:nth-child(even) td{background:#f0fdf4;color:#052e1e}
+tr:last-child td{border-bottom:none}
+p code,li code,td code,.ca code,.mc6-row code{background:#f0fdf4;color:#052e1e;border-radius:4px;padding:1px 5px;font-size:.81em;font-family:'Courier New',monospace;font-weight:600}
+
+/* Migration technique cards */
+.mig-grid{display:grid;gap:8px;margin:12px 0}
+.mig-card{border-radius:8px;padding:11px 14px;font-size:.81em;border-left:5px solid;line-height:1.6}
+.mig-card.ds{border-left-color:var(--nt);background:#f0fdf4}
+.mig-card.tn{border-left-color:#1a3a5c;background:#e0f2fe}
+.mig-card.tr{border-left-color:#7b2d8b;background:#f3e8ff}
+.mig-card .mc-name{font-weight:800;margin-bottom:3px}
+.mig-card.ds .mc-name{color:var(--nt)}
+.mig-card.tn .mc-name{color:#1a3a5c}
+.mig-card.tr .mc-name{color:#7b2d8b}
+
+/* IPv6 address compression visual */
+.compress-box{background:#0d1117;border-radius:10px;padding:14px;margin:12px 0}
+.compress-box .cb-title{color:var(--ntd);font-size:.69em;font-weight:800;letter-spacing:.8px;text-transform:uppercase;margin-bottom:10px}
+.compress-row{margin-bottom:8px;font-size:.81em}
+.compress-row .cr-label{color:#8b949e;font-size:.75em;font-weight:700;margin-bottom:3px;text-transform:uppercase;letter-spacing:.3px}
+.compress-row .cr-full{font-family:'Courier New',monospace;color:#c9d1d9;word-break:break-all}
+.compress-row .cr-comp{font-family:'Courier New',monospace;color:#4ade80;font-weight:700;word-break:break-all}
+.compress-row .cr-arrow{color:#374151;margin:2px 0;font-size:.875em}
+
+/* Address type cards */
+.addr6-grid{display:grid;gap:8px;margin:12px 0}
+.addr6-card{border-radius:8px;padding:11px 14px;font-size:.81em;border-left:5px solid;line-height:1.6}
+.addr6-card.gua{border-left-color:var(--nt);background:#f0fdf4}
+.addr6-card.lla{border-left-color:#1a3a5c;background:#e0f2fe}
+.addr6-card.loop{border-left-color:#374151;background:#f9fafb}
+.addr6-card.ul{border-left-color:#7b2d8b;background:#f3e8ff}
+.addr6-card .a6-name{font-weight:800;margin-bottom:3px}
+.addr6-card.gua  .a6-name{color:var(--nt)}
+.addr6-card.lla  .a6-name{color:#1a3a5c}
+.addr6-card.loop .a6-name{color:#374151}
+.addr6-card.ul   .a6-name{color:#7b2d8b}
+
+/* GUA structure diagram */
+.gua-struct{background:#0d1117;border-radius:10px;overflow:hidden;margin:12px 0}
+.gua-struct .gs-title{background:#21262d;color:#8b949e;font-size:.69em;font-weight:800;letter-spacing:.5px;text-transform:uppercase;padding:6px 14px}
+.gua-parts{display:grid;grid-template-columns:3fr 1fr 2fr;gap:3px;padding:10px}
+@media(max-width:480px){.gua-parts{grid-template-columns:1fr}}
+.gua-part{border-radius:6px;padding:10px 12px;font-size:.75em;text-align:center;line-height:1.5}
+.gua-part.grp{background:#1a3a5c;color:#fff}
+.gua-part.sid{background:#7b2d8b;color:#fff}
+.gua-part.iid{background:var(--nt);color:#fff}
+.gua-part .gp-bits{font-weight:900;font-size:1em;margin-bottom:3px;font-family:'Courier New',monospace}
+.gua-part .gp-desc{opacity:.85;font-size:.875em}
+
+/* DHCPv6 method cards */
+.dhcp-grid{display:grid;gap:8px;margin:12px 0}
+.dhcp-card{border-radius:8px;padding:11px 14px;font-size:.81em;border-left:5px solid;line-height:1.6}
+.dhcp-card.m1{border-left-color:var(--nt);background:#f0fdf4}
+.dhcp-card.m2{border-left-color:#1a3a5c;background:#e0f2fe}
+.dhcp-card.m3{border-left-color:#7b2d8b;background:#f3e8ff}
+.dhcp-card .dc-name{font-weight:800;margin-bottom:4px}
+.dhcp-card.m1 .dc-name{color:var(--nt)}
+.dhcp-card.m2 .dc-name{color:#1a3a5c}
+.dhcp-card.m3 .dc-name{color:#7b2d8b}
+.dhcp-row{display:flex;gap:6px;align-items:flex-start;margin:3px 0;font-size:.875em}
+.dhcp-row .dr-src{font-weight:700;min-width:90px;flex-shrink:0;font-size:.875em}
+.dhcp-card.m1 .dr-src{color:var(--nt)}
+.dhcp-card.m2 .dr-src{color:#1a3a5c}
+.dhcp-card.m3 .dr-src{color:#7b2d8b}
+
+/* EUI-64 visual */
+.eui-box{background:#0d1117;border-radius:10px;padding:14px;margin:12px 0}
+.eui-box .eb-title{color:var(--ntd);font-size:.69em;font-weight:800;letter-spacing:.8px;text-transform:uppercase;margin-bottom:10px}
+.eui-step{display:flex;gap:10px;align-items:flex-start;margin-bottom:8px;font-size:.81em}
+.eui-step .es-num{background:#7b2d8b;color:#fff;border-radius:50%;width:22px;height:22px;display:flex;align-items:center;justify-content:center;font-weight:800;flex-shrink:0;font-size:.75em}
+.eui-step .es-text{color:#c9d1d9;line-height:1.6;flex:1;font-family:'Courier New',monospace}
+.eui-step .es-text strong{color:var(--ntd);font-family:inherit}
+
+/* Multicast address cards */
+.mc6-grid{display:grid;gap:6px;margin:12px 0}
+.mc6-row{display:flex;gap:8px;align-items:flex-start;padding:9px 12px;border-radius:8px;font-size:.81em;border-left:4px solid #7b2d8b;background:#f3e8ff;line-height:1.6}
+.mc6-row .mr-addr{font-family:'Courier New',monospace;font-weight:900;color:#7b2d8b;min-width:80px;flex-shrink:0}
+
+/* IPv6 subnetting visual */
+.sn6-box{background:#0d1117;border-radius:10px;padding:14px;margin:12px 0}
+.sn6-box .s6-title{color:var(--ntd);font-size:.69em;font-weight:800;letter-spacing:.8px;text-transform:uppercase;margin-bottom:10px}
+.sn6-subnet{display:flex;justify-content:space-between;align-items:center;padding:6px 12px;border-radius:6px;margin-bottom:4px;font-family:'Courier New',monospace;font-size:.75em}
+.sn6-subnet:nth-child(odd){background:#1a3a5c}
+.sn6-subnet:nth-child(even){background:#0a3d26}
+.sn6-subnet .ss-addr{color:#4ade80;font-weight:700}
+.sn6-subnet .ss-use{color:#8b949e}
+
+/* Rule visual boxes */
+.rule-box{background:#0d1117;border-radius:10px;padding:14px;margin:12px 0}
+.rule-box .rb-title{color:var(--ntd);font-size:.69em;font-weight:800;letter-spacing:.8px;text-transform:uppercase;margin-bottom:10px}
+.rule-eg{margin-bottom:10px;font-size:.81em}
+.rule-eg .re-full{font-family:'Courier New',monospace;color:#c9d1d9;margin-bottom:3px;word-break:break-all}
+.rule-eg .re-comp{font-family:'Courier New',monospace;color:#4ade80;font-weight:700;word-break:break-all}
+.rule-eg .re-arrow{color:#8b949e;margin:1px 0}
+
+.tb-btn{position:fixed;bottom:80px;right:16px;background:var(--nt);color:#fff;border:none;border-radius:50%;width:44px;height:44px;font-size:1.25em;box-shadow:0 4px 14px rgba(0,0,0,.25);cursor:pointer;display:none;align-items:center;justify-content:center;z-index:100}
+.tb-btn.show{display:flex}
+.ft{text-align:center;padding:24px 16px;color:var(--muted);font-size:.81em}
+.mod-nav{position:fixed;bottom:0;left:0;right:0;z-index:300;background:#1a1a2e;border-top:1px solid #30363d;display:flex;align-items:center;height:52px;padding:0 8px;gap:6px}
+.mn-hub{background:#1ba0d7;color:#fff;border:none;border-radius:8px;padding:6px 12px;font-size:.75em;font-weight:700;cursor:pointer;text-decoration:none;display:flex;align-items:center;gap:4px;white-space:nowrap;-webkit-tap-highlight-color:transparent;flex-shrink:0}
+.mn-hub:active{opacity:.8}
+.mn-divider{width:1px;height:28px;background:#30363d;flex-shrink:0}
+.mn-label{flex:1;text-align:center;font-size:.69em;color:#8b949e;font-weight:600;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding:0 4px}
+.mn-prev,.mn-next{background:#30363d;color:#c9d1d9;border:none;border-radius:8px;padding:6px 10px;font-size:.875em;font-weight:700;cursor:pointer;text-decoration:none;display:flex;align-items:center;-webkit-tap-highlight-color:transparent;flex-shrink:0}
+.mn-prev:active,.mn-next:active{background:var(--nt);color:#fff}
+
+/* v2.1 — In-section check button */
+.sh{position:relative}
+.sec-check{position:absolute;right:40px;top:50%;transform:translateY(-50%);background:rgba(255,255,255,.15);border:2px solid rgba(255,255,255,.4);border-radius:6px;padding:2px 10px;font-size:.72em;font-weight:800;color:#fff;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:all .2s;white-space:nowrap;z-index:10;line-height:1.5}
+.sec-check.checked{background:var(--ntd);border-color:var(--ntd);color:#052e1e}
+.sec-check:active{opacity:.75}
+</style>
+</head>
+<body>
+<nav class="bc">
+  <a href="../../index.html">🏠 Home</a><span class="sep">›</span>
+  <a href="index.html">CCNA 1 — ITN</a><span class="sep">›</span>
+  <span class="cur">M12: IPv6 Addressing</span>
+</nav>
+<div class="fs-bar">
+  <div class="sc-pills" id="sc-pills">
+  <button class="sc-pill" id="pill-s1" onclick="toggleSection('s1',this)"><span class="pill-check">○</span>12.1</button>
+  <button class="sc-pill" id="pill-s2" onclick="toggleSection('s2',this)"><span class="pill-check">○</span>12.2</button>
+  <button class="sc-pill" id="pill-s3" onclick="toggleSection('s3',this)"><span class="pill-check">○</span>12.3</button>
+  <button class="sc-pill" id="pill-s4" onclick="toggleSection('s4',this)"><span class="pill-check">○</span>12.4</button>
+  <button class="sc-pill" id="pill-s5" onclick="toggleSection('s5',this)"><span class="pill-check">○</span>12.5</button>
+  <button class="sc-pill" id="pill-s-pt-12-6" onclick="toggleSection('s-pt-12-6',this)"><span class="pill-check">○</span>PT 12.6</button>
+  <button class="sc-pill" id="pill-s6" onclick="toggleSection('s6',this)"><span class="pill-check">○</span>12.7</button>
+  <button class="sc-pill" id="pill-s7" onclick="toggleSection('s7',this)"><span class="pill-check">○</span>12.8</button>
+  <button class="sc-pill" id="pill-s-pt-12-9" onclick="toggleSection('s-pt-12-9',this)"><span class="pill-check">○</span>PT 12.9</button>
+  <button class="sc-pill" id="pill-s8" onclick="toggleSection('s8',this)"><span class="pill-check">○</span>🎯</button>
+  </div>
+  <span class="fs-label" style="flex-shrink:0;margin-left:6px">Size</span>
+  <button class="fs-btn" onclick="setFs('14px',this)">S</button>
+  <button class="fs-btn" onclick="setFs('16px',this)">M</button>
+  <button class="fs-btn" onclick="setFs('18px',this)">L</button>
+  <button class="fs-btn active" onclick="setFs('20px',this)">XL</button>
+</div>
+<div class="hdr">
+  <div class="badge">CCNA 1 — ITN v7.02 · Module 12</div>
+  <h1>🌐 IPv6 Addressing</h1>
+  <p>Introduction to Networks · NetAcad Study Guide</p>
+  <div class="obj">Module Objective: Implement an IPv6 addressing scheme</div>
+</div>
+<div class="sp-wrap">
+  <div class="sp-hdr" id="sp-hdr" onclick="toggleStudyPanel()">
+    <span class="sp-title">📚 Sections</span>
+    <span class="sp-arr" id="sp-arr">▼</span>
+  </div>
+  <div class="sp-body" id="sp-body">
+    <div class="sp-row" id="row-s1"><span class="sr-status" id="st-s1">○</span><span class="sr-nb">12.1</span><span class="sr-ttl">IPv4 Issues and IPv6 Coexistence</span></div>
+    <div class="sp-row" id="row-s2"><span class="sr-status" id="st-s2">○</span><span class="sr-nb">12.2</span><span class="sr-ttl">IPv6 Address Representation</span></div>
+    <div class="sp-row" id="row-s3"><span class="sr-status" id="st-s3">○</span><span class="sr-nb">12.3</span><span class="sr-ttl">IPv6 Address Types</span></div>
+    <div class="sp-row" id="row-s4"><span class="sr-status" id="st-s4">○</span><span class="sr-nb">12.4</span><span class="sr-ttl">Static GUA and LLA Configuration</span></div>
+    <div class="sp-row" id="row-s5"><span class="sr-status" id="st-s5">○</span><span class="sr-nb">12.5</span><span class="sr-ttl">Dynamic Addressing for IPv6 GUAs</span></div>
+    <div class="sp-row" id="row-s-pt-12-6"><span class="sr-status" id="st-s-pt-12-6">○</span><span class="sr-nb">PT 12.6</span><span class="sr-ttl">Packet Tracer — Configure IPv6 Addressing</span></div>
+    <div class="sp-row" id="row-s6"><span class="sr-status" id="st-s6">○</span><span class="sr-nb">12.7</span><span class="sr-ttl">IPv6 Multicast Addresses</span></div>
+    <div class="sp-row" id="row-s7"><span class="sr-status" id="st-s7">○</span><span class="sr-nb">12.8</span><span class="sr-ttl">Subnet an IPv6 Network</span></div>
+    <div class="sp-row" id="row-s-pt-12-9"><span class="sr-status" id="st-s-pt-12-9">○</span><span class="sr-nb">PT 12.9</span><span class="sr-ttl">Packet Tracer — IPv6 Addressing Scheme</span></div>
+    <div class="sp-row" id="row-s8"><span class="sr-status" id="st-s8">○</span><span class="sr-nb">🎯</span><span class="sr-ttl">Common Exam Traps — Module 12</span></div>
+  </div>
+</div>
+
+<div class="toc">
+  <div class="toch open" onclick="this.classList.toggle('open');document.getElementById('tocb').classList.toggle('open')">
+    📋 Table of Contents — Tap to expand <span class="arr">▼</span>
+  </div>
+  <div class="tocb open" id="tocb">
+    <div class="tocg">12.1 — IPv4 Issues and IPv6 Coexistence</div>
+    <a href="javascript:void(0)" onclick="goTo('s1')"><span class="n">12.1.1</span> Why IPv6 — Address Exhaustion and IoT</a>
+    <a href="javascript:void(0)" onclick="goTo('s1')"><span class="n">12.1.2</span> Coexistence — Dual Stack, Tunneling, Translation</a>
+    <div class="tocg">12.2 — IPv6 Address Representation</div>
+    <a href="javascript:void(0)" onclick="goTo('s2')"><span class="n">12.2.1</span> Format — 128 bits · 32 hex digits · 8 hextets</a>
+    <a href="javascript:void(0)" onclick="goTo('s2')"><span class="n">12.2.2</span> Rule 1 — Omit Leading Zeros</a>
+    <a href="javascript:void(0)" onclick="goTo('s2')"><span class="n">12.2.3</span> Rule 2 — Double Colon (::) — Once Only</a>
+    <div class="tocg">12.3 — IPv6 Address Types</div>
+    <a href="javascript:void(0)" onclick="goTo('s3')"><span class="n">12.3.1</span> Unicast · Multicast · Anycast — No Broadcast</a>
+    <a href="javascript:void(0)" onclick="goTo('s3')"><span class="n">12.3.3</span> GUA vs LLA — Two Required Addresses</a>
+    <a href="javascript:void(0)" onclick="goTo('s3')"><span class="n">12.3.5</span> GUA Structure — Global Prefix · Subnet ID · Interface ID</a>
+    <a href="javascript:void(0)" onclick="goTo('s3')"><span class="n">12.3.7</span> LLA — fe80::/10 · Required · Not Routable</a>
+    <div class="tocg">12.4 — Static GUA and LLA Configuration</div>
+    <a href="javascript:void(0)" onclick="goTo('s4')"><span class="n">12.4.1</span> Configure GUA on Router — ipv6 address</a>
+    <a href="javascript:void(0)" onclick="goTo('s4')"><span class="n">12.4.3</span> Configure LLA — link-local keyword</a>
+    <a href="javascript:void(0)" onclick="goTo('s4')"><span class="n">12.6.4</span> Verify — show ipv6 interface brief · show ipv6 route</a>
+    <div class="tocg">12.5 — Dynamic GUA Assignment</div>
+    <a href="javascript:void(0)" onclick="goTo('s5')"><span class="n">12.5.1</span> RS and RA Messages — Every 200 Seconds</a>
+    <a href="javascript:void(0)" onclick="goTo('s5')"><span class="n">12.5.2</span> Method 1 — SLAAC Only</a>
+    <a href="javascript:void(0)" onclick="goTo('s5')"><span class="n">12.5.3</span> Method 2 — SLAAC + Stateless DHCPv6</a>
+    <a href="javascript:void(0)" onclick="goTo('s5')"><span class="n">12.5.4</span> Method 3 — Stateful DHCPv6</a>
+    <a href="javascript:void(0)" onclick="goTo('s5')"><span class="n">12.5.6</span> EUI-64 vs Random Interface ID</a>
+    <div class="tocg">12.7 — IPv6 Multicast Addresses</div>
+    <a href="javascript:void(0)" onclick="goTo('s6')"><span class="n">12.7.1</span> ff00::/8 Range · Well-Known · Solicited-Node</a>
+    <div class="tocg">12.8 — Subnet an IPv6 Network</div>
+    <a href="javascript:void(0)" onclick="goTo('s7')"><span class="n">12.8.1</span> Subnet ID — Just Count Up in Hex</a>
+    <div class="tocg">Reference</div>
+    <a href="javascript:void(0)" onclick="goTo('s8')"><span class="n">🎯</span> Common Exam Traps</a>
+  </div>
+</div>
+
+<div class="wrap">
+
+<!-- 12.1 IPv4 ISSUES -->
+<div class="sec" id="s1">
+<div class="sh open" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">12.1</span><span class="ttl">IPv4 Issues and IPv6 Coexistence</span></span><button class="sec-check" id="sch-s1" onclick="event.stopPropagation();toggleSection('s1',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb open">
+  <div class="sub">
+  <h3><span class="sn">12.1.1</span> Why IPv6?</h3>
+  <ul>
+    <li>IPv4 has a theoretical maximum of <strong>4.3 billion addresses</strong> (2³²) — nearly exhausted</li>
+    <li>4 out of 5 RIRs have already run out of IPv4 addresses</li>
+    <li>Private addresses + NAT slowed depletion but NAT breaks end-to-end connectivity, adds latency, and complicates P2P and VoIP</li>
+    <li>Explosive growth of <strong>mobile devices</strong> and <strong>IoT devices</strong> accelerating the need</li>
+    <li>Top US mobile providers: over 90% of traffic is already over IPv6</li>
+  </ul>
+  </div>
+  <div class="sub">
+  <h3><span class="sn">12.1.2</span> IPv4 and IPv6 Coexistence — Three Migration Techniques</h3>
+  <p>Both IPv4 and IPv6 will coexist for years. Three migration categories:</p>
+  <div class="mig-grid">
+    <div class="mig-card ds"><div class="mc-name">✅ Dual Stack — Preferred</div>Devices run <strong>both IPv4 and IPv6 simultaneously</strong>. Known as "native IPv6." Customer has IPv6 connection to ISP and accesses IPv6 content directly. The end goal for all networks.</div>
+    <div class="mig-card tn"><div class="mc-name">🔀 Tunneling — Transition</div>IPv6 packet <strong>encapsulated inside an IPv4 packet</strong> to cross IPv4-only networks. Temporary technique — not the end goal. Used where native IPv6 is not yet available.</div>
+    <div class="mig-card tr"><div class="mc-name">↔️ Translation (NAT64) — Transition</div>Translates <strong>IPv6 ↔ IPv4 packets</strong>. Allows IPv6-only devices to communicate with IPv4-only devices. Similar to NAT for IPv4. Only use where needed.</div>
+  </div>
+  </div>
+</div></div>
+
+<!-- 12.2 ADDRESS REPRESENTATION -->
+<div class="sec" id="s2">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">12.2</span><span class="ttl">IPv6 Address Representation</span></span><button class="sec-check" id="sch-s2" onclick="event.stopPropagation();toggleSection('s2',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb">
+  <div class="sub">
+  <h3><span class="sn">12.2.1</span> IPv6 Format</h3>
+  <div class="et"><div class="lbl">🎯 IPv6 FORMAT — MEMORIZE</div>
+  · <strong>128 bits</strong> total<br>
+  · <strong>32 hex digits</strong> (4 bits per hex digit)<br>
+  · <strong>8 groups of 4 hex digits</strong> separated by colons<br>
+  · Each group = one <strong>hextet</strong> (16 bits)<br>
+  · <strong>Not case-sensitive</strong> — 2001:DB8 = 2001:db8<br>
+  · Preferred format: <code>2001:0db8:0000:1111:0000:0000:0000:0200</code>
+  </div>
+  <p>Two rules reduce the notation. Both can be applied together to get the <strong>compressed format</strong>.</p>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">12.2.2</span> Rule 1 — Omit Leading Zeros</h3>
+  <p>Remove any leading zeros in any hextet. <strong>Only leading zeros</strong> — trailing zeros are significant and cannot be removed.</p>
+  <div class="rule-box">
+    <div class="rb-title">Rule 1 Examples</div>
+    <div class="rule-eg"><div class="re-full">2001:0db8:0000:1111:0000:0000:0000:0200</div><div class="re-arrow">↓ Remove leading zeros</div><div class="re-comp">2001:db8:0:1111:0:0:0:200</div></div>
+    <div class="rule-eg"><div class="re-full">fe80:0000:0000:0000:0123:4567:89ab:cdef</div><div class="re-arrow">↓</div><div class="re-comp">fe80:0:0:0:123:4567:89ab:cdef</div></div>
+    <div class="rule-eg"><div class="re-full">0000:0000:0000:0000:0000:0000:0000:0001</div><div class="re-arrow">↓</div><div class="re-comp">0:0:0:0:0:0:0:1</div></div>
+  </div>
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Only LEADING zeros can be removed.</strong> The hextet <code>ab00</code> stays as <code>ab00</code> — the trailing zeros cannot be dropped. Only <code>0ab0</code> → <code>ab0</code> (removes only the single leading zero).</div></div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">12.2.3</span> Rule 2 — Double Colon (::)</h3>
+  <p>Replace any single contiguous string of all-zero hextets with <strong>::</strong>. Critical rules:</p>
+  <ul>
+    <li><code>::</code> can be used <strong>ONLY ONCE</strong> in an address — using it twice creates ambiguity</li>
+    <li>If multiple equal-length groups of zeros exist, use <code>::</code> on the <strong>longest string</strong></li>
+    <li>If tied in length, use <code>::</code> on the <strong>first string</strong></li>
+  </ul>
+  <div class="rule-box">
+    <div class="rb-title">Rule 2 Examples (after applying Rule 1 first)</div>
+    <div class="rule-eg"><div class="re-full">2001:db8:0:1111:0:0:0:200</div><div class="re-arrow">↓ :: replaces three consecutive zeros</div><div class="re-comp">2001:db8:0:1111::200</div></div>
+    <div class="rule-eg"><div class="re-full">fe80:0:0:0:123:4567:89ab:cdef</div><div class="re-arrow">↓</div><div class="re-comp">fe80::123:4567:89ab:cdef</div></div>
+    <div class="rule-eg"><div class="re-full">2001:db8:aaaa:1:0:0:0:0</div><div class="re-arrow">↓</div><div class="re-comp">2001:db8:aaaa:1::</div></div>
+    <div class="rule-eg"><div class="re-full">0:0:0:0:0:0:0:1</div><div class="re-arrow">↓ (loopback)</div><div class="re-comp">::1</div></div>
+    <div class="rule-eg"><div class="re-full">0:0:0:0:0:0:0:0</div><div class="re-arrow">↓ (unspecified)</div><div class="re-comp">::</div></div>
+  </div>
+  <div class="ca danger"><span class="ic">🚨</span><div><strong>INVALID — using :: twice:</strong> <code>2001:db8::abcd::1234</code><br>This is invalid because the expansion is ambiguous — multiple valid expansions are possible. Each time you see :: you must be able to determine exactly how many zero hextets it replaces. Using it once allows this; using it twice does not.</div></div>
+  </div>
+</div></div>
+
+<!-- 12.3 ADDRESS TYPES -->
+<div class="sec" id="s3">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">12.3</span><span class="ttl">IPv6 Address Types</span></span><button class="sec-check" id="sch-s3" onclick="event.stopPropagation();toggleSection('s3',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb">
+  <div class="sub">
+  <h3><span class="sn">12.3.1</span> Three Address Types — No Broadcast</h3>
+  <div class="tw"><table>
+    <tr><th>Type</th><th>Description</th><th>IPv4 Equivalent</th></tr>
+    <tr><td><strong>Unicast</strong></td><td>Identifies a single interface. Packet goes to one specific device.</td><td>Unicast</td></tr>
+    <tr><td><strong>Multicast</strong></td><td>Sent to a group of subscribed devices. Packet goes to all group members.</td><td>Multicast + Broadcast</td></tr>
+    <tr><td><strong>Anycast</strong></td><td>Unicast address assigned to multiple devices. Packet goes to the nearest device. Beyond scope of this course.</td><td>No equivalent</td></tr>
+  </table></div>
+  <div class="ca danger"><span class="ic">🚨</span><div><strong>IPv6 has NO broadcast addresses.</strong> All broadcast functionality is replaced by multicast. The all-nodes multicast address <code>ff02::1</code> provides the same effect as an IPv4 broadcast.</div></div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">12.3.3</span> IPv6 Unicast Address Types</h3>
+  <p>IPv6 devices typically have <strong>two unicast addresses on each interface</strong>:</p>
+  <div class="addr6-grid">
+    <div class="addr6-card gua">
+      <div class="a6-name">🌐 GUA — Global Unicast Address</div>
+      <strong>Globally unique and routable on the IPv6 internet.</strong> Equivalent to a public IPv4 address.<br>
+      · Currently assigned from <strong>2000::/3</strong> (addresses starting with 2 or 3)<br>
+      · ISPs assign /48 global routing prefixes to customers<br>
+      · Can be statically configured or dynamically assigned<br>
+      · Optional — not required on every interface
+    </div>
+    <div class="addr6-card lla">
+      <div class="a6-name">🔗 LLA — Link-Local Address</div>
+      <strong>Required on every IPv6-enabled interface — mandatory.</strong><br>
+      · Range: <strong>fe80::/10</strong> (fe80 through febf in first hextet)<br>
+      · <strong>NOT routable</strong> — confined to one link/subnet<br>
+      · <strong>Routers do NOT forward</strong> packets with LLA source or destination<br>
+      · Auto-created even if GUA is not configured<br>
+      · Hosts use the router's LLA as default gateway (best practice)<br>
+      · Routers use LLAs for routing updates with neighbors
+    </div>
+    <div class="addr6-card loop">
+      <div class="a6-name">🔄 Loopback — ::1/128</div>
+      Tests the local IPv6 TCP/IP stack. Never sent onto the network. Equivalent to 127.0.0.1 in IPv4.
+    </div>
+    <div class="addr6-card ul">
+      <div class="a6-name">🔒 Unique Local — fc00::/7 to fdff::/7</div>
+      Similar to RFC 1918 private addresses for IPv4. Not globally routed. Not yet commonly implemented. Used for devices that should not be accessible from outside.
+    </div>
+  </div>
+  <p><strong>IPv6 prefix length:</strong> Uses slash notation (no dotted-decimal mask). Recommended for LANs: <strong>/64</strong>. Required for SLAAC. Makes subnetting simple.</p>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">12.3.5–12.3.6</span> IPv6 GUA Structure</h3>
+  <div class="gua-struct">
+    <div class="gs-title">GUA Structure — /48 global routing prefix + /64 subnet example</div>
+    <div class="gua-parts">
+      <div class="gua-part grp"><div class="gp-bits">48 bits</div><div class="gp-desc"><strong>Global Routing Prefix</strong><br>Assigned by ISP to customer. Identifies the organization globally.<br>Example: 2001:db8:acad</div></div>
+      <div class="gua-part sid"><div class="gp-bits">16 bits</div><div class="gp-desc"><strong>Subnet ID</strong><br>Used by org to create internal subnets. Separate field — no borrowing from Interface ID.</div></div>
+      <div class="gua-part iid"><div class="gp-bits">64 bits</div><div class="gp-desc"><strong>Interface ID</strong><br>Equivalent to host portion. EUI-64, random, or static. Supports 18 quintillion hosts per subnet.</div></div>
+    </div>
+  </div>
+  <div class="ca tip"><span class="ic">✅</span><div><strong>/48 global routing prefix + 16-bit Subnet ID = /64 per subnet:</strong><br>· 16-bit Subnet ID → <strong>65,536 possible subnets</strong> (2¹⁶)<br>· 64-bit Interface ID → <strong>18 quintillion hosts per subnet</strong> (2⁶⁴)<br><br>In IPv6, the all-0s and all-1s Interface IDs can technically be assigned (no network/broadcast exclusion). Exception: all-0s Interface ID is reserved as Subnet-Router anycast — assign only to routers.</div></div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">12.3.7</span> LLA — fe80::/10</h3>
+  <p>The <strong>LLA range = fe80::/10</strong>. The /10 means the first 10 bits are fixed: <code>1111 1110 10xx xxxx</code>. This gives a first hextet range of <strong>fe80 to febf</strong>.</p>
+  <ul>
+    <li>LLA is <strong>automatically created</strong> on every IPv6 interface — even if no GUA is configured</li>
+    <li><strong>Not routable</strong> — stays within the local link; routers do NOT forward LLA packets</li>
+    <li>Hosts configure the router's LLA as the <strong>default gateway address</strong> — not the GUA</li>
+    <li>Routers use LLAs to exchange routing protocol updates with neighboring routers</li>
+    <li>Can be statically configured (recommended on routers for readability) or dynamically assigned</li>
+  </ul>
+  </div>
+</div></div>
+
+<!-- 12.4 STATIC CONFIGURATION -->
+<div class="sec" id="s4">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">12.4</span><span class="ttl">Static GUA and LLA Configuration</span></span><button class="sec-check" id="sch-s4" onclick="event.stopPropagation();toggleSection('s4',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb">
+  <div class="sub">
+  <h3><span class="sn">12.4.1</span> Configure GUA on a Router</h3>
+  <p>First enable IPv6 routing (required to forward IPv6 packets and send RA messages):</p>
+  <div class="cw"><div class="cl"><span>Enable IPv6 Routing (Global Config)</span></div>
+  <pre><code>R1(config)# ipv6 unicast-routing</code></pre></div>
+  <p>Then configure GUA on each interface:</p>
+  <div class="cw"><div class="cl"><span>R1 — Configure IPv6 GUA on Interfaces</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+  <pre><code>R1(config)# interface gigabitethernet 0/0/0
+R1(config-if)# ipv6 address 2001:db8:acad:1::1/64
+R1(config-if)# no shutdown
+R1(config-if)# exit
+
+R1(config)# interface gigabitethernet 0/0/1
+R1(config-if)# ipv6 address 2001:db8:acad:2::1/64
+R1(config-if)# no shutdown
+R1(config-if)# exit
+
+R1(config)# interface serial 0/1/0
+R1(config-if)# ipv6 address 2001:db8:acad:3::1/64
+R1(config-if)# no shutdown</code></pre></div>
+  <div class="ca warn"><span class="ic">⚠️</span><div>Note: <code>ipv6 address ipv6-address/prefix-length</code> — there is <strong>NO SPACE</strong> between the IPv6 address and the prefix length. This is different from the IPv4 command (<code>ip address ip-address subnet-mask</code>) which uses a space between address and mask.</div></div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">12.4.3</span> Configure LLA — link-local Keyword Required</h3>
+  <div class="cw"><div class="cl"><span>R1 — Configure LLA on Interfaces</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+  <pre><code>R1(config)# interface gigabitethernet 0/0/0
+R1(config-if)# ipv6 address fe80::1:1 link-local
+R1(config-if)# exit
+
+R1(config)# interface gigabitethernet 0/0/1
+R1(config-if)# ipv6 address fe80::1:2 link-local
+R1(config-if)# exit
+
+R1(config)# interface serial 0/1/0
+R1(config-if)# ipv6 address fe80::1:3 link-local
+R1(config-if)# exit</code></pre></div>
+  <div class="ca danger"><span class="ic">🚨</span><div>The <strong>link-local keyword is REQUIRED</strong> when manually configuring an LLA. Without it, Cisco IOS tries to configure fe80:: as a GUA and will fail because fe80 falls in the LLA range. The command must end with <code>link-local</code>.</div></div>
+  <p><strong>Best practice:</strong> Use simple, predictable LLAs on router interfaces (e.g., fe80::1:1, fe80::1:2 for R1). LLAs are used as the default gateway by hosts and for routing updates between routers — memorable addresses make troubleshooting easier.</p>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">12.6.4</span> Verification Commands</h3>
+  <div class="tw"><table>
+    <tr><th>Command</th><th>What It Shows</th></tr>
+    <tr><td><code>show ipv6 interface brief</code></td><td>All interfaces with both LLA and GUA, [up/up] status. Most commonly used.</td></tr>
+    <tr><td><code>show ipv6 route</code></td><td>IPv6 routing table. C = connected /64 network. L = local /128 host route (the router's own GUA — NOT the LLA).</td></tr>
+    <tr><td><code>ping ipv6-address</code></td><td>Tests IPv6 Layer 3 connectivity. When pinging an LLA, IOS prompts for the exit interface.</td></tr>
+  </table></div>
+  <div class="cw"><div class="cl"><span>show ipv6 interface brief output</span></div>
+  <pre><code>R1# show ipv6 interface brief
+GigabitEthernet0/0/0   [up/up]
+    FE80::1:1                ← LLA (automatically added when GUA assigned)
+    2001:DB8:ACAD:1::1       ← GUA (manually configured)
+GigabitEthernet0/0/1   [up/up]
+    FE80::1:2
+    2001:DB8:ACAD:2::1
+Serial0/1/0            [up/up]
+    FE80::1:3
+    2001:DB8:ACAD:3::1</code></pre></div>
+  <div class="cw"><div class="cl"><span>show ipv6 route output</span></div>
+  <pre><code>R1# show ipv6 route
+C   2001:DB8:ACAD:1::/64 [0/0]     ← Connected network (/64)
+     via GigabitEthernet0/0/0, directly connected
+L   2001:DB8:ACAD:1::1/128 [0/0]   ← Local host route (/128, NOT the LLA)
+     via GigabitEthernet0/0/0, receive
+C   2001:DB8:ACAD:2::/64 [0/0]
+     via GigabitEthernet0/0/1, directly connected
+L   2001:DB8:ACAD:2::1/128 [0/0]
+     via GigabitEthernet0/0/1, receive
+L   FF00::/8 [0/0]
+     via Null0, receive</code></pre></div>
+  <div class="ca info"><span class="ic">💡</span><div>LLAs are <strong>NOT in the IPv6 routing table</strong> because they are not routable. The <code>L</code> (Local) entry shows the router's own GUA as a /128 host route — used by the routing table to efficiently process packets destined for the router itself.</div></div>
+  </div>
+</div></div>
+
+<!-- 12.5 DYNAMIC GUA -->
+<div class="sec" id="s5">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">12.5</span><span class="ttl">Dynamic Addressing for IPv6 GUAs</span></span><button class="sec-check" id="sch-s5" onclick="event.stopPropagation();toggleSection('s5',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb">
+  <div class="sub">
+  <h3><span class="sn">12.5.1</span> RS and RA Messages</h3>
+  <div class="tw"><table>
+    <tr><th>Message</th><th>Direction</th><th>Destination</th><th>Purpose</th></tr>
+    <tr><td><strong>RS (Router Solicitation)</strong></td><td>Host → Router</td><td>ff02::2 (all-routers)</td><td>Host requests RA immediately instead of waiting up to 200 seconds</td></tr>
+    <tr><td><strong>RA (Router Advertisement)</strong></td><td>Router → All hosts</td><td>ff02::1 (all-nodes)</td><td>Sent every 200 seconds OR in response to RS. Contains prefix, prefix-length, default gateway (router's LLA), DNS info.</td></tr>
+  </table></div>
+  <div class="ca danger"><span class="ic">🚨</span><div><strong>Default gateway can ONLY come from the RA message — NEVER from DHCPv6.</strong> Even in Method 3 (stateful DHCPv6), the router's LLA used as the default gateway is obtained from the RA. DHCPv6 (stateless or stateful) does NOT provide the default gateway address.</div></div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">12.5.2–12.5.4</span> Three GUA Assignment Methods</h3>
+  <div class="dhcp-grid">
+    <div class="dhcp-card m1">
+      <div class="dc-name">Method 1 — SLAAC Only</div>
+      <div class="dhcp-row"><span class="dr-src">GUA:</span>Host creates own from RA prefix + self-generated Interface ID. No DHCPv6 needed.</div>
+      <div class="dhcp-row"><span class="dr-src">Prefix/Len:</span>From RA message</div>
+      <div class="dhcp-row"><span class="dr-src">Default GW:</span>Router's LLA (from RA)</div>
+      <div class="dhcp-row"><span class="dr-src">DNS:</span>From RA message (or manual)</div>
+      Fully stateless — no server tracks addresses.
+    </div>
+    <div class="dhcp-card m2">
+      <div class="dc-name">Method 2 — SLAAC + Stateless DHCPv6</div>
+      <div class="dhcp-row"><span class="dr-src">GUA:</span>Host creates own (SLAAC) using RA prefix</div>
+      <div class="dhcp-row"><span class="dr-src">Prefix/Len:</span>From RA message</div>
+      <div class="dhcp-row"><span class="dr-src">Default GW:</span>Router's LLA (from RA)</div>
+      <div class="dhcp-row"><span class="dr-src">DNS/Domain:</span>From stateless DHCPv6 server</div>
+      Stateless DHCPv6 provides DNS only — does NOT allocate GUAs or track addresses.
+    </div>
+    <div class="dhcp-card m3">
+      <div class="dc-name">Method 3 — Stateful DHCPv6 (no SLAAC)</div>
+      <div class="dhcp-row"><span class="dr-src">GUA:</span>From stateful DHCPv6 server</div>
+      <div class="dhcp-row"><span class="dr-src">Prefix/Len:</span>From stateful DHCPv6 server</div>
+      <div class="dhcp-row"><span class="dr-src">Default GW:</span>Router's LLA (from RA — ALWAYS)</div>
+      <div class="dhcp-row"><span class="dr-src">DNS/Domain:</span>From stateful DHCPv6 server</div>
+      Server tracks which address is assigned to which device. Similar to DHCP for IPv4.
+    </div>
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">12.5.5–12.5.6</span> Interface ID Generation — EUI-64 vs Random</h3>
+  <p>When using SLAAC (Method 1 or 2), the host generates its own 64-bit Interface ID:</p>
+  <div class="tw"><table>
+    <tr><th>Method</th><th>Description</th><th>Used By</th></tr>
+    <tr><td><strong>EUI-64</strong></td><td>Takes 48-bit MAC → splits in half → inserts <code>fffe</code> (16 bits) in middle → flips U/L bit (bit 7 of OUI). Identifier: <code>fffe</code> appears in middle of Interface ID. Privacy concern: ties address to physical NIC.</td><td>Windows XP, Cisco routers by default</td></tr>
+    <tr><td><strong>Random 64-bit</strong></td><td>OS generates a random 64-bit value. Better privacy — no link to physical NIC. Can change over time.</td><td>Windows Vista and later, most modern OS</td></tr>
+  </table></div>
+  <div class="eui-box">
+    <div class="eb-title">EUI-64 Example — MAC fc99:4775:cee0 → Interface ID</div>
+    <div class="eui-step"><div class="es-num">1</div><div class="es-text">Split MAC at midpoint: <strong>fc99:47</strong> | <strong>75:cee0</strong></div></div>
+    <div class="eui-step"><div class="es-num">2</div><div class="es-text">Insert <strong>fffe</strong> in the middle: fc99:47 + <strong>ff:fe</strong> + 75:cee0 = <strong>fc99:47ff:fe75:cee0</strong></div></div>
+    <div class="eui-step"><div class="es-num">3</div><div class="es-text">Flip the U/L bit (bit 7 of OUI): fc = <strong>1111 1100</strong> → bit 7 flips → <strong>1111 1110</strong> = <strong>fe</strong></div></div>
+    <div class="eui-step"><div class="es-num">✅</div><div class="es-text">Final EUI-64 Interface ID: <strong>fe99:47ff:fe75:cee0</strong><br>Easy identifier: <strong>fffe</strong> appears in the middle</div></div>
+  </div>
+  <div class="ca info"><span class="ic">💡</span><div><strong>DAD (Duplicate Address Detection):</strong> Before using any unicast address, a host sends a Neighbor Solicitation (NS) for its own address. If no reply is received → the address is unique and safe to use. Similar to a gratuitous ARP in IPv4.</div></div>
+  </div>
+</div></div>
+
+<!-- 12.7 MULTICAST -->
+
+<div class="sec" id="s-pt-12-6">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">12.6</span><span class="ttl">Packet Tracer — Configure IPv6 Addressing</span></span><button class="sec-check" id="sch-s-pt-12-6" onclick="event.stopPropagation();toggleSection('s-pt-12-6',this)">○ Mark done</button>
+</div>
+<div class="sb">
+  <div style="padding:14px 16px;background:#0d1117;border:1px solid #30363d;border-left:3px solid #1f6feb;border-radius:6px">
+    <div style="font-size:.72em;font-weight:800;text-transform:uppercase;letter-spacing:.8px;color:#1f6feb;margin-bottom:10px">&#x1F4E6; Packet Tracer Activities</div>
+    <div style="font-size:.82em;color:#6e7681;margin-bottom:10px">Open in Cisco Packet Tracer via your NetAcad course.</div>
+      <div style="display:flex;align-items:baseline;gap:10px;padding:6px 0;border-bottom:1px solid #21262d"><span style="font-family:monospace;font-size:.85em;color:#79c0ff;white-space:nowrap;flex-shrink:0;min-width:52px">12.6.6</span><span style="font-size:.88em;color:#c9d1d9">Configure IPv6 Addressing</span></div>
+    <div style="margin-top:12px;font-size:.78em;color:#6e7681">Full list: <a href="https://itexamanswers.net/ccna-1-v7-exam-answers-introduction-to-networks-v7-0-itn.html" target="_blank" rel="noopener" style="color:#58a6ff;word-break:break-all">itexamanswers.net/ccna-1-v7-exam-answers-introduction-to-networks-v7-0-itn.html</a></div>
+  </div>
+</div>
+</div>
+<div class="sec" id="s6">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">12.7</span><span class="ttl">IPv6 Multicast Addresses</span></span><button class="sec-check" id="sch-s6" onclick="event.stopPropagation();toggleSection('s6',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb">
+  <div class="sub">
+  <h3><span class="sn">12.7.1–12.7.3</span> IPv6 Multicast</h3>
+  <p>All IPv6 multicast addresses have the prefix <strong>ff00::/8</strong>. Multicast addresses are <strong>destination-only</strong> — never used as source addresses.</p>
+  <h4>Well-Known IPv6 Multicast Addresses</h4>
+  <div class="mc6-grid">
+    <div class="mc6-row"><span class="mr-addr">ff02::1</span><div><strong>All-nodes multicast</strong> — All IPv6-enabled devices on the link. Every IPv6 device joins automatically. Equivalent to IPv4 broadcast. Routers send RA messages here.</div></div>
+    <div class="mc6-row"><span class="mr-addr">ff02::2</span><div><strong>All-routers multicast</strong> — All IPv6 routers on the link. Hosts send RS messages here. Routers join when <code>ipv6 unicast-routing</code> is enabled.</div></div>
+    <div class="mc6-row"><span class="mr-addr">ff02::5</span><div><strong>All OSPF routers</strong> — Used by OSPFv3 routing protocol.</div></div>
+  </div>
+  <h4>Solicited-Node Multicast Addresses</h4>
+  <ul>
+    <li>Automatically created when a GUA or LLA is assigned</li>
+    <li>Format: <code>ff02::1:ff</code> + last 24 bits of the IPv6 address</li>
+    <li>Mapped to a special Ethernet multicast MAC address — allows NIC to filter at hardware level</li>
+    <li>Used by <strong>Neighbor Discovery (ND)</strong> for address resolution (Neighbor Solicitation messages)</li>
+    <li>More efficient than ff02::1 (all-nodes) — only the targeted device and those sharing the multicast address must process the NS message</li>
+  </ul>
+  </div>
+</div></div>
+
+<!-- 12.8 SUBNETTING -->
+<div class="sec" id="s7">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">12.8</span><span class="ttl">Subnet an IPv6 Network</span></span><button class="sec-check" id="sch-s7" onclick="event.stopPropagation();toggleSection('s7',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb">
+  <div class="sub">
+  <h3><span class="sn">12.8.1</span> IPv6 Subnetting — Designed In, Not Bolted On</h3>
+  <p>IPv6 was <strong>designed with subnetting in mind</strong>. Unlike IPv4, there is no need to borrow bits from the host (Interface ID) portion:</p>
+  <ul>
+    <li>The <strong>Subnet ID field</strong> is a separate, dedicated area between the Global Routing Prefix and Interface ID</li>
+    <li><strong>Address conservation is NOT a concern</strong> — WAN links also get /64 subnets</li>
+    <li>No VLSM needed — all subnets use /64</li>
+    <li>Subnetting doesn't require binary conversion — just <strong>count up in hexadecimal</strong></li>
+  </ul>
+  <div class="et"><div class="lbl">🎯 WITH /48 GLOBAL ROUTING PREFIX + /64 SUBNET</div>
+  · 16-bit Subnet ID → <strong>65,536 subnets</strong> available (2¹⁶)<br>
+  · 64-bit Interface ID → <strong>18 quintillion hosts per subnet</strong> (2⁶⁴)<br>
+  · No need to calculate borrowing, subnet masks, or VLSM<br>
+  · Organizations with a /32 get 4.3 billion /64 subnets — as many as all IPv4 public addresses
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">12.8.2–12.8.3</span> IPv6 Subnetting Example</h3>
+  <p><strong>Organization assigned: 2001:db8:acad::/48</strong> — just increment the Subnet ID hextet:</p>
+  <div class="sn6-box">
+    <div class="s6-title">2001:db8:acad::/48 — Subnet Allocation (increment 4th hextet)</div>
+    <div class="sn6-subnet"><span class="ss-addr">2001:db8:acad:0001::/64</span><span class="ss-use">LAN A (Subnet ID = 0001)</span></div>
+    <div class="sn6-subnet"><span class="ss-addr">2001:db8:acad:0002::/64</span><span class="ss-use">LAN B (Subnet ID = 0002)</span></div>
+    <div class="sn6-subnet"><span class="ss-addr">2001:db8:acad:0003::/64</span><span class="ss-use">LAN C (Subnet ID = 0003)</span></div>
+    <div class="sn6-subnet"><span class="ss-addr">2001:db8:acad:0004::/64</span><span class="ss-use">LAN D (Subnet ID = 0004)</span></div>
+    <div class="sn6-subnet"><span class="ss-addr">2001:db8:acad:0005::/64</span><span class="ss-use">WAN R1-R2 (Subnet ID = 0005, also /64)</span></div>
+    <div class="sn6-subnet"><span class="ss-addr">…</span><span class="ss-use">…up to 2001:db8:acad:ffff::/64 (65,536 subnets total)</span></div>
+  </div>
+  <div class="ca tip"><span class="ic">✅</span><div><strong>WAN links also get /64 in IPv6</strong> — unlike IPv4 where you'd use a /30 (2 usable hosts) to conserve addresses. In IPv6, address conservation is irrelevant. Each WAN link gets a full /64 just like LAN subnets. This simplifies design and configuration.</div></div>
+  </div>
+</div></div>
+
+<!-- EXAM TRAPS -->
+
+
+  <!-- PT MASTER LINK -->
+  <div style="margin:18px 0 6px;padding:12px 14px;background:#0d1117;border:1px solid #30363d;border-left:3px solid #1f6feb;border-radius:6px">
+    <div style="font-size:.7em;font-weight:800;text-transform:uppercase;letter-spacing:.8px;color:#1f6feb;margin-bottom:6px">&#x1F4E6; All Packet Tracer Activities — CCNA 1</div>
+    <div style="font-size:.84em;color:#c9d1d9;margin-bottom:4px">Complete list of all CCNA 1 Packet Tracer activities with instructions:</div>
+    <a href="https://itexamanswers.net/ccna-1-v7-exam-answers-introduction-to-networks-v7-0-itn.html" target="_blank" rel="noopener" style="font-size:.78em;color:#58a6ff;word-break:break-all">https://itexamanswers.net/ccna-1-v7-exam-answers-introduction-to-networks-v7-0-itn.html</a>
+  </div>
+
+
+<div class="sec" id="s-pt-12-9">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">12.9</span><span class="ttl">Packet Tracer — IPv6 Addressing Scheme</span></span><button class="sec-check" id="sch-s-pt-12-9" onclick="event.stopPropagation();toggleSection('s-pt-12-9',this)">○ Mark done</button>
+</div>
+<div class="sb">
+  <div style="padding:14px 16px;background:#0d1117;border:1px solid #30363d;border-left:3px solid #1f6feb;border-radius:6px">
+    <div style="font-size:.72em;font-weight:800;text-transform:uppercase;letter-spacing:.8px;color:#1f6feb;margin-bottom:10px">&#x1F4E6; Packet Tracer Activities</div>
+    <div style="font-size:.82em;color:#6e7681;margin-bottom:10px">Open in Cisco Packet Tracer via your NetAcad course.</div>
+      <div style="display:flex;align-items:baseline;gap:10px;padding:6px 0;border-bottom:1px solid #21262d"><span style="font-family:monospace;font-size:.85em;color:#79c0ff;white-space:nowrap;flex-shrink:0;min-width:52px">12.9.1</span><span style="font-size:.88em;color:#c9d1d9">Implement a Subnetted IPv6 Addressing Scheme</span></div>
+      <div style="display:flex;align-items:baseline;gap:10px;padding:6px 0;border-bottom:1px solid #21262d"><span style="font-family:monospace;font-size:.85em;color:#79c0ff;white-space:nowrap;flex-shrink:0;min-width:52px">12.9.2</span><span style="font-size:.88em;color:#c9d1d9">Configure IPv6 Addresses on Network Devices (Physical Mode)</span></div>
+    <div style="margin-top:12px;font-size:.78em;color:#6e7681">Full list: <a href="https://itexamanswers.net/ccna-1-v7-exam-answers-introduction-to-networks-v7-0-itn.html" target="_blank" rel="noopener" style="color:#58a6ff;word-break:break-all">itexamanswers.net/ccna-1-v7-exam-answers-introduction-to-networks-v7-0-itn.html</a></div>
+  </div>
+</div>
+</div>
+<div class="sec" id="s8">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">🎯</span><span class="ttl">Common Exam Traps — Module 12</span></span><button class="sec-check" id="sch-s8" onclick="event.stopPropagation();toggleSection('s8',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb">
+
+  <div class="ca danger"><span class="ic">❌</span><div><strong>Trap 1: IPv6 = 128 bits = 32 hex digits = 8 hextets of 4 hex digits each. A hextet = 16 bits.</strong><br>Not case-sensitive. The preferred (full) format shows all 32 hex digits. The compressed format applies Rule 1 (drop leading zeros) and Rule 2 (::) to shorten it.</div></div>
+
+  <div class="ca danger"><span class="ic">❌</span><div><strong>Trap 2: Rule 1 removes LEADING zeros only — NOT trailing zeros.</strong><br>0ab0 → ab0 (leading zero removed). ab00 stays ab00 (trailing zeros are part of the value). Removing trailing zeros would make the address ambiguous.</div></div>
+
+  <div class="ca danger"><span class="ic">❌</span><div><strong>Trap 3: :: can only be used ONCE per address. Using it twice = invalid.</strong><br>2001:db8::abcd::1234 is INVALID. When two groups of consecutive zeros are equal length, use :: on the first string. When one is longer, use :: on the longest.</div></div>
+
+  <div class="ca danger"><span class="ic">❌</span><div><strong>Trap 4: IPv6 has NO broadcast. The all-nodes multicast ff02::1 replaces broadcast.</strong><br>There is no directed broadcast or limited broadcast in IPv6. All broadcast functions are replaced by specific multicast groups. This is a deliberate IPv6 improvement over IPv4.</div></div>
+
+  <div class="ca danger"><span class="ic">❌</span><div><strong>Trap 5: LLA is REQUIRED on every IPv6 interface. GUA is optional.</strong><br>The LLA (fe80::/10) is mandatory — auto-created even without any GUA. A device can have a working IPv6 LLA with no GUA at all. The GUA is optional and only needed for internet routable communications.</div></div>
+
+  <div class="ca danger"><span class="ic">❌</span><div><strong>Trap 6: Default gateway ALWAYS comes from the RA message — NEVER from DHCPv6.</strong><br>Even in Method 3 (stateful DHCPv6 for everything else), the router's LLA used as the default gateway still comes from the RA. DHCPv6 (stateless or stateful) does not provide the default gateway. This is directly tested.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 7: GUA range = 2000::/3 (starts with 2 or 3). LLA range = fe80::/10 (fe80 through febf).</strong><br>The /3 prefix 2000::/3 covers addresses starting with binary 001, which means the first hex digit is 2 or 3. The /10 prefix fe80::/10 means the first 10 bits are fixed, giving a first hextet range of fe80 to febf.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 8: link-local keyword is REQUIRED when manually configuring an LLA.</strong><br>Without the link-local keyword at the end, IOS tries to configure fe80:: as a GUA which fails. The full command: ipv6 address fe80::1:1 link-local. Don't forget the keyword.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 9: ipv6 unicast-routing is required on Cisco routers to forward IPv6 and send RA messages.</strong><br>Not enabled by default. Without this command, the router does not send RAs, does not act as an IPv6 router, and hosts on its interfaces cannot get dynamic IPv6 addresses via SLAAC.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 10: EUI-64 identifies fffe in the middle of the Interface ID. Random doesn't.</strong><br>EUI-64: splits MAC, inserts fffe (ff:fe), flips U/L bit (bit 7). If you see fffe in the middle of a 64-bit Interface ID, it was EUI-64 generated. Windows Vista+ uses random by default — no fffe in the middle.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 11: IPv6 subnetting uses the Subnet ID — no borrowing from Interface ID needed.</strong><br>Just increment the 4th hextet (Subnet ID). /48 prefix + 16-bit Subnet ID = 65,536 /64 subnets. No VLSM, no binary, no formula — just count up in hex. WAN links also use /64 (no conservation needed).</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 12: In show ipv6 route, L = /128 host route for the router's own GUA — NOT the LLA.</strong><br>LLAs are not in the routing table (not routable). The L entry shows the router's own GUA as a /128 host route used for efficient processing of packets destined to the router itself.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 13: Loopback in IPv6 = ::1 (not 127.0.0.1). Unspecified = ::</strong><br>::1/128 is the loopback address — tests local IPv6 stack, never sent to network. ::/128 is the unspecified address — used as a source before a host gets an address (like 0.0.0.0 in IPv4). Know both.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 14: Three coexistence techniques — Dual Stack (preferred/native), Tunneling (IPv6 in IPv4), Translation/NAT64 (IPv6↔IPv4 translation).</strong><br>Dual stack is the end goal — native IPv6 from source to destination. Tunneling and NAT64 are transition tools only used where dual stack isn't yet available.</div></div>
+
+  <div class="ca tip"><span class="ic">✅</span><div><strong>Module 12 quick-reference summary:</strong><br><br>
+  <strong>IPv6:</strong> 128 bits · 32 hex digits · 8 hextets · not case-sensitive · no broadcast<br>
+  <strong>Compression Rule 1:</strong> Drop leading zeros (not trailing) in each hextet<br>
+  <strong>Compression Rule 2:</strong> :: replaces longest contiguous block of all-zero hextets · once only · longest string wins<br>
+  <strong>Three types:</strong> Unicast · Multicast · Anycast (no broadcast)<br>
+  <strong>GUA:</strong> 2000::/3 (starts 2 or 3) · globally unique · routable · optional · 3 parts: Global Routing Prefix + Subnet ID + Interface ID<br>
+  <strong>LLA:</strong> fe80::/10 (fe80–febf) · REQUIRED on every interface · NOT routable · auto-created · used as default gateway by hosts<br>
+  <strong>Loopback:</strong> ::1/128 · <strong>Unspecified:</strong> ::/128 · <strong>Unique Local:</strong> fc00::/7–fdff::/7<br>
+  <strong>GUA structure:</strong> /48 Global Routing Prefix + 16-bit Subnet ID + 64-bit Interface ID = /64 per subnet<br>
+  <strong>Prefix for LANs:</strong> /64 recommended · required for SLAAC<br>
+  <strong>Static GUA command:</strong> ipv6 address addr/prefix (no space between addr and /)<br>
+  <strong>Static LLA command:</strong> ipv6 address fe80::x:x link-local (link-local keyword required)<br>
+  <strong>IPv6 routing:</strong> ipv6 unicast-routing required (not default) · enables RA messages and IPv6 forwarding<br>
+  <strong>RS:</strong> Host→ff02::2 (all-routers) · requests RA · <strong>RA:</strong> Router→ff02::1 (all-nodes) · every 200s or on request<br>
+  <strong>RA contains:</strong> prefix + prefix-length + default gateway (router's LLA) + DNS info<br>
+  <strong>Default gateway:</strong> ALWAYS from RA · NEVER from DHCPv6<br>
+  <strong>Method 1 SLAAC:</strong> all from RA + self-generated Interface ID<br>
+  <strong>Method 2 SLAAC+Stateless DHCPv6:</strong> GUA=SLAAC · GW=RA · DNS=stateless DHCPv6<br>
+  <strong>Method 3 Stateful DHCPv6:</strong> GUA=DHCPv6 · GW=RA · DNS=DHCPv6<br>
+  <strong>EUI-64:</strong> Split MAC + insert fffe + flip U/L bit (bit 7) · fffe visible in Interface ID · privacy concern<br>
+  <strong>Random:</strong> OS-generated 64-bit · Windows Vista+ · better privacy · no fffe<br>
+  <strong>DAD:</strong> Duplicate Address Detection · NS for own address · no reply = unique<br>
+  <strong>Multicast range:</strong> ff00::/8 · ff02::1=all-nodes · ff02::2=all-routers · solicited-node=ff02::1:ff+last 24 bits<br>
+  <strong>IPv6 subnetting:</strong> Increment Subnet ID in hex · /48+16-bit SubnetID=65,536 /64 subnets · WAN links also /64 · no VLSM<br>
+  <strong>Coexistence:</strong> Dual Stack (preferred) · Tunneling (IPv6 in IPv4) · NAT64 (translation)<br>
+  <strong>Verification:</strong> show ipv6 interface brief · show ipv6 route (L=/128 GUA host route, NOT LLA) · ping</div></div>
+
+  <!-- SYNTAX CHECKER: 12.6.5 -->
+  <div style="margin:20px 0 6px;padding:16px;background:#0d1117;border:1px solid #30363d;border-left:3px solid #bc8cff;border-radius:8px">
+    <div style="font-size:.7em;font-weight:800;text-transform:uppercase;letter-spacing:.8px;color:#bc8cff;margin-bottom:6px">&#x1F5A5; Syntax Checker &mdash; 12.6.5</div>
+    <div style="font-size:.92em;font-weight:600;color:#e6edf3;margin-bottom:12px">Configure IPv6 Addressing</div>
+    <div style="font-size:.82em;color:#8b949e;margin-bottom:14px">Type each command exactly as shown. Press Enter to submit. The checker validates your syntax step by step.</div>
+    <div class="tool-links" style="display:flex;flex-wrap:wrap;gap:14px">
+      <div style="flex:1 1 220px;min-width:0">
+        <a href="../../syntax-checker-simple/ccna1_syntax_checker.html?lab=12.6.5" target="_blank" rel="noopener" title="Quick, guided drill: type the exact commands for this NetAcad lab, step by step. Opens straight to lab 12.6.5." style="display:inline-flex;align-items:center;gap:8px;color:#fff;text-decoration:none;padding:8px 18px;border-radius:6px;font-size:.85em;font-weight:700;background:#238636;border:1px solid #2ea043">&#x25B6; Open Syntax Checker</a>
+        <div style="font-size:.75em;color:#8b949e;margin-top:6px">Quick, guided drill: type the exact commands for this NetAcad lab, step by step. Opens straight to lab 12.6.5.</div>
+      </div>
+      <div style="flex:1 1 220px;min-width:0">
+        <a class="cli-engine-link" href="../../cli-engine/ccna-cli-engine.html" target="_blank" rel="noopener" title="Full simulated Cisco IOS terminal: Tab completion, device state, Free Practice, Home Labs and Subnetting. In its exercise menu, pick “Course 1 · 12.6 — Configure IPv6 Addressing”." style="display:inline-flex;align-items:center;gap:8px;color:#fff;text-decoration:none;padding:8px 18px;border-radius:6px;font-size:.85em;font-weight:700;background:#1f6feb;border:1px solid #388bfd">&#x1F4BB; Open CLI Engine</a>
+        <div style="font-size:.75em;color:#8b949e;margin-top:6px">Full simulated Cisco IOS terminal: Tab completion, device state, Free Practice, Home Labs and Subnetting. In its exercise menu, pick “Course 1 · 12.6 — Configure IPv6 Addressing”.</div>
+      </div>
+    </div>
+    <div style="margin-top:12px;font-size:.75em"><a href="../../index.html" style="color:#58a6ff;text-decoration:none">&#x1F3E0; All study tools (home)</a></div>
+  </div>
+
+</div></div>
+
+
+
+</div>
+<div class="ft">CCNA 1 ITN v7.02 — Module 12: IPv6 Addressing v2.2<br>Based on Cisco NetAcad curriculum · Study guide for personal use</div>
+<button class="tb-btn" id="topb" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+<div class="mod-nav">
+  <a class="mn-hub" href="index.html">🏠 Hub</a>
+  <div class="mn-divider"></div>
+  <a class="mn-prev" href="ccna1_module11_ipv4_addressing_v2.2.html">‹</a>
+  <span class="mn-label">M12 of 17</span>
+  <a class="mn-next" href="ccna1_module13_icmp_v2.2.html">›</a>
+</div>
+<script>
+var MOD_KEY="ccna1-module12-ipv6-addressing";
+var SECS=["s1","s2","s3","s4","s5","s-pt-12-6","s6","s7","s-pt-12-9","s8"];
+var checked={};
+function loadState(){
+  try{var s=localStorage.getItem(MOD_KEY);if(s)checked=JSON.parse(s);}catch(e){}
+  SECS.forEach(function(id){
+    var pill=document.getElementById('pill-'+id);
+    var row=document.getElementById('row-'+id);
+    var st=document.getElementById('st-'+id);
+    var sch=document.getElementById('sch-'+id);
+    if(checked[id]){
+      if(pill){pill.classList.add('checked');pill.querySelector('.pill-check').textContent='✓';}
+      if(row)row.classList.add('done');
+      if(st)st.textContent='✓';
+      if(sch){sch.classList.add('checked');sch.textContent='✓ Done';}
+    } else {
+      if(pill){pill.classList.remove('checked');pill.querySelector('.pill-check').textContent='○';}
+      if(row)row.classList.remove('done');
+      if(st)st.textContent='○';
+      if(sch){sch.classList.remove('checked');sch.textContent='○ Mark done';}
+    }
+  });
+}
+function toggleSection(id,btn){checked[id]=!checked[id];try{localStorage.setItem(MOD_KEY,JSON.stringify(checked));}catch(e){}loadState();}
+function toggleStudyPanel(){
+  var hdr=document.getElementById('sp-hdr');
+  var body=document.getElementById('sp-body');
+  var arr=document.getElementById('sp-arr');
+  hdr.classList.toggle('open');body.classList.toggle('open');
+  if(arr)arr.textContent=body.classList.contains('open')?'▲':'▼';
+}
+function goTo(id){var el=document.getElementById(id);if(!el)return;var h=el.querySelector('.sh'),b=el.querySelector('.sb');if(h&&b&&!b.classList.contains('open')){h.classList.add('open');b.classList.add('open');}setTimeout(function(){window.scrollTo({top:el.getBoundingClientRect().top+window.pageYOffset-60,behavior:'smooth'});},50);}
+function setFs(size,btn){document.documentElement.style.setProperty('--base-fs',size);document.querySelectorAll('.fs-btn').forEach(function(b){b.classList.remove('active');});btn.classList.add('active');try{localStorage.setItem('ccna-fs',size);}catch(e){}}
+(function(){try{var s=localStorage.getItem('ccna-fs');if(s){document.documentElement.style.setProperty('--base-fs',s);document.querySelectorAll('.fs-btn').forEach(function(b){b.classList.remove('active');if((b.textContent==='S'&&s==='14px')||(b.textContent==='M'&&s==='16px')||(b.textContent==='L'&&s==='18px')||(b.textContent==='XL'&&s==='20px'))b.classList.add('active');});}}catch(e){}loadState();})();
+function copyCode(btn){var pre=btn.closest('.cw').querySelector('pre');navigator.clipboard.writeText(pre.innerText||pre.textContent).then(function(){btn.textContent='Copied!';setTimeout(function(){btn.textContent='Copy';},1500);});}
+</script>
+<script src="../../site-config.js"></script>
+</body>
+</html>

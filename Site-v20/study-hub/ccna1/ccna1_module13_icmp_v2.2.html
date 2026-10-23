@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=2.0">
+<title>CCNA 1 Module 13: ICMP v2.2</title>
+<style>
+:root{
+  --nt:#0a6e4e;--ntd:#4ade80;--nt2:#052e1e;--nt3:#021710;
+  --bg:#f4f6f8;--card:#fff;--text:#1a1a2e;--muted:#5a6a7a;
+  --cbg:#0d1117;--ctxt:#c9d1d9;--r:12px;--sh:0 2px 12px rgba(0,0,0,.08);
+  --base-fs:20px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);font-size:var(--base-fs);line-height:1.7}
+.bc{background:#0d1117;padding:8px 16px;display:flex;align-items:center;flex-wrap:wrap;gap:4px;font-size:.75em;overflow-x:auto;white-space:nowrap;-webkit-overflow-scrolling:touch;border-bottom:1px solid #21262d}
+.bc a{color:#8b949e;text-decoration:none;font-weight:600;flex-shrink:0}
+.bc .sep{color:#6e7681;flex-shrink:0}
+.bc .cur{color:var(--ntd);font-weight:700;flex-shrink:0}
+.fs-bar{position:sticky;top:0;z-index:200;background:#1a1a2e;display:flex;align-items:center;justify-content:flex-end;padding:6px 14px;gap:6px;box-shadow:0 2px 8px rgba(0,0,0,.3)}
+.fs-label{color:#8b949e;font-size:.72em;font-weight:700;letter-spacing:.5px;text-transform:uppercase;margin-right:4px}
+.fs-btn{background:#30363d;color:#c9d1d9;border:2px solid transparent;border-radius:6px;padding:4px 12px;font-size:.75em;font-weight:700;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:all .2s;line-height:1.4}
+.fs-btn:active,.fs-btn.active{background:var(--nt);color:#fff;border-color:var(--ntd)}
+.hdr{background:linear-gradient(135deg,var(--nt3),var(--nt2),var(--nt));color:#fff;padding:32px 20px 24px;text-align:center}
+.hdr .badge{display:inline-block;background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.4);border-radius:20px;padding:4px 14px;font-size:.81em;margin-bottom:12px}
+.hdr h1{font-size:1.5em;font-weight:700;margin-bottom:6px}
+.hdr p{font-size:.94em;opacity:.85}
+.hdr .obj{display:inline-block;background:rgba(255,255,255,.15);border-radius:8px;padding:7px 16px;margin-top:12px;font-size:.875em;font-style:italic}
+/* Study progress panel */
+.sp-wrap{background:var(--card);margin:16px 16px 0;border-radius:var(--r);box-shadow:var(--sh);overflow:hidden}
+.sp-hdr{background:var(--nt);color:#fff;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;user-select:none;-webkit-tap-highlight-color:transparent;gap:10px}
+.sp-hdr .sp-title{font-weight:700;font-size:.875em;flex-shrink:0}
+.sp-hdr .sp-arr{transition:transform .3s;flex-shrink:0}
+.sp-hdr.open .sp-arr{transform:rotate(180deg)}
+.sp-body{display:none;padding:12px 14px}
+.sp-body.open{display:block}
+.sp-row{display:flex;align-items:center;gap:10px;padding:6px 4px;border-bottom:1px solid #f0f4f8;font-size:.81em}
+.sp-row:last-child{border-bottom:none}
+.sp-row .sr-status{font-size:1em;flex-shrink:0;width:20px;text-align:center}
+.sp-row .sr-nb{font-weight:800;color:var(--nt);min-width:36px;flex-shrink:0;font-size:.875em}
+.sp-row .sr-ttl{color:var(--text);flex:1}
+.sp-row.done .sr-ttl{color:var(--muted);text-decoration:line-through}
+/* Section check pills in fs-bar */
+.sc-pills{display:flex;align-items:center;gap:4px;overflow-x:auto;-webkit-overflow-scrolling:touch;flex:1;padding:0 4px}
+.sc-pill{background:#30363d;color:#8b949e;border:2px solid transparent;border-radius:6px;padding:3px 8px;font-size:.72em;font-weight:700;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:all .15s;white-space:nowrap;flex-shrink:0;line-height:1.4;display:flex;align-items:center;gap:3px}
+.sc-pill.checked{background:var(--nt);color:#fff;border-color:var(--ntd)}
+.sc-pill .pill-check{font-size:.875em}
+.toc{background:var(--card);margin:16px;border-radius:var(--r);box-shadow:var(--sh);overflow:hidden}
+.toch{background:var(--nt);color:#fff;padding:14px 18px;font-weight:700;font-size:.94em;display:flex;justify-content:space-between;align-items:center;cursor:pointer;user-select:none}
+.toch .arr{transition:transform .3s}
+.toch.open .arr{transform:rotate(180deg)}
+.tocb{display:none;padding:10px 0}
+.tocb.open{display:block}
+.tocg{font-size:.69em;font-weight:800;letter-spacing:.8px;color:var(--nt);text-transform:uppercase;padding:8px 20px 2px}
+.tocb a{display:block;padding:9px 20px 9px 28px;color:var(--text);text-decoration:none;font-size:.875em;border-left:3px solid transparent;transition:all .2s}
+.tocb a:active{background:#f0fdf4;border-left-color:var(--ntd)}
+.tocb a .n{display:inline-block;background:var(--nt);color:#fff;border-radius:5px;padding:1px 8px;font-size:.75em;font-weight:700;margin-right:8px}
+.wrap{padding:0 16px 100px}
+.sec{background:var(--card);border-radius:var(--r);box-shadow:var(--sh);margin-bottom:16px;overflow:hidden}
+.sh{background:linear-gradient(90deg,var(--nt3),var(--nt));color:#fff;padding:16px 18px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;user-select:none;-webkit-tap-highlight-color:transparent}
+.sh .ttl{font-weight:700;font-size:1em}
+.sh .nb{background:rgba(255,255,255,.25);border-radius:6px;padding:3px 10px;font-size:.81em;font-weight:700;margin-right:10px;white-space:nowrap}
+.sh .ch{font-size:1.125em;transition:transform .3s}
+.sh.open .ch{transform:rotate(180deg)}
+.sb{display:none;padding:18px}
+.sb.open{display:block}
+.sub{margin-bottom:24px}
+.sub:last-child{margin-bottom:0}
+.sub h3{font-size:.94em;font-weight:700;color:var(--nt);margin-bottom:10px;padding-bottom:6px;border-bottom:2px solid #f0fdf4;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.sub h3 .sn{background:var(--nt);color:#fff;border-radius:5px;padding:2px 8px;font-size:.75em;white-space:nowrap}
+.sub h4{font-size:.875em;font-weight:700;color:var(--nt);margin:14px 0 6px}
+.sub p{margin-bottom:10px;font-size:.94em}
+.sub ul,.sub ol{padding-left:20px;margin:8px 0;font-size:.94em}
+.sub li{margin-bottom:5px}
+.cw{background:var(--cbg);border-radius:10px;margin:12px 0;overflow:hidden}
+.cl{background:#21262d;color:#c9d1d9;font-size:.78em;font-weight:700;padding:6px 14px;letter-spacing:.5px;text-transform:uppercase}
+pre{margin:0;padding:14px;overflow-x:auto;-webkit-overflow-scrolling:touch}
+code{font-family:'Courier New',monospace;font-size:.81em;color:var(--ctxt);line-height:1.6}
+.ca{border-radius:8px;padding:12px 14px;margin:12px 0;font-size:.875em;line-height:1.6;display:flex;gap:10px;align-items:flex-start}
+.ca .ic{font-size:1.125em;flex-shrink:0;margin-top:1px}
+.ca.warn  {background:#fff3cd;border-left:4px solid #b38600;color:#3d2c00}
+.ca.tip   {background:#d4edda;border-left:4px solid #28a745;color:#0d3318}
+.ca.danger{background:#f8d7da;border-left:4px solid #dc3545;color:#3d0010}
+.ca.info  {background:#f0fdf4;border-left:4px solid var(--nt);color:#052e1e}
+.ca code{color:inherit!important;background:rgba(0,0,0,.1)!important;border:1px solid rgba(0,0,0,.15)}
+.et{background:linear-gradient(135deg,#1a1a2e,var(--nt3));color:#fff;border-radius:10px;padding:14px 16px;margin:14px 0;font-size:.875em;line-height:1.6}
+.et .lbl{font-size:.69em;font-weight:800;letter-spacing:1px;color:var(--ntd);margin-bottom:6px}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:12px 0;border-radius:8px}
+table{width:100%;border-collapse:collapse;font-size:.875em}
+th{background:var(--nt);color:#fff;padding:10px 12px;text-align:left;font-weight:700;font-size:.81em}
+td{padding:9px 12px;border-bottom:1px solid #e8ecf0;vertical-align:top;color:#1a1a2e}
+tr:nth-child(even) td{background:#f0fdf4;color:#052e1e}
+tr:last-child td{border-bottom:none}
+p code,li code,td code,.ca code{background:#f0fdf4;color:#052e1e;border-radius:4px;padding:1px 5px;font-size:.81em;font-family:'Courier New',monospace;font-weight:600}
+
+/* ICMP message type cards */
+.icmp-cards{display:grid;gap:8px;margin:12px 0}
+.icmp-card{border-radius:8px;padding:11px 14px;font-size:.81em;border-left:5px solid;line-height:1.6}
+.icmp-card.echo{border-left-color:var(--nt);background:#f0fdf4}
+.icmp-card.unreach{border-left-color:#b38600;background:#fffbeb}
+.icmp-card.texc{border-left-color:#dc3545;background:#fff5f5}
+.icmp-card .ic-name{font-weight:800;margin-bottom:3px}
+.icmp-card.echo   .ic-name{color:var(--nt)}
+.icmp-card.unreach .ic-name{color:#b38600}
+.icmp-card.texc   .ic-name{color:#7c1e1e}
+
+/* Unreachable codes */
+.code-compare{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:12px 0}
+@media(max-width:480px){.code-compare{grid-template-columns:1fr}}
+.code-box{border-radius:10px;overflow:hidden}
+.code-box .cb-hdr{padding:8px 14px;font-weight:800;font-size:.81em;color:#fff}
+.code-box.v4 .cb-hdr{background:#1a3a5c}
+.code-box.v6 .cb-hdr{background:var(--nt)}
+.code-row{display:flex;gap:8px;padding:7px 12px;font-size:.75em;border-bottom:1px solid #e8ecf0}
+.code-row:last-child{border-bottom:none}
+.code-row .cr-num{font-family:'Courier New',monospace;font-weight:900;min-width:24px;flex-shrink:0}
+.code-box.v4 .cr-num{color:#1a3a5c}
+.code-box.v6 .cr-num{color:var(--nt)}
+.code-box.v4{background:#e0f2fe}
+.code-box.v6{background:#f0fdf4}
+
+/* ND message cards */
+.nd-cards{display:grid;gap:6px;margin:12px 0}
+.nd-card{border-radius:8px;padding:10px 14px;font-size:.81em;border-left:4px solid;line-height:1.6;display:flex;gap:10px;align-items:flex-start}
+.nd-card.ra{border-left-color:var(--nt);background:#f0fdf4}
+.nd-card.rs{border-left-color:#1a4731;background:#ecfdf5}
+.nd-card.ns{border-left-color:#1a3a5c;background:#e0f2fe}
+.nd-card.na{border-left-color:#1e4d85;background:#dbeafe}
+.nd-card.rd{border-left-color:#374151;background:#f9fafb}
+.nd-card .nc-abbr{font-family:'Courier New',monospace;font-weight:900;min-width:28px;flex-shrink:0}
+.nd-card.ra .nc-abbr{color:var(--nt)}
+.nd-card.rs .nc-abbr{color:#1a4731}
+.nd-card.ns .nc-abbr{color:#1a3a5c}
+.nd-card.na .nc-abbr{color:#1e4d85}
+.nd-card.rd .nc-abbr{color:#374151}
+
+/* Ping test cards */
+.ping-cards{display:grid;gap:8px;margin:12px 0}
+.ping-card{border-radius:8px;padding:11px 14px;font-size:.81em;border-left:5px solid;line-height:1.6}
+.ping-card.loop{border-left-color:#374151;background:#f9fafb}
+.ping-card.gw  {border-left-color:#b38600;background:#fffbeb}
+.ping-card.rem {border-left-color:var(--nt);background:#f0fdf4}
+.ping-card .pc-name{font-weight:800;margin-bottom:4px}
+.ping-card.loop .pc-name{color:#374151}
+.ping-card.gw   .pc-name{color:#b38600}
+.ping-card.rem  .pc-name{color:var(--nt)}
+
+/* Traceroute steps */
+.tr-box{background:#0d1117;border-radius:10px;padding:14px;margin:12px 0}
+.tr-box .tb-title{color:var(--ntd);font-size:.69em;font-weight:800;letter-spacing:.8px;text-transform:uppercase;margin-bottom:10px}
+.tr-step{display:flex;gap:10px;align-items:flex-start;margin-bottom:8px;font-size:.81em}
+.tr-step .ts-num{background:#dc3545;color:#fff;border-radius:50%;width:22px;height:22px;display:flex;align-items:center;justify-content:center;font-weight:800;flex-shrink:0;font-size:.75em}
+.tr-step .ts-text{color:#c9d1d9;line-height:1.6;flex:1}
+.tr-step .ts-text strong{color:var(--ntd)}
+
+/* Traceroute output */
+.tr-output{background:#0d1117;color:#c9d1d9;border-radius:8px;padding:12px 14px;margin:10px 0;font-family:'Courier New',monospace;font-size:.75em;line-height:1.8}
+.tr-output .to-hop{color:#fbbf24;font-weight:700}
+.tr-output .to-ip{color:#4ade80}
+.tr-output .to-rtt{color:#c9d1d9}
+.tr-output .to-star{color:#dc3545;font-weight:700}
+.tr-output .to-dest{color:#4ade80;font-weight:700}
+
+/* Ping sequence cards */
+.ping-seq{display:grid;gap:8px;margin:12px 0}
+.ps-card{display:flex;gap:10px;align-items:flex-start;padding:9px 12px;border-radius:8px;font-size:.81em;border-left:3px solid var(--nt);background:#f0fdf4;line-height:1.6}
+.ps-card .psc-step{font-weight:900;color:var(--nt);flex-shrink:0;min-width:20px}
+
+.tb-btn{position:fixed;bottom:80px;right:16px;background:var(--nt);color:#fff;border:none;border-radius:50%;width:44px;height:44px;font-size:1.25em;box-shadow:0 4px 14px rgba(0,0,0,.25);cursor:pointer;display:none;align-items:center;justify-content:center;z-index:100}
+.tb-btn.show{display:flex}
+.ft{text-align:center;padding:24px 16px;color:var(--muted);font-size:.81em}
+.mod-nav{position:fixed;bottom:0;left:0;right:0;z-index:300;background:#1a1a2e;border-top:1px solid #30363d;display:flex;align-items:center;height:52px;padding:0 8px;gap:6px}
+.mn-hub{background:#1ba0d7;color:#fff;border:none;border-radius:8px;padding:6px 12px;font-size:.75em;font-weight:700;cursor:pointer;text-decoration:none;display:flex;align-items:center;gap:4px;white-space:nowrap;-webkit-tap-highlight-color:transparent;flex-shrink:0}
+.mn-hub:active{opacity:.8}
+.mn-divider{width:1px;height:28px;background:#30363d;flex-shrink:0}
+.mn-label{flex:1;text-align:center;font-size:.69em;color:#8b949e;font-weight:600;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding:0 4px}
+.mn-prev,.mn-next{background:#30363d;color:#c9d1d9;border:none;border-radius:8px;padding:6px 10px;font-size:.875em;font-weight:700;cursor:pointer;text-decoration:none;display:flex;align-items:center;-webkit-tap-highlight-color:transparent;flex-shrink:0}
+.mn-prev:active,.mn-next:active{background:var(--nt);color:#fff}
+
+/* v2.1 — In-section check button */
+.sh{position:relative}
+.sec-check{position:absolute;right:40px;top:50%;transform:translateY(-50%);background:rgba(255,255,255,.15);border:2px solid rgba(255,255,255,.4);border-radius:6px;padding:2px 10px;font-size:.72em;font-weight:800;color:#fff;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:all .2s;white-space:nowrap;z-index:10;line-height:1.5}
+.sec-check.checked{background:var(--ntd);border-color:var(--ntd);color:#052e1e}
+.sec-check:active{opacity:.75}
+</style>
+</head>
+<body>
+<nav class="bc">
+  <a href="../../index.html">🏠 Home</a><span class="sep">›</span>
+  <a href="index.html">CCNA 1 — ITN</a><span class="sep">›</span>
+  <span class="cur">M13: ICMP</span>
+</nav>
+<div class="fs-bar">
+  <div class="sc-pills" id="sc-pills">
+  <button class="sc-pill" id="pill-s1" onclick="toggleSection('s1',this)"><span class="pill-check">○</span>13.1</button>
+  <button class="sc-pill" id="pill-s2" onclick="toggleSection('s2',this)"><span class="pill-check">○</span>13.2</button>
+  <button class="sc-pill" id="pill-s-pt-13-3" onclick="toggleSection('s-pt-13-3',this)"><span class="pill-check">○</span>PT 13.3</button>
+  <button class="sc-pill" id="pill-s3" onclick="toggleSection('s3',this)"><span class="pill-check">○</span>🎯</button>
+  </div>
+  <span class="fs-label" style="flex-shrink:0;margin-left:6px">Size</span>
+  <button class="fs-btn" onclick="setFs('14px',this)">S</button>
+  <button class="fs-btn" onclick="setFs('16px',this)">M</button>
+  <button class="fs-btn" onclick="setFs('18px',this)">L</button>
+  <button class="fs-btn active" onclick="setFs('20px',this)">XL</button>
+</div>
+<div class="hdr">
+  <div class="badge">CCNA 1 — ITN v7.02 · Module 13</div>
+  <h1>📡 ICMP</h1>
+  <p>Introduction to Networks · NetAcad Study Guide</p>
+  <div class="obj">Module Objective: Use various tools to test network connectivity</div>
+</div>
+<div class="sp-wrap">
+  <div class="sp-hdr" id="sp-hdr" onclick="toggleStudyPanel()">
+    <span class="sp-title">📚 Sections</span>
+    <span class="sp-arr" id="sp-arr">▼</span>
+  </div>
+  <div class="sp-body" id="sp-body">
+    <div class="sp-row" id="row-s1"><span class="sr-status" id="st-s1">○</span><span class="sr-nb">13.1</span><span class="sr-ttl">ICMP Messages</span></div>
+    <div class="sp-row" id="row-s2"><span class="sr-status" id="st-s2">○</span><span class="sr-nb">13.2</span><span class="sr-ttl">Ping and Traceroute Tests</span></div>
+    <div class="sp-row" id="row-s-pt-13-3"><span class="sr-status" id="st-s-pt-13-3">○</span><span class="sr-nb">PT 13.3</span><span class="sr-ttl">Packet Tracer — ICMP Connectivity Testing</span></div>
+    <div class="sp-row" id="row-s3"><span class="sr-status" id="st-s3">○</span><span class="sr-nb">🎯</span><span class="sr-ttl">Common Exam Traps — Module 13</span></div>
+  </div>
+</div>
+
+<div class="toc">
+  <div class="toch open" onclick="this.classList.toggle('open');document.getElementById('tocb').classList.toggle('open')">
+    📋 Table of Contents — Tap to expand <span class="arr">▼</span>
+  </div>
+  <div class="tocb open" id="tocb">
+    <div class="tocg">13.1 — ICMP Messages</div>
+    <a href="javascript:void(0)" onclick="goTo('s1')"><span class="n">13.1.1</span> ICMPv4 and ICMPv6 — Purpose and Three Common Messages</a>
+    <a href="javascript:void(0)" onclick="goTo('s1')"><span class="n">13.1.2</span> Host Reachability — Echo Request and Echo Reply</a>
+    <a href="javascript:void(0)" onclick="goTo('s1')"><span class="n">13.1.3</span> Destination Unreachable — Codes for IPv4 and IPv6</a>
+    <a href="javascript:void(0)" onclick="goTo('s1')"><span class="n">13.1.4</span> Time Exceeded — TTL / Hop Limit = 0</a>
+    <a href="javascript:void(0)" onclick="goTo('s1')"><span class="n">13.1.5</span> ICMPv6 ND Messages — RA · RS · NS · NA · Redirect</a>
+    <div class="tocg">13.2 — Ping and Traceroute Tests</div>
+    <a href="javascript:void(0)" onclick="goTo('s2')"><span class="n">13.2.1</span> Ping — How It Works · Success Rate · RTT</a>
+    <a href="javascript:void(0)" onclick="goTo('s2')"><span class="n">13.2.2</span> Ping the Loopback — Tests TCP/IP Stack Only</a>
+    <a href="javascript:void(0)" onclick="goTo('s2')"><span class="n">13.2.3</span> Ping the Default Gateway — Tests Local Network</a>
+    <a href="javascript:void(0)" onclick="goTo('s2')"><span class="n">13.2.4</span> Ping a Remote Host — Tests End-to-End Path</a>
+    <a href="javascript:void(0)" onclick="goTo('s2')"><span class="n">13.2.5</span> Traceroute — How TTL Reveals Each Hop</a>
+    <div class="tocg">Reference</div>
+    <a href="javascript:void(0)" onclick="goTo('s3')"><span class="n">🎯</span> Common Exam Traps</a>
+  </div>
+</div>
+
+<div class="wrap">
+
+<!-- 13.1 ICMP MESSAGES -->
+<div class="sec" id="s1">
+<div class="sh open" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">13.1</span><span class="ttl">ICMP Messages</span></span><button class="sec-check" id="sch-s1" onclick="event.stopPropagation();toggleSection('s1',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb open">
+
+  <div class="sub">
+  <h3><span class="sn">13.1.1</span> ICMPv4 and ICMPv6 — Purpose</h3>
+  <p>Although IP is best-effort and unreliable, the TCP/IP suite provides error and informational messaging via <strong>ICMP (Internet Control Message Protocol)</strong>.</p>
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>ICMP does NOT make IP reliable.</strong> It provides feedback about issues related to IP packet processing — it does NOT retransmit packets or guarantee delivery. Reliability is handled by TCP at Layer 4. ICMP messages are not required and are often blocked by firewalls for security reasons.</div></div>
+  <p><strong>Three ICMP messages common to both ICMPv4 and ICMPv6:</strong></p>
+  <div class="icmp-cards">
+    <div class="icmp-card echo"><div class="ic-name">✅ Host Reachability — Echo Request / Echo Reply</div>Tests whether a host is reachable on an IP network. Basis of the <strong>ping</strong> utility.</div>
+    <div class="icmp-card unreach"><div class="ic-name">⚠️ Destination or Service Unreachable</div>Sent when a packet cannot be delivered. Includes a <strong>code</strong> indicating the specific reason for failure.</div>
+    <div class="icmp-card texc"><div class="ic-name">🔴 Time Exceeded</div>Sent when TTL (IPv4) or Hop Limit (IPv6) is decremented to 0. Basis of the <strong>traceroute</strong> utility.</div>
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">13.1.2</span> Host Reachability — Echo Request and Echo Reply</h3>
+  <p>The ICMP Echo Request/Reply mechanism tests Layer 3 reachability between two IP hosts:</p>
+  <div class="ping-seq">
+    <div class="ps-card"><div class="psc-step">1</div><div>Source sends an <strong>ICMP Echo Request</strong> to the target IP address</div></div>
+    <div class="ps-card"><div class="psc-step">2</div><div>If the target is available and reachable, it responds with an <strong>ICMP Echo Reply</strong></div></div>
+    <div class="ps-card"><div class="psc-step">3</div><div>Ping measures the <strong>round-trip time (RTT)</strong> — time from request sent to reply received</div></div>
+    <div class="ps-card"><div class="psc-step">4</div><div>After all requests: ping provides a <strong>summary</strong> with success rate and average RTT</div></div>
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">13.1.3</span> Destination or Service Unreachable — Codes</h3>
+  <p>When a host or router cannot deliver a packet, it sends an ICMP <strong>Destination Unreachable</strong> message back to the source. The <strong>code</strong> field indicates the exact reason.</p>
+  <div class="code-compare">
+    <div class="code-box v4">
+      <div class="cb-hdr">ICMPv4 — Destination Unreachable Codes</div>
+      <div class="code-row"><span class="cr-num">0</span><div>Net unreachable</div></div>
+      <div class="code-row"><span class="cr-num">1</span><div>Host unreachable</div></div>
+      <div class="code-row"><span class="cr-num">2</span><div>Protocol unreachable</div></div>
+      <div class="code-row"><span class="cr-num">3</span><div>Port unreachable</div></div>
+    </div>
+    <div class="code-box v6">
+      <div class="cb-hdr">ICMPv6 — Destination Unreachable Codes</div>
+      <div class="code-row"><span class="cr-num">0</span><div>No route to destination</div></div>
+      <div class="code-row"><span class="cr-num">1</span><div>Communication administratively prohibited (firewall)</div></div>
+      <div class="code-row"><span class="cr-num">2</span><div>Beyond scope of source address</div></div>
+      <div class="code-row"><span class="cr-num">3</span><div>Address unreachable</div></div>
+      <div class="code-row"><span class="cr-num">4</span><div>Port unreachable</div></div>
+    </div>
+  </div>
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Code 1 means different things in IPv4 vs IPv6:</strong><br>ICMPv4 Code 1 = <strong>Host unreachable</strong> (can reach the network but not the specific host)<br>ICMPv6 Code 1 = <strong>Communication administratively prohibited</strong> (blocked by firewall/ACL)</div></div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">13.1.4</span> Time Exceeded — TTL / Hop Limit = 0</h3>
+  <div class="tw"><table>
+    <tr><th>Protocol</th><th>Field</th><th>When Message Sent</th><th>Used By</th></tr>
+    <tr><td><strong>IPv4</strong></td><td>TTL (Time to Live)</td><td>Router decrements TTL to 0 → discards packet → sends ICMPv4 Time Exceeded to source</td><td><strong>traceroute</strong></td></tr>
+    <tr><td><strong>IPv6</strong></td><td>Hop Limit</td><td>Router decrements Hop Limit to 0 → discards packet → sends ICMPv6 Time Exceeded to source</td><td><strong>traceroute</strong></td></tr>
+  </table></div>
+  <div class="ca info"><span class="ic">💡</span><div>Time Exceeded messages are the core mechanism that makes <strong>traceroute</strong> work. Traceroute deliberately sends packets with incrementing TTL/Hop Limit values (1, 2, 3…) to trigger Time Exceeded responses from each router along the path, revealing the hop-by-hop route.</div></div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">13.1.5</span> ICMPv6 ND Messages — Beyond ICMPv4</h3>
+  <p>ICMPv6 includes all ICMPv4 functions PLUS four Neighbor Discovery (ND) messages that have no ICMPv4 equivalent:</p>
+  <div class="nd-cards">
+    <div class="nd-card ra"><span class="nc-abbr">RA</span><div><strong>Router Advertisement</strong> — Router → ff02::1 (all-nodes). Sent every 200 seconds or in response to RS. Contains: prefix, prefix-length, default gateway (router's LLA), DNS server, domain name. Used for SLAAC.</div></div>
+    <div class="nd-card rs"><span class="nc-abbr">RS</span><div><strong>Router Solicitation</strong> — Host → ff02::2 (all-routers). Requests an RA immediately. Sent by a host on boot to discover routers without waiting 200 seconds.</div></div>
+    <div class="nd-card ns"><span class="nc-abbr">NS</span><div><strong>Neighbor Solicitation</strong> — Two uses: (1) <strong>Address resolution</strong> — "Who has IPv6 address X? Send me your MAC." Sent to solicited-node multicast address. (2) <strong>DAD (Duplicate Address Detection)</strong> — Host sends NS for its own new address; no reply = address is unique.</div></div>
+    <div class="nd-card na"><span class="nc-abbr">NA</span><div><strong>Neighbor Advertisement</strong> — Reply to NS. Contains the MAC address of the responding device. Unicast back to the requester.</div></div>
+    <div class="nd-card rd"><span class="nc-abbr">Redirect</span><div><strong>Redirect</strong> — Sent by router to inform a host of a better next-hop for a specific destination. Similar to ICMPv4 Redirect message.</div></div>
+  </div>
+  <div class="et"><div class="lbl">🎯 ICMPv6 ND GROUPING</div>
+  <strong>Router ↔ Device:</strong> RS (host→router) · RA (router→all nodes)<br>
+  <strong>Device ↔ Device:</strong> NS (address resolution + DAD) · NA (reply with MAC)<br>
+  <strong>Plus:</strong> Redirect (better next-hop)
+  </div>
+  </div>
+
+</div></div>
+
+<!-- 13.2 PING AND TRACEROUTE -->
+<div class="sec" id="s2">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">13.2</span><span class="ttl">Ping and Traceroute Tests</span></span><button class="sec-check" id="sch-s2" onclick="event.stopPropagation();toggleSection('s2',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb">
+
+  <div class="sub">
+  <h3><span class="sn">13.2.1</span> Ping — How It Works</h3>
+  <p><strong>Ping</strong> uses ICMP Echo Request and Echo Reply messages to test connectivity. Works for both IPv4 and IPv6.</p>
+  <div class="tw"><table>
+    <tr><th>Element</th><th>Description</th></tr>
+    <tr><td><strong>Echo Request</strong></td><td>Sent to the target IP address</td></tr>
+    <tr><td><strong>Echo Reply</strong></td><td>Sent back by the target if reachable</td></tr>
+    <tr><td><strong>RTT (Round-Trip Time)</strong></td><td>Time from request sent → reply received. Measure of network latency.</td></tr>
+    <tr><td><strong>Timeout</strong></td><td>If no reply within timeout period → no response message shown. Could be unreachable OR security filtering.</td></tr>
+    <tr><td><strong>Summary</strong></td><td>After all requests: success rate + average RTT</td></tr>
+  </table></div>
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>First ping often times out</strong> — ARP (IPv4) or ND (IPv6) address resolution must complete before the first Echo Request can be sent. This delay can cause the first ping to timeout even when connectivity is fine. Subsequent pings succeed normally.</div></div>
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>No ping response ≠ host is down.</strong> Many organizations block ICMP at their network perimeter for security reasons. Failed ping could mean the host is unreachable OR simply that ICMP is blocked. Never conclude a host is down based solely on a failed ping without other evidence.</div></div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">13.2.2–13.2.4</span> Three Ping Tests — What Each Verifies</h3>
+  <div class="ping-cards">
+    <div class="ping-card loop">
+      <div class="pc-name">🔄 Ping the Loopback — 127.0.0.1 (IPv4) or ::1 (IPv6)</div>
+      <strong>What it tests:</strong> TCP/IP stack is installed and functional on the local host. ICMP loops through the IP stack without going onto the network.<br><br>
+      <strong>What it does NOT test:</strong><br>
+      · Whether IP address, subnet mask, or default gateway are correctly configured<br>
+      · Whether the NIC has a physical connection<br>
+      · Whether the lower layers (L1, L2) are working<br><br>
+      <strong>Failure =</strong> TCP/IP is not operational on this host.
+    </div>
+    <div class="ping-card gw">
+      <div class="pc-name">🌐 Ping the Default Gateway — e.g., 192.168.10.1</div>
+      <strong>What it tests:</strong> Host can communicate on the local network AND the default gateway router interface is operational.<br><br>
+      <strong>Troubleshooting:</strong><br>
+      · Gateway responds → host and gateway both work on local network ✅<br>
+      · Gateway no response, other local host responds → router interface problem or ICMP blocked on router<br>
+      · Neither responds → local network connectivity problem (cable, switch, IP config)
+    </div>
+    <div class="ping-card rem">
+      <div class="pc-name">🌍 Ping a Remote Host — e.g., ping 8.8.8.8</div>
+      <strong>What a success confirms:</strong><br>
+      · Local host TCP/IP stack is working ✅<br>
+      · Default gateway router is operational ✅<br>
+      · All intermediate routers along the path are working ✅<br>
+      · The remote host is reachable and responding ✅<br><br>
+      <strong>Failure could mean:</strong> Any of the above failed, OR ICMP is blocked by a firewall along the path.
+    </div>
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">13.2.5</span> Traceroute — How It Reveals Each Hop</h3>
+  <p><strong>Traceroute</strong> (called <strong>tracert</strong> on Windows, <strong>traceroute</strong> on Linux and Cisco IOS) generates a list of every router hop along the path from source to destination, with RTT for each hop.</p>
+  <p><strong>What traceroute provides that ping doesn't:</strong></p>
+  <ul>
+    <li>IP address of every router along the path</li>
+    <li>RTT to each hop (three measurements per hop)</li>
+    <li>Exact location where the path fails or delays occur</li>
+  </ul>
+
+  <h4>How Traceroute Works — TTL Exploitation</h4>
+  <div class="tr-box">
+    <div class="tb-title">Traceroute Step-by-Step (using TTL/Hop Limit)</div>
+    <div class="tr-step"><div class="ts-num">1</div><div class="ts-text">Send packet with <strong>TTL = 1</strong> → Router 1 decrements to 0 → discards → sends <strong>ICMP Time Exceeded</strong> to source → source records <strong>Router 1's IP address</strong></div></div>
+    <div class="tr-step"><div class="ts-num">2</div><div class="ts-text">Send packet with <strong>TTL = 2</strong> → Router 1 decrements to 1, forwards → Router 2 decrements to 0 → sends Time Exceeded → source records <strong>Router 2's IP</strong></div></div>
+    <div class="tr-step"><div class="ts-num">3</div><div class="ts-text">Continue incrementing TTL by 1 each round until either: (a) destination host responds with Echo Reply or Port Unreachable, OR (b) maximum hop count reached</div></div>
+    <div class="tr-step"><div class="ts-num">✅</div><div class="ts-text">Result: a complete map of <strong>every router (hop) between source and destination</strong>, with RTT for each</div></div>
+  </div>
+
+  <h4>Reading Traceroute Output</h4>
+  <div class="tr-output">
+    <div>Tracing route to 209.165.200.225 [209.165.200.225]</div>
+    <div><span class="to-hop"> 1</span>  <span class="to-rtt">1ms  1ms  1ms</span>  <span class="to-ip">192.168.10.1</span>  ← Default gateway (R1)</div>
+    <div><span class="to-hop"> 2</span>  <span class="to-rtt">12ms 11ms 12ms</span> <span class="to-ip">172.16.1.1</span>   ← R2 (intermediate router)</div>
+    <div><span class="to-hop"> 3</span>  <span class="to-rtt">25ms 24ms 25ms</span> <span class="to-ip">209.165.200.225</span> ← Destination</div>
+  </div>
+  <div class="tr-output" style="margin-top:6px">
+    <div>Tracing route to 10.1.1.10 [10.1.1.10]</div>
+    <div><span class="to-hop"> 1</span>  <span class="to-rtt">1ms  1ms  1ms</span>  <span class="to-ip">192.168.10.1</span></div>
+    <div><span class="to-hop"> 2</span>  <span class="to-star">*</span>    <span class="to-star">*</span>    <span class="to-star">*</span>    Request timed out. ← Router not responding (or ICMP blocked)</div>
+    <div><span class="to-hop"> 3</span>  <span class="to-star">*</span>    <span class="to-star">*</span>    <span class="to-star">*</span>    Request timed out.</div>
+  </div>
+  <div class="tw" style="margin-top:12px"><table>
+    <tr><th>Output</th><th>Meaning</th></tr>
+    <tr><td><code>*</code> (asterisk)</td><td>Packet lost OR router did not reply to ICMP. Path may still be functional — some routers are configured not to send Time Exceeded messages.</td></tr>
+    <tr><td>High RTT at a hop</td><td>That router or its links may be congested or stressed.</td></tr>
+    <tr><td>Last IP before all * responses</td><td>Likely location of the problem or security boundary.</td></tr>
+    <tr><td>Three RTT values per hop</td><td>Traceroute sends three packets per TTL value.</td></tr>
+  </table></div>
+
+  <div class="et"><div class="lbl">🎯 TRACEROUTE COMMAND NAMES</div>
+  <strong>Windows:</strong> <code>tracert destination</code> (no final 'e')<br>
+  <strong>Linux / Cisco IOS:</strong> <code>traceroute destination</code><br>
+  <strong>IPv4:</strong> Uses TTL field · <strong>IPv6:</strong> Uses Hop Limit field<br>
+  Both use ICMP Time Exceeded messages as the core mechanism.
+  </div>
+  </div>
+
+  <!-- PT INLINE -->
+  <div style="margin:20px 0 6px;padding:14px 16px;background:#0d1117;border:1px solid #30363d;border-left:3px solid #1f6feb;border-radius:6px">
+    <div style="font-size:.72em;font-weight:800;text-transform:uppercase;letter-spacing:.8px;color:#1f6feb;margin-bottom:10px">&#x1F4E6; Packet Tracer Activities</div>
+  <div style="display:flex;align-items:baseline;gap:10px;padding:6px 0;border-bottom:1px solid #21262d"><span style="font-family:monospace;font-size:.85em;color:#79c0ff;white-space:nowrap;flex-shrink:0;min-width:52px">13.2.6</span><span style="font-size:.88em;color:#c9d1d9">Verify IPv4 and IPv6 Addressing</span></div>
+  <div style="display:flex;align-items:baseline;gap:10px;padding:6px 0;border-bottom:1px solid #21262d"><span style="font-family:monospace;font-size:.85em;color:#79c0ff;white-space:nowrap;flex-shrink:0;min-width:52px">13.2.7</span><span style="font-size:.88em;color:#c9d1d9">Use Ping and Traceroute to Test Network Connectivity</span></div>
+    <div style="margin-top:10px;font-size:.78em;color:#6e7681">Full list: <a href="https://itexamanswers.net/ccna-1-v7-exam-answers-introduction-to-networks-v7-0-itn.html" target="_blank" rel="noopener" style="color:#58a6ff;word-break:break-all">itexamanswers.net/ccna-1-v7-exam-answers-introduction-to-networks-v7-0-itn.html</a></div>
+  </div>
+
+</div></div>
+
+<div class="sec" id="s-pt-13-3">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">13.3</span><span class="ttl">Packet Tracer — ICMP Connectivity Testing</span></span><button class="sec-check" id="sch-s-pt-13-3" onclick="event.stopPropagation();toggleSection('s-pt-13-3',this)">○ Mark done</button>
+</div>
+<div class="sb">
+  <div style="padding:14px 16px;background:#0d1117;border:1px solid #30363d;border-left:3px solid #1f6feb;border-radius:6px">
+    <div style="font-size:.72em;font-weight:800;text-transform:uppercase;letter-spacing:.8px;color:#1f6feb;margin-bottom:10px">&#x1F4E6; Packet Tracer Activities</div>
+    <div style="font-size:.82em;color:#6e7681;margin-bottom:10px">Open in Cisco Packet Tracer via your NetAcad course.</div>
+      <div style="display:flex;align-items:baseline;gap:10px;padding:6px 0;border-bottom:1px solid #21262d"><span style="font-family:monospace;font-size:.85em;color:#79c0ff;white-space:nowrap;flex-shrink:0;min-width:52px">13.3.1</span><span style="font-size:.88em;color:#c9d1d9">Use ICMP to Test and Correct Network Connectivity</span></div>
+      <div style="display:flex;align-items:baseline;gap:10px;padding:6px 0;border-bottom:1px solid #21262d"><span style="font-family:monospace;font-size:.85em;color:#79c0ff;white-space:nowrap;flex-shrink:0;min-width:52px">13.3.2</span><span style="font-size:.88em;color:#c9d1d9">Use Ping and Traceroute to Test Network Connectivity (Physical Mode)</span></div>
+    <div style="margin-top:12px;font-size:.78em;color:#6e7681">Full list: <a href="https://itexamanswers.net/ccna-1-v7-exam-answers-introduction-to-networks-v7-0-itn.html" target="_blank" rel="noopener" style="color:#58a6ff;word-break:break-all">itexamanswers.net/ccna-1-v7-exam-answers-introduction-to-networks-v7-0-itn.html</a></div>
+  </div>
+</div>
+</div>
+
+
+<!-- EXAM TRAPS -->
+
+
+  <!-- PT MASTER LINK -->
+  <div style="margin:18px 0 6px;padding:12px 14px;background:#0d1117;border:1px solid #30363d;border-left:3px solid #1f6feb;border-radius:6px">
+    <div style="font-size:.7em;font-weight:800;text-transform:uppercase;letter-spacing:.8px;color:#1f6feb;margin-bottom:6px">&#x1F4E6; All Packet Tracer Activities — CCNA 1</div>
+    <div style="font-size:.84em;color:#c9d1d9;margin-bottom:4px">Complete list of all CCNA 1 Packet Tracer activities with instructions:</div>
+    <a href="https://itexamanswers.net/ccna-1-v7-exam-answers-introduction-to-networks-v7-0-itn.html" target="_blank" rel="noopener" style="font-size:.78em;color:#58a6ff;word-break:break-all">https://itexamanswers.net/ccna-1-v7-exam-answers-introduction-to-networks-v7-0-itn.html</a>
+  </div>
+
+<div class="sec" id="s3">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">🎯</span><span class="ttl">Common Exam Traps — Module 13</span></span><button class="sec-check" id="sch-s3" onclick="event.stopPropagation();toggleSection('s3',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb">
+
+  <div class="ca danger"><span class="ic">❌</span><div><strong>Trap 1: ICMP does NOT make IP reliable — it only provides error feedback.</strong><br>IP remains connectionless, best-effort, and unreliable. ICMP notifies the source when something goes wrong but does not retransmit packets or guarantee delivery. TCP at Layer 4 provides reliability.</div></div>
+
+  <div class="ca danger"><span class="ic">❌</span><div><strong>Trap 2: ICMPv4 Code 1 = Host unreachable. ICMPv6 Code 1 = Admin prohibited (firewall).</strong><br>The code numbers mean different things in ICMPv4 vs ICMPv6. This is directly tested in matching questions. IPv4: 0=Net, 1=Host, 2=Protocol, 3=Port. IPv6: 0=No route, 1=Admin prohibited, 3=Address unreachable, 4=Port unreachable.</div></div>
+
+  <div class="ca danger"><span class="ic">❌</span><div><strong>Trap 3: Time Exceeded = TTL or Hop Limit decremented to 0. This is how traceroute works.</strong><br>Traceroute exploits this mechanism by deliberately sending packets with TTL=1, then TTL=2, etc. Each router that discards a packet due to TTL=0 sends back a Time Exceeded message revealing its IP address.</div></div>
+
+  <div class="ca danger"><span class="ic">❌</span><div><strong>Trap 4: Ping the loopback tests ONLY the TCP/IP stack — NOT addressing, NOT the gateway, NOT physical connectivity.</strong><br>A successful loopback ping (127.0.0.1 or ::1) confirms TCP/IP is installed and functional. It does NOT confirm the IP address is correct, the subnet mask is valid, the gateway is reachable, or the NIC has a physical cable connection.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 5: No ping response does NOT always mean the host is unreachable.</strong><br>Many organizations block ICMP at the perimeter or on specific interfaces for security reasons. A failed ping should prompt further investigation — not an immediate conclusion that the destination is down.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 6: The first ping often times out due to ARP or ND resolution — not a real connectivity failure.</strong><br>Before the first ICMP Echo Request can be sent, the source must resolve the destination MAC address (ARP for IPv4, ND for IPv6). This extra time can cause the first ping to timeout. This is normal and expected behavior.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 7: tracert (Windows) vs traceroute (Linux/IOS) — different command names, same function.</strong><br>Windows uses tracert with no 'e' at the end. Linux and Cisco IOS use traceroute. Both work with IPv4 (TTL) and IPv6 (Hop Limit). Mixing up these command names is a common exam mistake.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 8: Asterisk (*) in traceroute = lost packet or no reply — does NOT confirm path failure.</strong><br>Some routers are configured not to send ICMP Time Exceeded messages for security or performance reasons. The path may still be fully functional beyond the non-responding hop. Look at subsequent hops before concluding the path is broken.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 9: ICMPv6 ND messages — RS/RA for router-device, NS/NA for device-device.</strong><br>RS = host asks routers for RA (ff02::2). RA = router responds to all nodes (ff02::1) with prefix/gateway/DNS. NS = address resolution AND DAD. NA = reply with MAC address. Redirect = better next-hop. All five appear in exam matching questions.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 10: A successful remote ping confirms: local stack + default gateway + all intermediate routers + remote host.</strong><br>This is the most comprehensive single connectivity test. However, failure of any one of these components — or ICMP blocking at any point — will cause the ping to fail. Use traceroute to isolate exactly where the failure occurs.</div></div>
+
+  <div class="ca tip"><span class="ic">✅</span><div><strong>Module 13 quick-reference summary:</strong><br><br>
+  <strong>ICMP:</strong> Error and informational messaging for IP · Does NOT make IP reliable · Often blocked by firewalls<br>
+  <strong>ICMPv4 + ICMPv6 common messages:</strong> Host Reachability · Destination Unreachable · Time Exceeded<br>
+  <strong>Echo Request / Echo Reply:</strong> Basis of ping · Tests L3 reachability<br>
+  <strong>Destination Unreachable codes (IPv4):</strong> 0=Net · 1=Host · 2=Protocol · 3=Port<br>
+  <strong>Destination Unreachable codes (IPv6):</strong> 0=No route · 1=Admin prohibited · 3=Address unreachable · 4=Port<br>
+  <strong>Time Exceeded:</strong> TTL=0 (IPv4) or Hop Limit=0 (IPv6) → router discards + sends Time Exceeded → traceroute mechanism<br>
+  <strong>ICMPv6 ND messages:</strong> RA (router→ff02::1, every 200s) · RS (host→ff02::2) · NS (address resolution + DAD) · NA (reply with MAC) · Redirect<br>
+  <strong>Ping:</strong> ICMP Echo Request/Reply · success rate + RTT · works IPv4 and IPv6<br>
+  <strong>First ping timeout:</strong> ARP/ND resolution delay — normal, not a failure<br>
+  <strong>No ping response:</strong> Could be down OR ICMP blocked — do not assume host is down<br>
+  <strong>Ping loopback (127.0.0.1/::1):</strong> Tests TCP/IP stack only · NOT address/gateway/physical<br>
+  <strong>Ping default gateway:</strong> Tests local network + gateway router interface<br>
+  <strong>Ping remote host:</strong> Tests local stack + gateway + all intermediate routers + remote host<br>
+  <strong>Traceroute/tracert:</strong> Lists every hop + RTT · reveals where path fails<br>
+  <strong>Traceroute mechanism:</strong> Sends packets with TTL=1,2,3… → each router sends Time Exceeded → reveals IP of each hop<br>
+  <strong>*  in traceroute:</strong> Lost packet or router not replying · path may still work beyond that hop<br>
+  <strong>Command names:</strong> tracert (Windows) · traceroute (Linux/IOS)</div></div>
+
+</div></div>
+
+</div>
+<div class="ft">CCNA 1 ITN v7.02 — Module 13: ICMP v2.2<br>Based on Cisco NetAcad curriculum · Study guide for personal use</div>
+<button class="tb-btn" id="topb" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+<div class="mod-nav">
+  <a class="mn-hub" href="index.html">🏠 Hub</a>
+  <div class="mn-divider"></div>
+  <a class="mn-prev" href="ccna1_module12_ipv6_addressing_v2.2.html">‹</a>
+  <span class="mn-label">M13 of 17</span>
+  <a class="mn-next" href="ccna1_module14_transport_layer_v2.2.html">›</a>
+</div>
+<script>
+var MOD_KEY="ccna1-module13-icmp";
+var SECS=["s1","s2","s-pt-13-3","s3"];
+var checked={};
+function loadState(){
+  try{var s=localStorage.getItem(MOD_KEY);if(s)checked=JSON.parse(s);}catch(e){}
+  SECS.forEach(function(id){
+    var pill=document.getElementById('pill-'+id);
+    var row=document.getElementById('row-'+id);
+    var st=document.getElementById('st-'+id);
+    var sch=document.getElementById('sch-'+id);
+    if(checked[id]){
+      if(pill){pill.classList.add('checked');pill.querySelector('.pill-check').textContent='✓';}
+      if(row)row.classList.add('done');
+      if(st)st.textContent='✓';
+      if(sch){sch.classList.add('checked');sch.textContent='✓ Done';}
+    } else {
+      if(pill){pill.classList.remove('checked');pill.querySelector('.pill-check').textContent='○';}
+      if(row)row.classList.remove('done');
+      if(st)st.textContent='○';
+      if(sch){sch.classList.remove('checked');sch.textContent='○ Mark done';}
+    }
+  });
+}
+function toggleSection(id,btn){checked[id]=!checked[id];try{localStorage.setItem(MOD_KEY,JSON.stringify(checked));}catch(e){}loadState();}
+function toggleStudyPanel(){
+  var hdr=document.getElementById('sp-hdr');
+  var body=document.getElementById('sp-body');
+  var arr=document.getElementById('sp-arr');
+  hdr.classList.toggle('open');body.classList.toggle('open');
+  if(arr)arr.textContent=body.classList.contains('open')?'▲':'▼';
+}
+function goTo(id){var el=document.getElementById(id);if(!el)return;var h=el.querySelector('.sh'),b=el.querySelector('.sb');if(h&&b&&!b.classList.contains('open')){h.classList.add('open');b.classList.add('open');}setTimeout(function(){window.scrollTo({top:el.getBoundingClientRect().top+window.pageYOffset-60,behavior:'smooth'});},50);}
+function setFs(size,btn){document.documentElement.style.setProperty('--base-fs',size);document.querySelectorAll('.fs-btn').forEach(function(b){b.classList.remove('active');});btn.classList.add('active');try{localStorage.setItem('ccna-fs',size);}catch(e){}}
+(function(){try{var s=localStorage.getItem('ccna-fs');if(s){document.documentElement.style.setProperty('--base-fs',s);document.querySelectorAll('.fs-btn').forEach(function(b){b.classList.remove('active');if((b.textContent==='S'&&s==='14px')||(b.textContent==='M'&&s==='16px')||(b.textContent==='L'&&s==='18px')||(b.textContent==='XL'&&s==='20px'))b.classList.add('active');});}}catch(e){}loadState();})();
+function copyCode(btn){var pre=btn.closest('.cw').querySelector('pre');navigator.clipboard.writeText(pre.innerText||pre.textContent).then(function(){btn.textContent='Copied!';setTimeout(function(){btn.textContent='Copy';},1500);});}
+</script>
+<script src="../../site-config.js"></script>
+</body>
+</html>

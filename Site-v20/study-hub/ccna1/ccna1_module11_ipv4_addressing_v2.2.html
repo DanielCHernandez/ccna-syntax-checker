@@ -1,0 +1,816 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=2.0">
+<title>CCNA 1 Module 11: IPv4 Addressing v2.2</title>
+<style>
+:root{
+  --nt:#0a6e4e;--ntd:#4ade80;--nt2:#052e1e;--nt3:#021710;
+  --bg:#f4f6f8;--card:#fff;--text:#1a1a2e;--muted:#5a6a7a;
+  --cbg:#0d1117;--ctxt:#c9d1d9;--r:12px;--sh:0 2px 12px rgba(0,0,0,.08);
+  --base-fs:20px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);font-size:var(--base-fs);line-height:1.7}
+.bc{background:#0d1117;padding:8px 16px;display:flex;align-items:center;flex-wrap:wrap;gap:4px;font-size:.75em;overflow-x:auto;white-space:nowrap;-webkit-overflow-scrolling:touch;border-bottom:1px solid #21262d}
+.bc a{color:#8b949e;text-decoration:none;font-weight:600;flex-shrink:0}
+.bc .sep{color:#6e7681;flex-shrink:0}
+.bc .cur{color:var(--ntd);font-weight:700;flex-shrink:0}
+.fs-bar{position:sticky;top:0;z-index:200;background:#1a1a2e;display:flex;align-items:center;justify-content:flex-end;padding:6px 14px;gap:6px;box-shadow:0 2px 8px rgba(0,0,0,.3)}
+.fs-label{color:#8b949e;font-size:.72em;font-weight:700;letter-spacing:.5px;text-transform:uppercase;margin-right:4px}
+.fs-btn{background:#30363d;color:#c9d1d9;border:2px solid transparent;border-radius:6px;padding:4px 12px;font-size:.75em;font-weight:700;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:all .2s;line-height:1.4}
+.fs-btn:active,.fs-btn.active{background:var(--nt);color:#fff;border-color:var(--ntd)}
+.hdr{background:linear-gradient(135deg,var(--nt3),var(--nt2),var(--nt));color:#fff;padding:32px 20px 24px;text-align:center}
+.hdr .badge{display:inline-block;background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.4);border-radius:20px;padding:4px 14px;font-size:.81em;margin-bottom:12px}
+.hdr h1{font-size:1.5em;font-weight:700;margin-bottom:6px}
+.hdr p{font-size:.94em;opacity:.85}
+.hdr .obj{display:inline-block;background:rgba(255,255,255,.15);border-radius:8px;padding:7px 16px;margin-top:12px;font-size:.875em;font-style:italic}
+/* Study progress panel */
+.sp-wrap{background:var(--card);margin:16px 16px 0;border-radius:var(--r);box-shadow:var(--sh);overflow:hidden}
+.sp-hdr{background:var(--nt);color:#fff;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;user-select:none;-webkit-tap-highlight-color:transparent;gap:10px}
+.sp-hdr .sp-title{font-weight:700;font-size:.875em;flex-shrink:0}
+.sp-hdr .sp-arr{transition:transform .3s;flex-shrink:0}
+.sp-hdr.open .sp-arr{transform:rotate(180deg)}
+.sp-body{display:none;padding:12px 14px}
+.sp-body.open{display:block}
+.sp-row{display:flex;align-items:center;gap:10px;padding:6px 4px;border-bottom:1px solid #f0f4f8;font-size:.81em}
+.sp-row:last-child{border-bottom:none}
+.sp-row .sr-status{font-size:1em;flex-shrink:0;width:20px;text-align:center}
+.sp-row .sr-nb{font-weight:800;color:var(--nt);min-width:36px;flex-shrink:0;font-size:.875em}
+.sp-row .sr-ttl{color:var(--text);flex:1}
+.sp-row.done .sr-ttl{color:var(--muted);text-decoration:line-through}
+/* Section check pills in fs-bar */
+.sc-pills{display:flex;align-items:center;gap:4px;overflow-x:auto;-webkit-overflow-scrolling:touch;flex:1;padding:0 4px}
+.sc-pill{background:#30363d;color:#8b949e;border:2px solid transparent;border-radius:6px;padding:3px 8px;font-size:.72em;font-weight:700;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:all .15s;white-space:nowrap;flex-shrink:0;line-height:1.4;display:flex;align-items:center;gap:3px}
+.sc-pill.checked{background:var(--nt);color:#fff;border-color:var(--ntd)}
+.sc-pill .pill-check{font-size:.875em}
+.toc{background:var(--card);margin:16px;border-radius:var(--r);box-shadow:var(--sh);overflow:hidden}
+.toch{background:var(--nt);color:#fff;padding:14px 18px;font-weight:700;font-size:.94em;display:flex;justify-content:space-between;align-items:center;cursor:pointer;user-select:none}
+.toch .arr{transition:transform .3s}
+.toch.open .arr{transform:rotate(180deg)}
+.tocb{display:none;padding:10px 0}
+.tocb.open{display:block}
+.tocg{font-size:.69em;font-weight:800;letter-spacing:.8px;color:var(--nt);text-transform:uppercase;padding:8px 20px 2px}
+.tocb a{display:block;padding:9px 20px 9px 28px;color:var(--text);text-decoration:none;font-size:.875em;border-left:3px solid transparent;transition:all .2s}
+.tocb a:active{background:#f0fdf4;border-left-color:var(--ntd)}
+.tocb a .n{display:inline-block;background:var(--nt);color:#fff;border-radius:5px;padding:1px 8px;font-size:.75em;font-weight:700;margin-right:8px}
+.wrap{padding:0 16px 100px}
+.sec{background:var(--card);border-radius:var(--r);box-shadow:var(--sh);margin-bottom:16px;overflow:hidden}
+.sh{background:linear-gradient(90deg,var(--nt3),var(--nt));color:#fff;padding:16px 18px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;user-select:none;-webkit-tap-highlight-color:transparent}
+.sh .ttl{font-weight:700;font-size:1em}
+.sh .nb{background:rgba(255,255,255,.25);border-radius:6px;padding:3px 10px;font-size:.81em;font-weight:700;margin-right:10px;white-space:nowrap}
+.sh .ch{font-size:1.125em;transition:transform .3s}
+.sh.open .ch{transform:rotate(180deg)}
+.sb{display:none;padding:18px}
+.sb.open{display:block}
+.sub{margin-bottom:24px}
+.sub:last-child{margin-bottom:0}
+.sub h3{font-size:.94em;font-weight:700;color:var(--nt);margin-bottom:10px;padding-bottom:6px;border-bottom:2px solid #f0fdf4;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.sub h3 .sn{background:var(--nt);color:#fff;border-radius:5px;padding:2px 8px;font-size:.75em;white-space:nowrap}
+.sub h4{font-size:.875em;font-weight:700;color:var(--nt);margin:14px 0 6px}
+.sub p{margin-bottom:10px;font-size:.94em}
+.sub ul,.sub ol{padding-left:20px;margin:8px 0;font-size:.94em}
+.sub li{margin-bottom:5px}
+.cw{background:var(--cbg);border-radius:10px;margin:12px 0;overflow:hidden}
+.cl{background:#21262d;color:#c9d1d9;font-size:.78em;font-weight:700;padding:6px 14px;letter-spacing:.5px;text-transform:uppercase}
+pre{margin:0;padding:14px;overflow-x:auto;-webkit-overflow-scrolling:touch}
+code{font-family:'Courier New',monospace;font-size:.81em;color:var(--ctxt);line-height:1.6}
+.ca{border-radius:8px;padding:12px 14px;margin:12px 0;font-size:.875em;line-height:1.6;display:flex;gap:10px;align-items:flex-start}
+.ca .ic{font-size:1.125em;flex-shrink:0;margin-top:1px}
+.ca.warn  {background:#fff3cd;border-left:4px solid #b38600;color:#3d2c00}
+.ca.tip   {background:#d4edda;border-left:4px solid #28a745;color:#0d3318}
+.ca.danger{background:#f8d7da;border-left:4px solid #dc3545;color:#3d0010}
+.ca.info  {background:#f0fdf4;border-left:4px solid var(--nt);color:#052e1e}
+.ca code{color:inherit!important;background:rgba(0,0,0,.1)!important;border:1px solid rgba(0,0,0,.15)}
+.et{background:linear-gradient(135deg,#1a1a2e,var(--nt3));color:#fff;border-radius:10px;padding:14px 16px;margin:14px 0;font-size:.875em;line-height:1.6}
+.et .lbl{font-size:.69em;font-weight:800;letter-spacing:1px;color:var(--ntd);margin-bottom:6px}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:12px 0;border-radius:8px}
+table{width:100%;border-collapse:collapse;font-size:.875em}
+th{background:var(--nt);color:#fff;padding:10px 12px;text-align:left;font-weight:700;font-size:.81em}
+td{padding:9px 12px;border-bottom:1px solid #e8ecf0;vertical-align:top;color:#1a1a2e}
+tr:nth-child(even) td{background:#f0fdf4;color:#052e1e}
+tr:last-child td{border-bottom:none}
+p code,li code,td code,.ca code{background:#f0fdf4;color:#052e1e;border-radius:4px;padding:1px 5px;font-size:.81em;font-family:'Courier New',monospace;font-weight:600}
+
+/* AND operation visual */
+.and-box{background:#0d1117;border-radius:10px;padding:14px;margin:12px 0}
+.and-box .ab-title{color:var(--ntd);font-size:.69em;font-weight:800;letter-spacing:.8px;text-transform:uppercase;margin-bottom:10px}
+.and-row{display:grid;grid-template-columns:120px 1fr;gap:8px;margin-bottom:4px;font-size:.81em;font-family:'Courier New',monospace}
+.and-row .ar-label{color:#8b949e;font-weight:700;align-self:center;font-size:.875em;font-family:inherit}
+.and-row .ar-bits{color:#c9d1d9;letter-spacing:1px}
+.and-row.result .ar-label{color:var(--ntd)}
+.and-row.result .ar-bits{color:#4ade80;font-weight:800}
+.and-divider{border:none;border-top:1px solid #21262d;margin:6px 0}
+.and-rules{display:grid;grid-template-columns:repeat(2,1fr);gap:4px;margin:10px 0}
+.and-rule{background:#161b22;border-radius:6px;padding:7px 12px;font-family:'Courier New',monospace;font-size:.81em;text-align:center}
+.and-rule.one{color:#4ade80;font-weight:800}
+.and-rule.zero{color:#8b949e}
+
+/* Address type cards */
+.addr-cards{display:grid;gap:6px;margin:12px 0}
+.addr-card{border-radius:8px;padding:10px 14px;font-size:.81em;border-left:5px solid;line-height:1.6;display:flex;gap:10px;align-items:flex-start}
+.addr-card.net{border-left-color:#1a3a5c;background:#e0f2fe}
+.addr-card.host{border-left-color:var(--nt);background:#f0fdf4}
+.addr-card.bcast{border-left-color:#dc3545;background:#fff5f5}
+.addr-card .ac-icon{font-size:1.25em;flex-shrink:0}
+.addr-card .ac-body strong{display:block;margin-bottom:3px}
+.addr-card.net  .ac-body strong{color:#1a3a5c}
+.addr-card.host .ac-body strong{color:var(--nt)}
+.addr-card.bcast .ac-body strong{color:#7c1e1e}
+
+/* Transmission type cards */
+.tx-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:12px 0}
+@media(max-width:480px){.tx-cards{grid-template-columns:1fr}}
+.tx-card{border-radius:10px;padding:12px 14px;font-size:.81em;line-height:1.6;text-align:center}
+.tx-card.uni{background:#e0f2fe;border:2px solid #1a3a5c}
+.tx-card.bro{background:#fff3cd;border:2px solid #b38600}
+.tx-card.mul{background:#f3e8ff;border:2px solid #7b2d8b}
+.tx-card .tc-icon{font-size:1.75em;margin-bottom:6px}
+.tx-card .tc-name{font-weight:800;margin-bottom:4px}
+.tx-card.uni .tc-name{color:#1a3a5c}
+.tx-card.bro .tc-name{color:#b38600}
+.tx-card.mul .tc-name{color:#7b2d8b}
+
+/* Private address table */
+.priv-grid{display:grid;gap:4px;margin:12px 0}
+.priv-row{display:flex;gap:8px;align-items:center;padding:8px 12px;border-radius:6px;font-size:.81em;border-left:4px solid}
+.priv-row.r8 {border-left-color:#dc3545;background:#fff5f5}
+.priv-row.r12{border-left-color:#b38600;background:#fffbeb}
+.priv-row.r16{border-left-color:var(--nt);background:#f0fdf4}
+.priv-row .pr-prefix{font-family:'Courier New',monospace;font-weight:900;min-width:90px;flex-shrink:0}
+.priv-row.r8  .pr-prefix{color:#7c1e1e}
+.priv-row.r12 .pr-prefix{color:#b38600}
+.priv-row.r16 .pr-prefix{color:var(--nt)}
+
+/* Class table visual */
+.class-grid{display:grid;gap:4px;margin:12px 0}
+.class-row{display:flex;gap:8px;align-items:center;padding:8px 12px;border-radius:6px;font-size:.81em;border-left:4px solid}
+.class-row.ca{border-left-color:#1a3a5c;background:#e0f2fe}
+.class-row.cb{border-left-color:var(--nt);background:#f0fdf4}
+.class-row.cc{border-left-color:#b38600;background:#fffbeb}
+.class-row.cd{border-left-color:#7b2d8b;background:#f3e8ff}
+.class-row.ce{border-left-color:#374151;background:#f9fafb}
+.class-row .cr-class{font-weight:900;min-width:60px;flex-shrink:0}
+
+/* Subnet /24 table */
+.sn24-grid{display:grid;gap:3px;margin:12px 0}
+.sn24-hdr{display:grid;grid-template-columns:60px 1fr 1fr 1fr 1fr;gap:4px;background:var(--nt);color:#fff;padding:7px 10px;border-radius:6px 6px 0 0;font-size:.69em;font-weight:800}
+.sn24-row{display:grid;grid-template-columns:60px 1fr 1fr 1fr 1fr;gap:4px;padding:7px 10px;font-size:.75em;font-family:'Courier New',monospace;border-bottom:1px solid #e8ecf0;background:#fff}
+.sn24-row:nth-child(even){background:#f0fdf4}
+.sn24-row:last-child{border-bottom:none}
+.sn24-row .sr-prefix{font-weight:900;color:var(--nt)}
+.sn24-row .sr-subs{color:#1a3a5c;font-weight:700}
+.sn24-row .sr-hosts{color:#7c1e1e;font-weight:700}
+
+/* VLSM visual */
+.vlsm-box{background:#0d1117;border-radius:10px;padding:14px;margin:12px 0}
+.vlsm-box .vb-title{color:var(--ntd);font-size:.69em;font-weight:800;letter-spacing:.8px;text-transform:uppercase;margin-bottom:10px}
+.vlsm-step{display:flex;gap:10px;align-items:flex-start;margin-bottom:8px;font-size:.81em}
+.vlsm-step .vs-num{background:var(--nt);color:#fff;border-radius:50%;width:22px;height:22px;display:flex;align-items:center;justify-content:center;font-weight:800;flex-shrink:0;font-size:.75em}
+.vlsm-step .vs-text{color:#c9d1d9;line-height:1.6;flex:1}
+.vlsm-step .vs-text strong{color:var(--ntd)}
+.vlsm-subnet{background:#161b22;border-radius:6px;padding:6px 12px;margin:4px 0;font-family:'Courier New',monospace;font-size:.75em;color:#c9d1d9;display:flex;justify-content:space-between}
+.vlsm-subnet .vs-net{color:#4ade80;font-weight:700}
+.vlsm-subnet .vs-use{color:#8b949e}
+
+/* Formula highlight */
+.formula{background:#0a3d26;border:2px solid var(--ntd);border-radius:8px;padding:10px 16px;margin:10px 0;text-align:center;font-family:'Courier New',monospace;font-size:.94em;color:#4ade80;font-weight:800}
+
+.tb-btn{position:fixed;bottom:80px;right:16px;background:var(--nt);color:#fff;border:none;border-radius:50%;width:44px;height:44px;font-size:1.25em;box-shadow:0 4px 14px rgba(0,0,0,.25);cursor:pointer;display:none;align-items:center;justify-content:center;z-index:100}
+.tb-btn.show{display:flex}
+.ft{text-align:center;padding:24px 16px;color:var(--muted);font-size:.81em}
+.mod-nav{position:fixed;bottom:0;left:0;right:0;z-index:300;background:#1a1a2e;border-top:1px solid #30363d;display:flex;align-items:center;height:52px;padding:0 8px;gap:6px}
+.mn-hub{background:#1ba0d7;color:#fff;border:none;border-radius:8px;padding:6px 12px;font-size:.75em;font-weight:700;cursor:pointer;text-decoration:none;display:flex;align-items:center;gap:4px;white-space:nowrap;-webkit-tap-highlight-color:transparent;flex-shrink:0}
+.mn-hub:active{opacity:.8}
+.mn-divider{width:1px;height:28px;background:#30363d;flex-shrink:0}
+.mn-label{flex:1;text-align:center;font-size:.69em;color:#8b949e;font-weight:600;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding:0 4px}
+.mn-prev,.mn-next{background:#30363d;color:#c9d1d9;border:none;border-radius:8px;padding:6px 10px;font-size:.875em;font-weight:700;cursor:pointer;text-decoration:none;display:flex;align-items:center;-webkit-tap-highlight-color:transparent;flex-shrink:0}
+.mn-prev:active,.mn-next:active{background:var(--nt);color:#fff}
+
+/* v2.1 — In-section check button */
+.sh{position:relative}
+.sec-check{position:absolute;right:40px;top:50%;transform:translateY(-50%);background:rgba(255,255,255,.15);border:2px solid rgba(255,255,255,.4);border-radius:6px;padding:2px 10px;font-size:.72em;font-weight:800;color:#fff;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:all .2s;white-space:nowrap;z-index:10;line-height:1.5}
+.sec-check.checked{background:var(--ntd);border-color:var(--ntd);color:#052e1e}
+.sec-check:active{opacity:.75}
+</style>
+</head>
+<body>
+<nav class="bc">
+  <a href="../../index.html">🏠 Home</a><span class="sep">›</span>
+  <a href="index.html">CCNA 1 — ITN</a><span class="sep">›</span>
+  <span class="cur">M11: IPv4 Addressing</span>
+</nav>
+<div class="fs-bar">
+  <div class="sc-pills" id="sc-pills">
+  <button class="sc-pill" id="pill-s1" onclick="toggleSection('s1',this)"><span class="pill-check">○</span>11.1</button>
+  <button class="sc-pill" id="pill-s2" onclick="toggleSection('s2',this)"><span class="pill-check">○</span>11.2</button>
+  <button class="sc-pill" id="pill-s3" onclick="toggleSection('s3',this)"><span class="pill-check">○</span>11.3</button>
+  <button class="sc-pill" id="pill-s4" onclick="toggleSection('s4',this)"><span class="pill-check">○</span>11.4</button>
+  <button class="sc-pill" id="pill-s5" onclick="toggleSection('s5',this)"><span class="pill-check">○</span>11.5–11.6</button>
+  <button class="sc-pill" id="pill-s-pt-11-5" onclick="toggleSection('s-pt-11-5',this)"><span class="pill-check">○</span>PT 11.5</button>
+  <button class="sc-pill" id="pill-s-pt-11-7" onclick="toggleSection('s-pt-11-7',this)"><span class="pill-check">○</span>PT 11.7</button>
+  <button class="sc-pill" id="pill-s6" onclick="toggleSection('s6',this)"><span class="pill-check">○</span>11.7–11.8</button>
+  <button class="sc-pill" id="pill-s7" onclick="toggleSection('s7',this)"><span class="pill-check">○</span>11.9</button>
+  <button class="sc-pill" id="pill-s-pt-11-10" onclick="toggleSection('s-pt-11-10',this)"><span class="pill-check">○</span>PT 11.10</button>
+  <button class="sc-pill" id="pill-s8" onclick="toggleSection('s8',this)"><span class="pill-check">○</span>🎯</button>
+  </div>
+  <span class="fs-label" style="flex-shrink:0;margin-left:6px">Size</span>
+  <button class="fs-btn" onclick="setFs('14px',this)">S</button>
+  <button class="fs-btn" onclick="setFs('16px',this)">M</button>
+  <button class="fs-btn" onclick="setFs('18px',this)">L</button>
+  <button class="fs-btn active" onclick="setFs('20px',this)">XL</button>
+</div>
+<div class="hdr">
+  <div class="badge">CCNA 1 — ITN v7.02 · Module 11</div>
+  <h1>📊 IPv4 Addressing</h1>
+  <p>Introduction to Networks · NetAcad Study Guide</p>
+  <div class="obj">Module Objective: Calculate an IPv4 subnetting scheme to efficiently segment your network</div>
+</div>
+<div class="sp-wrap">
+  <div class="sp-hdr" id="sp-hdr" onclick="toggleStudyPanel()">
+    <span class="sp-title">📚 Sections</span>
+    <span class="sp-arr" id="sp-arr">▼</span>
+  </div>
+  <div class="sp-body" id="sp-body">
+    <div class="sp-row" id="row-s1"><span class="sr-status" id="st-s1">○</span><span class="sr-nb">11.1</span><span class="sr-ttl">IPv4 Address Structure</span></div>
+    <div class="sp-row" id="row-s2"><span class="sr-status" id="st-s2">○</span><span class="sr-nb">11.2</span><span class="sr-ttl">IPv4 Unicast, Broadcast, and Multicast</span></div>
+    <div class="sp-row" id="row-s3"><span class="sr-status" id="st-s3">○</span><span class="sr-nb">11.3</span><span class="sr-ttl">Types of IPv4 Addresses</span></div>
+    <div class="sp-row" id="row-s4"><span class="sr-status" id="st-s4">○</span><span class="sr-nb">11.4</span><span class="sr-ttl">Network Segmentation</span></div>
+    <div class="sp-row" id="row-s5"><span class="sr-status" id="st-s5">○</span><span class="sr-nb">11.5–11.6</span><span class="sr-ttl">Subnetting IPv4 Networks</span></div>
+    <div class="sp-row" id="row-s-pt-11-5"><span class="sr-status" id="st-s-pt-11-5">○</span><span class="sr-nb">PT 11.5</span><span class="sr-ttl">Packet Tracer — Subnet an IPv4 Network</span></div>
+    <div class="sp-row" id="row-s-pt-11-7"><span class="sr-status" id="st-s-pt-11-7">○</span><span class="sr-nb">PT 11.7</span><span class="sr-ttl">Packet Tracer — Subnetting Scenario</span></div>
+    <div class="sp-row" id="row-s6"><span class="sr-status" id="st-s6">○</span><span class="sr-nb">11.7–11.8</span><span class="sr-ttl">VLSM — Variable Length Subnet Masking</span></div>
+    <div class="sp-row" id="row-s7"><span class="sr-status" id="st-s7">○</span><span class="sr-nb">11.9</span><span class="sr-ttl">Structured Design</span></div>
+    <div class="sp-row" id="row-s-pt-11-10"><span class="sr-status" id="st-s-pt-11-10">○</span><span class="sr-nb">PT 11.10</span><span class="sr-ttl">Packet Tracer — VLSM Addressing Scheme</span></div>
+    <div class="sp-row" id="row-s8"><span class="sr-status" id="st-s8">○</span><span class="sr-nb">🎯</span><span class="sr-ttl">Common Exam Traps — Module 11</span></div>
+  </div>
+</div>
+
+<div class="toc">
+  <div class="toch open" onclick="this.classList.toggle('open');document.getElementById('tocb').classList.toggle('open')">
+    📋 Table of Contents — Tap to expand <span class="arr">▼</span>
+  </div>
+  <div class="tocb open" id="tocb">
+    <div class="tocg">11.1 — IPv4 Address Structure</div>
+    <a href="javascript:void(0)" onclick="goTo('s1')"><span class="n">11.1.1</span> Network and Host Portions</a>
+    <a href="javascript:void(0)" onclick="goTo('s1')"><span class="n">11.1.2</span> The Subnet Mask</a>
+    <a href="javascript:void(0)" onclick="goTo('s1')"><span class="n">11.1.3</span> Prefix Length — Slash Notation</a>
+    <a href="javascript:void(0)" onclick="goTo('s1')"><span class="n">11.1.4</span> Logical AND — Finding the Network Address</a>
+    <a href="javascript:void(0)" onclick="goTo('s1')"><span class="n">11.1.6</span> Network, Host, and Broadcast Addresses</a>
+    <div class="tocg">11.2 — Unicast, Broadcast, and Multicast</div>
+    <a href="javascript:void(0)" onclick="goTo('s2')"><span class="n">11.2</span> Three IPv4 Transmission Types</a>
+    <div class="tocg">11.3 — Types of IPv4 Addresses</div>
+    <a href="javascript:void(0)" onclick="goTo('s3')"><span class="n">11.3.1</span> Public vs Private — RFC 1918 Ranges</a>
+    <a href="javascript:void(0)" onclick="goTo('s3')"><span class="n">11.3.2</span> NAT and Routing to the Internet</a>
+    <a href="javascript:void(0)" onclick="goTo('s3')"><span class="n">11.3.4</span> Special Use Addresses — Loopback and APIPA</a>
+    <a href="javascript:void(0)" onclick="goTo('s3')"><span class="n">11.3.5</span> Legacy Classful Addressing (Historical)</a>
+    <a href="javascript:void(0)" onclick="goTo('s3')"><span class="n">11.3.6</span> IANA and RIRs</a>
+    <div class="tocg">11.4 — Network Segmentation</div>
+    <a href="javascript:void(0)" onclick="goTo('s4')"><span class="n">11.4</span> Broadcast Domains · Why Subnet</a>
+    <div class="tocg">11.5–11.6 — Subnetting</div>
+    <a href="javascript:void(0)" onclick="goTo('s5')"><span class="n">11.5.1</span> Subnetting Formulas — 2ˢ Subnets · 2ʰ−2 Hosts</a>
+    <a href="javascript:void(0)" onclick="goTo('s5')"><span class="n">11.5.2</span> Subnetting a /24 — Complete Table</a>
+    <a href="javascript:void(0)" onclick="goTo('s5')"><span class="n">11.6</span> Subnetting a /16 and /8 — Extended Tables</a>
+    <div class="tocg">11.7–11.8 — VLSM</div>
+    <a href="javascript:void(0)" onclick="goTo('s6')"><span class="n">11.7</span> VLSM — Why Fixed Subnetting Wastes Addresses</a>
+    <a href="javascript:void(0)" onclick="goTo('s6')"><span class="n">11.8</span> VLSM Worked Example — 192.168.20.0/24</a>
+    <div class="tocg">11.9 — Structured Design</div>
+    <a href="javascript:void(0)" onclick="goTo('s7')"><span class="n">11.9</span> Address Planning · Device Types</a>
+    <div class="tocg">Reference</div>
+    <a href="javascript:void(0)" onclick="goTo('s8')"><span class="n">🎯</span> Common Exam Traps</a>
+  </div>
+</div>
+
+<div class="wrap">
+
+<!-- 11.1 ADDRESS STRUCTURE -->
+<div class="sec" id="s1">
+<div class="sh open" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">11.1</span><span class="ttl">IPv4 Address Structure</span></span><button class="sec-check" id="sch-s1" onclick="event.stopPropagation();toggleSection('s1',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb open">
+
+  <div class="sub">
+  <h3><span class="sn">11.1.1</span> Network and Host Portions</h3>
+  <p>An IPv4 address is a <strong>32-bit hierarchical address</strong> made up of two parts:</p>
+  <ul>
+    <li><strong>Network portion</strong> — bits that identify the network; must be <em>identical</em> for all devices on the same network</li>
+    <li><strong>Host portion</strong> — bits that identify a specific host; must be <em>unique</em> within the network</li>
+  </ul>
+  <p>The <strong>subnet mask</strong> tells the device which bits are network bits and which are host bits.</p>
+  <div class="ca info"><span class="ic">💡</span><div>An IPv4 host requires: <strong>IP address</strong> (unique) + <strong>subnet mask</strong> (identifies network/host) + <strong>default gateway</strong> (to reach remote networks) + <strong>DNS server</strong> (to resolve domain names). Without a subnet mask, a device cannot determine which network it belongs to.</div></div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">11.1.2</span> The Subnet Mask</h3>
+  <p>The subnet mask is a 32-bit value with <strong>consecutive 1 bits</strong> (network portion) followed by <strong>consecutive 0 bits</strong> (host portion). The mask does NOT contain the actual address — it just marks which portion is which.</p>
+  <div class="cw"><div class="cl">Subnet mask 255.255.255.0 in binary</div>
+  <pre><code>Subnet mask: 255.255.255.0
+Binary:      11111111.11111111.11111111.00000000
+             |←── 24 network bits ──→||←8 host bits→|</code></pre></div>
+  <div class="ca warn"><span class="ic">⚠️</span><div>A subnet mask is always <strong>consecutive 1s followed by consecutive 0s</strong> — no gaps, no alternating bits. Valid octet values: <strong>0, 128, 192, 224, 240, 248, 252, 254, 255</strong>. Any other value (like 200, 100, 173) is an invalid subnet mask.</div></div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">11.1.3</span> Prefix Length — Slash Notation</h3>
+  <p>The <strong>prefix length</strong> = count of 1 bits in the subnet mask. Written as <code>/n</code> after the IP address.</p>
+  <div class="tw"><table>
+    <tr><th>Subnet Mask</th><th>Prefix</th><th>Binary (last octet)</th></tr>
+    <tr><td>255.0.0.0</td><td><strong>/8</strong></td><td>11111111.00000000.00000000.00000000</td></tr>
+    <tr><td>255.255.0.0</td><td><strong>/16</strong></td><td>11111111.11111111.00000000.00000000</td></tr>
+    <tr><td>255.255.255.0</td><td><strong>/24</strong></td><td>11111111.11111111.11111111.00000000</td></tr>
+    <tr><td>255.255.255.128</td><td><strong>/25</strong></td><td>…11111111.10000000</td></tr>
+    <tr><td>255.255.255.192</td><td><strong>/26</strong></td><td>…11111111.11000000</td></tr>
+    <tr><td>255.255.255.224</td><td><strong>/27</strong></td><td>…11111111.11100000</td></tr>
+    <tr><td>255.255.255.240</td><td><strong>/28</strong></td><td>…11111111.11110000</td></tr>
+    <tr><td>255.255.255.248</td><td><strong>/29</strong></td><td>…11111111.11111000</td></tr>
+    <tr><td>255.255.255.252</td><td><strong>/30</strong></td><td>…11111111.11111100</td></tr>
+  </table></div>
+  <p>Example notation: <code>192.168.10.10/24</code> means IP address 192.168.10.10 with subnet mask 255.255.255.0.</p>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">11.1.4</span> Logical AND — Finding the Network Address</h3>
+  <p>To determine which network a host belongs to, AND the IP address with the subnet mask bit by bit:</p>
+  <div class="and-rules">
+    <div class="and-rule one">1 AND 1 = <strong>1</strong></div>
+    <div class="and-rule zero">0 AND 1 = <strong>0</strong></div>
+    <div class="and-rule zero">1 AND 0 = <strong>0</strong></div>
+    <div class="and-rule zero">0 AND 0 = <strong>0</strong></div>
+  </div>
+  <p>Only <strong>1 AND 1 = 1</strong>. Any 0 in either value produces 0.</p>
+  <div class="and-box">
+    <div class="ab-title">AND Example — 192.168.10.10 with /24 mask</div>
+    <div class="and-row"><span class="ar-label">IP address:</span><span class="ar-bits">11000000.10101000.00001010.00001010 = 192.168.10.10</span></div>
+    <div class="and-row"><span class="ar-label">Subnet mask:</span><span class="ar-bits">11111111.11111111.11111111.00000000 = 255.255.255.0</span></div>
+    <hr class="and-divider">
+    <div class="and-row result"><span class="ar-label">AND result:</span><span class="ar-bits">11000000.10101000.00001010.00000000 = 192.168.10.0 ← Network address</span></div>
+  </div>
+  <p>Where the mask has a 1 bit → keep the IP bit. Where the mask has a 0 bit → result is always 0.</p>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">11.1.6</span> Network, Host, and Broadcast Addresses</h3>
+  <div class="addr-cards">
+    <div class="addr-card net"><span class="ac-icon">🔵</span><div class="ac-body"><strong>Network Address — all host bits = 0</strong>Identifies the entire network. Cannot be assigned to a device. Found by ANDing IP with mask. Example: 192.168.10.<strong>0</strong>/24</div></div>
+    <div class="addr-card host"><span class="ac-icon">🟢</span><div class="ac-body"><strong>Host Addresses — any mix of 0s and 1s (not all 0 or all 1)</strong>Assignable to end devices. All hosts on the same network share the same network address. Example: 192.168.10.<strong>1</strong> through 192.168.10.<strong>254</strong></div></div>
+    <div class="addr-card bcast"><span class="ac-icon">🔴</span><div class="ac-body"><strong>Broadcast Address — all host bits = 1</strong>Sends to all devices on the network. Cannot be assigned to a device. Example: 192.168.10.<strong>255</strong>/24</div></div>
+  </div>
+  <div class="et"><div class="lbl">🎯 KEY FORMULAS</div>
+  <strong>Usable host addresses = 2ʰ − 2</strong> (h = number of host bits)<br>
+  Subtract 2: one for network address (all 0s), one for broadcast address (all 1s)<br><br>
+  Example: /24 → 8 host bits → 2⁸ − 2 = <strong>254 usable hosts</strong><br>
+  Example: /27 → 5 host bits → 2⁵ − 2 = <strong>30 usable hosts</strong><br>
+  Example: /30 → 2 host bits → 2² − 2 = <strong>2 usable hosts</strong>
+  </div>
+  </div>
+
+</div></div>
+
+<!-- 11.2 UNICAST/BROADCAST/MULTICAST -->
+<div class="sec" id="s2">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">11.2</span><span class="ttl">IPv4 Unicast, Broadcast, and Multicast</span></span><button class="sec-check" id="sch-s2" onclick="event.stopPropagation();toggleSection('s2',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb">
+  <div class="sub">
+  <div class="tx-cards">
+    <div class="tx-card uni">
+      <div class="tc-icon">👤</div>
+      <div class="tc-name">Unicast</div>
+      <strong>One-to-One</strong><br>
+      Destination IP = single host<br>
+      Source IP = always unicast<br>
+      Range: 1.1.1.1 – 223.255.255.255
+    </div>
+    <div class="tx-card bro">
+      <div class="tc-icon">📢</div>
+      <div class="tc-name">Broadcast</div>
+      <strong>One-to-All</strong><br>
+      Host bits = all 1s<br>
+      Limited: 255.255.255.255<br>
+      Directed: e.g., 192.168.1.255<br>
+      Routers do <strong>NOT</strong> forward<br>
+      No broadcasts in IPv6
+    </div>
+    <div class="tx-card mul">
+      <div class="tc-icon">👥</div>
+      <div class="tc-name">Multicast</div>
+      <strong>One-to-Many (group)</strong><br>
+      Range: 224.0.0.0–239.255.255.255<br>
+      Devices must subscribe<br>
+      OSPF uses 224.0.0.5<br>
+      Source always unicast
+    </div>
+  </div>
+  <div class="ca info"><span class="ic">💡</span><div><strong>Directed broadcast</strong> = highest address in a subnet (e.g., 192.168.1.255 for /24). Reaches all hosts in that specific network. Disabled by default on Cisco routers since IOS 12.0 (<code>no ip directed-broadcasts</code>).<br><br><strong>Limited broadcast</strong> = 255.255.255.255. Reaches all hosts on the local network only. Never forwarded by routers.</div></div>
+  </div>
+</div></div>
+
+<!-- 11.3 TYPES -->
+<div class="sec" id="s3">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">11.3</span><span class="ttl">Types of IPv4 Addresses</span></span><button class="sec-check" id="sch-s3" onclick="event.stopPropagation();toggleSection('s3',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb">
+
+  <div class="sub">
+  <h3><span class="sn">11.3.1</span> Public vs Private — RFC 1918</h3>
+  <p><strong>Public:</strong> Globally routable on the internet. Must be globally unique. Managed by IANA/RIRs.</p>
+  <p><strong>Private (RFC 1918):</strong> Not routable on the internet. Any organization can reuse them internally. Must be translated via NAT to access the internet.</p>
+  <div class="priv-grid">
+    <div class="priv-row r8"><span class="pr-prefix">10.0.0.0/8</span><div>10.0.0.0 – 10.255.255.255 · Large organizations</div></div>
+    <div class="priv-row r12"><span class="pr-prefix">172.16.0.0/12</span><div>172.16.0.0 – 172.31.255.255 · Medium networks ⚠️ covers 172.16–172.31</div></div>
+    <div class="priv-row r16"><span class="pr-prefix">192.168.0.0/16</span><div>192.168.0.0 – 192.168.255.255 · Home and small office</div></div>
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">11.3.2</span> NAT and the Internet</h3>
+  <p>Private addresses cannot be forwarded on the internet. The edge router uses <strong>NAT (Network Address Translation)</strong> to translate private source IPs to a public IP before forwarding to the ISP.</p>
+  <p><strong>DMZ (Demilitarized Zone):</strong> Part of the network accessible from the internet (web servers, email servers). Uses public IPv4 addresses.</p>
+  <div class="ca info"><span class="ic">💡</span><div>NAT was designed as a temporary workaround for IPv4 address exhaustion. It creates complications for technologies requiring end-to-end connectivity (VoIP, P2P) and makes troubleshooting harder. IPv6 eliminates the need for NAT.</div></div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">11.3.4</span> Special Use Addresses</h3>
+  <div class="tw"><table>
+    <tr><th>Address Range</th><th>Name</th><th>Purpose</th></tr>
+    <tr><td><strong>127.0.0.0/8</strong><br>typically 127.0.0.1</td><td>Loopback</td><td>Host tests its own TCP/IP stack. Never sent onto the network. Any address in this range loops back to the local host.</td></tr>
+    <tr><td><strong>169.254.0.0/16</strong><br>169.254.0.1–169.254.255.254</td><td>Link-Local / APIPA</td><td>Automatic Private IP Addressing. Windows self-assigns when DHCP fails. Device can communicate with nearby hosts but cannot reach the internet.</td></tr>
+  </table></div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">11.3.5</span> Legacy Classful Addressing (Historical)</h3>
+  <p>Original IPv4 classes assigned in 1981 (RFC 790). Replaced by classless (CIDR) addressing in the mid-1990s. Know for historical reference only:</p>
+  <div class="class-grid">
+    <div class="class-row ca"><span class="cr-class">Class A</span><div>0.0.0.0–127.255.255.255 · /8 default · 128 networks · 16,777,214 hosts each · <strong>50% of IPv4 space</strong></div></div>
+    <div class="class-row cb"><span class="cr-class">Class B</span><div>128.0.0.0–191.255.255.255 · /16 default · 16,384 networks · 65,534 hosts each</div></div>
+    <div class="class-row cc"><span class="cr-class">Class C</span><div>192.0.0.0–223.255.255.255 · /24 default · 2,097,152 networks · 254 hosts each</div></div>
+    <div class="class-row cd"><span class="cr-class">Class D</span><div>224.0.0.0–239.255.255.255 · Multicast (no host assignment)</div></div>
+    <div class="class-row ce"><span class="cr-class">Class E</span><div>240.0.0.0–255.255.255.255 · Experimental (reserved)</div></div>
+  </div>
+  <div class="ca warn"><span class="ic">⚠️</span><div>Classful addressing caused massive waste — Class A networks each had 16 million hosts (most unused). Modern networking uses <strong>classless CIDR</strong> — any prefix length can be assigned based on actual need.</div></div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">11.3.6</span> IANA and the Five RIRs</h3>
+  <p><strong>IANA</strong> (Internet Assigned Numbers Authority) manages and allocates blocks of IP addresses to the five <strong>RIRs</strong> (Regional Internet Registries), who then allocate to ISPs:</p>
+  <div class="tw"><table>
+    <tr><th>RIR</th><th>Region</th></tr>
+    <tr><td><strong>AfriNIC</strong></td><td>Africa</td></tr>
+    <tr><td><strong>APNIC</strong></td><td>Asia/Pacific</td></tr>
+    <tr><td><strong>ARIN</strong></td><td>North America</td></tr>
+    <tr><td><strong>LACNIC</strong></td><td>Latin America and Caribbean</td></tr>
+    <tr><td><strong>RIPE NCC</strong></td><td>Europe, Middle East, Central Asia</td></tr>
+  </table></div>
+  </div>
+
+</div></div>
+
+<!-- 11.4 SEGMENTATION -->
+<div class="sec" id="s4">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">11.4</span><span class="ttl">Network Segmentation</span></span><button class="sec-check" id="sch-s4" onclick="event.stopPropagation();toggleSection('s4',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb">
+  <div class="sub">
+  <h3><span class="sn">11.4.1–11.4.3</span> Broadcast Domains and Why We Subnet</h3>
+  <p>A <strong>broadcast domain</strong> = all hosts that receive the same broadcast frame. Switches forward broadcasts out all ports. <strong>Routers stop broadcasts</strong> — each router interface = one broadcast domain.</p>
+  <p><strong>Problem with large broadcast domains:</strong></p>
+  <ul>
+    <li>Hosts generate excessive broadcasts (ARP, DHCP) → wasted bandwidth</li>
+    <li>Every host must process every broadcast → wasted CPU cycles</li>
+    <li>Single failure can affect all hosts in the domain</li>
+  </ul>
+  <p><strong>Solution: Subnetting</strong> — divide one large network into smaller subnets, each in its own broadcast domain.</p>
+  <div class="tw"><table>
+    <tr><th>Reason to Subnet</th><th>Benefit</th></tr>
+    <tr><td>Reduce broadcast traffic</td><td>Smaller domains = fewer broadcasts per network</td></tr>
+    <tr><td>Improve performance</td><td>Less wasted bandwidth and CPU on broadcasts</td></tr>
+    <tr><td>Security</td><td>Control which subnets can communicate with each other via ACLs</td></tr>
+    <tr><td>Limit fault scope</td><td>Broadcast storm or misconfiguration stays within one subnet</td></tr>
+    <tr><td>Organization</td><td>Group by location, function, or device type</td></tr>
+  </table></div>
+  </div>
+</div></div>
+
+<!-- 11.5/11.6 SUBNETTING -->
+<div class="sec" id="s5">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">11.5–11.6</span><span class="ttl">Subnetting IPv4 Networks</span></span><button class="sec-check" id="sch-s5" onclick="event.stopPropagation();toggleSection('s5',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb">
+
+  <div class="sub">
+  <h3><span class="sn">11.5.1</span> Subnetting Formulas</h3>
+  <p><strong>Subnetting = borrowing host bits to create additional network bits.</strong></p>
+  <div class="formula">Number of subnets = 2ˢ (s = bits borrowed)</div>
+  <div class="formula">Usable hosts per subnet = 2ʰ − 2 (h = remaining host bits)</div>
+  <div class="ca danger"><span class="ic">🚨</span><div><strong>Inverse relationship:</strong> More bits borrowed = more subnets AND fewer hosts per subnet. You cannot increase both simultaneously with fixed-length subnetting. Each bit borrowed doubles subnets and halves hosts.</div></div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">11.5.2</span> Subnetting a /24 Network — Complete Table</h3>
+  <p>For each bit borrowed from the last octet of a 192.168.x.0/24 network:</p>
+  <div class="tw"><table>
+    <tr><th>Prefix</th><th>Subnet Mask</th><th>Bits Borrowed</th><th>Subnets (2ˢ)</th><th>Hosts/Subnet (2ʰ−2)</th></tr>
+    <tr><td><strong>/25</strong></td><td>255.255.255.128</td><td>1</td><td>2</td><td>126</td></tr>
+    <tr><td><strong>/26</strong></td><td>255.255.255.192</td><td>2</td><td>4</td><td>62</td></tr>
+    <tr><td><strong>/27</strong></td><td>255.255.255.224</td><td>3</td><td>8</td><td>30</td></tr>
+    <tr><td><strong>/28</strong></td><td>255.255.255.240</td><td>4</td><td>16</td><td>14</td></tr>
+    <tr><td><strong>/29</strong></td><td>255.255.255.248</td><td>5</td><td>32</td><td>6</td></tr>
+    <tr><td><strong>/30</strong></td><td>255.255.255.252</td><td>6</td><td>64</td><td>2</td></tr>
+  </table></div>
+  <div class="ca tip"><span class="ic">✅</span><div><strong>/30 = 2 usable hosts — the standard for point-to-point WAN links between routers.</strong> One address for each router interface. /30 is the most efficient subnet for inter-router connections.</div></div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">11.6</span> Subnetting a /16 Network</h3>
+  <p>Start borrowing from the <strong>third octet</strong>, left to right. Example base network: 172.16.0.0/16.</p>
+  <div class="tw"><table>
+    <tr><th>Prefix</th><th>Subnet Mask</th><th>Subnets</th><th>Hosts/Subnet</th></tr>
+    <tr><td>/17</td><td>255.255.128.0</td><td>2</td><td>32,766</td></tr>
+    <tr><td>/18</td><td>255.255.192.0</td><td>4</td><td>16,382</td></tr>
+    <tr><td>/19</td><td>255.255.224.0</td><td>8</td><td>8,190</td></tr>
+    <tr><td>/20</td><td>255.255.240.0</td><td>16</td><td>4,094</td></tr>
+    <tr><td>/21</td><td>255.255.248.0</td><td>32</td><td>2,046</td></tr>
+    <tr><td>/22</td><td>255.255.252.0</td><td>64</td><td>1,022</td></tr>
+    <tr><td>/23</td><td>255.255.254.0</td><td>128</td><td>510</td></tr>
+    <tr><td><strong>/24</strong></td><td>255.255.255.0</td><td><strong>256</strong></td><td><strong>254</strong></td></tr>
+    <tr><td>/25</td><td>255.255.255.128</td><td>512</td><td>126</td></tr>
+    <tr><td>/26</td><td>255.255.255.192</td><td>1,024</td><td>62</td></tr>
+    <tr><td>/27</td><td>255.255.255.224</td><td>2,048</td><td>30</td></tr>
+    <tr><td>/28</td><td>255.255.255.240</td><td>4,096</td><td>14</td></tr>
+    <tr><td>/30</td><td>255.255.255.252</td><td>16,384</td><td>2</td></tr>
+  </table></div>
+
+  <h4>Example — Need 100 subnets from 172.16.0.0/16</h4>
+  <ol>
+    <li>Need 2ˢ ≥ 100 → borrow 7 bits (2⁷ = 128 subnets ✅)</li>
+    <li>New prefix = /16 + 7 = <strong>/23</strong> → subnet mask: <strong>255.255.254.0</strong></li>
+    <li>Remaining host bits = 16 – 7 = 9 → usable hosts: 2⁹ – 2 = <strong>510 hosts per subnet</strong></li>
+    <li>First subnet: 172.16.0.0/23 · Second: 172.16.2.0/23 · Third: 172.16.4.0/23 · … Last: 172.16.254.0/23</li>
+  </ol>
+
+  <h4>Example — Need 1000 subnets from 10.0.0.0/8</h4>
+  <ol>
+    <li>Need 2ˢ ≥ 1000 → borrow 10 bits (2¹⁰ = 1024 subnets ✅)</li>
+    <li>New prefix = /8 + 10 = <strong>/18</strong> → subnet mask: <strong>255.255.192.0</strong></li>
+    <li>Remaining host bits = 24 – 10 = 14 → usable hosts: 2¹⁴ – 2 = <strong>16,382 hosts per subnet</strong></li>
+    <li>Subnets: 10.0.0.0/18, 10.0.64.0/18, 10.0.128.0/18, 10.0.192.0/18, 10.1.0.0/18 …</li>
+  </ol>
+  </div>
+
+</div></div>
+
+<div class="sec" id="s-pt-11-5">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">11.5</span><span class="ttl">Packet Tracer — Subnet an IPv4 Network</span></span><button class="sec-check" id="sch-s-pt-11-5" onclick="event.stopPropagation();toggleSection('s-pt-11-5',this)">○ Mark done</button>
+</div>
+<div class="sb">
+  <div style="padding:14px 16px;background:#0d1117;border:1px solid #30363d;border-left:3px solid #1f6feb;border-radius:6px">
+    <div style="font-size:.72em;font-weight:800;text-transform:uppercase;letter-spacing:.8px;color:#1f6feb;margin-bottom:10px">&#x1F4E6; Packet Tracer Activities</div>
+    <div style="font-size:.82em;color:#6e7681;margin-bottom:10px">Open in Cisco Packet Tracer via your NetAcad course.</div>
+      <div style="display:flex;align-items:baseline;gap:10px;padding:6px 0;border-bottom:1px solid #21262d"><span style="font-family:monospace;font-size:.85em;color:#79c0ff;white-space:nowrap;flex-shrink:0;min-width:52px">11.5.5</span><span style="font-size:.88em;color:#c9d1d9">Subnet an IPv4 Network</span></div>
+    <div style="margin-top:12px;font-size:.78em;color:#6e7681">Full list: <a href="https://itexamanswers.net/ccna-1-v7-exam-answers-introduction-to-networks-v7-0-itn.html" target="_blank" rel="noopener" style="color:#58a6ff;word-break:break-all">itexamanswers.net/ccna-1-v7-exam-answers-introduction-to-networks-v7-0-itn.html</a></div>
+  </div>
+</div>
+</div>
+
+<div class="sec" id="s-pt-11-7">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">11.7</span><span class="ttl">Packet Tracer — Subnetting Scenario</span></span><button class="sec-check" id="sch-s-pt-11-7" onclick="event.stopPropagation();toggleSection('s-pt-11-7',this)">○ Mark done</button>
+</div>
+<div class="sb">
+  <div style="padding:14px 16px;background:#0d1117;border:1px solid #30363d;border-left:3px solid #1f6feb;border-radius:6px">
+    <div style="font-size:.72em;font-weight:800;text-transform:uppercase;letter-spacing:.8px;color:#1f6feb;margin-bottom:10px">&#x1F4E6; Packet Tracer Activities</div>
+    <div style="font-size:.82em;color:#6e7681;margin-bottom:10px">Open in Cisco Packet Tracer via your NetAcad course.</div>
+      <div style="display:flex;align-items:baseline;gap:10px;padding:6px 0;border-bottom:1px solid #21262d"><span style="font-family:monospace;font-size:.85em;color:#79c0ff;white-space:nowrap;flex-shrink:0;min-width:52px">11.7.5</span><span style="font-size:.88em;color:#c9d1d9">Subnetting Scenario</span></div>
+    <div style="margin-top:12px;font-size:.78em;color:#6e7681">Full list: <a href="https://itexamanswers.net/ccna-1-v7-exam-answers-introduction-to-networks-v7-0-itn.html" target="_blank" rel="noopener" style="color:#58a6ff;word-break:break-all">itexamanswers.net/ccna-1-v7-exam-answers-introduction-to-networks-v7-0-itn.html</a></div>
+  </div>
+</div>
+</div>
+
+
+<!-- 11.7/11.8 VLSM -->
+<div class="sec" id="s6">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">11.7–11.8</span><span class="ttl">VLSM — Variable Length Subnet Masking</span></span><button class="sec-check" id="sch-s6" onclick="event.stopPropagation();toggleSection('s6',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb">
+
+  <div class="sub">
+  <h3><span class="sn">11.7</span> The Problem with Fixed Subnetting</h3>
+  <p>Traditional subnetting applies the <strong>same subnet mask everywhere</strong>. This wastes addresses when subnets have very different size requirements.</p>
+  <p><strong>Problem example — 192.168.20.0/24 with 7 subnets needed (4 LANs + 3 WAN links):</strong></p>
+  <ul>
+    <li>Borrow 3 bits → /27 subnets (30 usable hosts each)</li>
+    <li>4 LAN subnets need ~28 hosts each ✅ (fits a /27)</li>
+    <li>3 WAN subnets need only <strong>2 hosts each</strong> but get 30 addresses → <strong>28 wasted per WAN link</strong></li>
+    <li>3 WAN links × 28 wasted = <strong>84 wasted addresses</strong></li>
+  </ul>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">11.8.4</span> VLSM — Subnetting a Subnet</h3>
+  <p><strong>VLSM = Variable Length Subnet Masking = subnetting a subnet.</strong> Different prefix lengths are applied to different subnets based on actual host requirements. This eliminates wasted addresses.</p>
+  <div class="et"><div class="lbl">🎯 VLSM RULE — ALWAYS START LARGEST FIRST</div>
+  1. Identify the subnet with the <strong>most hosts needed</strong><br>
+  2. Assign the smallest prefix that fits (smallest = fewest bits borrowed = most hosts)<br>
+  3. Continue to the next largest subnet requirement<br>
+  4. For the smallest subnets (WAN links): further subnet one of the remaining blocks<br>
+  5. Never overlap address spaces between subnets
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">11.8.5</span> VLSM Worked Example — 192.168.20.0/24</h3>
+  <p><strong>Requirements:</strong> 4 LANs (30 hosts each) + 3 WAN links (2 hosts each)</p>
+  <div class="vlsm-box">
+    <div class="vb-title">VLSM Step-by-Step — 192.168.20.0/24</div>
+    <div class="vlsm-step"><div class="vs-num">1</div><div class="vs-text">Largest requirement = <strong>30 hosts</strong>. Need /27 (30 usable hosts). Borrow 3 bits from /24. Assign first 4 subnets to the LANs:</div></div>
+    <div class="vlsm-subnet"><span class="vs-net">192.168.20.0/27</span><span class="vs-use">LAN A · hosts .1 – .30 · broadcast .31</span></div>
+    <div class="vlsm-subnet"><span class="vs-net">192.168.20.32/27</span><span class="vs-use">LAN B · hosts .33 – .62 · broadcast .63</span></div>
+    <div class="vlsm-subnet"><span class="vs-net">192.168.20.64/27</span><span class="vs-use">LAN C · hosts .65 – .94 · broadcast .95</span></div>
+    <div class="vlsm-subnet"><span class="vs-net">192.168.20.96/27</span><span class="vs-use">LAN D · hosts .97 – .126 · broadcast .127</span></div>
+    <div class="vlsm-step"><div class="vs-num">2</div><div class="vs-text">Smallest requirement = <strong>2 hosts</strong> (WAN links). Need /30. Take one unused /27 block (192.168.20.224/27) and subnet it further by borrowing 3 more bits → creates /30 subnets:</div></div>
+    <div class="vlsm-subnet"><span class="vs-net">192.168.20.224/30</span><span class="vs-use">WAN R1–R2 · hosts .225 – .226</span></div>
+    <div class="vlsm-subnet"><span class="vs-net">192.168.20.228/30</span><span class="vs-use">WAN R2–R3 · hosts .229 – .230</span></div>
+    <div class="vlsm-subnet"><span class="vs-net">192.168.20.232/30</span><span class="vs-use">WAN R3–R4 · hosts .233 – .234</span></div>
+    <div class="vlsm-step"><div class="vs-num">✅</div><div class="vs-text">Remaining unused /27 blocks (192.168.20.128, .160, .192) and remaining /30 blocks are <strong>available for future growth</strong></div></div>
+  </div>
+  <p><strong>VLSM result vs fixed subnetting:</strong> Fixed wasted 84 addresses on WAN links. VLSM wastes only 0 — each WAN gets exactly 2 usable addresses.</p>
+  </div>
+
+</div></div>
+
+<!-- 11.9 STRUCTURED DESIGN -->
+<div class="sec" id="s7">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">11.9</span><span class="ttl">Structured Design</span></span><button class="sec-check" id="sch-s7" onclick="event.stopPropagation();toggleSection('s7',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb">
+  <div class="sub">
+  <h3><span class="sn">11.9.1</span> IPv4 Address Planning</h3>
+  <p>Before subnetting, study the full network and answer:</p>
+  <ul>
+    <li>How many subnets are needed? (now and planned future growth)</li>
+    <li>How many hosts per subnet? (largest subnet determines the mask)</li>
+    <li>Which areas use private vs public IP space?</li>
+    <li>Where is address conservation critical? (public DMZ space → use VLSM)</li>
+    <li>Where is there flexibility? (private intranet → large ranges available)</li>
+  </ul>
+  </div>
+  <div class="sub">
+  <h3><span class="sn">11.9.2</span> Device Address Assignment</h3>
+  <div class="tw"><table>
+    <tr><th>Device Type</th><th>Method</th><th>Reason</th></tr>
+    <tr><td><strong>End user clients</strong></td><td>DHCP (dynamic)</td><td>Reduces admin burden; leases can be reused; supports mobile devices</td></tr>
+    <tr><td><strong>Servers and peripherals</strong></td><td>Static</td><td>Services require consistent, predictable addresses</td></tr>
+    <tr><td><strong>Internet-facing servers</strong></td><td>Public static</td><td>Must be directly reachable from internet; often with NAT</td></tr>
+    <tr><td><strong>Intermediary devices</strong> (routers, switches)</td><td>Static</td><td>Must be reachable for management, monitoring, and troubleshooting</td></tr>
+    <tr><td><strong>Router interfaces (gateways)</strong></td><td>Static</td><td>Hosts use as default gateway; typically first or last host address in subnet</td></tr>
+  </table></div>
+  </div>
+</div></div>
+
+<!-- EXAM TRAPS -->
+
+
+  <!-- PT MASTER LINK -->
+  <div style="margin:18px 0 6px;padding:12px 14px;background:#0d1117;border:1px solid #30363d;border-left:3px solid #1f6feb;border-radius:6px">
+    <div style="font-size:.7em;font-weight:800;text-transform:uppercase;letter-spacing:.8px;color:#1f6feb;margin-bottom:6px">&#x1F4E6; All Packet Tracer Activities — CCNA 1</div>
+    <div style="font-size:.84em;color:#c9d1d9;margin-bottom:4px">Complete list of all CCNA 1 Packet Tracer activities with instructions:</div>
+    <a href="https://itexamanswers.net/ccna-1-v7-exam-answers-introduction-to-networks-v7-0-itn.html" target="_blank" rel="noopener" style="font-size:.78em;color:#58a6ff;word-break:break-all">https://itexamanswers.net/ccna-1-v7-exam-answers-introduction-to-networks-v7-0-itn.html</a>
+  </div>
+
+
+<div class="sec" id="s-pt-11-10">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">11.10</span><span class="ttl">Packet Tracer — VLSM Addressing Scheme</span></span><button class="sec-check" id="sch-s-pt-11-10" onclick="event.stopPropagation();toggleSection('s-pt-11-10',this)">○ Mark done</button>
+</div>
+<div class="sb">
+  <div style="padding:14px 16px;background:#0d1117;border:1px solid #30363d;border-left:3px solid #1f6feb;border-radius:6px">
+    <div style="font-size:.72em;font-weight:800;text-transform:uppercase;letter-spacing:.8px;color:#1f6feb;margin-bottom:10px">&#x1F4E6; Packet Tracer Activities</div>
+    <div style="font-size:.82em;color:#6e7681;margin-bottom:10px">Open in Cisco Packet Tracer via your NetAcad course.</div>
+      <div style="display:flex;align-items:baseline;gap:10px;padding:6px 0;border-bottom:1px solid #21262d"><span style="font-family:monospace;font-size:.85em;color:#79c0ff;white-space:nowrap;flex-shrink:0;min-width:52px">11.10.1</span><span style="font-size:.88em;color:#c9d1d9">Design and Implement a VLSM Addressing Scheme</span></div>
+      <div style="display:flex;align-items:baseline;gap:10px;padding:6px 0;border-bottom:1px solid #21262d"><span style="font-family:monospace;font-size:.85em;color:#79c0ff;white-space:nowrap;flex-shrink:0;min-width:52px">11.10.2</span><span style="font-size:.88em;color:#c9d1d9">Design and Implement a VLSM Addressing Scheme (Physical Mode)</span></div>
+    <div style="margin-top:12px;font-size:.78em;color:#6e7681">Full list: <a href="https://itexamanswers.net/ccna-1-v7-exam-answers-introduction-to-networks-v7-0-itn.html" target="_blank" rel="noopener" style="color:#58a6ff;word-break:break-all">itexamanswers.net/ccna-1-v7-exam-answers-introduction-to-networks-v7-0-itn.html</a></div>
+  </div>
+</div>
+</div>
+<div class="sec" id="s8">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">🎯</span><span class="ttl">Common Exam Traps — Module 11</span></span><button class="sec-check" id="sch-s8" onclick="event.stopPropagation();toggleSection('s8',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb">
+
+  <div class="ca danger"><span class="ic">❌</span><div><strong>Trap 1: Usable hosts = 2ʰ − 2. NEVER use 2ʰ alone.</strong><br>Always subtract 2: network address (all 0s) and broadcast address (all 1s) are reserved and cannot be assigned to hosts. /24 = 8 host bits → 2⁸ = 256 total, but only 254 usable. /27 = 5 bits → 2⁵ = 32, but only 30 usable. /30 = 2 bits → 2² = 4, but only 2 usable.</div></div>
+
+  <div class="ca danger"><span class="ic">❌</span><div><strong>Trap 2: Network address = all host bits 0. Broadcast = all host bits 1. Neither assignable to a host.</strong><br>For any subnet, the first address is always the network address and the last is always the broadcast address. For 192.168.10.0/24: .0 = network, .255 = broadcast, .1 through .254 = usable hosts.</div></div>
+
+  <div class="ca danger"><span class="ic">❌</span><div><strong>Trap 3: AND rules — only 1 AND 1 = 1. Any 0 in either value = 0.</strong><br>The AND operation applied bit-by-bit between the IP address and subnet mask yields the network address. Where the subnet mask has a 0 bit, the result is always 0 regardless of the IP address bit. This is how hosts determine which network they belong to.</div></div>
+
+  <div class="ca danger"><span class="ic">❌</span><div><strong>Trap 4: Subnet mask must be consecutive 1s followed by consecutive 0s — no gaps.</strong><br>Valid octet values: 0, 128, 192, 224, 240, 248, 252, 254, 255 only. Values like 200, 173, 100 are invalid subnet masks. The bit pattern must never have a 0 bit between two 1 bits.</div></div>
+
+  <div class="ca danger"><span class="ic">❌</span><div><strong>Trap 5: Private RFC 1918 ranges: 10.0.0.0/8 · 172.16.0.0/12 · 192.168.0.0/16. The /12 covers 172.16–172.31.</strong><br>Students often think the 172.x range is only 172.16.x.x. The /12 mask covers 172.16.0.0 through 172.31.255.255 — 16 full /16 networks. Not routable on the public internet without NAT.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 6: Routers stop broadcasts. Switches forward broadcasts. Each router interface = one broadcast domain.</strong><br>This is why subnetting improves network performance — routers separate broadcast domains, limiting the scope of each broadcast. Large flat networks with only switches have one massive broadcast domain for all devices.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 7: More bits borrowed = more subnets AND fewer hosts. These are inversely related.</strong><br>Each bit borrowed for subnetting doubles the number of subnets but halves the hosts per subnet. You cannot increase both simultaneously with fixed-length subnetting. VLSM is the solution when different subnets have wildly different host count requirements.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 8: VLSM rule — always start with the LARGEST subnet (most hosts) and work down to smallest.</strong><br>Satisfy the biggest requirement first, then progressively subnet the remaining unused space for smaller requirements. Never start with a small subnet — you may find there isn't enough space left for the larger ones.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 9: /30 = 2 usable hosts = perfect for point-to-point router WAN links.</strong><br>2 host bits → 2² – 2 = 2 usable addresses. One for each router interface on the WAN link. Using a larger subnet for WAN links wastes addresses. /29 gives 6 hosts (too many), /30 gives exactly 2 (perfect).</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 10: Subnetting a /16 → borrow from 3rd octet. Subnetting a /8 → borrow from 2nd octet.</strong><br>Bits are always borrowed from left to right within the host portion. For 172.16.0.0/16, host bits start in the 3rd octet. For 10.0.0.0/8, host bits start in the 2nd octet. Borrowing 7 bits from /16 gives /23; borrowing 10 bits from /8 gives /18.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 11: Classful addressing is historical/legacy. Don't confuse with modern CIDR subnetting.</strong><br>Class A (/8), B (/16), C (/24) are historical defaults — not mandatory. Modern CIDR assigns any prefix length based on need. A network can have a Class B address (172.16.x.x) with a /24 or /27 mask — classful defaults no longer apply.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 12: IPv4 multicast range = 224.0.0.0–239.255.255.255. Source is always unicast.</strong><br>Multicast group addresses are used only as destinations. A device always identifies itself with its unicast IP as the source. OSPF routers use 224.0.0.5. IPv6 eliminates broadcast entirely — all broadcast functions are replaced by multicast.</div></div>
+
+  <div class="ca tip"><span class="ic">✅</span><div><strong>Module 11 quick-reference summary:</strong><br><br>
+  <strong>IPv4 address:</strong> 32 bits = network portion + host portion · Subnet mask defines the boundary<br>
+  <strong>Subnet mask:</strong> Consecutive 1s then consecutive 0s · Valid octets: 0,128,192,224,240,248,252,254,255<br>
+  <strong>Prefix length:</strong> Count of 1-bits in mask · Written as /n (e.g., /24)<br>
+  <strong>AND operation:</strong> 1∧1=1 · any 0=0 · IP AND mask = network address<br>
+  <strong>Three address types:</strong> Network (all host bits 0) · Host (any mix) · Broadcast (all host bits 1)<br>
+  <strong>Formulas:</strong> Subnets = 2ˢ · Usable hosts = 2ʰ − 2 (ALWAYS −2)<br>
+  <strong>Unicast:</strong> One-to-one · range 1.1.1.1–223.255.255.255<br>
+  <strong>Broadcast:</strong> One-to-all · host bits all 1 · not forwarded by routers · no broadcast in IPv6<br>
+  <strong>Multicast:</strong> One-to-group · 224.0.0.0–239.255.255.255 · source always unicast<br>
+  <strong>Private (RFC 1918):</strong> 10.0.0.0/8 · 172.16.0.0/12 (to 172.31.x.x) · 192.168.0.0/16<br>
+  <strong>Loopback:</strong> 127.0.0.0/8 (typically 127.0.0.1) · <strong>APIPA:</strong> 169.254.0.0/16<br>
+  <strong>Classful (historical):</strong> A=/8 · B=/16 · C=/24 · D=multicast · E=experimental<br>
+  <strong>IANA → 5 RIRs → ISPs → organizations</strong> (AfriNIC/APNIC/ARIN/LACNIC/RIPE NCC)<br>
+  <strong>Subnetting /24:</strong> /25=2sn,126h · /26=4sn,62h · /27=8sn,30h · /28=16sn,14h · /29=32sn,6h · /30=64sn,2h<br>
+  <strong>Subnetting /16:</strong> Borrow from 3rd octet · 7 bits→128 subnets→/23 · 8 bits→256 subnets→/24<br>
+  <strong>Subnetting /8:</strong> Borrow from 2nd octet · 10 bits→1024 subnets→/18<br>
+  <strong>/30:</strong> 2 usable hosts · standard for point-to-point WAN links<br>
+  <strong>VLSM:</strong> Subnetting a subnet · Different masks for different subnets · Start with largest first<br>
+  <strong>VLSM vs fixed:</strong> Fixed wastes addresses on small subnets (WAN) · VLSM allocates exactly what's needed<br>
+  <strong>Device addressing:</strong> DHCP for clients · Static for servers/intermediary/gateway devices</div></div>
+
+  <!-- PT INLINE -->
+  <div style="margin:20px 0 6px;padding:14px 16px;background:#0d1117;border:1px solid #30363d;border-left:3px solid #1f6feb;border-radius:6px">
+    <div style="font-size:.72em;font-weight:800;text-transform:uppercase;letter-spacing:.8px;color:#1f6feb;margin-bottom:10px">&#x1F4E6; Packet Tracer Activities</div>
+  <div style="display:flex;align-items:baseline;gap:10px;padding:6px 0;border-bottom:1px solid #21262d"><span style="font-family:monospace;font-size:.85em;color:#79c0ff;white-space:nowrap;flex-shrink:0;min-width:52px">11.9.3</span><span style="font-size:.88em;color:#c9d1d9">VLSM Design and Implementation Practice</span></div>
+    <div style="margin-top:10px;font-size:.78em;color:#6e7681">Full list: <a href="https://itexamanswers.net/ccna-1-v7-exam-answers-introduction-to-networks-v7-0-itn.html" target="_blank" rel="noopener" style="color:#58a6ff;word-break:break-all">itexamanswers.net/ccna-1-v7-exam-answers-introduction-to-networks-v7-0-itn.html</a></div>
+  </div>
+
+</div></div>
+
+
+</div>
+<div class="ft">CCNA 1 ITN v7.02 — Module 11: IPv4 Addressing v2.2<br>Based on Cisco NetAcad curriculum · Study guide for personal use</div>
+<button class="tb-btn" id="topb" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+<div class="mod-nav">
+  <a class="mn-hub" href="index.html">🏠 Hub</a>
+  <div class="mn-divider"></div>
+  <a class="mn-prev" href="ccna1_module10_basic_router_configuration_v2.2.html">‹</a>
+  <span class="mn-label">M11 of 17</span>
+  <a class="mn-next" href="ccna1_module12_ipv6_addressing_v2.2.html">›</a>
+</div>
+<script>
+var MOD_KEY="ccna1-module11-ipv4-addressing";
+var SECS=["s1","s2","s3","s4","s5","s-pt-11-5","s-pt-11-7","s6","s7","s-pt-11-10","s8"];
+var checked={};
+function loadState(){
+  try{var s=localStorage.getItem(MOD_KEY);if(s)checked=JSON.parse(s);}catch(e){}
+  SECS.forEach(function(id){
+    var pill=document.getElementById('pill-'+id);
+    var row=document.getElementById('row-'+id);
+    var st=document.getElementById('st-'+id);
+    var sch=document.getElementById('sch-'+id);
+    if(checked[id]){
+      if(pill){pill.classList.add('checked');pill.querySelector('.pill-check').textContent='✓';}
+      if(row)row.classList.add('done');
+      if(st)st.textContent='✓';
+      if(sch){sch.classList.add('checked');sch.textContent='✓ Done';}
+    } else {
+      if(pill){pill.classList.remove('checked');pill.querySelector('.pill-check').textContent='○';}
+      if(row)row.classList.remove('done');
+      if(st)st.textContent='○';
+      if(sch){sch.classList.remove('checked');sch.textContent='○ Mark done';}
+    }
+  });
+}
+function toggleSection(id,btn){checked[id]=!checked[id];try{localStorage.setItem(MOD_KEY,JSON.stringify(checked));}catch(e){}loadState();}
+function toggleStudyPanel(){
+  var hdr=document.getElementById('sp-hdr');
+  var body=document.getElementById('sp-body');
+  var arr=document.getElementById('sp-arr');
+  hdr.classList.toggle('open');body.classList.toggle('open');
+  if(arr)arr.textContent=body.classList.contains('open')?'▲':'▼';
+}
+function goTo(id){var el=document.getElementById(id);if(!el)return;var h=el.querySelector('.sh'),b=el.querySelector('.sb');if(h&&b&&!b.classList.contains('open')){h.classList.add('open');b.classList.add('open');}setTimeout(function(){window.scrollTo({top:el.getBoundingClientRect().top+window.pageYOffset-60,behavior:'smooth'});},50);}
+function setFs(size,btn){document.documentElement.style.setProperty('--base-fs',size);document.querySelectorAll('.fs-btn').forEach(function(b){b.classList.remove('active');});btn.classList.add('active');try{localStorage.setItem('ccna-fs',size);}catch(e){}}
+(function(){try{var s=localStorage.getItem('ccna-fs');if(s){document.documentElement.style.setProperty('--base-fs',s);document.querySelectorAll('.fs-btn').forEach(function(b){b.classList.remove('active');if((b.textContent==='S'&&s==='14px')||(b.textContent==='M'&&s==='16px')||(b.textContent==='L'&&s==='18px')||(b.textContent==='XL'&&s==='20px'))b.classList.add('active');});}}catch(e){}loadState();})();
+function copyCode(btn){var pre=btn.closest('.cw').querySelector('pre');navigator.clipboard.writeText(pre.innerText||pre.textContent).then(function(){btn.textContent='Copied!';setTimeout(function(){btn.textContent='Copy';},1500);});}
+</script>
+<script src="../../site-config.js"></script>
+</body>
+</html>

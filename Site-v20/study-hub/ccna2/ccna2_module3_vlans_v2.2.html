@@ -1,0 +1,862 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=2.0">
+<title>CCNA 2 Module 3: VLANs v2.2</title>
+<style>
+  :root {
+    --cisco-blue:#1ba0d7; --cisco-dark:#005073; --cisco-green:#6cc24a;
+    --cisco-light:#e8f4fb; --bg:#f4f6f8; --card:#ffffff; --text:#1a1a2e;
+    --muted:#5a6a7a; --code-bg:#0d1117; --code-text:#c9d1d9;
+    --radius:12px; --shadow:0 2px 12px rgba(0,0,0,0.08);
+    --base-fs:16px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text','Segoe UI',sans-serif; background:var(--bg); color:var(--text); font-size:var(--base-fs); line-height:1.7; }
+
+  /* ── Font size toggle bar ── */
+  .fs-bar{position:sticky;top:0;z-index:200;background:#1a1a2e;display:flex;align-items:center;justify-content:flex-end;padding:6px 14px;gap:6px;box-shadow:0 2px 8px rgba(0,0,0,.3)}
+  .fs-label{color:#8b949e;font-size:.72em;font-weight:700;letter-spacing:.5px;text-transform:uppercase;margin-right:4px}
+  .fs-btn{background:#30363d;color:#c9d1d9;border:2px solid transparent;border-radius:6px;padding:4px 12px;font-size:.75em;font-weight:700;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:all .2s;line-height:1.4}
+  .fs-btn:active,.fs-btn.active{background:var(--cisco-blue);color:#fff;border-color:var(--cisco-blue)}
+
+  /* ── Header ── */
+  .header { background:linear-gradient(135deg,var(--cisco-dark) 0%,var(--cisco-blue) 100%); color:white; padding:32px 20px 24px; text-align:center; }
+  .header .badge { display:inline-block; background:rgba(255,255,255,0.2); border:1px solid rgba(255,255,255,0.4); border-radius:20px; padding:4px 14px; font-size:.81em; letter-spacing:.5px; margin-bottom:12px; }
+  .header h1 { font-size:1.625em; font-weight:700; margin-bottom:6px; }
+  .header p  { font-size:.94em; opacity:.85; }
+
+  /* ── TOC ── */
+  .toc { background:var(--card); margin:16px; border-radius:var(--radius); box-shadow:var(--shadow); overflow:hidden; }
+  .toc-header { background:var(--cisco-dark); color:white; padding:14px 18px; font-weight:700; font-size:.94em; display:flex; justify-content:space-between; align-items:center; cursor:pointer; user-select:none; }
+  .toc-header .arrow { transition:transform .3s; }
+  .toc-header.open .arrow { transform:rotate(180deg); }
+  .toc-body { display:none; padding:10px 0; }
+  .toc-body.open { display:block; }
+  .toc-body a { display:block; padding:10px 20px; color:var(--cisco-dark); text-decoration:none; font-size:.875em; border-left:3px solid transparent; transition:all .2s; }
+  .toc-body a:hover,.toc-body a:active { background:var(--cisco-light); border-left-color:var(--cisco-blue); color:var(--cisco-dark); }
+  .toc-body a .num { display:inline-block; background:var(--cisco-blue); color:white; border-radius:5px; padding:1px 8px; font-size:.75em; font-weight:700; margin-right:8px; }
+
+  /* ── Main ── */
+  .container { padding:0 16px 100px; }
+  .section { background:var(--card); border-radius:var(--radius); box-shadow:var(--shadow); margin-bottom:16px; overflow:hidden; }
+  .section-header { background:linear-gradient(90deg,var(--cisco-dark),var(--cisco-blue)); color:white; padding:16px 18px; display:flex; align-items:center; justify-content:space-between; cursor:pointer; user-select:none; -webkit-tap-highlight-color:transparent; }
+  .section-header .title { font-weight:700; font-size:1em; }
+  .section-header .num-badge { background:rgba(255,255,255,0.25); border-radius:6px; padding:3px 10px; font-size:.81em; font-weight:700; margin-right:10px; white-space:nowrap; }
+  .section-header .chevron { font-size:1.125em; transition:transform .3s; }
+  .section-header.open .chevron { transform:rotate(180deg); }
+  .section-body { display:none; padding:18px; }
+  .section-body.open { display:block; }
+
+  /* ── Subsections ── */
+  .subsection { margin-bottom:22px; }
+  .subsection:last-child { margin-bottom:0; }
+  .subsection h3 { font-size:.94em; font-weight:700; color:var(--cisco-dark); margin-bottom:10px; padding-bottom:6px; border-bottom:2px solid var(--cisco-light); display:flex; align-items:center; gap:8px; }
+  .subsection h3 .sub-num { background:var(--cisco-blue); color:white; border-radius:5px; padding:2px 8px; font-size:.75em; }
+  .subsection p { margin-bottom:10px; color:var(--text); font-size:.94em; }
+
+  /* ── Code blocks ── */
+  .code-wrap { background:var(--code-bg); border-radius:10px; margin:12px 0; overflow:hidden; }
+  .code-label { background:#21262d; color:#b0bac6; font-size:.69em; font-weight:700; padding:6px 14px; letter-spacing:.5px; text-transform:uppercase; display:flex; justify-content:space-between; align-items:center; }
+  .copy-btn { background:#30363d; color:#c9d1d9; border:none; border-radius:5px; padding:3px 10px; font-size:.69em; cursor:pointer; -webkit-tap-highlight-color:transparent; }
+  .copy-btn:active { background:var(--cisco-blue); color:white; }
+  pre { margin:0; padding:14px; overflow-x:auto; -webkit-overflow-scrolling:touch; }
+  code { font-family:'Courier New','SF Mono',Menlo,monospace; font-size:.81em; color:var(--code-text); line-height:1.6; }
+  p code, li code, td code,.ca code,.callout code { background:#c2d9ea; color:#002233; border-radius:4px; padding:1px 5px; font-size:.81em; font-weight:600; }
+
+  /* ── Callout boxes ── */
+  .callout { border-radius:8px; padding:12px 14px; margin:12px 0; font-size:.875em; line-height:1.6; display:flex; gap:10px; align-items:flex-start; }
+  .callout .icon { font-size:1.125em; flex-shrink:0; margin-top:1px; }
+  .callout.warn   { background:#fff3cd; border-left:4px solid #b38600; color:#3d2c00; }
+  .callout.tip    { background:#d4edda; border-left:4px solid #28a745; color:#0d3318; }
+  .callout.danger { background:#f8d7da; border-left:4px solid #dc3545; color:#3d0010; }
+  .callout.info   { background:#d0e8f5; border-left:4px solid var(--cisco-blue); color:#002d44; }
+
+  /* ── Tables ── */
+  .table-wrap { overflow-x:auto; -webkit-overflow-scrolling:touch; margin:12px 0; border-radius:8px; }
+  table { width:100%; border-collapse:collapse; font-size:.875em; }
+  th { background:var(--cisco-dark); color:white; padding:10px 12px; text-align:left; font-weight:700; font-size:.81em; }
+  td { padding:9px 12px; border-bottom:1px solid #e8ecf0; color:#1a1a2e; vertical-align:top; }
+  tr:nth-child(even) td { background:#d0e8f5; color:#002d44; }
+  tr:last-child td { border-bottom:none; }
+  .cmd-table th:first-child { width:45%; }
+  td code.cmd { font-size:.75em; }
+
+  /* ── Progress bar ── */
+  .bar-track { background:#e0e7ef; border-radius:10px; height:8px; overflow:hidden; }
+  .bar-fill { background:linear-gradient(90deg,var(--cisco-blue),var(--cisco-green)); height:100%; border-radius:10px; width:0; transition:width 1s ease; }
+
+  /* ── Exam tip ── */
+  .exam-tip { background:linear-gradient(135deg,#1a1a2e,var(--cisco-dark)); color:white; border-radius:10px; padding:14px 16px; margin:14px 0; font-size:.875em; }
+  .exam-tip .label { font-size:.69em; font-weight:800; letter-spacing:1px; color:var(--cisco-green); margin-bottom:5px; }
+
+  /* ── Footer ── */
+  .footer { text-align:center; padding:24px 16px; color:var(--muted); font-size:.81em; }
+
+  
+/* ── Module navigation bar ── */
+.mod-nav{position:fixed;bottom:0;left:0;right:0;z-index:300;background:#1a1a2e;border-top:1px solid #30363d;display:flex;align-items:center;height:52px;padding:0 8px;gap:6px}
+.mn-hub{background:#1ba0d7;color:#fff;border:none;border-radius:8px;padding:6px 12px;font-size:.75em;font-weight:700;cursor:pointer;text-decoration:none;display:flex;align-items:center;gap:4px;white-space:nowrap;-webkit-tap-highlight-color:transparent;flex-shrink:0}
+.mn-hub:active{opacity:.8}
+.mn-divider{width:1px;height:28px;background:#30363d;flex-shrink:0}
+.mn-label{flex:1;text-align:center;font-size:.69em;color:#8b949e;font-weight:600;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding:0 4px}
+.mn-prev,.mn-next{background:#30363d;color:#c9d1d9;border:none;border-radius:8px;padding:6px 10px;font-size:.875em;font-weight:700;cursor:pointer;text-decoration:none;display:flex;align-items:center;-webkit-tap-highlight-color:transparent;flex-shrink:0}
+.mn-prev:active,.mn-next:active{background:#1ba0d7;color:#fff}
+.mn-prev.disabled,.mn-next.disabled{opacity:.3;pointer-events:none}
+
+/* ── Scroll to top ── */
+  .top-btn { position:fixed; bottom:80px; right:16px; background:var(--cisco-blue); color:white; border:none; border-radius:50%; width:44px; height:44px; font-size:1.25em; box-shadow:0 4px 14px rgba(0,0,0,0.2); cursor:pointer; display:none; align-items:center; justify-content:center; -webkit-tap-highlight-color:transparent; z-index:100; }
+  .top-btn.show { display:flex; }
+/* Study progress panel */
+.sp-wrap{background:var(--card);margin:16px 16px 0;border-radius:var(--r);box-shadow:var(--sh);overflow:hidden}
+.sp-hdr{background:var(--nt);color:#fff;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;user-select:none;-webkit-tap-highlight-color:transparent;gap:10px}
+.sp-hdr .sp-title{font-weight:700;font-size:.875em;flex-shrink:0}
+.sp-hdr .sp-arr{transition:transform .3s;flex-shrink:0}
+.sp-hdr.open .sp-arr{transform:rotate(180deg)}
+.sp-body{display:none;padding:12px 14px}
+.sp-body.open{display:block}
+.sp-row{display:flex;align-items:center;gap:10px;padding:6px 4px;border-bottom:1px solid #f0f4f8;font-size:.81em}
+.sp-row:last-child{border-bottom:none}
+.sp-row .sr-status{font-size:1em;flex-shrink:0;width:20px;text-align:center}
+.sp-row .sr-nb{font-weight:800;color:var(--nt);min-width:36px;flex-shrink:0;font-size:.875em}
+.sp-row .sr-ttl{color:var(--text);flex:1}
+.sp-row.done .sr-ttl{color:var(--muted);text-decoration:line-through}
+.sc-pills{display:flex;align-items:center;gap:4px;overflow-x:auto;-webkit-overflow-scrolling:touch;flex:1;padding:0 4px}
+.sc-pill{background:#30363d;color:#8b949e;border:2px solid transparent;border-radius:6px;padding:3px 8px;font-size:.72em;font-weight:700;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:all .15s;white-space:nowrap;flex-shrink:0;line-height:1.4;display:flex;align-items:center;gap:3px}
+.sc-pill.checked{background:var(--nt);color:#fff;border-color:var(--ntd)}
+.sc-pill .pill-check{font-size:.875em}
+
+/* v2.1 — In-section check button */
+.sh{position:relative}
+.sec-check{position:absolute;right:40px;top:50%;transform:translateY(-50%);background:rgba(255,255,255,.15);border:2px solid rgba(255,255,255,.4);border-radius:6px;padding:2px 10px;font-size:.72em;font-weight:800;color:#fff;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:all .2s;white-space:nowrap;z-index:10;line-height:1.5}
+.sec-check.checked{background:var(--ntd);border-color:var(--ntd);color:#052e1e}
+.sec-check:active{opacity:.75}
+/* Sections panel + tick colours (these pages never defined --nt/--ntd, so the panel header was invisible) */
+:root{--nt:var(--cisco-dark);--ntd:#4ade80}
+/* DTP matrix sits in a dark exam-tip box: keep the page's light zebra rows off it */
+table.dtp-matrix tr td,table.dtp-matrix tr:nth-child(even) td{background:transparent;color:#e6edf3}
+</style>
+<style>.bc{background:#0d1117;padding:8px 16px;display:flex;align-items:center;flex-wrap:wrap;gap:4px;font-size:.75em;overflow-x:auto;white-space:nowrap;-webkit-overflow-scrolling:touch;border-bottom:1px solid #21262d}.bc a{color:#8b949e;text-decoration:none;font-weight:600;flex-shrink:0}.bc a:active{color:#c9d1d9}.bc .sep{color:#6e7681;flex-shrink:0}.bc .cur{color:#1ba0d7;font-weight:700;flex-shrink:0}</style>
+</head>
+<body>
+<nav class="bc"><a href="../../index.html">🏠 Home</a><span class="sep">›</span><a href="index.html">CCNA 2 — SRWE</a><span class="sep">›</span><span class="cur">M3: VLANs</span></nav>
+
+<!-- FONT SIZE TOGGLE -->
+<div class="fs-bar">
+  <div class="sc-pills" id="sc-pills">
+  <button class="sc-pill" id="pill-s31" onclick="toggleSection('s31',this)"><span class="pill-check">○</span>3.1</button>
+  <button class="sc-pill" id="pill-s32" onclick="toggleSection('s32',this)"><span class="pill-check">○</span>3.2</button>
+  <button class="sc-pill" id="pill-s33" onclick="toggleSection('s33',this)"><span class="pill-check">○</span>3.3</button>
+  <button class="sc-pill" id="pill-s34" onclick="toggleSection('s34',this)"><span class="pill-check">○</span>3.4</button>
+  <button class="sc-pill" id="pill-s35" onclick="toggleSection('s35',this)"><span class="pill-check">○</span>3.5</button>
+  <button class="sc-pill" id="pill-s36" onclick="toggleSection('s36',this)"><span class="pill-check">○</span>3.6</button>
+  <button class="sc-pill" id="pill-s37" onclick="toggleSection('s37',this)"><span class="pill-check">○</span>🎯</button>
+  </div>
+  <span class="fs-label" style="flex-shrink:0;margin-left:6px">Size</span>
+  <button class="fs-btn" onclick="setFs('14px',this)">S</button>
+  <button class="fs-btn active" onclick="setFs('16px',this)">M</button>
+  <button class="fs-btn" onclick="setFs('18px',this)">L</button>
+  <button class="fs-btn" onclick="setFs('20px',this)">XL</button>
+</div>
+
+<!-- Header -->
+<div class="header">
+  <div class="badge">CCNA 2 – SRWE v7.02</div>
+  <h1>📡 Module 3: VLANs</h1>
+  <p>Switching, Routing &amp; Wireless Essentials · NetAcad Study Guide</p>
+</div>
+
+
+<!-- Table of Contents -->
+<div class="sp-wrap">
+  <div class="sp-hdr" id="sp-hdr" onclick="toggleStudyPanel()">
+    <span class="sp-title">📚 Sections</span>
+    <span class="sp-arr" id="sp-arr">▼</span>
+  </div>
+  <div class="sp-body" id="sp-body">
+    <div class="sp-row" id="row-s31"><span class="sr-status" id="st-s31">○</span><span class="sr-nb">3.1</span><span class="sr-ttl">Overview of VLANs</span></div>
+    <div class="sp-row" id="row-s32"><span class="sr-status" id="st-s32">○</span><span class="sr-nb">3.2</span><span class="sr-ttl">VLANs in a Multi-Switched Environment</span></div>
+    <div class="sp-row" id="row-s33"><span class="sr-status" id="st-s33">○</span><span class="sr-nb">3.3</span><span class="sr-ttl">VLAN Configuration</span></div>
+    <div class="sp-row" id="row-s34"><span class="sr-status" id="st-s34">○</span><span class="sr-nb">3.4</span><span class="sr-ttl">VLAN Trunks</span></div>
+    <div class="sp-row" id="row-s35"><span class="sr-status" id="st-s35">○</span><span class="sr-nb">3.5</span><span class="sr-ttl">Dynamic Trunking Protocol (DTP)</span></div>
+    <div class="sp-row" id="row-s36"><span class="sr-status" id="st-s36">○</span><span class="sr-nb">3.6</span><span class="sr-ttl">Quick Reference — All Module 3 Commands</span></div>
+    <div class="sp-row" id="row-s37"><span class="sr-status" id="st-s37">○</span><span class="sr-nb">🎯</span><span class="sr-ttl">Common Exam Traps — Module 3</span></div>
+  </div>
+</div>
+<div class="toc">
+  <div class="toc-header" onclick="toggleTOC(this)" id="tocHeader">
+    📋 Table of Contents — Tap to expand
+    <span class="arrow">▼</span>
+  </div>
+  <div class="toc-body" id="tocBody">
+    <a href="javascript:void(0)" onclick="goTo('s31')"><span class="num">3.1</span> Overview of VLANs</a>
+    <a href="javascript:void(0)" onclick="goTo('s32')"><span class="num">3.2</span> VLANs in a Multi-Switched Environment</a>
+    <a href="javascript:void(0)" onclick="goTo('s33')"><span class="num">3.3</span> VLAN Configuration</a>
+    <a href="javascript:void(0)" onclick="goTo('s34')"><span class="num">3.4</span> VLAN Trunks</a>
+    <a href="javascript:void(0)" onclick="goTo('s35')"><span class="num">3.5</span> Dynamic Trunking Protocol (DTP)</a>
+    <a href="javascript:void(0)" onclick="goTo('s36')"><span class="num">3.6</span> Quick Reference Command Table</a>
+    <a href="javascript:void(0)" onclick="goTo('s37')"><span class="num">🎯</span> Common Exam Traps</a>
+  </div>
+</div>
+
+<div class="container">
+
+<!-- ═══════════════════════════════════════════════ -->
+<!-- SECTION 3.1 -->
+<!-- ═══════════════════════════════════════════════ -->
+<div class="section" id="s31">
+  <div class="section-header" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+    <span><span class="num-badge">3.1</span><span class="title">Overview of VLANs</span></span>
+    <button class="sec-check" id="sch-s31" onclick="event.stopPropagation();toggleSection('s31',this)">○ Mark done</button>
+    <span class="chevron">▾</span>
+  </div>
+  <div class="section-body">
+
+    <div class="subsection">
+      <h3><span class="sub-num">3.1.1</span> VLAN Definitions</h3>
+      <p>A <strong>VLAN (Virtual Local Area Network)</strong> logically segments a physical switch into separate broadcast domains. Devices on different VLANs cannot communicate directly — they require a Layer 3 device (router or Layer 3 switch).</p>
+      <div class="callout info">
+        <span class="icon">💡</span>
+        <span>VLANs create logical broadcast domains that can span multiple switch segments. Ethernet frames sent by a device on a specific VLAN can only be seen by other devices in the same VLAN.</span>
+      </div>
+      <div class="exam-tip">
+        <div class="label">🎯 EXAM TIP</div>
+        VLANs operate at <strong>Layer 2</strong>. To route between VLANs you need a Layer 3 device. This is the #1 concept tested in Module 3 and Module 4.
+      </div>
+    </div>
+
+    <div class="subsection">
+      <h3><span class="sub-num">3.1.2</span> Benefits of VLANs</h3>
+      <p>VLANs provide several key advantages in network design:</p>
+      <div class="table-wrap">
+        <table>
+          <tr><th>Benefit</th><th>How It Helps</th></tr>
+          <tr><td><strong>Security</strong></td><td>Sensitive departments (HR, Finance) are isolated from general users</td></tr>
+          <tr><td><strong>Reduced Broadcasts</strong></td><td>Broadcast traffic is contained within each VLAN</td></tr>
+          <tr><td><strong>Cost Savings</strong></td><td>No need for separate physical switches per department</td></tr>
+          <tr><td><strong>Flexibility</strong></td><td>Users can be logically grouped regardless of physical location</td></tr>
+          <tr><td><strong>Performance</strong></td><td>Smaller broadcast domains = less unnecessary traffic</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <div class="subsection">
+      <h3><span class="sub-num">3.1.3</span> Types of VLANs</h3>
+      <p>You must know all five VLAN types for the exam:</p>
+      <div class="table-wrap">
+        <table>
+          <tr><th>VLAN Type</th><th>Purpose</th><th>Key Detail</th></tr>
+          <tr><td><strong>Default VLAN</strong></td><td>All ports start here</td><td>Always VLAN 1; cannot be deleted</td></tr>
+          <tr><td><strong>Data VLAN</strong></td><td>Carries user traffic</td><td>Also called "user VLAN"</td></tr>
+          <tr><td><strong>Native VLAN</strong></td><td>Untagged trunk traffic</td><td>Default is VLAN 1; change it for security</td></tr>
+          <tr><td><strong>Management VLAN</strong></td><td>SSH/Telnet access to switch</td><td>Assign IP to its SVI interface</td></tr>
+          <tr><td><strong>Voice VLAN</strong></td><td>VoIP phone traffic</td><td>Uses CoS QoS priority tagging</td></tr>
+        </table>
+      </div>
+      <div class="callout warn">
+        <span class="icon">⚠️</span>
+        <span>Voice and management traffic should <strong>never</strong> travel on the same VLAN as regular user data. This is a best practice and a common exam scenario.</span>
+      </div>
+    </div>
+
+  </div>
+
+
+  <!-- PT INLINE -->
+  <div style="margin:20px 0 6px;padding:14px 16px;background:#0d1117;border:1px solid #30363d;border-left:3px solid #1f6feb;border-radius:6px">
+    <div style="font-size:.72em;font-weight:800;text-transform:uppercase;letter-spacing:.8px;color:#1f6feb;margin-bottom:10px">&#x1F4E6; Packet Tracer Activities</div>
+  <div style="display:flex;align-items:baseline;gap:10px;padding:6px 0;border-bottom:1px solid #21262d"><span style="font-family:monospace;font-size:.85em;color:#79c0ff;white-space:nowrap;flex-shrink:0;min-width:52px">3.1.4</span><span style="font-size:.88em;color:#c9d1d9">Who Hears the Broadcast?</span></div>
+    <div style="margin-top:10px;font-size:.78em;color:#6e7681">Full list: <a href="https://itexamanswers.net/ccna-2-packet-tracer-labs-answers-srwe-v7-02.html" target="_blank" rel="noopener" style="color:#58a6ff;word-break:break-all">https://itexamanswers.net/ccna-2-packet-tracer-labs-answers-srwe-v7-02.html</a></div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════ -->
+<!-- SECTION 3.2 -->
+<!-- ═══════════════════════════════════════════════ -->
+<div class="section" id="s32">
+  <div class="section-header" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+    <span><span class="num-badge">3.2</span><span class="title">VLANs in a Multi-Switched Environment</span></span>
+    <button class="sec-check" id="sch-s32" onclick="event.stopPropagation();toggleSection('s32',this)">○ Mark done</button>
+    <span class="chevron">▾</span>
+  </div>
+  <div class="section-body">
+
+    <div class="subsection">
+      <h3><span class="sub-num">3.2.1</span> Defining VLAN Trunks</h3>
+      <p>A <strong>trunk link</strong> is a point-to-point connection between two switches (or switch to router) that carries traffic for <em>multiple VLANs simultaneously</em> using 802.1Q tagging.</p>
+      <div class="callout info">
+        <span class="icon">📡</span>
+        <span>Without trunk links, you would need a separate physical cable between every pair of switches for each VLAN — clearly impractical. Trunks solve this by tagging each frame with its VLAN ID.</span>
+      </div>
+    </div>
+
+    <div class="subsection">
+      <h3><span class="sub-num">3.2.3</span> 802.1Q VLAN Tagging</h3>
+      <p>The IEEE 802.1Q standard defines how VLAN tags are inserted into Ethernet frames. The tag is <strong>4 bytes</strong> added between the Source MAC address and the EtherType field.</p>
+      <div class="table-wrap">
+        <table>
+          <tr><th>Tag Field</th><th>Size</th><th>Description</th></tr>
+          <tr><td>TPID</td><td>16 bits</td><td>Tag Protocol ID — always <code>0x8100</code></td></tr>
+          <tr><td>PCP</td><td>3 bits</td><td>Priority Code Point (CoS for QoS)</td></tr>
+          <tr><td>DEI</td><td>1 bit</td><td>Drop Eligible Indicator</td></tr>
+          <tr><td>VID</td><td>12 bits</td><td>VLAN ID (0–4095; supports 4094 VLANs)</td></tr>
+        </table>
+      </div>
+      <div class="exam-tip">
+        <div class="label">🎯 EXAM TIP</div>
+        The <strong>native VLAN's frames are NOT tagged</strong> on a trunk. This is intentional — but both ends of the trunk must agree on the same native VLAN or you get a native VLAN mismatch error.
+      </div>
+    </div>
+
+    <div class="subsection">
+      <h3><span class="sub-num">3.2.4</span> Native VLANs and 802.1Q Trunking</h3>
+      <p>The native VLAN is the one VLAN whose frames traverse a trunk <em>without</em> a tag. Any untagged frame arriving on a trunk is assumed to belong to the native VLAN.</p>
+      <div class="callout danger">
+        <span class="icon">🚨</span>
+        <span><strong>Native VLAN Mismatch:</strong> If Switch A has native VLAN 1 and Switch B has native VLAN 99, CDP will generate a warning and traffic can be delivered to the wrong VLAN. Always match native VLANs on both ends of a trunk.</span>
+      </div>
+    </div>
+
+  </div>
+
+
+  <!-- PT INLINE -->
+  <div style="margin:20px 0 6px;padding:14px 16px;background:#0d1117;border:1px solid #30363d;border-left:3px solid #1f6feb;border-radius:6px">
+    <div style="font-size:.72em;font-weight:800;text-transform:uppercase;letter-spacing:.8px;color:#1f6feb;margin-bottom:10px">&#x1F4E6; Packet Tracer Activities</div>
+  <div style="display:flex;align-items:baseline;gap:10px;padding:6px 0;border-bottom:1px solid #21262d"><span style="font-family:monospace;font-size:.85em;color:#79c0ff;white-space:nowrap;flex-shrink:0;min-width:52px">3.2.8</span><span style="font-size:.88em;color:#c9d1d9">Investigate a VLAN Implementation</span></div>
+    <div style="margin-top:10px;font-size:.78em;color:#6e7681">Full list: <a href="https://itexamanswers.net/ccna-2-packet-tracer-labs-answers-srwe-v7-02.html" target="_blank" rel="noopener" style="color:#58a6ff;word-break:break-all">https://itexamanswers.net/ccna-2-packet-tracer-labs-answers-srwe-v7-02.html</a></div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════ -->
+<!-- SECTION 3.3 -->
+<!-- ═══════════════════════════════════════════════ -->
+<div class="section" id="s33">
+  <div class="section-header" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+    <span><span class="num-badge">3.3</span><span class="title">VLAN Configuration</span></span>
+    <button class="sec-check" id="sch-s33" onclick="event.stopPropagation();toggleSection('s33',this)">○ Mark done</button>
+    <span class="chevron">▾</span>
+  </div>
+  <div class="section-body">
+
+    <div class="subsection">
+      <h3><span class="sub-num">3.3.1</span> VLAN Ranges on Catalyst Switches</h3>
+      <div class="table-wrap">
+        <table>
+          <tr><th>Range</th><th>Type</th><th>Notes</th></tr>
+          <tr><td>1</td><td>Default VLAN</td><td>Cannot be deleted; all ports default here</td></tr>
+          <tr><td>2–1001</td><td>Normal Range</td><td>Used in most small/medium networks</td></tr>
+          <tr><td>1002–1005</td><td>Reserved (Legacy)</td><td>Token Ring &amp; FDDI — auto-created, cannot delete</td></tr>
+          <tr><td>1006–4094</td><td>Extended Range</td><td>Service providers; requires VTP transparent mode</td></tr>
+        </table>
+      </div>
+      <div class="callout info">
+        <span class="icon">💾</span>
+        <span>VLAN configurations are stored in <strong>flash:/vlan.dat</strong> — separate from the running-config. Deleting this file with <code>delete flash:vlan.dat</code> wipes all VLAN definitions.</span>
+      </div>
+    </div>
+
+    <div class="subsection">
+      <h3><span class="sub-num">3.3.2</span> VLAN Creation Commands</h3>
+      <div class="code-wrap">
+        <div class="code-label">IOS — Create and Name VLANs <button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+        <pre><code>Switch# configure terminal
+Switch(config)# vlan 10
+Switch(config-vlan)# name Sales
+Switch(config-vlan)# exit
+
+Switch(config)# vlan 20
+Switch(config-vlan)# name Engineering
+Switch(config-vlan)# exit
+
+Switch(config)# vlan 150
+Switch(config-vlan)# name Voice
+Switch(config-vlan)# end</code></pre>
+      </div>
+
+      <div class="code-wrap">
+        <div class="code-label">Verify — show vlan brief <button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+        <pre><code>Switch# show vlan brief
+
+VLAN Name                             Status    Ports
+---- -------------------------------- --------- ----------------------------
+1    default                          active    Fa0/3, Fa0/4, Gi0/1, Gi0/2
+10   Sales                            active    Fa0/1, Fa0/2
+20   Engineering                      active    Fa0/5, Fa0/6
+150  Voice                            active
+1002 fddi-default                     act/unsup
+1003 token-ring-default               act/unsup
+1004 fddinet-default                  act/unsup
+1005 trnet-default                    act/unsup</code></pre>
+      </div>
+      <div class="callout tip">
+        <span class="icon">✅</span>
+        <span>Notice that VLAN 150 (Voice) shows as active even with no ports assigned. VLANs remain active once created until deleted.</span>
+      </div>
+    </div>
+
+    <div class="subsection">
+      <h3><span class="sub-num">3.3.3</span> Assigning Ports to a VLAN (Access Mode)</h3>
+      <div class="code-wrap">
+        <div class="code-label">IOS — Assign Access Port to VLAN <button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+        <pre><code>Switch(config)# interface fa0/1
+Switch(config-if)# switchport mode access
+Switch(config-if)# switchport access vlan 10
+Switch(config-if)# end</code></pre>
+      </div>
+    </div>
+
+    <div class="subsection">
+      <h3><span class="sub-num">3.3.4</span> Data and Voice VLANs on Same Port</h3>
+      <p>Used when an IP phone is plugged into a switch port, and a PC is daisy-chained behind the phone. The port carries <em>both</em> a data VLAN and a voice VLAN simultaneously.</p>
+      <div class="code-wrap">
+        <div class="code-label">IOS — Configure Data + Voice VLAN on One Port <button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+        <pre><code>Switch(config)# interface fa0/4
+Switch(config-if)# switchport mode access
+Switch(config-if)# switchport access vlan 10
+Switch(config-if)# switchport voice vlan 150
+Switch(config-if)# mls qos trust cos
+Switch(config-if)# end</code></pre>
+      </div>
+      <div class="callout info">
+        <span class="icon">📞</span>
+        <span><code>mls qos trust cos</code> tells the switch to trust the QoS (Class of Service) priority value set by the IP phone. This ensures voice traffic gets priority over data traffic.</span>
+      </div>
+    </div>
+
+    <div class="subsection">
+      <h3><span class="sub-num">3.3.5</span> Verifying VLAN Information</h3>
+      <div class="code-wrap">
+        <div class="code-label">show vlan id [number] <button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+        <pre><code>Switch# show vlan id 10
+
+VLAN Name                             Status    Ports
+---- -------------------------------- --------- -------------------
+10   Sales                            active    Fa0/1, Fa0/2
+
+VLAN Type  SAID       MTU   Parent RingNo BridgeNo Stp  BrdgMode
+---- ----- ---------- ----- ------ ------ -------- ---- --------
+10   enet  100010     1500  -      -      -        -    -</code></pre>
+      </div>
+
+      <div class="code-wrap">
+        <div class="code-label">show interfaces [int] switchport <button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+        <pre><code>Switch# show interfaces fa0/1 switchport
+
+Name: Fa0/1
+Switchport: Enabled
+Administrative Mode: static access
+Operational Mode: static access
+Administrative Trunking Encapsulation: dot1q
+Negotiation of Trunking: Off
+Access Mode VLAN: 10 (Sales)
+Trunking Native Mode VLAN: 1 (default)
+Voice VLAN: none</code></pre>
+      </div>
+    </div>
+
+    <div class="subsection">
+      <h3><span class="sub-num">3.3.6</span> Changing or Removing VLAN Port Assignment</h3>
+      <div class="code-wrap">
+        <div class="code-label">IOS — Remove port from VLAN / Return to VLAN 1 <button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+        <pre><code>! Return port to VLAN 1 (remove VLAN assignment):
+Switch(config)# interface fa0/18
+Switch(config-if)# no switchport access vlan
+Switch(config-if)# end
+
+! Move port to a different VLAN:
+Switch(config)# interface fa0/1
+Switch(config-if)# switchport access vlan 20
+Switch(config-if)# end</code></pre>
+      </div>
+    </div>
+
+    <div class="subsection">
+      <h3><span class="sub-num">3.3.7</span> Deleting VLANs</h3>
+      <div class="code-wrap">
+        <div class="code-label">IOS — Delete a Single VLAN <button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+        <pre><code>! Delete one VLAN:
+Switch(config)# no vlan 20
+
+! Wipe the entire VLAN database (privileged exec):
+Switch# delete flash:vlan.dat</code></pre>
+      </div>
+      <div class="callout danger">
+        <span class="icon">🚨</span>
+        <span><strong>Critical Trap:</strong> When you delete a VLAN, any ports still assigned to it become <strong>inactive</strong>. They do NOT automatically move back to VLAN 1. You must manually reassign them or they will be unable to pass traffic.</span>
+      </div>
+    </div>
+
+  </div>
+
+
+  <!-- PT INLINE -->
+  <div style="margin:20px 0 6px;padding:14px 16px;background:#0d1117;border:1px solid #30363d;border-left:3px solid #1f6feb;border-radius:6px">
+    <div style="font-size:.72em;font-weight:800;text-transform:uppercase;letter-spacing:.8px;color:#1f6feb;margin-bottom:10px">&#x1F4E6; Packet Tracer Activities</div>
+  <div style="display:flex;align-items:baseline;gap:10px;padding:6px 0;border-bottom:1px solid #21262d"><span style="font-family:monospace;font-size:.85em;color:#79c0ff;white-space:nowrap;flex-shrink:0;min-width:52px">3.3.12</span><span style="font-size:.88em;color:#c9d1d9">VLAN Configuration</span></div>
+    <div style="margin-top:10px;font-size:.78em;color:#6e7681">Full list: <a href="https://itexamanswers.net/ccna-2-packet-tracer-labs-answers-srwe-v7-02.html" target="_blank" rel="noopener" style="color:#58a6ff;word-break:break-all">https://itexamanswers.net/ccna-2-packet-tracer-labs-answers-srwe-v7-02.html</a></div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════ -->
+<!-- SECTION 3.4 -->
+<!-- ═══════════════════════════════════════════════ -->
+<div class="section" id="s34">
+  <div class="section-header" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+    <span><span class="num-badge">3.4</span><span class="title">VLAN Trunks</span></span>
+    <button class="sec-check" id="sch-s34" onclick="event.stopPropagation();toggleSection('s34',this)">○ Mark done</button>
+    <span class="chevron">▾</span>
+  </div>
+  <div class="section-body">
+
+    <div class="subsection">
+      <h3><span class="sub-num">3.4.1</span> Trunk Configuration Commands</h3>
+      <p>Trunk ports carry all (or specified) VLANs between switches using 802.1Q tagging.</p>
+      <div class="code-wrap">
+        <div class="code-label">IOS — Configure a Trunk Port <button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+        <pre><code>Switch(config)# interface gi0/1
+Switch(config-if)# switchport mode trunk
+Switch(config-if)# switchport trunk native vlan 99
+Switch(config-if)# switchport trunk allowed vlan 10,20,150
+Switch(config-if)# end</code></pre>
+      </div>
+      <div class="callout tip">
+        <span class="icon">🔒</span>
+        <span>Best practice: Change the native VLAN from the default (VLAN 1) to an unused VLAN (like 99) and restrict the allowed VLANs list to only what's needed. This reduces attack surface.</span>
+      </div>
+    </div>
+
+    <div class="subsection">
+      <h3><span class="sub-num">3.4.2</span> Resetting Trunk to Default</h3>
+      <div class="code-wrap">
+        <div class="code-label">IOS — Reset Trunk Allowed VLANs and Native VLAN <button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+        <pre><code>Switch(config)# interface gi0/1
+Switch(config-if)# no switchport trunk allowed vlan
+Switch(config-if)# no switchport trunk native vlan
+Switch(config-if)# end</code></pre>
+      </div>
+    </div>
+
+    <div class="subsection">
+      <h3><span class="sub-num">3.4.3</span> Verifying Trunk Configuration</h3>
+      <div class="code-wrap">
+        <div class="code-label">show interfaces [int] trunk <button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+        <pre><code>Switch# show interfaces gi0/1 trunk
+
+Port        Mode         Encapsulation  Status        Native vlan
+Gi0/1       on           802.1q         trunking      99
+
+Port        Vlans allowed on trunk
+Gi0/1       10,20,150
+
+Port        Vlans allowed and active in management domain
+Gi0/1       10,20,150
+
+Port        Vlans in spanning tree forwarding state and not pruned
+Gi0/1       10,20,150</code></pre>
+      </div>
+      <div class="callout info">
+        <span class="icon">📋</span>
+        <span>Read this output carefully on the exam. "Vlans allowed on trunk" = what you configured. "Vlans allowed and active" = what actually exists on the switch. If a VLAN is allowed but not active, it means it hasn't been created yet.</span>
+      </div>
+    </div>
+
+
+  <!-- SYNTAX CHECKER: 3.2.8 -->
+  <div style="margin:20px 0 6px;padding:16px;background:#0d1117;border:1px solid #30363d;border-left:3px solid #bc8cff;border-radius:8px">
+    <div style="font-size:.7em;font-weight:800;text-transform:uppercase;letter-spacing:.8px;color:#bc8cff;margin-bottom:6px">&#x1F5A5; Syntax Checker &mdash; 3.2.8</div>
+    <div style="font-size:.92em;font-weight:600;color:#e6edf3;margin-bottom:12px">Configure VLANs on a Switch</div>
+    <div style="font-size:.82em;color:#8b949e;margin-bottom:14px">Type each command exactly as shown. Press Enter to submit. The checker validates your syntax step by step.</div>
+    <div class="tool-links" style="display:flex;flex-wrap:wrap;gap:14px">
+      <div style="flex:1 1 220px;min-width:0">
+        <a href="../../syntax-checker-simple/ccna2_syntax_checker.html?lab=3.2.8" target="_blank" rel="noopener" title="Quick, guided drill: type the exact commands for this NetAcad lab, step by step. Opens straight to lab 3.2.8." style="display:inline-flex;align-items:center;gap:8px;color:#fff;text-decoration:none;padding:8px 18px;border-radius:6px;font-size:.85em;font-weight:700;background:#238636;border:1px solid #2ea043">&#x25B6; Open Syntax Checker</a>
+        <div style="font-size:.75em;color:#8b949e;margin-top:6px">Quick, guided drill: type the exact commands for this NetAcad lab, step by step. Opens straight to lab 3.2.8.</div>
+      </div>
+      <div style="flex:1 1 220px;min-width:0">
+        <a class="cli-engine-link" href="../../cli-engine/ccna-cli-engine.html" target="_blank" rel="noopener" title="Full simulated Cisco IOS terminal: Tab completion, device state, Free Practice, Home Labs and Subnetting. In its exercise menu, pick “Course 2 · 3.2 — Configure VLANs on a Switch”." style="display:inline-flex;align-items:center;gap:8px;color:#fff;text-decoration:none;padding:8px 18px;border-radius:6px;font-size:.85em;font-weight:700;background:#1f6feb;border:1px solid #388bfd">&#x1F4BB; Open CLI Engine</a>
+        <div style="font-size:.75em;color:#8b949e;margin-top:6px">Full simulated Cisco IOS terminal: Tab completion, device state, Free Practice, Home Labs and Subnetting. In its exercise menu, pick “Course 2 · 3.2 — Configure VLANs on a Switch”.</div>
+      </div>
+    </div>
+    <div style="margin-top:12px;font-size:.75em"><a href="../../index.html" style="color:#58a6ff;text-decoration:none">&#x1F3E0; All study tools (home)</a></div>
+  </div>
+  </div>
+
+
+  <!-- PT INLINE -->
+  <div style="margin:20px 0 6px;padding:14px 16px;background:#0d1117;border:1px solid #30363d;border-left:3px solid #1f6feb;border-radius:6px">
+    <div style="font-size:.72em;font-weight:800;text-transform:uppercase;letter-spacing:.8px;color:#1f6feb;margin-bottom:10px">&#x1F4E6; Packet Tracer Activities</div>
+  <div style="display:flex;align-items:baseline;gap:10px;padding:6px 0;border-bottom:1px solid #21262d"><span style="font-family:monospace;font-size:.85em;color:#79c0ff;white-space:nowrap;flex-shrink:0;min-width:52px">3.4.5</span><span style="font-size:.88em;color:#c9d1d9">Configure Trunks</span></div>
+  <div style="display:flex;align-items:baseline;gap:10px;padding:6px 0;border-bottom:1px solid #21262d"><span style="font-family:monospace;font-size:.85em;color:#79c0ff;white-space:nowrap;flex-shrink:0;min-width:52px">3.4.6</span><span style="font-size:.88em;color:#c9d1d9">Configure VLANs and Trunking (Physical Mode)</span></div>
+    <div style="margin-top:10px;font-size:.78em;color:#6e7681">Full list: <a href="https://itexamanswers.net/ccna-2-packet-tracer-labs-answers-srwe-v7-02.html" target="_blank" rel="noopener" style="color:#58a6ff;word-break:break-all">https://itexamanswers.net/ccna-2-packet-tracer-labs-answers-srwe-v7-02.html</a></div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════ -->
+<!-- SECTION 3.5 -->
+<!-- ═══════════════════════════════════════════════ -->
+<div class="section" id="s35">
+  <div class="section-header" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+    <span><span class="num-badge">3.5</span><span class="title">Dynamic Trunking Protocol (DTP)</span></span>
+    <button class="sec-check" id="sch-s35" onclick="event.stopPropagation();toggleSection('s35',this)">○ Mark done</button>
+    <span class="chevron">▾</span>
+  </div>
+  <div class="section-body">
+
+    <div class="subsection">
+      <h3><span class="sub-num">3.5.1</span> Introduction to DTP</h3>
+      <p>DTP is a <strong>Cisco proprietary</strong> protocol that allows switches to automatically negotiate whether a link becomes a trunk. It is enabled by default on all Cisco switch ports.</p>
+      <div class="callout danger">
+        <span class="icon">🚨</span>
+        <span><strong>Security Risk:</strong> DTP should be disabled on all ports connecting to end devices (PCs, printers) and to non-Cisco switches. An attacker could send DTP frames to make a port trunk, gaining access to all VLANs.</span>
+      </div>
+    </div>
+
+    <div class="subsection">
+      <h3><span class="sub-num">3.5.2</span> DTP Negotiated Interface Modes</h3>
+      <div class="table-wrap">
+        <table>
+          <tr><th>Command</th><th>Mode Name</th><th>Behavior</th></tr>
+          <tr><td><code>switchport mode dynamic auto</code></td><td>Dynamic Auto</td><td>Passive — trunks only if the other side initiates (trunk or desirable)</td></tr>
+          <tr><td><code>switchport mode dynamic desirable</code></td><td>Dynamic Desirable</td><td>Active — aggressively tries to form a trunk</td></tr>
+          <tr><td><code>switchport mode trunk</code></td><td>Trunk</td><td>Always trunks; sends DTP frames</td></tr>
+          <tr><td><code>switchport mode access</code></td><td>Access</td><td>Never trunks; DTP inactive</td></tr>
+          <tr><td><code>switchport nonegotiate</code></td><td>Nonegotiate</td><td>Disables DTP entirely; no frames sent</td></tr>
+        </table>
+      </div>
+
+      <div class="exam-tip">
+        <div class="label">🎯 EXAM TIP — DTP Negotiation Matrix</div>
+        <div style="overflow-x:auto; margin-top: 8px;">
+          <table class="dtp-matrix" style="background: rgba(255,255,255,0.1); color: white; width: 100%; font-size: 13px; border-collapse: collapse;">
+            <tr>
+              <th style="border: 1px solid rgba(255,255,255,0.3); padding: 7px;">SW1 \ SW2</th>
+              <th style="border: 1px solid rgba(255,255,255,0.3); padding: 7px;">Access</th>
+              <th style="border: 1px solid rgba(255,255,255,0.3); padding: 7px;">Auto</th>
+              <th style="border: 1px solid rgba(255,255,255,0.3); padding: 7px;">Desirable</th>
+              <th style="border: 1px solid rgba(255,255,255,0.3); padding: 7px;">Trunk</th>
+            </tr>
+            <tr>
+              <td style="border: 1px solid rgba(255,255,255,0.3); padding: 7px; font-weight:700;">Access</td>
+              <td style="border: 1px solid rgba(255,255,255,0.3); padding: 7px;">Access</td>
+              <td style="border: 1px solid rgba(255,255,255,0.3); padding: 7px;">Access</td>
+              <td style="border: 1px solid rgba(255,255,255,0.3); padding: 7px;">Access</td>
+              <td style="border: 1px solid rgba(255,255,255,0.3); padding: 7px;">Limited</td>
+            </tr>
+            <tr>
+              <td style="border: 1px solid rgba(255,255,255,0.3); padding: 7px; font-weight:700;">Auto</td>
+              <td style="border: 1px solid rgba(255,255,255,0.3); padding: 7px;">Access</td>
+              <td style="border: 1px solid rgba(255,255,255,0.3); padding: 7px;">Access</td>
+              <td style="border: 1px solid rgba(255,255,255,0.3); padding: 7px; color: #6cc24a; font-weight:700;">Trunk ✓</td>
+              <td style="border: 1px solid rgba(255,255,255,0.3); padding: 7px; color: #6cc24a; font-weight:700;">Trunk ✓</td>
+            </tr>
+            <tr>
+              <td style="border: 1px solid rgba(255,255,255,0.3); padding: 7px; font-weight:700;">Desirable</td>
+              <td style="border: 1px solid rgba(255,255,255,0.3); padding: 7px;">Access</td>
+              <td style="border: 1px solid rgba(255,255,255,0.3); padding: 7px; color: #6cc24a; font-weight:700;">Trunk ✓</td>
+              <td style="border: 1px solid rgba(255,255,255,0.3); padding: 7px; color: #6cc24a; font-weight:700;">Trunk ✓</td>
+              <td style="border: 1px solid rgba(255,255,255,0.3); padding: 7px; color: #6cc24a; font-weight:700;">Trunk ✓</td>
+            </tr>
+            <tr>
+              <td style="border: 1px solid rgba(255,255,255,0.3); padding: 7px; font-weight:700;">Trunk</td>
+              <td style="border: 1px solid rgba(255,255,255,0.3); padding: 7px;">Limited</td>
+              <td style="border: 1px solid rgba(255,255,255,0.3); padding: 7px; color: #6cc24a; font-weight:700;">Trunk ✓</td>
+              <td style="border: 1px solid rgba(255,255,255,0.3); padding: 7px; color: #6cc24a; font-weight:700;">Trunk ✓</td>
+              <td style="border: 1px solid rgba(255,255,255,0.3); padding: 7px; color: #6cc24a; font-weight:700;">Trunk ✓</td>
+            </tr>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="subsection">
+      <h3><span class="sub-num">3.5.3</span> Disabling DTP — Best Practice</h3>
+      <div class="code-wrap">
+        <div class="code-label">IOS — Disable DTP on a Trunk Port <button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+        <pre><code>! On uplink/trunk ports — disable DTP negotiation:
+Switch(config)# interface gi0/1
+Switch(config-if)# switchport mode trunk
+Switch(config-if)# switchport nonegotiate
+Switch(config-if)# end</code></pre>
+      </div>
+      <div class="code-wrap">
+        <div class="code-label">IOS — Disable DTP on an Access Port <button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+        <pre><code>! On ports connected to PCs/printers — set to static access:
+Switch(config)# interface fa0/3
+Switch(config-if)# switchport mode access
+Switch(config-if)# end
+! Setting mode to 'access' stops all DTP negotiation</code></pre>
+      </div>
+    </div>
+
+
+  <!-- SYNTAX CHECKER: 3.3.12 -->
+  <div style="margin:20px 0 6px;padding:16px;background:#0d1117;border:1px solid #30363d;border-left:3px solid #bc8cff;border-radius:8px">
+    <div style="font-size:.7em;font-weight:800;text-transform:uppercase;letter-spacing:.8px;color:#bc8cff;margin-bottom:6px">&#x1F5A5; Syntax Checker &mdash; 3.3.12</div>
+    <div style="font-size:.92em;font-weight:600;color:#e6edf3;margin-bottom:12px">Configure 802.1Q Trunk Links</div>
+    <div style="font-size:.82em;color:#8b949e;margin-bottom:14px">Type each command exactly as shown. Press Enter to submit. The checker validates your syntax step by step.</div>
+    <div class="tool-links" style="display:flex;flex-wrap:wrap;gap:14px">
+      <div style="flex:1 1 220px;min-width:0">
+        <a href="../../syntax-checker-simple/ccna2_syntax_checker.html?lab=3.3.12" target="_blank" rel="noopener" title="Quick, guided drill: type the exact commands for this NetAcad lab, step by step. Opens straight to lab 3.3.12." style="display:inline-flex;align-items:center;gap:8px;color:#fff;text-decoration:none;padding:8px 18px;border-radius:6px;font-size:.85em;font-weight:700;background:#238636;border:1px solid #2ea043">&#x25B6; Open Syntax Checker</a>
+        <div style="font-size:.75em;color:#8b949e;margin-top:6px">Quick, guided drill: type the exact commands for this NetAcad lab, step by step. Opens straight to lab 3.3.12.</div>
+      </div>
+      <div style="flex:1 1 220px;min-width:0">
+        <a class="cli-engine-link" href="../../cli-engine/ccna-cli-engine.html" target="_blank" rel="noopener" title="Full simulated Cisco IOS terminal: Tab completion, device state, Free Practice, Home Labs and Subnetting. In its exercise menu, pick “Course 2 · 3.3 — Configure 802.1Q Trunk Links”." style="display:inline-flex;align-items:center;gap:8px;color:#fff;text-decoration:none;padding:8px 18px;border-radius:6px;font-size:.85em;font-weight:700;background:#1f6feb;border:1px solid #388bfd">&#x1F4BB; Open CLI Engine</a>
+        <div style="font-size:.75em;color:#8b949e;margin-top:6px">Full simulated Cisco IOS terminal: Tab completion, device state, Free Practice, Home Labs and Subnetting. In its exercise menu, pick “Course 2 · 3.3 — Configure 802.1Q Trunk Links”.</div>
+      </div>
+    </div>
+    <div style="margin-top:12px;font-size:.75em"><a href="../../index.html" style="color:#58a6ff;text-decoration:none">&#x1F3E0; All study tools (home)</a></div>
+  </div>
+  </div>
+
+
+  <!-- PT INLINE -->
+  <div style="margin:20px 0 6px;padding:14px 16px;background:#0d1117;border:1px solid #30363d;border-left:3px solid #1f6feb;border-radius:6px">
+    <div style="font-size:.72em;font-weight:800;text-transform:uppercase;letter-spacing:.8px;color:#1f6feb;margin-bottom:10px">&#x1F4E6; Packet Tracer Activities</div>
+  <div style="display:flex;align-items:baseline;gap:10px;padding:6px 0;border-bottom:1px solid #21262d"><span style="font-family:monospace;font-size:.85em;color:#79c0ff;white-space:nowrap;flex-shrink:0;min-width:52px">3.5.5</span><span style="font-size:.88em;color:#c9d1d9">Configure DTP</span></div>
+    <div style="margin-top:10px;font-size:.78em;color:#6e7681">Full list: <a href="https://itexamanswers.net/ccna-2-packet-tracer-labs-answers-srwe-v7-02.html" target="_blank" rel="noopener" style="color:#58a6ff;word-break:break-all">https://itexamanswers.net/ccna-2-packet-tracer-labs-answers-srwe-v7-02.html</a></div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════ -->
+<!-- SECTION 3.6 — Quick Reference -->
+<!-- ═══════════════════════════════════════════════ -->
+<div class="section" id="s36">
+  <div class="section-header" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+    <span><span class="num-badge">3.6</span><span class="title">Quick Reference — All Module 3 Commands</span></span>
+    <button class="sec-check" id="sch-s36" onclick="event.stopPropagation();toggleSection('s36',this)">○ Mark done</button>
+    <span class="chevron">▾</span>
+  </div>
+  <div class="section-body">
+    <div class="table-wrap">
+      <table class="cmd-table">
+        <tr><th>Command</th><th>What It Does</th></tr>
+        <tr><td><code class="cmd">vlan [id]</code></td><td>Creates a VLAN (in global config mode)</td></tr>
+        <tr><td><code class="cmd">name [name]</code></td><td>Assigns a name to a VLAN</td></tr>
+        <tr><td><code class="cmd">switchport mode access</code></td><td>Sets port to access mode (one VLAN)</td></tr>
+        <tr><td><code class="cmd">switchport access vlan [id]</code></td><td>Assigns port to a specific VLAN</td></tr>
+        <tr><td><code class="cmd">switchport voice vlan [id]</code></td><td>Adds a voice VLAN to a port</td></tr>
+        <tr><td><code class="cmd">mls qos trust cos</code></td><td>Trusts QoS priority from IP phone</td></tr>
+        <tr><td><code class="cmd">no switchport access vlan</code></td><td>Returns port to VLAN 1</td></tr>
+        <tr><td><code class="cmd">no vlan [id]</code></td><td>Deletes one VLAN</td></tr>
+        <tr><td><code class="cmd">delete flash:vlan.dat</code></td><td>Wipes entire VLAN database</td></tr>
+        <tr><td><code class="cmd">switchport mode trunk</code></td><td>Sets port as a trunk</td></tr>
+        <tr><td><code class="cmd">switchport trunk native vlan [id]</code></td><td>Sets the native VLAN on a trunk</td></tr>
+        <tr><td><code class="cmd">switchport trunk allowed vlan [list]</code></td><td>Restricts VLANs carried on trunk</td></tr>
+        <tr><td><code class="cmd">switchport nonegotiate</code></td><td>Disables DTP on this port</td></tr>
+        <tr><td><code class="cmd">show vlan brief</code></td><td>Lists all VLANs and assigned ports</td></tr>
+        <tr><td><code class="cmd">show vlan id [id]</code></td><td>Detailed info on one specific VLAN</td></tr>
+        <tr><td><code class="cmd">show interfaces [int] switchport</code></td><td>Shows mode and VLAN assignments</td></tr>
+        <tr><td><code class="cmd">show interfaces [int] trunk</code></td><td>Shows trunk status and allowed VLANs</td></tr>
+        <tr><td><code class="cmd">show dtp interface [int]</code></td><td>Shows DTP negotiation status</td></tr>
+        <tr><td><code class="cmd">show running-config</code></td><td>Shows full current configuration</td></tr>
+      </table>
+    </div>
+  </div>
+
+
+  <!-- PT INLINE -->
+  <div style="margin:20px 0 6px;padding:14px 16px;background:#0d1117;border:1px solid #30363d;border-left:3px solid #1f6feb;border-radius:6px">
+    <div style="font-size:.72em;font-weight:800;text-transform:uppercase;letter-spacing:.8px;color:#1f6feb;margin-bottom:10px">&#x1F4E6; Packet Tracer Activities</div>
+  <div style="display:flex;align-items:baseline;gap:10px;padding:6px 0;border-bottom:1px solid #21262d"><span style="font-family:monospace;font-size:.85em;color:#79c0ff;white-space:nowrap;flex-shrink:0;min-width:52px">3.6.1</span><span style="font-size:.88em;color:#c9d1d9">Implement VLANs and Trunking</span></div>
+    <div style="margin-top:10px;font-size:.78em;color:#6e7681">Full list: <a href="https://itexamanswers.net/ccna-2-packet-tracer-labs-answers-srwe-v7-02.html" target="_blank" rel="noopener" style="color:#58a6ff;word-break:break-all">https://itexamanswers.net/ccna-2-packet-tracer-labs-answers-srwe-v7-02.html</a></div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════ -->
+<!-- SECTION 3.7 — Exam Traps -->
+<!-- ═══════════════════════════════════════════════ -->
+<div class="section" id="s37">
+  <div class="section-header" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+    <span><span class="num-badge">🎯</span><span class="title">Common Exam Traps — Module 3</span></span>
+    <button class="sec-check" id="sch-s37" onclick="event.stopPropagation();toggleSection('s37',this)">○ Mark done</button>
+    <span class="chevron">▾</span>
+  </div>
+  <div class="section-body">
+
+    <div class="subsection">
+      <div class="callout danger">
+        <span class="icon">❌</span>
+        <div><strong>Trap 1: Deleting a VLAN with active ports.</strong><br>Ports assigned to a deleted VLAN become <em>inactive</em> — they do NOT auto-move to VLAN 1. Students always forget this.</div>
+      </div>
+      <div class="callout danger">
+        <span class="icon">❌</span>
+        <div><strong>Trap 2: Native VLAN mismatch.</strong><br>If two switches have different native VLANs on a trunk, CDP generates a warning and traffic can land on the wrong VLAN. Both sides must match.</div>
+      </div>
+      <div class="callout danger">
+        <span class="icon">❌</span>
+        <div><strong>Trap 3: VLAN 1 as native VLAN.</strong><br>Leaving VLAN 1 as the native VLAN is a security risk. Best practice is to change it to an unused VLAN (e.g., 99) and never assign user devices to VLAN 1.</div>
+      </div>
+      <div class="callout danger">
+        <span class="icon">❌</span>
+        <div><strong>Trap 4: DTP left enabled on end-device ports.</strong><br>A malicious device can send DTP frames to convert an access port into a trunk, gaining access to all VLANs. Always run <code>switchport mode access</code> on end-device ports.</div>
+      </div>
+      <div class="callout warn">
+        <span class="icon">⚠️</span>
+        <div><strong>Trap 5: Misreading <code>show interfaces trunk</code>.</strong><br>"Allowed on trunk" = what you configured. "Allowed and active" = VLANs that actually exist. A VLAN can be allowed but inactive if it hasn't been created yet.</div>
+      </div>
+      <div class="callout warn">
+        <span class="icon">⚠️</span>
+        <div><strong>Trap 6: auto + auto = NO trunk.</strong><br>If both sides of a link are set to <code>dynamic auto</code>, neither side initiates, and the link stays in access mode. At least one side must be <em>desirable</em> or <em>trunk</em> for a trunk to form.</div>
+      </div>
+      <div class="callout tip">
+        <span class="icon">✅</span>
+        <div><strong>Remember:</strong> The native VLAN frame is the only frame that travels across a trunk <em>untagged</em>. All other VLAN frames carry an 802.1Q tag.</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+</div><!-- end .container -->
+
+<!-- Footer -->
+<div class="footer">
+  CCNA 2 SRWE v7.02 — Module 3: VLANs<br>
+  Based on Cisco NetAcad curriculum · Study guide for personal use
+</div>
+
+<!-- Scroll to top button -->
+<button class="top-btn" id="topBtn" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+
+<script>
+var MOD_KEY="ccna2-module3-vlans";
+var SECS=["s31","s32","s33","s34","s35","s36","s37"];
+var checked={};
+function loadState(){
+  try{var s=localStorage.getItem(MOD_KEY);if(s)checked=JSON.parse(s);}catch(e){}
+  SECS.forEach(function(id){
+    var pill=document.getElementById('pill-'+id);
+    var row=document.getElementById('row-'+id);
+    var st=document.getElementById('st-'+id);
+    var sch=document.getElementById('sch-'+id);
+    if(checked[id]){
+      if(pill){pill.classList.add('checked');pill.querySelector('.pill-check').textContent='✓';}
+      if(row)row.classList.add('done');
+      if(st)st.textContent='✓';
+      if(sch){sch.classList.add('checked');sch.textContent='✓ Done';}
+    } else {
+      if(pill){pill.classList.remove('checked');pill.querySelector('.pill-check').textContent='○';}
+      if(row)row.classList.remove('done');
+      if(st)st.textContent='○';
+      if(sch){sch.classList.remove('checked');sch.textContent='○ Mark done';}
+    }
+  });
+}
+function toggleSection(id,btn){checked[id]=!checked[id];try{localStorage.setItem(MOD_KEY,JSON.stringify(checked));}catch(e){}loadState();}
+function toggleStudyPanel(){
+  var hdr=document.getElementById('sp-hdr');
+  var body=document.getElementById('sp-body');
+  var arr=document.getElementById('sp-arr');
+  hdr.classList.toggle('open');body.classList.toggle('open');
+  if(arr)arr.textContent=body.classList.contains('open')?'▲':'▼';
+}
+function goTo(id){var el=document.getElementById(id);if(!el)return;var h=el.querySelector('.sh,.section-header'),b=el.querySelector('.sb,.section-body');if(h&&b&&!b.classList.contains('open')){h.classList.add('open');b.classList.add('open');}setTimeout(function(){window.scrollTo({top:el.getBoundingClientRect().top+window.pageYOffset-60,behavior:'smooth'});},50);}
+function setFs(size,btn){document.documentElement.style.setProperty('--base-fs',size);document.querySelectorAll('.fs-btn').forEach(function(b){b.classList.remove('active');});btn.classList.add('active');try{localStorage.setItem('ccna-fs',size);}catch(e){}}
+(function(){try{var s=localStorage.getItem('ccna-fs');if(s){document.documentElement.style.setProperty('--base-fs',s);document.querySelectorAll('.fs-btn').forEach(function(b){b.classList.remove('active');if((b.textContent==='S'&&s==='14px')||(b.textContent==='M'&&s==='16px')||(b.textContent==='L'&&s==='18px')||(b.textContent==='XL'&&s==='20px'))b.classList.add('active');});}}catch(e){}loadState();})();
+function copyCode(b){var t=b.closest('.cw').querySelector('pre').innerText;if(navigator.clipboard){navigator.clipboard.writeText(t).then(function(){b.textContent='Copied!';setTimeout(function(){b.textContent='Copy';},1500);}).catch(function(){fb(t,b);});}else{fb(t,b);}}
+function fb(t,b){var a=document.createElement('textarea');a.value=t;a.style.position='fixed';a.style.opacity='0';document.body.appendChild(a);a.focus();a.select();document.execCommand('copy');document.body.removeChild(a);b.textContent='Copied!';setTimeout(function(){b.textContent='Copy';},1500);}
+</script>
+<script src="../../site-config.js"></script>
+</body>
+</html>

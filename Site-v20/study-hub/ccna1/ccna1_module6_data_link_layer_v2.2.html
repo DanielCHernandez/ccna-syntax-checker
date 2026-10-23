@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=2.0">
+<title>CCNA 1 Module 6: Data Link Layer v2.2</title>
+<style>
+:root{
+  --nt:#0a6e4e;--ntd:#4ade80;--nt2:#052e1e;--nt3:#021710;
+  --bg:#f4f6f8;--card:#fff;--text:#1a1a2e;--muted:#5a6a7a;
+  --cbg:#0d1117;--ctxt:#c9d1d9;--r:12px;--sh:0 2px 12px rgba(0,0,0,.08);
+  --base-fs:20px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);font-size:var(--base-fs);line-height:1.7}
+.bc{background:#0d1117;padding:8px 16px;display:flex;align-items:center;flex-wrap:wrap;gap:4px;font-size:.75em;overflow-x:auto;white-space:nowrap;-webkit-overflow-scrolling:touch;border-bottom:1px solid #21262d}
+.bc a{color:#8b949e;text-decoration:none;font-weight:600;flex-shrink:0}
+.bc .sep{color:#6e7681;flex-shrink:0}
+.bc .cur{color:var(--ntd);font-weight:700;flex-shrink:0}
+.fs-bar{position:sticky;top:0;z-index:200;background:#1a1a2e;display:flex;align-items:center;justify-content:flex-end;padding:6px 14px;gap:6px;box-shadow:0 2px 8px rgba(0,0,0,.3)}
+.fs-label{color:#8b949e;font-size:.72em;font-weight:700;letter-spacing:.5px;text-transform:uppercase;margin-right:4px}
+.fs-btn{background:#30363d;color:#c9d1d9;border:2px solid transparent;border-radius:6px;padding:4px 12px;font-size:.75em;font-weight:700;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:all .2s;line-height:1.4}
+.fs-btn:active,.fs-btn.active{background:var(--nt);color:#fff;border-color:var(--ntd)}
+.hdr{background:linear-gradient(135deg,var(--nt3),var(--nt2),var(--nt));color:#fff;padding:32px 20px 24px;text-align:center}
+.hdr .badge{display:inline-block;background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.4);border-radius:20px;padding:4px 14px;font-size:.81em;margin-bottom:12px}
+.hdr h1{font-size:1.5em;font-weight:700;margin-bottom:6px}
+.hdr p{font-size:.94em;opacity:.85}
+.hdr .obj{display:inline-block;background:rgba(255,255,255,.15);border-radius:8px;padding:7px 16px;margin-top:12px;font-size:.875em;font-style:italic}
+/* Study progress panel */
+.sp-wrap{background:var(--card);margin:16px 16px 0;border-radius:var(--r);box-shadow:var(--sh);overflow:hidden}
+.sp-hdr{background:var(--nt);color:#fff;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;user-select:none;-webkit-tap-highlight-color:transparent;gap:10px}
+.sp-hdr .sp-title{font-weight:700;font-size:.875em;flex-shrink:0}
+.sp-hdr .sp-arr{transition:transform .3s;flex-shrink:0}
+.sp-hdr.open .sp-arr{transform:rotate(180deg)}
+.sp-body{display:none;padding:12px 14px}
+.sp-body.open{display:block}
+.sp-row{display:flex;align-items:center;gap:10px;padding:6px 4px;border-bottom:1px solid #f0f4f8;font-size:.81em}
+.sp-row:last-child{border-bottom:none}
+.sp-row .sr-status{font-size:1em;flex-shrink:0;width:20px;text-align:center}
+.sp-row .sr-nb{font-weight:800;color:var(--nt);min-width:36px;flex-shrink:0;font-size:.875em}
+.sp-row .sr-ttl{color:var(--text);flex:1}
+.sp-row.done .sr-ttl{color:var(--muted);text-decoration:line-through}
+/* Section check pills in fs-bar */
+.sc-pills{display:flex;align-items:center;gap:4px;overflow-x:auto;-webkit-overflow-scrolling:touch;flex:1;padding:0 4px}
+.sc-pill{background:#30363d;color:#8b949e;border:2px solid transparent;border-radius:6px;padding:3px 8px;font-size:.72em;font-weight:700;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:all .15s;white-space:nowrap;flex-shrink:0;line-height:1.4;display:flex;align-items:center;gap:3px}
+.sc-pill.checked{background:var(--nt);color:#fff;border-color:var(--ntd)}
+.sc-pill .pill-check{font-size:.875em}
+.toc{background:var(--card);margin:16px;border-radius:var(--r);box-shadow:var(--sh);overflow:hidden}
+.toch{background:var(--nt);color:#fff;padding:14px 18px;font-weight:700;font-size:.94em;display:flex;justify-content:space-between;align-items:center;cursor:pointer;user-select:none}
+.toch .arr{transition:transform .3s}
+.toch.open .arr{transform:rotate(180deg)}
+.tocb{display:none;padding:10px 0}
+.tocb.open{display:block}
+.tocg{font-size:.69em;font-weight:800;letter-spacing:.8px;color:var(--nt);text-transform:uppercase;padding:8px 20px 2px}
+.tocb a{display:block;padding:9px 20px 9px 28px;color:var(--text);text-decoration:none;font-size:.875em;border-left:3px solid transparent;transition:all .2s}
+.tocb a:active{background:#f0fdf4;border-left-color:var(--ntd)}
+.tocb a .n{display:inline-block;background:var(--nt);color:#fff;border-radius:5px;padding:1px 8px;font-size:.75em;font-weight:700;margin-right:8px}
+.wrap{padding:0 16px 100px}
+.sec{background:var(--card);border-radius:var(--r);box-shadow:var(--sh);margin-bottom:16px;overflow:hidden}
+.sh{background:linear-gradient(90deg,var(--nt3),var(--nt));color:#fff;padding:16px 18px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;user-select:none;-webkit-tap-highlight-color:transparent}
+.sh .ttl{font-weight:700;font-size:1em}
+.sh .nb{background:rgba(255,255,255,.25);border-radius:6px;padding:3px 10px;font-size:.81em;font-weight:700;margin-right:10px;white-space:nowrap}
+.sh .ch{font-size:1.125em;transition:transform .3s}
+.sh.open .ch{transform:rotate(180deg)}
+.sb{display:none;padding:18px}
+.sb.open{display:block}
+.sub{margin-bottom:24px}
+.sub:last-child{margin-bottom:0}
+.sub h3{font-size:.94em;font-weight:700;color:var(--nt);margin-bottom:10px;padding-bottom:6px;border-bottom:2px solid #f0fdf4;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.sub h3 .sn{background:var(--nt);color:#fff;border-radius:5px;padding:2px 8px;font-size:.75em;white-space:nowrap}
+.sub h4{font-size:.875em;font-weight:700;color:var(--nt);margin:14px 0 6px}
+.sub p{margin-bottom:10px;font-size:.94em}
+.sub ul,.sub ol{padding-left:20px;margin:8px 0;font-size:.94em}
+.sub li{margin-bottom:5px}
+.ca{border-radius:8px;padding:12px 14px;margin:12px 0;font-size:.875em;line-height:1.6;display:flex;gap:10px;align-items:flex-start}
+.ca .ic{font-size:1.125em;flex-shrink:0;margin-top:1px}
+.ca.warn  {background:#fff3cd;border-left:4px solid #b38600;color:#3d2c00}
+.ca.tip   {background:#d4edda;border-left:4px solid #28a745;color:#0d3318}
+.ca.danger{background:#f8d7da;border-left:4px solid #dc3545;color:#3d0010}
+.ca.info  {background:#f0fdf4;border-left:4px solid var(--nt);color:#052e1e}
+.ca code{color:inherit!important;background:rgba(0,0,0,.1)!important;border:1px solid rgba(0,0,0,.15)}
+.et{background:linear-gradient(135deg,#1a1a2e,var(--nt3));color:#fff;border-radius:10px;padding:14px 16px;margin:14px 0;font-size:.875em;line-height:1.6}
+.et .lbl{font-size:.69em;font-weight:800;letter-spacing:1px;color:var(--ntd);margin-bottom:6px}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:12px 0;border-radius:8px}
+table{width:100%;border-collapse:collapse;font-size:.875em}
+th{background:var(--nt);color:#fff;padding:10px 12px;text-align:left;font-weight:700;font-size:.81em}
+td{padding:9px 12px;border-bottom:1px solid #e8ecf0;vertical-align:top;color:#1a1a2e}
+tr:nth-child(even) td{background:#f0fdf4;color:#052e1e}
+tr:last-child td{border-bottom:none}
+p code,li code,td code,.ca code{background:#f0fdf4;color:#052e1e;border-radius:4px;padding:1px 5px;font-size:.81em;font-family:'Courier New',monospace;font-weight:600}
+
+/* Sublayer diagram */
+.sublayer-stack{display:grid;gap:4px;margin:12px 0}
+.sublayer{border-radius:8px;padding:11px 16px;font-size:.81em;line-height:1.6}
+.sublayer.upper{background:#7b2d8b;color:#fff}
+.sublayer.llc  {background:#1a3a5c;color:#fff}
+.sublayer.mac  {background:var(--nt);color:#fff}
+.sublayer.phys {background:#7c1e1e;color:#fff}
+.sublayer .sl-title{font-weight:800;margin-bottom:3px;font-size:.875em}
+.sublayer .sl-sub{opacity:.85;font-size:.875em}
+
+/* WAN topology cards */
+.wan-grid{display:grid;gap:8px;margin:12px 0}
+.wan-card{border-radius:8px;padding:11px 14px;font-size:.81em;border-left:5px solid;line-height:1.6}
+.wan-card.p2p {border-left-color:var(--nt);background:#f0fdf4}
+.wan-card.hub {border-left-color:#1a3a5c;background:#e0f2fe}
+.wan-card.mesh{border-left-color:#7b2d8b;background:#f3e8ff}
+.wan-card .wc-name{font-weight:800;margin-bottom:3px}
+.wan-card.p2p  .wc-name{color:var(--nt)}
+.wan-card.hub  .wc-name{color:#1a3a5c}
+.wan-card.mesh .wc-name{color:#7b2d8b}
+
+/* LAN topology grid */
+.lan-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:12px 0}
+@media(max-width:480px){.lan-grid{grid-template-columns:1fr}}
+.lan-card{border-radius:8px;padding:11px 14px;font-size:.81em;border-left:4px solid;line-height:1.6}
+.lan-card.star{border-left-color:var(--nt);background:#f0fdf4}
+.lan-card.ext {border-left-color:#1a3a5c;background:#e0f2fe}
+.lan-card.bus {border-left-color:#b38600;background:#fffbeb}
+.lan-card.ring{border-left-color:#374151;background:#f9fafb}
+.lan-card .lc-name{font-weight:800;margin-bottom:3px}
+.lan-card.star .lc-name{color:var(--nt)}
+.lan-card.ext  .lc-name{color:#1a3a5c}
+.lan-card.bus  .lc-name{color:#b38600}
+.lan-card.ring .lc-name{color:#374151}
+
+/* Duplex comparison */
+.duplex-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:12px 0}
+@media(max-width:480px){.duplex-grid{grid-template-columns:1fr}}
+.duplex-card{border-radius:10px;padding:12px 14px;font-size:.81em;line-height:1.7}
+.duplex-card.half{background:#fff3cd;border:2px solid #b38600}
+.duplex-card.full{background:#f0fdf4;border:2px solid var(--nt)}
+.duplex-card .dc-title{font-weight:800;margin-bottom:5px;font-size:.875em}
+.duplex-card.half .dc-title{color:#b38600}
+.duplex-card.full .dc-title{color:var(--nt)}
+
+/* Access method cards */
+.access-grid{display:grid;gap:8px;margin:12px 0}
+.access-card{border-radius:8px;padding:11px 14px;font-size:.81em;border-left:5px solid;line-height:1.6}
+.access-card.cont{border-left-color:#dc3545;background:#fff5f5}
+.access-card.ctrl{border-left-color:#374151;background:#f9fafb}
+.access-card .ac-name{font-weight:800;margin-bottom:3px}
+.access-card.cont .ac-name{color:#7c1e1e}
+.access-card.ctrl .ac-name{color:#374151}
+
+/* CSMA comparison */
+.csma-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:12px 0}
+@media(max-width:480px){.csma-grid{grid-template-columns:1fr}}
+.csma-card{border-radius:10px;padding:12px 14px;font-size:.81em;line-height:1.7}
+.csma-card.cd{background:#fff5f5;border:2px solid #dc3545}
+.csma-card.ca{background:#f0fdf4;border:2px solid var(--nt)}
+.csma-card .cc-title{font-weight:800;margin-bottom:6px;font-size:.875em}
+.csma-card.cd .cc-title{color:#7c1e1e}
+.csma-card.ca .cc-title{color:var(--nt)}
+.csma-card ul{padding-left:16px}
+.csma-card li{margin-bottom:4px}
+
+/* Frame structure */
+.frame-struct{display:grid;grid-template-columns:auto 1fr auto;gap:3px;margin:12px 0;border-radius:8px;overflow:hidden}
+.frame-struct .fs-hdr{background:#1a3a5c;color:#fff;padding:10px 14px;text-align:center;font-weight:800;font-size:.81em}
+.frame-struct .fs-data{background:var(--nt);color:#fff;padding:10px 14px;text-align:center;font-weight:800;font-size:.81em}
+.frame-struct .fs-trail{background:#7c1e1e;color:#fff;padding:10px 14px;text-align:center;font-weight:800;font-size:.81em}
+
+/* Frame fields */
+.field-grid{display:grid;gap:4px;margin:12px 0}
+.field-row{display:flex;gap:8px;align-items:flex-start;padding:8px 12px;border-radius:6px;font-size:.81em;border-left:4px solid}
+.field-row.hdr-field{border-left-color:#1a3a5c;background:#e0f2fe}
+.field-row.dat-field{border-left-color:var(--nt);background:#f0fdf4}
+.field-row.trl-field{border-left-color:#7c1e1e;background:#fff5f5}
+.field-row .fr-name{font-weight:800;min-width:120px;flex-shrink:0;color:#1a1a2e}
+.field-row .fr-loc{font-size:.75em;font-weight:700;padding:1px 6px;border-radius:4px;flex-shrink:0;align-self:flex-start;margin-top:2px}
+.field-row.hdr-field .fr-loc{background:#1a3a5c;color:#fff}
+.field-row.dat-field .fr-loc{background:var(--nt);color:#fff}
+.field-row.trl-field .fr-loc{background:#7c1e1e;color:#fff}
+
+/* Hop diagram */
+.hop-box{background:#0d1117;border-radius:10px;padding:14px;margin:12px 0}
+.hop-box .hb-title{color:var(--ntd);font-size:.69em;font-weight:800;letter-spacing:.8px;text-transform:uppercase;margin-bottom:10px}
+.hop-table{width:100%;border-collapse:collapse}
+.hop-table th{background:#21262d;color:#8b949e;font-size:.69em;padding:6px 10px;text-align:left;font-weight:700;letter-spacing:.3px}
+.hop-table td{padding:7px 10px;font-family:'Courier New',monospace;font-size:.75em;border-bottom:1px solid #21262d;color:#c9d1d9}
+.hop-table td.mac-src{color:#b45309}
+.hop-table td.mac-dst{color:#b45309}
+.hop-table td.ip-src{color:#15803d}
+.hop-table td.ip-dst{color:#15803d}
+.hop-table td.hop{color:#8b949e;font-family:inherit;font-size:.81em}
+
+/* DL protocols */
+.proto-grid{display:grid;gap:4px;margin:12px 0}
+.proto-row{display:flex;gap:8px;align-items:flex-start;padding:7px 12px;border-radius:6px;font-size:.81em;border-left:3px solid}
+.proto-row.lan{border-left-color:var(--nt);background:#f0fdf4}
+.proto-row.wan{border-left-color:#1a3a5c;background:#e0f2fe}
+.proto-row .pr-name{font-weight:800;min-width:70px;flex-shrink:0}
+.proto-row.lan .pr-name{color:var(--nt)}
+.proto-row.wan .pr-name{color:#1a3a5c}
+
+.tb-btn{position:fixed;bottom:80px;right:16px;background:var(--nt);color:#fff;border:none;border-radius:50%;width:44px;height:44px;font-size:1.25em;box-shadow:0 4px 14px rgba(0,0,0,.25);cursor:pointer;display:none;align-items:center;justify-content:center;z-index:100}
+.tb-btn.show{display:flex}
+.ft{text-align:center;padding:24px 16px;color:var(--muted);font-size:.81em}
+.mod-nav{position:fixed;bottom:0;left:0;right:0;z-index:300;background:#1a1a2e;border-top:1px solid #30363d;display:flex;align-items:center;height:52px;padding:0 8px;gap:6px}
+.mn-hub{background:#1ba0d7;color:#fff;border:none;border-radius:8px;padding:6px 12px;font-size:.75em;font-weight:700;cursor:pointer;text-decoration:none;display:flex;align-items:center;gap:4px;white-space:nowrap;-webkit-tap-highlight-color:transparent;flex-shrink:0}
+.mn-hub:active{opacity:.8}
+.mn-divider{width:1px;height:28px;background:#30363d;flex-shrink:0}
+.mn-label{flex:1;text-align:center;font-size:.69em;color:#8b949e;font-weight:600;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding:0 4px}
+.mn-prev,.mn-next{background:#30363d;color:#c9d1d9;border:none;border-radius:8px;padding:6px 10px;font-size:.875em;font-weight:700;cursor:pointer;text-decoration:none;display:flex;align-items:center;-webkit-tap-highlight-color:transparent;flex-shrink:0}
+.mn-prev:active,.mn-next:active{background:var(--nt);color:#fff}
+
+/* v2.1 — In-section check button */
+.sh{position:relative}
+.sec-check{position:absolute;right:40px;top:50%;transform:translateY(-50%);background:rgba(255,255,255,.15);border:2px solid rgba(255,255,255,.4);border-radius:6px;padding:2px 10px;font-size:.72em;font-weight:800;color:#fff;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:all .2s;white-space:nowrap;z-index:10;line-height:1.5}
+.sec-check.checked{background:var(--ntd);border-color:var(--ntd);color:#052e1e}
+.sec-check:active{opacity:.75}
+</style>
+</head>
+<body>
+<nav class="bc">
+  <a href="../../index.html">🏠 Home</a><span class="sep">›</span>
+  <a href="index.html">CCNA 1 — ITN</a><span class="sep">›</span>
+  <span class="cur">M6: Data Link Layer</span>
+</nav>
+<div class="fs-bar">
+  <div class="sc-pills" id="sc-pills">
+  <button class="sc-pill" id="pill-s1" onclick="toggleSection('s1',this)"><span class="pill-check">○</span>6.1</button>
+  <button class="sc-pill" id="pill-s2" onclick="toggleSection('s2',this)"><span class="pill-check">○</span>6.2</button>
+  <button class="sc-pill" id="pill-s3" onclick="toggleSection('s3',this)"><span class="pill-check">○</span>6.3</button>
+  <button class="sc-pill" id="pill-s4" onclick="toggleSection('s4',this)"><span class="pill-check">○</span>🎯</button>
+  </div>
+  <span class="fs-label" style="flex-shrink:0;margin-left:6px">Size</span>
+  <button class="fs-btn" onclick="setFs('14px',this)">S</button>
+  <button class="fs-btn" onclick="setFs('16px',this)">M</button>
+  <button class="fs-btn" onclick="setFs('18px',this)">L</button>
+  <button class="fs-btn active" onclick="setFs('20px',this)">XL</button>
+</div>
+<div class="hdr">
+  <div class="badge">CCNA 1 — ITN v7.02 · Module 6</div>
+  <h1>🔗 Data Link Layer</h1>
+  <p>Introduction to Networks · NetAcad Study Guide</p>
+  <div class="obj">Module Objective: Explain how media access control in the data link layer supports communication across networks</div>
+</div>
+<div class="sp-wrap">
+  <div class="sp-hdr" id="sp-hdr" onclick="toggleStudyPanel()">
+    <span class="sp-title">📚 Sections</span>
+    <span class="sp-arr" id="sp-arr">▼</span>
+  </div>
+  <div class="sp-body" id="sp-body">
+    <div class="sp-row" id="row-s1"><span class="sr-status" id="st-s1">○</span><span class="sr-nb">6.1</span><span class="sr-ttl">Purpose of the Data Link Layer</span></div>
+    <div class="sp-row" id="row-s2"><span class="sr-status" id="st-s2">○</span><span class="sr-nb">6.2</span><span class="sr-ttl">Topologies</span></div>
+    <div class="sp-row" id="row-s3"><span class="sr-status" id="st-s3">○</span><span class="sr-nb">6.3</span><span class="sr-ttl">Data Link Frame</span></div>
+    <div class="sp-row" id="row-s4"><span class="sr-status" id="st-s4">○</span><span class="sr-nb">🎯</span><span class="sr-ttl">Common Exam Traps — Module 6</span></div>
+  </div>
+</div>
+
+<div class="toc">
+  <div class="toch open" onclick="this.classList.toggle('open');document.getElementById('tocb').classList.toggle('open')">
+    📋 Table of Contents — Tap to expand <span class="arr">▼</span>
+  </div>
+  <div class="tocb open" id="tocb">
+    <div class="tocg">6.1 — Purpose of the Data Link Layer</div>
+    <a href="javascript:void(0)" onclick="goTo('s1')"><span class="n">6.1.1</span> Data Link Layer Functions — NIC-to-NIC</a>
+    <a href="javascript:void(0)" onclick="goTo('s1')"><span class="n">6.1.2</span> Two Sublayers — LLC and MAC</a>
+    <a href="javascript:void(0)" onclick="goTo('s1')"><span class="n">6.1.3</span> Providing Access to Media — Router Hop Functions</a>
+    <a href="javascript:void(0)" onclick="goTo('s1')"><span class="n">6.1.4</span> Data Link Layer Standards — IEEE, ITU, ISO, ANSI</a>
+    <div class="tocg">6.2 — Topologies</div>
+    <a href="javascript:void(0)" onclick="goTo('s2')"><span class="n">6.2.1</span> Physical vs Logical Topologies</a>
+    <a href="javascript:void(0)" onclick="goTo('s2')"><span class="n">6.2.2</span> WAN Topologies — Point-to-Point, Hub-Spoke, Mesh</a>
+    <a href="javascript:void(0)" onclick="goTo('s2')"><span class="n">6.2.4</span> LAN Topologies — Star, Extended Star, Bus, Ring</a>
+    <a href="javascript:void(0)" onclick="goTo('s2')"><span class="n">6.2.5</span> Half-Duplex vs Full-Duplex</a>
+    <a href="javascript:void(0)" onclick="goTo('s2')"><span class="n">6.2.6</span> Access Control — Contention-Based vs Controlled</a>
+    <a href="javascript:void(0)" onclick="goTo('s2')"><span class="n">6.2.7</span> CSMA/CD — Collision Detection (Wired)</a>
+    <a href="javascript:void(0)" onclick="goTo('s2')"><span class="n">6.2.8</span> CSMA/CA — Collision Avoidance (Wireless)</a>
+    <div class="tocg">6.3 — Data Link Frame</div>
+    <a href="javascript:void(0)" onclick="goTo('s3')"><span class="n">6.3.1</span> Frame Structure — Header, Data, Trailer</a>
+    <a href="javascript:void(0)" onclick="goTo('s3')"><span class="n">6.3.2</span> Frame Fields — Flags, Address, Type, Control, FCS/CRC</a>
+    <a href="javascript:void(0)" onclick="goTo('s3')"><span class="n">6.3.3</span> Layer 2 Addresses — Physical, Local, Hop-by-Hop</a>
+    <a href="javascript:void(0)" onclick="goTo('s3')"><span class="n">6.3.4</span> LAN and WAN Frame Protocols</a>
+    <div class="tocg">Reference</div>
+    <a href="javascript:void(0)" onclick="goTo('s4')"><span class="n">🎯</span> Common Exam Traps</a>
+  </div>
+</div>
+
+<div class="wrap">
+
+<!-- 6.1 PURPOSE -->
+<div class="sec" id="s1">
+<div class="sh open" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">6.1</span><span class="ttl">Purpose of the Data Link Layer</span></span><button class="sec-check" id="sch-s1" onclick="event.stopPropagation();toggleSection('s1',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb open">
+
+  <div class="sub">
+  <h3><span class="sn">6.1.1</span> The Data Link Layer — NIC-to-NIC Communications</h3>
+  <p>The data link layer (OSI Layer 2) prepares network data for the physical network. It is responsible for <strong>NIC-to-NIC communications within the same network segment</strong>. Without the data link layer, IP would need to make provisions for connecting to every type of media along a delivery path.</p>
+  <p><strong>What the Data Link Layer does:</strong></p>
+  <ul>
+    <li>Enables upper layers to access the media — upper layer protocols are <strong>completely unaware</strong> of the type of media being used</li>
+    <li>Accepts data (usually Layer 3 IPv4 or IPv6 packets) and <strong>encapsulates them into Layer 2 frames</strong></li>
+    <li>Controls how data is placed and received on the media</li>
+    <li>Exchanges frames between endpoints over the network media</li>
+    <li>Receives encapsulated data and directs it to the proper upper-layer protocol</li>
+    <li>Performs <strong>error detection</strong> and rejects any corrupt frame</li>
+  </ul>
+  <div class="ca info"><span class="ic">💡</span><div>A <strong>node</strong> = any device that can receive, create, store, or forward data along a communications path. Nodes include both end devices (laptops, phones) and intermediary devices (Ethernet switches).</div></div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">6.1.2</span> IEEE 802 LAN/MAN — Two Data Link Sublayers</h3>
+  <div class="sublayer-stack">
+    <div class="sublayer upper"><div class="sl-title">Upper Layers (Network, Transport, Application…)</div><div class="sl-sub">IP, TCP, HTTP — unaware of media type below</div></div>
+    <div class="sublayer llc"><div class="sl-title">LLC — Logical Link Control (IEEE 802.2)</div><div class="sl-sub">Software side · Identifies which L3 protocol is in the frame · Allows IPv4 and IPv6 to share the same interface · Communicates between upper layer software and lower hardware</div></div>
+    <div class="sublayer mac"><div class="sl-title">MAC — Media Access Control (IEEE 802.3 / 802.11 / 802.15)</div><div class="sl-sub">Hardware side (NIC) · Data encapsulation: Frame delimiting + Addressing + Error detection · Media access control for shared/half-duplex links</div></div>
+    <div class="sublayer phys"><div class="sl-title">Physical Layer (Layer 1)</div><div class="sl-sub">Bits on the wire/fiber/radio</div></div>
+  </div>
+  <h4>MAC Sublayer — Three Encapsulation Functions</h4>
+  <div class="tw"><table>
+    <tr><th>Function</th><th>Description</th></tr>
+    <tr><td><strong>Frame delimiting</strong></td><td>Start and stop flags identify the beginning and end of a frame. Provides bit synchronization between transmitting and receiving nodes.</td></tr>
+    <tr><td><strong>Addressing</strong></td><td>Source and destination MAC addresses for transporting the frame between devices on the same shared medium.</td></tr>
+    <tr><td><strong>Error detection</strong></td><td>Trailer with FCS/CRC value used to detect transmission errors. Corrupt frames are rejected.</td></tr>
+  </table></div>
+  <div class="ca info"><span class="ic">💡</span><div>The MAC sublayer also provides <strong>media access control</strong> for shared (half-duplex) medium — allowing multiple devices to communicate without simultaneous collisions. Full-duplex communications do not require access control.</div></div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">6.1.3</span> Providing Access to Media — What a Router Does at Layer 2</h3>
+  <p>Each network segment packets travel through may use a <strong>different media type</strong> with different frame formats. At every router hop, the router performs these four Layer 2 functions:</p>
+  <ol>
+    <li><strong>Accepts</strong> a frame from the incoming medium</li>
+    <li><strong>De-encapsulates</strong> the frame — extracts the Layer 3 packet</li>
+    <li><strong>Re-encapsulates</strong> the packet into a new frame — appropriate for the next media type</li>
+    <li><strong>Forwards</strong> the new frame out the appropriate interface</li>
+  </ol>
+  <div class="ca tip"><span class="ic">✅</span><div>Example: A router may have an Ethernet interface (LAN) and a serial interface (WAN). It receives an Ethernet frame, strips it, reads the IP packet, builds a PPP frame for the WAN link, and forwards it. There may be many such media transitions in a single end-to-end journey.</div></div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">6.1.4</span> Data Link Layer Standards</h3>
+  <p>Data link layer protocols are generally <strong>NOT defined by IETF RFCs</strong> (unlike upper-layer TCP/IP protocols). Standards bodies for the network access layer:</p>
+  <div class="tw"><table>
+    <tr><th>Organization</th><th>Key Standards</th></tr>
+    <tr><td><strong>IEEE</strong></td><td>802.3 Ethernet · 802.11 WLAN · 802.15 Bluetooth/Zigbee</td></tr>
+    <tr><td><strong>ITU</strong></td><td>International Telecommunication Union — international communications</td></tr>
+    <tr><td><strong>ISO</strong></td><td>International Organization for Standardization</td></tr>
+    <tr><td><strong>ANSI</strong></td><td>American National Standards Institute — US standards</td></tr>
+  </table></div>
+  </div>
+
+</div></div>
+
+<!-- 6.2 TOPOLOGIES -->
+<div class="sec" id="s2">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">6.2</span><span class="ttl">Topologies</span></span><button class="sec-check" id="sch-s2" onclick="event.stopPropagation();toggleSection('s2',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb">
+
+  <div class="sub">
+  <h3><span class="sn">6.2.1</span> Physical vs Logical Topologies</h3>
+  <div class="tw"><table>
+    <tr><th>Type</th><th>What It Shows</th><th>Data Link Relevance</th></tr>
+    <tr><td><strong>Physical Topology</strong></td><td>Physical connections between devices — cables, rooms, racks, device locations. Usually point-to-point or star.</td><td>Shows how cables are run; doesn't determine framing or access control</td></tr>
+    <tr><td><strong>Logical Topology</strong></td><td>How frames travel from node to node — virtual connections, device interfaces, IP addressing scheme.</td><td>The data link layer "sees" the logical topology. It <strong>determines framing type and media access control method.</strong></td></tr>
+  </table></div>
+  <div class="ca info"><span class="ic">💡</span><div>Adding intermediary physical devices does NOT change the logical topology. A logical point-to-point connection between two routers remains point-to-point even if there are physical devices between them on the WAN circuit.</div></div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">6.2.2–6.2.3</span> WAN Topologies</h3>
+  <div class="wan-grid">
+    <div class="wan-card p2p">
+      <div class="wc-name">↔️ Point-to-Point</div>
+      <strong>Simplest and most common WAN topology.</strong> Permanent link between exactly two endpoints. When using serial protocols like PPP, a node does NOT need to determine if incoming frames are destined for it — all frames go to or from the two nodes only. Logical topology remains point-to-point even with intermediary physical devices.
+    </div>
+    <div class="wan-card hub">
+      <div class="wc-name">🌟 Hub and Spoke</div>
+      WAN version of the star topology. A <strong>central site</strong> interconnects branch sites via point-to-point links. <strong>Branches cannot exchange data directly</strong> — must go through the central hub site.
+    </div>
+    <div class="wan-card mesh">
+      <div class="wc-name">🔷 Mesh</div>
+      Every end system interconnected to every other. <strong>High availability</strong> but very high administrative and physical cost. Each link = a point-to-point link. <strong>Partial mesh (hybrid)</strong> = some (not all) end devices are interconnected.
+    </div>
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">6.2.4</span> LAN Topologies</h3>
+  <div class="lan-grid">
+    <div class="lan-card star">
+      <div class="lc-name">⭐ Star (Current)</div>
+      End devices connected to a central <strong>Ethernet switch</strong>. Easy to install, scalable, easy to troubleshoot. Most common modern LAN topology.
+    </div>
+    <div class="lan-card ext">
+      <div class="lc-name">⭐⭐ Extended Star (Current)</div>
+      Multiple <strong>switches interconnected</strong>, expanding the star. Used for multi-floor buildings or campuses.
+    </div>
+    <div class="lan-card bus">
+      <div class="lc-name">🚌 Bus (Legacy)</div>
+      All end systems chained together; <strong>no switch needed</strong>; terminated at each end. Early Ethernet over coaxial cable. Half-duplex.
+    </div>
+    <div class="lan-card ring">
+      <div class="lc-name">⭕ Ring (Legacy)</div>
+      End systems connected to neighbors forming a ring; no termination needed. Used by Token Ring and FDDI.
+    </div>
+  </div>
+  <div class="ca info"><span class="ic">💡</span><div>Early star topologies used <strong>hubs</strong> (multiport repeaters) instead of switches. A hub with two devices = Ethernet in a point-to-point topology. Two directly connected routers on an Ethernet link = also a point-to-point topology.</div></div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">6.2.5</span> Half-Duplex vs Full-Duplex</h3>
+  <div class="duplex-grid">
+    <div class="duplex-card half">
+      <div class="dc-title">⟵ Half-Duplex ⟶</div>
+      Both devices can transmit and receive but <strong>NOT simultaneously</strong>. Only one device sends at a time on the shared medium. Used by: WLANs, legacy bus Ethernet with hubs. Requires media access control.
+    </div>
+    <div class="duplex-card full">
+      <div class="dc-title">⟵⟶ Full-Duplex ⟵⟶</div>
+      Both devices can <strong>simultaneously</strong> transmit and receive. Data link layer assumes media is always available. Used by: Ethernet switches (default). Does NOT require media access control.
+    </div>
+  </div>
+  <div class="ca danger"><span class="ic">🚨</span><div><strong>Duplex mismatch</strong> — if two connected interfaces use different duplex modes (one half, one full), the link suffers significant inefficiency and latency. Both ends MUST match. Modern switches auto-negotiate duplex but mismatches still occur with older or misconfigured devices.</div></div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">6.2.6</span> Access Control Methods</h3>
+  <p>A <strong>multiaccess network</strong> = two or more end devices can attempt to access the network simultaneously (Ethernet LANs, WLANs).</p>
+  <div class="access-grid">
+    <div class="access-card cont">
+      <div class="ac-name">⚡ Contention-Based Access</div>
+      All nodes operate in <strong>half-duplex</strong>, competing for the medium. Only one device can send at a time. Process exists for when multiple devices transmit simultaneously.<br>
+      Examples: <strong>CSMA/CD</strong> (legacy wired Ethernet with hubs) · <strong>CSMA/CA</strong> (WLANs)
+    </div>
+    <div class="access-card ctrl">
+      <div class="ac-name">🔄 Controlled Access</div>
+      Each node has a <strong>designated time</strong> to use the medium. Deterministic — no collisions — but inefficient (devices must wait their turn even if medium is idle).<br>
+      Examples: Legacy Token Ring · Legacy ARCNET
+    </div>
+  </div>
+  <div class="et"><div class="lbl">🎯 EXAM KEY</div>
+  Modern Ethernet LANs using <strong>switches</strong> operate in <strong>full-duplex</strong> and require <strong>NO access control method</strong>. CSMA/CD and CSMA/CA are only needed for half-duplex shared media environments.
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">6.2.7–6.2.8</span> CSMA/CD vs CSMA/CA</h3>
+  <div class="csma-grid">
+    <div class="csma-card cd">
+      <div class="cc-title">CSMA/CD — Collision DETECTION</div>
+      Used by: legacy bus-topology Ethernet, legacy hub-based Ethernet
+      <ul>
+        <li>Device listens for carrier signal (checks if medium busy)</li>
+        <li>If clear → transmits</li>
+        <li>If two devices transmit simultaneously → <strong>collision</strong></li>
+        <li>Both NICs <strong>detect</strong> the collision (compare TX vs RX data, or detect abnormally high signal amplitude)</li>
+        <li>Both stop → random <strong>backoff timer</strong> → retransmit</li>
+      </ul>
+      Hub sends received frame out ALL other ports. Only device with matching MAC accepts it.
+    </div>
+    <div class="csma-card ca">
+      <div class="cc-title">CSMA/CA — Collision AVOIDANCE</div>
+      Used by: IEEE 802.11 WLANs
+      <ul>
+        <li>Devices <strong>cannot detect collisions</strong> while transmitting (TX signal overpowers RX)</li>
+        <li>Avoids collisions instead of detecting them</li>
+        <li>Each device includes <strong>time duration needed</strong> in its frame</li>
+        <li>All other wireless devices see this and know how long medium is unavailable</li>
+        <li>Receiver sends an <strong>acknowledgment</strong> back to confirm frame arrived</li>
+      </ul>
+      Does not scale well under heavy media use.
+    </div>
+  </div>
+  </div>
+
+</div></div>
+
+<!-- 6.3 DATA LINK FRAME -->
+<div class="sec" id="s3">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">6.3</span><span class="ttl">Data Link Frame</span></span><button class="sec-check" id="sch-s3" onclick="event.stopPropagation();toggleSection('s3',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb">
+
+  <div class="sub">
+  <h3><span class="sn">6.3.1</span> The Frame — Three Parts</h3>
+  <p>The data link layer encapsulates the Layer 3 packet with a <strong>header and trailer</strong> to create a frame. Every data link layer frame has three basic parts:</p>
+  <div class="frame-struct">
+    <div class="fs-hdr">HEADER<br><small>Addressing · Type · Control · Start flag</small></div>
+    <div class="fs-data">DATA (Payload)<br><small>IP Packet · Segment · Application Data</small></div>
+    <div class="fs-trail">TRAILER<br><small>Error Detection · FCS/CRC · Stop flag</small></div>
+  </div>
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Unlike other encapsulation protocols</strong>, the data link layer appends information in a <strong>TRAILER at the END</strong> of the frame — not just a header. This is how error detection (FCS) is handled at the rear of each frame.</div></div>
+  <p>There is <strong>no single universal frame structure</strong>. The frame format varies by protocol and environment. More hostile/noisy environments require larger headers and trailers (more control information) = more overhead = lower effective data rate.</p>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">6.3.2</span> Frame Fields</h3>
+  <div class="field-grid">
+    <div class="field-row hdr-field"><div class="fr-name">Start/Stop Flags</div><span class="fr-loc">Header/Trailer</span><div>Identifies the beginning and end limits of the frame. Provides synchronization between transmitting and receiving nodes.</div></div>
+    <div class="field-row hdr-field"><div class="fr-name">Addressing</div><span class="fr-loc">Header</span><div>Source and destination MAC addresses — specifies the nodes on the shared local media.</div></div>
+    <div class="field-row hdr-field"><div class="fr-name">Type</div><span class="fr-loc">Header</span><div>Identifies the Layer 3 protocol in the data field (e.g., IPv4 = 0x0800, IPv6 = 0x86DD, ARP = 0x0806). Tells the receiving node which upper-layer protocol gets the payload.</div></div>
+    <div class="field-row hdr-field"><div class="fr-name">Control</div><span class="fr-loc">Header</span><div>Identifies special flow control services such as QoS. VoIP frames receive forwarding priority because they are delay-sensitive.</div></div>
+    <div class="field-row dat-field"><div class="fr-name">Data</div><span class="fr-loc">Middle</span><div>Frame payload — contains the IP packet (which itself contains segment header and application data).</div></div>
+    <div class="field-row trl-field"><div class="fr-name">Error Detection (FCS)</div><span class="fr-loc">Trailer</span><div>Frame Check Sequence — contains the <strong>CRC (Cyclic Redundancy Check)</strong> value. A mathematical summary of all bits in the frame. Receiver recalculates CRC; if it doesn't match FCS → frame is corrupted → <strong>frame is discarded</strong>.</div></div>
+  </div>
+  <div class="ca info"><span class="ic">💡</span><div><strong>Error detection ≠ error correction.</strong> The data link layer only <strong>detects</strong> corrupted frames and discards them. It does NOT correct them. Upper-layer protocols (like TCP at Layer 4) are responsible for requesting retransmission of lost data.</div></div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">6.3.3</span> Layer 2 Addresses — Physical, Local, Hop-by-Hop</h3>
+  <p>Data link layer addresses are called <strong>physical addresses</strong>. Key properties:</p>
+  <ul>
+    <li><strong>Only used for local delivery</strong> — no meaning beyond the local network segment</li>
+    <li><strong>NOT hierarchical</strong> — do not indicate which network the device is on (unlike IP)</li>
+    <li>A device retains the same Layer 2 address even if moved to another network</li>
+    <li>NIC can quickly check destination L2 address to decide whether to accept the frame before reading the full payload</li>
+  </ul>
+
+  <h4>Frame Rewriting at Every Hop</h4>
+  <div class="hop-box">
+    <div class="hb-title">🔄 IP Addresses Unchanged — MAC Addresses Change at Each Router</div>
+    <table class="hop-table">
+      <tr><th>Hop</th><th>Src MAC</th><th>Dst MAC</th><th>Src IP</th><th>Dst IP</th></tr>
+      <tr>
+        <td class="hop">Host → Router 1</td>
+        <td class="mac-src">Host MAC</td>
+        <td class="mac-dst">R1 Fa0/0 MAC</td>
+        <td class="ip-src">10.1.1.10</td>
+        <td class="ip-dst">172.16.1.99</td>
+      </tr>
+      <tr>
+        <td class="hop">Router 1 → Router 2</td>
+        <td class="mac-src">R1 S0/0 MAC</td>
+        <td class="mac-dst">R2 S0/0 MAC</td>
+        <td class="ip-src">10.1.1.10</td>
+        <td class="ip-dst">172.16.1.99</td>
+      </tr>
+      <tr>
+        <td class="hop">Router 2 → Server</td>
+        <td class="mac-src">R2 Fa0/0 MAC</td>
+        <td class="mac-dst">Server MAC</td>
+        <td class="ip-src">10.1.1.10</td>
+        <td class="ip-dst">172.16.1.99</td>
+      </tr>
+    </table>
+  </div>
+  <p>At each router: the incoming frame is de-encapsulated → IP packet examined → new frame created with new MAC addresses for the next segment → forwarded out the appropriate interface.</p>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">6.3.4</span> LAN and WAN Frame Protocols</h3>
+  <div class="proto-grid">
+    <div class="proto-row lan"><div class="pr-name">Ethernet</div><div>IEEE 802.3 · Most common wired LAN · Multiaccess with many hosts · High bandwidth</div></div>
+    <div class="proto-row lan"><div class="pr-name">802.11 WLAN</div><div>Wireless LAN · CSMA/CA · Multiaccess · Growing rapidly</div></div>
+    <div class="proto-row wan"><div class="pr-name">PPP</div><div>Point-to-Point Protocol · Serial WAN links · Still used</div></div>
+    <div class="proto-row wan"><div class="pr-name">HDLC</div><div>High-Level Data Link Control · Cisco default on serial links · Point-to-point</div></div>
+    <div class="proto-row wan"><div class="pr-name">Frame Relay</div><div>Legacy WAN · Hub-and-spoke topology · Being replaced by Ethernet</div></div>
+    <div class="proto-row wan"><div class="pr-name">ATM / X.25</div><div>Legacy WAN protocols · Largely replaced</div></div>
+  </div>
+  <div class="ca info"><span class="ic">💡</span><div><strong>Why different protocols for LAN vs WAN?</strong> LANs cover small areas with high user density — high bandwidth is cost-effective. WANs cover large geographic areas — long-distance physical links make high bandwidth very expensive, resulting in lower bandwidth and different protocols. Modern WANs increasingly use Ethernet even over long distances (Metro Ethernet).</div></div>
+  </div>
+
+</div></div>
+
+<!-- EXAM TRAPS -->
+<div class="sec" id="s4">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">🎯</span><span class="ttl">Common Exam Traps — Module 6</span></span><button class="sec-check" id="sch-s4" onclick="event.stopPropagation();toggleSection('s4',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb">
+
+  <div class="ca danger"><span class="ic">❌</span><div><strong>Trap 1: Data link layer = NIC-to-NIC (local). NOT end-to-end.</strong><br>Layer 2 only delivers the frame from one NIC to the very next NIC on the same network segment. Layer 3 IP handles end-to-end delivery across all networks. The MAC address changes at every router hop; the IP address stays the same throughout.</div></div>
+
+  <div class="ca danger"><span class="ic">❌</span><div><strong>Trap 2: LLC = software (identifies L3 protocol). MAC = hardware (encapsulation + media access + addressing).</strong><br>LLC is IEEE 802.2 and sits above MAC. MAC implements the specific standard (802.3 for Ethernet, 802.11 for WLAN). LLC allows both IPv4 and IPv6 to share the same NIC. Students often confuse which sublayer does what.</div></div>
+
+  <div class="ca danger"><span class="ic">❌</span><div><strong>Trap 3: Data link standards come from IEEE/ITU/ISO/ANSI — NOT IETF RFCs.</strong><br>IETF publishes RFCs for upper-layer TCP/IP protocols (HTTP, TCP, IP, DNS). Physical and data link layer standards come from electrical engineering bodies. This distinction is directly tested.</div></div>
+
+  <div class="ca danger"><span class="ic">❌</span><div><strong>Trap 4: CSMA/CD = collision DETECTION (wired, legacy). CSMA/CA = collision AVOIDANCE (wireless).</strong><br>Wired Ethernet with hubs: devices can detect collision while transmitting → detect and back off. Wireless: device cannot detect collision while transmitting (its own TX signal overpowers the RX signal) → must avoid collisions by checking medium first and including duration in frame.</div></div>
+
+  <div class="ca danger"><span class="ic">❌</span><div><strong>Trap 5: The frame has THREE parts — Header + Data + Trailer. The TRAILER contains error detection (FCS/CRC).</strong><br>Unlike upper-layer protocols that only add headers, the data link layer also adds a TRAILER at the END. The FCS (Frame Check Sequence) field in the trailer holds the CRC value. If CRC mismatch → frame discarded.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 6: Error detection ≠ error correction. Corrupt frames are DISCARDED — not fixed.</strong><br>The data link layer detects errors via CRC/FCS and discards corrupt frames. It does NOT correct them or request retransmission. Layer 4 TCP handles end-to-end reliability and retransmission. Layer 2 just throws away bad frames silently.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 7: MAC addresses are NOT hierarchical and do NOT indicate network location.</strong><br>IP addresses are hierarchical (network portion + host portion) and tell you where on the internet a device is. MAC addresses are flat — they identify a specific NIC but give no information about which network that NIC is on. A device keeps its MAC address even if it moves to a completely different network.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 8: Duplex mismatch = inefficiency and latency. Both ends must match.</strong><br>If one interface is full-duplex and the connected interface is half-duplex, the half-duplex side will see constant late collisions. The link appears to work but performs very poorly. Always verify duplex settings match on both sides of a link during troubleshooting.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 9: Hub and Spoke — branches CANNOT communicate directly. Must go through hub.</strong><br>This is a key architectural limitation of hub-and-spoke WAN topology. All inter-branch traffic must travel to and from the central hub site. This doubles the WAN bandwidth used and adds latency compared to a full mesh.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 10: Modern switched Ethernet = full-duplex = NO access control method required.</strong><br>CSMA/CD is only needed for half-duplex hub-based Ethernet. Modern switches create dedicated full-duplex connections between each device and the switch. There is no shared medium, no collisions possible, and no need for CSMA/CD. CSMA/CA is only for WLANs.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 11: The Type field in the frame identifies which Layer 3 protocol is in the payload.</strong><br>The Type field (also called EtherType in Ethernet frames) tells the receiving NIC which upper-layer protocol gets the data — IPv4 (0x0800), IPv6 (0x86DD), ARP (0x0806), etc. This is how LLC's protocol identification function works in practice.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 12: The logical topology — not the physical topology — determines framing and access control.</strong><br>The data link layer "sees" the logical topology. Two different physical layouts can have the same logical topology. The logical topology determines whether CSMA/CD, CSMA/CA, PPP, or another protocol is used. Adding physical intermediary devices doesn't change the logical topology.</div></div>
+
+  <div class="ca tip"><span class="ic">✅</span><div><strong>Module 6 quick-reference summary:</strong><br><br>
+  <strong>Data Link Layer:</strong> OSI Layer 2 · NIC-to-NIC communications · Prepares data for physical network<br>
+  <strong>DL functions:</strong> Enables media access for upper layers · Encapsulates L3 packets into frames · Controls media access · Error detection · Rejects corrupt frames<br>
+  <strong>Two sublayers:</strong> LLC (802.2, software, identifies L3 protocol) · MAC (hardware, encapsulation+media access+addressing)<br>
+  <strong>MAC encapsulation:</strong> Frame delimiting · Addressing · Error detection<br>
+  <strong>Router at each hop:</strong> Accept frame → de-encapsulate → re-encapsulate → forward<br>
+  <strong>DL standards:</strong> IEEE · ITU · ISO · ANSI (NOT IETF)<br>
+  <strong>Physical topology:</strong> Physical connections/locations · <strong>Logical topology:</strong> How frames travel · DL layer sees logical<br>
+  <strong>WAN topologies:</strong> Point-to-Point (simplest) · Hub-and-Spoke (branches → hub only) · Mesh (all-to-all, costly)<br>
+  <strong>LAN topologies:</strong> Star (switch center, current) · Extended Star (multi-switch, current) · Bus (coax, legacy) · Ring (Token Ring/FDDI, legacy)<br>
+  <strong>Half-duplex:</strong> One direction at a time · WLANs + hub Ethernet · Needs access control<br>
+  <strong>Full-duplex:</strong> Simultaneous TX+RX · Ethernet switches (default) · No access control needed<br>
+  <strong>Duplex mismatch:</strong> Inefficiency + latency · Both ends must match<br>
+  <strong>Contention-based:</strong> CSMA/CD (wired collision detection) · CSMA/CA (wireless collision avoidance)<br>
+  <strong>Controlled access:</strong> Token Ring · ARCNET (legacy, deterministic but inefficient)<br>
+  <strong>CSMA/CD:</strong> Listen → transmit → collision detected → back off → retry<br>
+  <strong>CSMA/CA:</strong> Listen → wait if busy → transmit with duration → ACK from receiver<br>
+  <strong>Frame structure:</strong> Header + Data + Trailer (DL appends BOTH header AND trailer)<br>
+  <strong>Frame fields:</strong> Start/stop flags · Addressing · Type (L3 protocol ID) · Control (QoS) · Data · FCS/CRC (trailer)<br>
+  <strong>CRC/FCS:</strong> Math summary of all bits · Mismatch = corrupt frame = discarded (NOT corrected)<br>
+  <strong>L2 addresses:</strong> Physical · NOT hierarchical · Local only · Change at every router<br>
+  <strong>L3 addresses:</strong> Logical · Hierarchical · End-to-end · Never change during journey<br>
+  <strong>LAN protocols:</strong> Ethernet (802.3) · 802.11 WLAN<br>
+  <strong>WAN protocols:</strong> PPP · HDLC · Frame Relay · ATM · X.25 (legacy, being replaced by Ethernet)</div></div>
+
+</div></div>
+
+</div>
+<div class="ft">CCNA 1 ITN v7.02 — Module 6: Data Link Layer v2.2<br>Based on Cisco NetAcad curriculum · Study guide for personal use</div>
+<button class="tb-btn" id="topb" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+<div class="mod-nav">
+  <a class="mn-hub" href="index.html">🏠 Hub</a>
+  <div class="mn-divider"></div>
+  <a class="mn-prev" href="ccna1_module5_number_systems_v2.2.html">‹</a>
+  <span class="mn-label">M6 of 17</span>
+  <a class="mn-next" href="ccna1_module7_ethernet_switching_v2.2.html">›</a>
+</div>
+<script>
+var MOD_KEY="ccna1-module6-data-link-layer";
+var SECS=["s1","s2","s3","s4"];
+var checked={};
+function loadState(){
+  try{var s=localStorage.getItem(MOD_KEY);if(s)checked=JSON.parse(s);}catch(e){}
+  SECS.forEach(function(id){
+    var pill=document.getElementById('pill-'+id);
+    var row=document.getElementById('row-'+id);
+    var st=document.getElementById('st-'+id);
+    var sch=document.getElementById('sch-'+id);
+    if(checked[id]){
+      if(pill){pill.classList.add('checked');pill.querySelector('.pill-check').textContent='✓';}
+      if(row)row.classList.add('done');
+      if(st)st.textContent='✓';
+      if(sch){sch.classList.add('checked');sch.textContent='✓ Done';}
+    } else {
+      if(pill){pill.classList.remove('checked');pill.querySelector('.pill-check').textContent='○';}
+      if(row)row.classList.remove('done');
+      if(st)st.textContent='○';
+      if(sch){sch.classList.remove('checked');sch.textContent='○ Mark done';}
+    }
+  });
+}
+function toggleSection(id,btn){checked[id]=!checked[id];try{localStorage.setItem(MOD_KEY,JSON.stringify(checked));}catch(e){}loadState();}
+function toggleStudyPanel(){
+  var hdr=document.getElementById('sp-hdr');
+  var body=document.getElementById('sp-body');
+  var arr=document.getElementById('sp-arr');
+  hdr.classList.toggle('open');body.classList.toggle('open');
+  if(arr)arr.textContent=body.classList.contains('open')?'▲':'▼';
+}
+function goTo(id){var el=document.getElementById(id);if(!el)return;var h=el.querySelector('.sh'),b=el.querySelector('.sb');if(h&&b&&!b.classList.contains('open')){h.classList.add('open');b.classList.add('open');}setTimeout(function(){window.scrollTo({top:el.getBoundingClientRect().top+window.pageYOffset-60,behavior:'smooth'});},50);}
+function setFs(size,btn){document.documentElement.style.setProperty('--base-fs',size);document.querySelectorAll('.fs-btn').forEach(function(b){b.classList.remove('active');});btn.classList.add('active');try{localStorage.setItem('ccna-fs',size);}catch(e){}}
+(function(){try{var s=localStorage.getItem('ccna-fs');if(s){document.documentElement.style.setProperty('--base-fs',s);document.querySelectorAll('.fs-btn').forEach(function(b){b.classList.remove('active');if((b.textContent==='S'&&s==='14px')||(b.textContent==='M'&&s==='16px')||(b.textContent==='L'&&s==='18px')||(b.textContent==='XL'&&s==='20px'))b.classList.add('active');});}}catch(e){}loadState();})();
+function copyCode(btn){var pre=btn.closest('.cw').querySelector('pre');navigator.clipboard.writeText(pre.innerText||pre.textContent).then(function(){btn.textContent='Copied!';setTimeout(function(){btn.textContent='Copy';},1500);});}
+</script>
+<script src="../../site-config.js"></script>
+</body>
+</html>

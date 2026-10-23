@@ -1,0 +1,802 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=2.0">
+<title>CCNA 1 Module 17: Build a Small Network v2.2</title>
+<style>
+:root{--nt:#0a6e4e;--ntd:#4ade80;--nt2:#052e1e;--nt3:#021710;--bg:#f4f6f8;--card:#fff;--text:#1a1a2e;--muted:#5a6a7a;--cbg:#0d1117;--ctxt:#c9d1d9;--r:12px;--sh:0 2px 12px rgba(0,0,0,.08);--base-fs:20px;}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);font-size:var(--base-fs);line-height:1.7}
+.bc{background:#0d1117;padding:8px 16px;display:flex;align-items:center;flex-wrap:wrap;gap:4px;font-size:.75em;overflow-x:auto;white-space:nowrap;-webkit-overflow-scrolling:touch;border-bottom:1px solid #21262d}
+.bc a{color:#8b949e;text-decoration:none;font-weight:600;flex-shrink:0}
+.bc .sep{color:#6e7681;flex-shrink:0}
+.bc .cur{color:var(--ntd);font-weight:700;flex-shrink:0}
+.fs-bar{position:sticky;top:0;z-index:200;background:#1a1a2e;display:flex;align-items:center;justify-content:flex-end;padding:6px 14px;gap:6px;box-shadow:0 2px 8px rgba(0,0,0,.3)}
+.fs-label{color:#8b949e;font-size:.72em;font-weight:700;letter-spacing:.5px;text-transform:uppercase;margin-right:4px}
+.fs-btn{background:#30363d;color:#c9d1d9;border:2px solid transparent;border-radius:6px;padding:4px 12px;font-size:.75em;font-weight:700;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:all .2s;line-height:1.4}
+.fs-btn:active,.fs-btn.active{background:var(--nt);color:#fff;border-color:var(--ntd)}
+.hdr{background:linear-gradient(135deg,var(--nt3),var(--nt2),var(--nt));color:#fff;padding:32px 20px 24px;text-align:center}
+.hdr .badge{display:inline-block;background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.4);border-radius:20px;padding:4px 14px;font-size:.81em;margin-bottom:12px}
+.hdr h1{font-size:1.5em;font-weight:700;margin-bottom:6px}
+.hdr p{font-size:.94em;opacity:.85}
+.hdr .obj{display:inline-block;background:rgba(255,255,255,.15);border-radius:8px;padding:7px 16px;margin-top:12px;font-size:.875em;font-style:italic}
+.complete-banner{background:linear-gradient(135deg,#064e3b,#065f46,#047857);color:#fff;margin:16px;border-radius:var(--r);padding:16px 18px;text-align:center;font-size:.875em;line-height:1.6;box-shadow:0 4px 20px rgba(10,110,78,.3)}
+.complete-banner .cb-title{font-size:1.1em;font-weight:800;margin-bottom:4px}
+/* Study progress panel */
+.sp-wrap{background:var(--card);margin:0 16px 16px;border-radius:var(--r);box-shadow:var(--sh);overflow:hidden}
+.sp-hdr{background:var(--nt);color:#fff;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;user-select:none;-webkit-tap-highlight-color:transparent;gap:10px}
+.sp-hdr .sp-title{font-weight:700;font-size:.875em;flex-shrink:0}
+.sp-hdr .sp-arr{transition:transform .3s;flex-shrink:0}
+.sp-hdr.open .sp-arr{transform:rotate(180deg)}
+.sp-body{display:none;padding:12px 14px}
+.sp-body.open{display:block}
+.sp-row{display:flex;align-items:center;gap:10px;padding:6px 4px;border-bottom:1px solid #f0f4f8;font-size:.81em}
+.sp-row:last-child{border-bottom:none}
+.sp-row .sr-status{font-size:1em;flex-shrink:0;width:20px;text-align:center}
+.sp-row .sr-nb{font-weight:800;color:var(--nt);min-width:36px;flex-shrink:0;font-size:.875em}
+.sp-row .sr-ttl{color:var(--text);flex:1}
+.sp-row.done .sr-ttl{color:var(--muted);text-decoration:line-through}
+/* Section check pills in fs-bar */
+.sc-pills{display:flex;align-items:center;gap:4px;overflow-x:auto;-webkit-overflow-scrolling:touch;flex:1;padding:0 4px}
+.sc-pill{background:#30363d;color:#8b949e;border:2px solid transparent;border-radius:6px;padding:3px 8px;font-size:.72em;font-weight:700;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:all .15s;white-space:nowrap;flex-shrink:0;line-height:1.4;display:flex;align-items:center;gap:3px}
+.sc-pill.checked{background:var(--nt);color:#fff;border-color:var(--ntd)}
+.sc-pill .pill-check{font-size:.875em}
+/* remove old pb-wrap */
+.toc{background:var(--card);margin:0 16px 16px;border-radius:var(--r);box-shadow:var(--sh);overflow:hidden}
+.toch{background:var(--nt);color:#fff;padding:14px 18px;font-weight:700;font-size:.94em;display:flex;justify-content:space-between;align-items:center;cursor:pointer;user-select:none}
+.toch .arr{transition:transform .3s}
+.toch.open .arr{transform:rotate(180deg)}
+.tocb{display:none;padding:10px 0}
+.tocb.open{display:block}
+.tocg{font-size:.69em;font-weight:800;letter-spacing:.8px;color:var(--nt);text-transform:uppercase;padding:8px 20px 2px}
+.tocb a{display:block;padding:9px 20px 9px 28px;color:var(--text);text-decoration:none;font-size:.875em;border-left:3px solid transparent;transition:all .2s}
+.tocb a:active{background:#f0fdf4;border-left-color:var(--ntd)}
+.tocb a .n{display:inline-block;background:var(--nt);color:#fff;border-radius:5px;padding:1px 8px;font-size:.75em;font-weight:700;margin-right:8px}
+.wrap{padding:0 16px 100px}
+.sec{background:var(--card);border-radius:var(--r);box-shadow:var(--sh);margin-bottom:16px;overflow:hidden}
+.sh{background:linear-gradient(90deg,var(--nt3),var(--nt));color:#fff;padding:16px 18px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;user-select:none;-webkit-tap-highlight-color:transparent}
+.sh .ttl{font-weight:700;font-size:1em}
+.sh .nb{background:rgba(255,255,255,.25);border-radius:6px;padding:3px 10px;font-size:.81em;font-weight:700;margin-right:10px;white-space:nowrap}
+.sh .ch{font-size:1.125em;transition:transform .3s}
+.sh.open .ch{transform:rotate(180deg)}
+.sb{display:none;padding:18px}
+.sb.open{display:block}
+.sub{margin-bottom:24px}
+.sub:last-child{margin-bottom:0}
+.sub h3{font-size:.94em;font-weight:700;color:var(--nt);margin-bottom:10px;padding-bottom:6px;border-bottom:2px solid #f0fdf4;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.sub h3 .sn{background:var(--nt);color:#fff;border-radius:5px;padding:2px 8px;font-size:.75em;white-space:nowrap}
+.sub h4{font-size:.875em;font-weight:700;color:var(--nt);margin:14px 0 6px}
+.sub p{margin-bottom:10px;font-size:.94em}
+.sub ul,.sub ol{padding-left:20px;margin:8px 0;font-size:.94em}
+.sub li{margin-bottom:5px}
+.cw{background:var(--cbg);border-radius:10px;margin:12px 0;overflow:hidden}
+.cl{background:#21262d;color:#c9d1d9;font-size:.78em;font-weight:700;padding:6px 14px;letter-spacing:.5px;text-transform:uppercase;display:flex;justify-content:space-between;align-items:center}
+.cl .copy-btn{background:var(--nt);color:#fff;border:none;border-radius:4px;padding:2px 10px;font-size:.875em;cursor:pointer;font-weight:700}
+pre{margin:0;padding:14px;overflow-x:auto;-webkit-overflow-scrolling:touch}
+code{font-family:'Courier New',monospace;font-size:.81em;color:var(--ctxt);line-height:1.6}
+.ca{border-radius:8px;padding:12px 14px;margin:12px 0;font-size:.875em;line-height:1.6;display:flex;gap:10px;align-items:flex-start}
+.ca .ic{font-size:1.125em;flex-shrink:0;margin-top:1px}
+.ca.warn{background:#fff3cd;border-left:4px solid #b38600;color:#3d2c00}
+.ca.tip{background:#d4edda;border-left:4px solid #28a745;color:#0d3318}
+.ca.danger{background:#f8d7da;border-left:4px solid #dc3545;color:#3d0010}
+.ca.info{background:#f0fdf4;border-left:4px solid var(--nt);color:#052e1e}
+.et{background:linear-gradient(135deg,#1a1a2e,var(--nt3));color:#fff;border-radius:10px;padding:14px 16px;margin:14px 0;font-size:.875em;line-height:1.6}
+.et .lbl{font-size:.69em;font-weight:800;letter-spacing:1px;color:var(--ntd);margin-bottom:6px}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:12px 0;border-radius:8px}
+table{width:100%;border-collapse:collapse;font-size:.875em}
+th{background:var(--nt);color:#fff;padding:10px 12px;text-align:left;font-weight:700;font-size:.81em}
+td{padding:9px 12px;border-bottom:1px solid #e8ecf0;vertical-align:top;color:#1a1a2e}
+tr:nth-child(even) td{background:#f0fdf4;color:#052e1e}
+tr:last-child td{border-bottom:none}
+p code,li code,td code,.ca code,.scenario-card code{background:#f0fdf4;color:#052e1e;border-radius:4px;padding:1px 5px;font-size:.81em;font-family:'Courier New',monospace;font-weight:600}
+
+/* Ping indicators */
+.ping-indicators{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:12px 0}
+@media(max-width:400px){.ping-indicators{grid-template-columns:1fr}}
+.ping-ind{border-radius:8px;padding:10px 12px;font-size:.81em;text-align:center;border:2px solid}
+.ping-ind.ok{background:#f0fdf4;border-color:var(--nt)}
+.ping-ind.to{background:#fffbeb;border-color:#b38600}
+.ping-ind.un{background:#fff5f5;border-color:#dc3545}
+.ping-ind .pi-sym{font-family:'Courier New',monospace;font-weight:900;font-size:1.5em;display:block;margin-bottom:3px}
+.ping-ind.ok .pi-sym{color:var(--nt)}
+.ping-ind.to .pi-sym{color:#b38600}
+.ping-ind.un .pi-sym{color:#dc3545}
+
+/* Troubleshooting steps */
+.ts-steps{display:grid;gap:5px;margin:12px 0}
+.ts-step{display:flex;gap:10px;align-items:flex-start;padding:9px 12px;border-radius:8px;font-size:.81em;border-left:4px solid var(--nt);background:#f0fdf4;line-height:1.5}
+.ts-step .tss-num{font-weight:900;color:var(--nt);flex-shrink:0;min-width:20px}
+
+/* Scenario cards */
+.scenario-cards{display:grid;gap:8px;margin:12px 0}
+.scenario-card{border-radius:8px;padding:11px 14px;font-size:.81em;border-left:5px solid;line-height:1.6}
+.scenario-card.dup{border-left-color:#7b2d8b;background:#f3e8ff}
+.scenario-card.ip {border-left-color:#b38600;background:#fffbeb}
+.scenario-card.apipa{border-left-color:#dc3545;background:#fff5f5}
+.scenario-card.gw {border-left-color:#1a3a5c;background:#e0f2fe}
+.scenario-card.dns{border-left-color:var(--nt);background:#f0fdf4}
+.scenario-card .sc-name{font-weight:800;margin-bottom:4px}
+.scenario-card.dup   .sc-name{color:#7b2d8b}
+.scenario-card.ip    .sc-name{color:#b38600}
+.scenario-card.apipa .sc-name{color:#7c1e1e}
+.scenario-card.gw    .sc-name{color:#1a3a5c}
+.scenario-card.dns   .sc-name{color:var(--nt)}
+
+/* Show commands grid */
+.show-grid{display:grid;gap:4px;margin:12px 0}
+.show-row{display:flex;gap:8px;align-items:flex-start;padding:7px 12px;border-radius:6px;font-size:.81em;background:#f0fdf4;border-left:3px solid var(--nt);line-height:1.5}
+.show-row .sr-cmd{font-family:'Courier New',monospace;font-weight:800;color:var(--nt);flex-shrink:0;min-width:180px;font-size:.875em}
+
+/* Platform compare */
+.platform-compare{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:12px 0}
+@media(max-width:480px){.platform-compare{grid-template-columns:1fr}}
+.plat-card{border-radius:8px;padding:10px 14px;font-size:.81em;border:2px solid;line-height:1.6}
+.plat-card.win{background:#e0f2fe;border-color:#1a3a5c}
+.plat-card.ios{background:#f0fdf4;border-color:var(--nt)}
+.plat-card .pc-os{font-weight:800;margin-bottom:4px}
+.plat-card.win .pc-os{color:#1a3a5c}
+.plat-card.ios .pc-os{color:var(--nt)}
+
+/* APIPA callout */
+.apipa-box{background:#dc3545;color:#fff;border-radius:10px;padding:14px 16px;margin:12px 0;font-size:.875em;line-height:1.6}
+.apipa-box .ab-range{font-family:'Courier New',monospace;font-size:1.1em;font-weight:900;display:block;margin:4px 0 8px}
+
+/* ipconfig variants */
+.ipcfg-rows{display:grid;gap:4px;margin:12px 0}
+.ipcfg-row{display:flex;gap:8px;align-items:flex-start;padding:7px 12px;border-radius:6px;font-size:.81em;background:#f0fdf4;border-left:3px solid var(--nt);line-height:1.5}
+.ipcfg-row .ir-cmd{font-family:'Courier New',monospace;font-weight:800;color:var(--nt);flex-shrink:0;font-size:.875em;min-width:160px}
+
+.tb-btn{position:fixed;bottom:80px;right:16px;background:var(--nt);color:#fff;border:none;border-radius:50%;width:44px;height:44px;font-size:1.25em;box-shadow:0 4px 14px rgba(0,0,0,.25);cursor:pointer;display:none;align-items:center;justify-content:center;z-index:100}
+.tb-btn.show{display:flex}
+.ft{text-align:center;padding:24px 16px;color:var(--muted);font-size:.81em}
+.mod-nav{position:fixed;bottom:0;left:0;right:0;z-index:300;background:#1a1a2e;border-top:1px solid #30363d;display:flex;align-items:center;height:52px;padding:0 8px;gap:6px}
+.mn-hub{background:#1ba0d7;color:#fff;border:none;border-radius:8px;padding:6px 12px;font-size:.75em;font-weight:700;cursor:pointer;text-decoration:none;display:flex;align-items:center;gap:4px;white-space:nowrap;-webkit-tap-highlight-color:transparent;flex-shrink:0}
+.mn-hub:active{opacity:.8}
+.mn-divider{width:1px;height:28px;background:#30363d;flex-shrink:0}
+.mn-label{flex:1;text-align:center;font-size:.69em;color:#8b949e;font-weight:600;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding:0 4px}
+.mn-prev,.mn-next{background:#30363d;color:#c9d1d9;border:none;border-radius:8px;padding:6px 10px;font-size:.875em;font-weight:700;cursor:pointer;text-decoration:none;display:flex;align-items:center;-webkit-tap-highlight-color:transparent;flex-shrink:0}
+.mn-prev:active,.mn-next:active{background:var(--nt);color:#fff}
+.mn-next.done{background:var(--nt);color:#fff;font-size:.69em;padding:6px 8px}
+
+/* v2.1 — In-section check button */
+.sh{position:relative}
+.sec-check{position:absolute;right:40px;top:50%;transform:translateY(-50%);background:rgba(255,255,255,.15);border:2px solid rgba(255,255,255,.4);border-radius:6px;padding:2px 10px;font-size:.72em;font-weight:800;color:#fff;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:all .2s;white-space:nowrap;z-index:10;line-height:1.5}
+.sec-check.checked{background:var(--ntd);border-color:var(--ntd);color:#052e1e}
+.sec-check:active{opacity:.75}
+</style>
+</head>
+<body>
+<nav class="bc">
+  <a href="../../index.html">🏠 Home</a><span class="sep">›</span>
+  <a href="index.html">CCNA 1 — ITN</a><span class="sep">›</span>
+  <span class="cur">M17: Build a Small Network</span>
+</nav>
+<div class="fs-bar">
+  <div class="sc-pills" id="sc-pills">
+  <button class="sc-pill" id="pill-s1" onclick="toggleSection('s1',this)"><span class="pill-check">○</span>17.1</button>
+  <button class="sc-pill" id="pill-s2" onclick="toggleSection('s2',this)"><span class="pill-check">○</span>17.2</button>
+  <button class="sc-pill" id="pill-s3" onclick="toggleSection('s3',this)"><span class="pill-check">○</span>17.3</button>
+  <button class="sc-pill" id="pill-s4" onclick="toggleSection('s4',this)"><span class="pill-check">○</span>17.4</button>
+  <button class="sc-pill" id="pill-s5" onclick="toggleSection('s5',this)"><span class="pill-check">○</span>17.5</button>
+  <button class="sc-pill" id="pill-s6" onclick="toggleSection('s6',this)"><span class="pill-check">○</span>17.6</button>
+  <button class="sc-pill" id="pill-s7" onclick="toggleSection('s7',this)"><span class="pill-check">○</span>17.7</button>
+  <button class="sc-pill" id="pill-s-pt-17-8" onclick="toggleSection('s-pt-17-8',this)"><span class="pill-check">○</span>PT 17.8</button>
+  <button class="sc-pill" id="pill-s8" onclick="toggleSection('s8',this)"><span class="pill-check">○</span>🎯</button>
+  </div>
+  <span class="fs-label" style="flex-shrink:0;margin-left:6px">Size</span>
+  <button class="fs-btn" onclick="setFs('14px',this)">S</button>
+  <button class="fs-btn" onclick="setFs('16px',this)">M</button>
+  <button class="fs-btn" onclick="setFs('18px',this)">L</button>
+  <button class="fs-btn active" onclick="setFs('20px',this)">XL</button>
+</div>
+<div class="hdr">
+  <div class="badge">CCNA 1 — ITN v7.02 · Module 17 · FINAL</div>
+  <h1>🏗️ Build a Small Network</h1>
+  <p>Introduction to Networks · NetAcad Study Guide</p>
+  <div class="obj">Module Objective: Implement a network design for a small network including a router, switch, and end devices</div>
+</div>
+
+<div class="complete-banner">
+  <div class="cb-title">🎉 CCNA 1 Complete — 17 of 17 Modules</div>
+  This is the final module of CCNA 1 Introduction to Networks. You now have the full ITN foundation covering networking today, protocols, physical/data link/network layers, IP addressing, transport, application, security, and network implementation.
+</div>
+
+<div class="sp-wrap">
+  <div class="sp-hdr" id="sp-hdr" onclick="toggleStudyPanel()">
+    <span class="sp-title">📚 Sections</span>
+    <span class="sp-arr" id="sp-arr">▼</span>
+  </div>
+  <div class="sp-body" id="sp-body">
+    <div class="sp-row" id="row-s1"><span class="sr-status" id="st-s1">○</span><span class="sr-nb">17.1</span><span class="sr-ttl">Devices in a Small Network</span></div>
+    <div class="sp-row" id="row-s2"><span class="sr-status" id="st-s2">○</span><span class="sr-nb">17.2</span><span class="sr-ttl">Applications and Protocols</span></div>
+    <div class="sp-row" id="row-s3"><span class="sr-status" id="st-s3">○</span><span class="sr-nb">17.3</span><span class="sr-ttl">Scale to Larger Networks</span></div>
+    <div class="sp-row" id="row-s4"><span class="sr-status" id="st-s4">○</span><span class="sr-nb">17.4</span><span class="sr-ttl">Verify Connectivity</span></div>
+    <div class="sp-row" id="row-s5"><span class="sr-status" id="st-s5">○</span><span class="sr-nb">17.5</span><span class="sr-ttl">Host and IOS Commands</span></div>
+    <div class="sp-row" id="row-s6"><span class="sr-status" id="st-s6">○</span><span class="sr-nb">17.6</span><span class="sr-ttl">Troubleshooting Methodologies</span></div>
+    <div class="sp-row" id="row-s7"><span class="sr-status" id="st-s7">○</span><span class="sr-nb">17.7</span><span class="sr-ttl">Troubleshooting Scenarios</span></div>
+    <div class="sp-row" id="row-s-pt-17-8"><span class="sr-status" id="st-s-pt-17-8">○</span><span class="sr-nb">PT 17.8</span><span class="sr-ttl">Packet Tracer — Skills Integration and Troubleshooting</span></div>
+    <div class="sp-row" id="row-s8"><span class="sr-status" id="st-s8">○</span><span class="sr-nb">🎯</span><span class="sr-ttl">Common Exam Traps — Module 17</span></div>
+  </div>
+</div>
+
+<div class="toc">
+  <div class="toch open" onclick="this.classList.toggle('open');document.getElementById('tocb').classList.toggle('open')">
+    📋 Table of Contents — Tap to expand <span class="arr">▼</span>
+  </div>
+  <div class="tocb open" id="tocb">
+    <div class="tocg">17.1 — Devices in a Small Network</div>
+    <a href="javascript:void(0)" onclick="goTo('s1')"><span class="n">17.1.2</span> Device Selection — Cost · Speed · Expandability · OS Features</a>
+    <a href="javascript:void(0)" onclick="goTo('s1')"><span class="n">17.1.3</span> IP Addressing Scheme by Device Type</a>
+    <a href="javascript:void(0)" onclick="goTo('s1')"><span class="n">17.1.4</span> Redundancy — Eliminate Single Points of Failure</a>
+    <a href="javascript:void(0)" onclick="goTo('s1')"><span class="n">17.1.5</span> QoS — Voice and Video Priority</a>
+    <div class="tocg">17.2 — Applications and Protocols</div>
+    <a href="javascript:void(0)" onclick="goTo('s2')"><span class="n">17.2.1</span> Common Applications and Protocols</a>
+    <a href="javascript:void(0)" onclick="goTo('s2')"><span class="n">17.2.3</span> Voice and Video — VoIP · IP Telephony · RTP · RTCP</a>
+    <div class="tocg">17.3 — Scale to Larger Networks</div>
+    <a href="javascript:void(0)" onclick="goTo('s3')"><span class="n">17.3.1</span> Four Elements Needed to Scale</a>
+    <a href="javascript:void(0)" onclick="goTo('s3')"><span class="n">17.3.2</span> Protocol Analysis — Wireshark · Peak Utilization</a>
+    <div class="tocg">17.4 — Verify Connectivity</div>
+    <a href="javascript:void(0)" onclick="goTo('s4')"><span class="n">17.4.1</span> Ping — ! · . · U Indicators · Windows vs IOS</a>
+    <a href="javascript:void(0)" onclick="goTo('s4')"><span class="n">17.4.2</span> Extended Ping — Specify Source Address</a>
+    <a href="javascript:void(0)" onclick="goTo('s4')"><span class="n">17.4.3</span> Traceroute — tracert vs traceroute · IOS interrupt</a>
+    <a href="javascript:void(0)" onclick="goTo('s4')"><span class="n">17.4.5</span> Network Baseline — Timestamped Snapshots</a>
+    <div class="tocg">17.5 — Host and IOS Commands</div>
+    <a href="javascript:void(0)" onclick="goTo('s5')"><span class="n">17.5.1</span> ipconfig · ifconfig · ip address by Platform</a>
+    <a href="javascript:void(0)" onclick="goTo('s5')"><span class="n">17.5.4</span> arp -a Command</a>
+    <a href="javascript:void(0)" onclick="goTo('s5')"><span class="n">17.5.5</span> Common IOS show Commands</a>
+    <a href="javascript:void(0)" onclick="goTo('s5')"><span class="n">17.5.6</span> CDP — show cdp neighbors · Security</a>
+    <a href="javascript:void(0)" onclick="goTo('s5')"><span class="n">17.5.7</span> show ip interface brief</a>
+    <div class="tocg">17.6 — Troubleshooting Methodologies</div>
+    <a href="javascript:void(0)" onclick="goTo('s6')"><span class="n">17.6.1</span> Six-Step Troubleshooting Process</a>
+    <a href="javascript:void(0)" onclick="goTo('s6')"><span class="n">17.6.3</span> debug Command · undebug all</a>
+    <a href="javascript:void(0)" onclick="goTo('s6')"><span class="n">17.6.4</span> terminal monitor</a>
+    <div class="tocg">17.7 — Troubleshooting Scenarios</div>
+    <a href="javascript:void(0)" onclick="goTo('s7')"><span class="n">17.7.1</span> Duplex Mismatch</a>
+    <a href="javascript:void(0)" onclick="goTo('s7')"><span class="n">17.7.3</span> APIPA — 169.254.0.0/16</a>
+    <a href="javascript:void(0)" onclick="goTo('s7')"><span class="n">17.7.4</span> Default Gateway Issues</a>
+    <a href="javascript:void(0)" onclick="goTo('s7')"><span class="n">17.7.5</span> DNS Issues — Public DNS Servers</a>
+    <div class="tocg">Reference</div>
+    <a href="javascript:void(0)" onclick="goTo('s8')"><span class="n">🎯</span> Common Exam Traps</a>
+  </div>
+</div>
+
+<div class="wrap">
+
+<!-- 17.1 DEVICES -->
+<div class="sec" id="s1">
+<div class="sh open" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">17.1</span><span class="ttl">Devices in a Small Network</span></span><button class="sec-check" id="sch-s1" onclick="event.stopPropagation();toggleSection('s1',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb open">
+  <div class="sub">
+  <h3><span class="sn">17.1.2</span> Device Selection — Four Key Factors</h3>
+  <div class="tw"><table>
+    <tr><th>Factor</th><th>Details</th></tr>
+    <tr><td><strong>Cost</strong></td><td>Determined by capacity, port count, backplane speed, built-in redundancy, management features, embedded security. Cable runs also factor in.</td></tr>
+    <tr><td><strong>Speed and Port Types</strong></td><td>Match ports to device NICs (1 Gbps common; some servers need 10 Gbps). Selecting higher-speed devices future-proofs the network.</td></tr>
+    <tr><td><strong>Expandability</strong></td><td><strong>Fixed</strong> = specific port count, cannot expand. <strong>Modular</strong> = expansion slots for new modules as needs grow. Consider uplink port options.</td></tr>
+    <tr><td><strong>OS Features</strong></td><td>Must support needed functions: Layer 3 switching, NAT, DHCP, Security, QoS, VoIP support</td></tr>
+  </table></div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">17.1.3</span> IP Addressing Scheme by Device Type</h3>
+  <p>Plan, document, and maintain an IP addressing scheme organized by device type. Structured ranges enable easier troubleshooting and summarization. Example for <code>192.168.x.0/24</code>:</p>
+  <div class="tw"><table>
+    <tr><th>Device Type</th><th>Range</th><th>Subnet</th></tr>
+    <tr><td>Default gateway (Router)</td><td>.1–.2</td><td>.0/30</td></tr>
+    <tr><td>Switches (max 2)</td><td>.5–.6</td><td>.4/30</td></tr>
+    <tr><td>Access points (max 6)</td><td>.9–.14</td><td>.8/29</td></tr>
+    <tr><td>Servers (max 6)</td><td>.17–.22</td><td>.16/29</td></tr>
+    <tr><td>Printers (max 6)</td><td>.25–.30</td><td>.24/29</td></tr>
+    <tr><td>IP Phones (max 6)</td><td>.33–.38</td><td>.32/29</td></tr>
+    <tr><td>Wired devices (max 62)</td><td>.65–.126</td><td>.64/26</td></tr>
+    <tr><td>Wireless devices (max 62)</td><td>.193–.254</td><td>.192/26</td></tr>
+  </table></div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">17.1.4</span> Redundancy</h3>
+  <p>Redundancy eliminates <strong>single points of failure</strong>. Methods: duplicate equipment OR duplicate links for critical areas.</p>
+  <div class="ca warn"><span class="ic">⚠️</span><div>Small networks typically have a single router as the exit to the internet. If that router fails, all internet connectivity is lost. Consider contracting a second ISP as a backup WAN connection for business-critical networks.</div></div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">17.1.5</span> Traffic Management — QoS</h3>
+  <p><strong>QoS (Quality of Service)</strong> classifies network traffic by priority so that real-time traffic (voice, video) gets preferential treatment over regular data traffic. Configure on both routers and switches. Without QoS, voice calls degrade significantly when the network is congested.</p>
+  </div>
+</div></div>
+
+<!-- 17.2 APPS AND PROTOCOLS -->
+<div class="sec" id="s2">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">17.2</span><span class="ttl">Applications and Protocols</span></span><button class="sec-check" id="sch-s2" onclick="event.stopPropagation();toggleSection('s2',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb">
+  <div class="sub">
+  <h3><span class="sn">17.2.1–17.2.2</span> Common Applications and Protocols</h3>
+  <p>Two types of software providing network access:</p>
+  <ul>
+    <li><strong>Network Applications</strong> — directly implement application layer protocols (email clients, web browsers)</li>
+    <li><strong>Application Layer Services</strong> — programs that interface with the network on behalf of other applications (file transfer services, print spooling)</li>
+  </ul>
+  <div class="ca tip"><span class="ic">✅</span><div><strong>Best practice — always use the secure version:</strong><br>SSH over Telnet · SFTP/FTPS over FTP · HTTPS over HTTP<br>A single server can provide multiple services simultaneously (email + FTP + web + DNS).</div></div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">17.2.3</span> Voice and Video Applications</h3>
+  <div class="tw"><table>
+    <tr><th>Technology</th><th>Description</th></tr>
+    <tr><td><strong>VoIP</strong></td><td>Converts analog telephone signals to digital IP packets. Less expensive than IP telephony but lower quality. Examples: Skype, WebEx.</td></tr>
+    <tr><td><strong>IP Telephony</strong></td><td>Voice converted to IP using a dedicated call control server. Vendors: Cisco Business Edition 4000.</td></tr>
+    <tr><td><strong>RTP</strong></td><td>Real-Time Transport Protocol — carries the actual audio/video streams across the network.</td></tr>
+    <tr><td><strong>RTCP</strong></td><td>Real-Time Transport Control Protocol — monitors the QoS of RTP sessions; provides feedback on transmission quality.</td></tr>
+  </table></div>
+  <div class="ca info"><span class="ic">💡</span><div>Both VoIP and IP telephony require QoS to minimize latency. Voice is very sensitive to delay (latency) and jitter. Even small delays cause noticeable quality degradation in voice calls.</div></div>
+  </div>
+</div></div>
+
+<!-- 17.3 SCALE -->
+<div class="sec" id="s3">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">17.3</span><span class="ttl">Scale to Larger Networks</span></span><button class="sec-check" id="sch-s3" onclick="event.stopPropagation();toggleSection('s3',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb">
+  <div class="sub">
+  <h3><span class="sn">17.3.1</span> Four Elements Needed to Scale</h3>
+  <div class="tw"><table>
+    <tr><th>Element</th><th>Description</th></tr>
+    <tr><td><strong>Network documentation</strong></td><td>Physical and logical topology diagrams — current and up-to-date</td></tr>
+    <tr><td><strong>Device inventory</strong></td><td>List of all network devices with model, firmware, location, configuration</td></tr>
+    <tr><td><strong>Budget</strong></td><td>Itemized IT budget including equipment purchasing and refresh cycle planning</td></tr>
+    <tr><td><strong>Traffic analysis</strong></td><td>Protocols, applications, services, and traffic flows documented per segment</td></tr>
+  </table></div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">17.3.2</span> Protocol Analysis</h3>
+  <ul>
+    <li>Use <strong>Wireshark</strong> or similar protocol analyzer to capture and analyze traffic</li>
+    <li>Capture during <strong>peak utilization times</strong> to get representative data</li>
+    <li>Capture on <strong>different network segments</strong> — some traffic is only local to a segment</li>
+    <li>Use analysis to decide on traffic management, server relocation, or network redesign</li>
+  </ul>
+  </div>
+</div></div>
+
+<!-- 17.4 VERIFY CONNECTIVITY -->
+<div class="sec" id="s4">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">17.4</span><span class="ttl">Verify Connectivity</span></span><button class="sec-check" id="sch-s4" onclick="event.stopPropagation();toggleSection('s4',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb">
+  <div class="sub">
+  <h3><span class="sn">17.4.1</span> Ping — Windows vs IOS</h3>
+  <div class="platform-compare">
+    <div class="plat-card win"><div class="pc-os">🪟 Windows</div>Sends <strong>4</strong> ICMP echo messages. Shows RTT min/avg/max. Output shows each reply with time in ms.</div>
+    <div class="plat-card ios"><div class="pc-os">🔧 Cisco IOS</div>Sends <strong>5</strong> ICMP echo messages. Shows !/./U indicators. Shows success rate percentage and RTT.</div>
+  </div>
+  <p><strong>IOS Ping Output Indicators:</strong></p>
+  <div class="ping-indicators">
+    <div class="ping-ind ok"><span class="pi-sym">!</span><strong>Success</strong><br>Echo reply received — Layer 3 connectivity confirmed</div>
+    <div class="ping-ind to"><span class="pi-sym">.</span><strong>Timeout</strong><br>No reply received — connectivity problem somewhere along path</div>
+    <div class="ping-ind un"><span class="pi-sym">U</span><strong>Unreachable</strong><br>Router sent ICMP Type 3 Destination Unreachable — no route to destination</div>
+  </div>
+  <div class="cw"><div class="cl"><span>IOS Ping — Success and Failure Examples</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+  <pre><code>R1# ping 10.1.1.10
+Sending 5, 100-byte ICMP Echos to 10.1.1.10, timeout is 2 seconds:
+!!!!!
+Success rate is 100 percent (5/5), round-trip min/avg/max = 1/1/2 ms
+
+R1# ping 10.2.2.10
+Sending 5, 100-byte ICMP Echos to 10.2.2.10, timeout is 2 seconds:
+.....
+Success rate is 0 percent (0/5)
+
+R1# ping 172.16.1.1
+UUUUU
+Success rate is 0 percent (0/5)    ← Router knows there's no route</code></pre></div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">17.4.2</span> Extended Ping</h3>
+  <p>Standard ping uses the outgoing interface IP as the source address. <strong>Extended ping</strong> lets you specify a different source address — critical for testing whether specific subnets are reachable through a router.</p>
+  <div class="cw"><div class="cl"><span>Extended Ping — Privileged EXEC Mode</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+  <pre><code>R1# ping                         ← Type ping with no destination
+Protocol [ip]:                   ← Press Enter for IPv4
+Target IP address: 10.1.1.10
+Repeat count [5]:
+Datagram size [100]:
+Timeout in seconds [2]:
+Extended commands [n]: y         ← Type y for extended options
+Source address or interface: 192.168.10.1   ← Specify source
+Type of service [0]:
+...
+!!!!!
+Success rate is 100 percent (5/5)
+
+R1# ping ipv6                    ← For IPv6 extended ping</code></pre></div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">17.4.3–17.4.4</span> Traceroute / tracert</h3>
+  <div class="tw"><table>
+    <tr><th>Platform</th><th>Command</th><th>Protocol Used</th><th>Interrupt</th></tr>
+    <tr><td><strong>Windows</strong></td><td><code>tracert</code></td><td>ICMP Echo Requests</td><td>Ctrl-C</td></tr>
+    <tr><td><strong>Cisco IOS / Linux</strong></td><td><code>traceroute</code></td><td>UDP with invalid port (destination responds with ICMP Port Unreachable)</td><td>Ctrl-Shift-6</td></tr>
+  </table></div>
+  <div class="ca info"><span class="ic">💡</span><div><strong>Extended traceroute:</strong> Like extended ping, enter <code>traceroute</code> with no destination in privileged EXEC to specify source address, probe count, timeout, and more. Useful for testing specific subnet paths, detecting routing loops, and finding where packets are dropped or denied.</div></div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">17.4.5</span> Network Baseline</h3>
+  <p>A <strong>baseline</strong> captures normal performance benchmarks over time for future comparison.</p>
+  <ul>
+    <li>Method: copy/paste ping or traceroute output with timestamps into a text file</li>
+    <li>Run captures at different times — peak and off-peak</li>
+    <li>Archive baseline files and compare against future captures</li>
+    <li>Significant RTT increase = potential latency/congestion issue</li>
+    <li>Baseline enables detecting performance degradation before it becomes a crisis</li>
+  </ul>
+  </div>
+</div></div>
+
+<!-- 17.5 HOST AND IOS COMMANDS -->
+<div class="sec" id="s5">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">17.5</span><span class="ttl">Host and IOS Commands</span></span><button class="sec-check" id="sch-s5" onclick="event.stopPropagation();toggleSection('s5',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb">
+  <div class="sub">
+  <h3><span class="sn">17.5.1–17.5.3</span> IP Configuration Commands by Platform</h3>
+  <p><strong>Windows ipconfig variants — know all four:</strong></p>
+  <div class="ipcfg-rows">
+    <div class="ipcfg-row"><span class="ir-cmd">ipconfig</span>IP address, subnet mask, default gateway for all interfaces</div>
+    <div class="ipcfg-row"><span class="ir-cmd">ipconfig /all</span>Above + MAC address, DHCP server, DNS servers, lease info — full detail</div>
+    <div class="ipcfg-row"><span class="ir-cmd">ipconfig /release</span>Releases the current DHCP-assigned IP address</div>
+    <div class="ipcfg-row"><span class="ir-cmd">ipconfig /renew</span>Requests a new IP address lease from the DHCP server</div>
+    <div class="ipcfg-row"><span class="ir-cmd">ipconfig /displaydns</span>Shows all cached DNS entries from local DNS client cache</div>
+  </div>
+  <div class="tw" style="margin-top:12px"><table>
+    <tr><th>Platform</th><th>Command</th><th>Purpose</th></tr>
+    <tr><td><strong>Linux</strong></td><td><code>ifconfig</code></td><td>Active interface status and IP config (older)</td></tr>
+    <tr><td><strong>Linux</strong></td><td><code>ip address</code></td><td>Display/add/delete IP addresses (modern)</td></tr>
+    <tr><td><strong>macOS</strong></td><td><code>ifconfig</code></td><td>Interface IP configuration</td></tr>
+    <tr><td><strong>macOS</strong></td><td><code>networksetup -listallnetworkservices</code></td><td>List all network services</td></tr>
+    <tr><td><strong>macOS</strong></td><td><code>networksetup -getinfo &lt;service&gt;</code></td><td>IP config for a specific service</td></tr>
+  </table></div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">17.5.4</span> arp -a Command</h3>
+  <p><code>arp -a</code> displays the ARP cache — IP-to-MAC mappings for recently communicated devices. Works on Windows, Linux, and macOS.</p>
+  <div class="ca info"><span class="ic">💡</span><div>ARP cache only shows devices recently communicated with. Ping a device first to populate the cache entry for it. To clear the cache on Windows (requires admin): <code>netsh interface ip delete arpcache</code></div></div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">17.5.5</span> Common IOS show Commands</h3>
+  <div class="show-grid">
+    <div class="show-row"><span class="sr-cmd">show running-config</span>Current active configuration and all settings</div>
+    <div class="show-row"><span class="sr-cmd">show interfaces</span>Interface status, errors, and statistics</div>
+    <div class="show-row"><span class="sr-cmd">show ip interface</span>Layer 3 information for each interface</div>
+    <div class="show-row"><span class="sr-cmd">show arp</span>Known hosts on local Ethernet LANs (IP-to-MAC table)</div>
+    <div class="show-row"><span class="sr-cmd">show ip route</span>Layer 3 routing table — how to reach destinations</div>
+    <div class="show-row"><span class="sr-cmd">show protocols</span>Which protocols are enabled and operational</div>
+    <div class="show-row"><span class="sr-cmd">show version</span>Memory, interface count, IOS version, and licenses</div>
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">17.5.6</span> CDP — Cisco Discovery Protocol</h3>
+  <p>CDP is <strong>Cisco proprietary</strong>, runs at <strong>Layer 2</strong>, and automatically discovers neighboring Cisco devices regardless of their Layer 3 (IP) status. Very useful when two devices are directly connected but routing between them isn't working.</p>
+  <p><strong>CDP provides per neighbor:</strong> hostname · IP addresses · local and remote port IDs · capabilities (L2/L3 switch, router) · hardware platform</p>
+  <div class="cw"><div class="cl"><span>show cdp neighbors and detail</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+  <pre><code>R3# show cdp neighbors
+Device ID  Local Intrfce  Holdtme  Capability  Platform    Port ID
+S3         Gig 0/0/1      122      S I         WS-C2960+   Fas 0/5
+
+R3# show cdp neighbors detail
+! Also shows IP address of neighbor — useful when routing is broken
+! and you need to verify the neighbor's IP configuration</code></pre></div>
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>CDP security risk:</strong> CDP reveals detailed network infrastructure information. Best practice: enable CDP only on interfaces connecting to other Cisco infrastructure devices.<br><code>no cdp enable</code> — disable CDP on a specific interface (user-facing ports)<br><code>no cdp run</code> — disable CDP globally on the device</div></div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">17.5.7</span> show ip interface brief</h3>
+  <p>The most frequently used summary command. Shows all interfaces, assigned IP addresses, and operational status in a compact format.</p>
+  <div class="cw"><div class="cl"><span>show ip interface brief — Output Example</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+  <pre><code>R1# show ip interface brief
+Interface           IP-Address       OK?  Method  Status    Protocol
+GigabitEthernet0/0/0  209.165.200.225  YES  manual  up        up
+GigabitEthernet0/0/1  192.168.10.1     YES  manual  up        up
+Serial0/1/0           unassigned       NO   unset   down      down</code></pre></div>
+  <div class="et"><div class="lbl">🎯 STATUS vs PROTOCOL</div>
+  <strong>Status</strong> = Layer 1 (Physical) — is the cable connected?<br>
+  <strong>Protocol</strong> = Layer 2 (Data Link) — is encapsulation working?<br><br>
+  Both must be <strong>up/up</strong> for full operation.<br>
+  Status up / Protocol down = Layer 2 encapsulation problem<br>
+  Status down / Protocol down = no physical connection (or administratively shut down)
+  </div>
+  </div>
+</div></div>
+
+<!-- 17.6 TROUBLESHOOTING METHODOLOGY -->
+<div class="sec" id="s6">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">17.6</span><span class="ttl">Troubleshooting Methodologies</span></span><button class="sec-check" id="sch-s6" onclick="event.stopPropagation();toggleSection('s6',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb">
+  <div class="sub">
+  <h3><span class="sn">17.6.1</span> Six-Step Troubleshooting Process</h3>
+  <div class="ts-steps">
+    <div class="ts-step"><div class="tss-num">1</div><div><strong>Identify the Problem</strong> — Gather information from users, logs, and monitoring tools. Define the symptoms clearly.</div></div>
+    <div class="ts-step"><div class="tss-num">2</div><div><strong>Establish Theory of Probable Causes</strong> — List multiple possible causes from most likely to least likely. Don't jump to conclusions.</div></div>
+    <div class="ts-step"><div class="tss-num">3</div><div><strong>Test the Theory to Determine Cause</strong> — Apply quick tests to confirm or eliminate each theory. Narrow down to the actual cause.</div></div>
+    <div class="ts-step"><div class="tss-num">4</div><div><strong>Establish Plan of Action and Implement the Solution</strong> — Fix the identified cause. If the fix requires major changes, develop a plan first.</div></div>
+    <div class="ts-step"><div class="tss-num">5</div><div><strong>Verify Solution and Implement Preventive Measures</strong> — Confirm full functionality is restored. Take steps to prevent the problem from recurring.</div></div>
+    <div class="ts-step"><div class="tss-num">6</div><div><strong>Document Findings, Actions, and Outcomes</strong> — Record everything: the problem, cause, solution, and timeline. Critical for future reference and pattern recognition.</div></div>
+  </div>
+  <div class="ca info"><span class="ic">💡</span><div><strong>Escalate when:</strong> the issue requires a manager decision, specific expertise beyond the technician's level, or network access that the technician doesn't have. Company policy should define escalation procedures.</div></div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">17.6.3</span> debug Command</h3>
+  <p><code>debug</code> displays <strong>real-time system messages</strong> for troubleshooting. It is a high-priority CPU process — overuse can make the system unresponsive. Only use for specific, targeted problems.</p>
+  <div class="cw"><div class="cl"><span>debug Command Usage</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+  <pre><code>R1# debug ip icmp          ! Enable ICMP debug output
+R1# ping 10.1.1.1          ! Trigger some ICMP traffic
+ICMP: echo reply rcvd, src 10.1.1.1, dst 209.165.200.225
+
+R1# no debug ip icmp       ! Disable specific debug
+R1# undebug ip icmp        ! Alternative syntax (same result)
+R1# undebug all            ! ALWAYS run this when done — turns off ALL active debugs</code></pre></div>
+  <div class="ca danger"><span class="ic">🚨</span><div><strong>Never run in production:</strong> <code>debug all</code> and <code>debug ip packet</code> generate massive output and can crash a router under load. Always <code>undebug all</code> when finished debugging. Use only for targeted, specific troubleshooting.</div></div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">17.6.4</span> terminal monitor</h3>
+  <p>By default, debug output only appears on the <strong>console port</strong>. It does NOT appear on remote (Telnet/SSH) vty sessions. Use <code>terminal monitor</code> to enable debug/log messages on the current vty session.</p>
+  <div class="cw"><div class="cl"><span>terminal monitor — Enable Debug on vty</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+  <pre><code>R1# terminal monitor       ! Enable debug/log output on this vty session
+R1# debug ip icmp          ! Now debug output will appear here too
+R1# terminal no monitor    ! Disable debug output on this vty session</code></pre></div>
+  </div>
+</div></div>
+
+<!-- 17.7 TROUBLESHOOTING SCENARIOS -->
+<div class="sec" id="s7">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">17.7</span><span class="ttl">Troubleshooting Scenarios</span></span><button class="sec-check" id="sch-s7" onclick="event.stopPropagation();toggleSection('s7',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb">
+  <div class="sub">
+  <h3><span class="sn">17.7.1–17.7.5</span> Five Common Troubleshooting Scenarios</h3>
+  <div class="scenario-cards">
+    <div class="scenario-card dup">
+      <div class="sc-name">🔄 Duplex Mismatch</div>
+      <strong>Symptom:</strong> Link works but performance is very poor (high collisions, retransmissions).<br>
+      <strong>Cause:</strong> One end set to full-duplex, other end half-duplex. Caused by misconfiguration or failed autonegotiation.<br>
+      <strong>Why hard to detect:</strong> The link is UP — traffic passes — but throughput is severely degraded.<br>
+      <strong>Fix:</strong> Set both ends to the same duplex mode manually, or ensure autonegotiation is enabled on both ends.
+    </div>
+    <div class="scenario-card ip">
+      <div class="sc-name">🔢 Wrong IP Address on Device</div>
+      <strong>Symptom:</strong> Device cannot reach expected destinations; IP conflicts.<br>
+      <strong>Cause:</strong> Manual assignment error OR DHCP assigned wrong address.<br>
+      <strong>Verify:</strong> <code>show ip interface brief</code> (IOS) or <code>ipconfig</code> (Windows).<br>
+      <strong>Fix:</strong> Correct the IP address assignment.
+    </div>
+    <div class="scenario-card apipa">
+      <div class="sc-name">🚨 APIPA — 169.254.x.x Address</div>
+      <strong>Symptom:</strong> Windows host shows 169.254.x.x address; cannot communicate with other devices.<br>
+      <strong>Cause:</strong> Windows could NOT reach the DHCP server. APIPA assigns from <strong>169.254.0.0/16</strong> automatically.<br>
+      <strong>Note:</strong> Linux and macOS do NOT auto-assign — they leave the interface unconfigured when DHCP fails.<br>
+      <strong>Fix:</strong> Restore DHCP connectivity or manually assign an IP address. Run <code>ipconfig /release</code> then <code>ipconfig /renew</code> after restoring DHCP.
+    </div>
+    <div class="scenario-card gw">
+      <div class="sc-name">🌐 Default Gateway Issue</div>
+      <strong>Symptom:</strong> Host can reach local network devices but cannot reach anything on remote networks.<br>
+      <strong>Cause:</strong> Gateway IP missing, wrong, or not in the same subnet as the host.<br>
+      <strong>Verify:</strong> <code>ipconfig</code> (Windows) · <code>show ip route | begin Gateway</code> (IOS — "Gateway of last resort")<br>
+      <strong>Fix:</strong> Correct the default gateway address to match the router interface on the same subnet.
+    </div>
+    <div class="scenario-card dns">
+      <div class="sc-name">🔍 DNS Failure (Looks Like Network Is Down)</div>
+      <strong>Symptom:</strong> User reports "internet is down" — websites won't load by name.<br>
+      <strong>Reality:</strong> IP connectivity is fine — DNS resolution has failed. All other network services still work.<br>
+      <strong>Test:</strong> Ping 8.8.8.8 (Google DNS) directly — if it succeeds, network is up; DNS is the problem.<br>
+      <strong>Verify:</strong> <code>ipconfig /all</code> (shows configured DNS servers) · <code>nslookup</code> (manual DNS query)<br>
+      <strong>Public DNS servers (fallback):</strong><br>
+      Google: <code>8.8.8.8</code> / <code>2001:4860:4860::8888</code><br>
+      OpenDNS (Cisco): <code>208.67.222.222</code> / <code>208.67.220.220</code>
+    </div>
+  </div>
+  </div>
+</div></div>
+
+<!-- EXAM TRAPS -->
+
+
+  <!-- PT MASTER LINK -->
+  <div style="margin:18px 0 6px;padding:12px 14px;background:#0d1117;border:1px solid #30363d;border-left:3px solid #1f6feb;border-radius:6px">
+    <div style="font-size:.7em;font-weight:800;text-transform:uppercase;letter-spacing:.8px;color:#1f6feb;margin-bottom:6px">&#x1F4E6; All Packet Tracer Activities — CCNA 1</div>
+    <div style="font-size:.84em;color:#c9d1d9;margin-bottom:4px">Complete list of all CCNA 1 Packet Tracer activities with instructions:</div>
+    <a href="https://itexamanswers.net/ccna-1-v7-exam-answers-introduction-to-networks-v7-0-itn.html" target="_blank" rel="noopener" style="font-size:.78em;color:#58a6ff;word-break:break-all">https://itexamanswers.net/ccna-1-v7-exam-answers-introduction-to-networks-v7-0-itn.html</a>
+  </div>
+
+
+<div class="sec" id="s-pt-17-8">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">17.8</span><span class="ttl">Packet Tracer — Skills Integration and Troubleshooting</span></span><button class="sec-check" id="sch-s-pt-17-8" onclick="event.stopPropagation();toggleSection('s-pt-17-8',this)">○ Mark done</button>
+</div>
+<div class="sb">
+  <div style="padding:14px 16px;background:#0d1117;border:1px solid #30363d;border-left:3px solid #1f6feb;border-radius:6px">
+    <div style="font-size:.72em;font-weight:800;text-transform:uppercase;letter-spacing:.8px;color:#1f6feb;margin-bottom:10px">&#x1F4E6; Packet Tracer Activities</div>
+    <div style="font-size:.82em;color:#6e7681;margin-bottom:10px">Open in Cisco Packet Tracer via your NetAcad course.</div>
+      <div style="display:flex;align-items:baseline;gap:10px;padding:6px 0;border-bottom:1px solid #21262d"><span style="font-family:monospace;font-size:.85em;color:#79c0ff;white-space:nowrap;flex-shrink:0;min-width:52px">17.8.1</span><span style="font-size:.88em;color:#c9d1d9">Design and Build a Small Network (Physical Mode)</span></div>
+      <div style="display:flex;align-items:baseline;gap:10px;padding:6px 0;border-bottom:1px solid #21262d"><span style="font-family:monospace;font-size:.85em;color:#79c0ff;white-space:nowrap;flex-shrink:0;min-width:52px">17.8.2</span><span style="font-size:.88em;color:#c9d1d9">Skills Integration Challenge</span></div>
+      <div style="display:flex;align-items:baseline;gap:10px;padding:6px 0;border-bottom:1px solid #21262d"><span style="font-family:monospace;font-size:.85em;color:#79c0ff;white-space:nowrap;flex-shrink:0;min-width:52px">17.8.3</span><span style="font-size:.88em;color:#c9d1d9">Troubleshooting Challenge</span></div>
+    <div style="margin-top:12px;font-size:.78em;color:#6e7681">Full list: <a href="https://itexamanswers.net/ccna-1-v7-exam-answers-introduction-to-networks-v7-0-itn.html" target="_blank" rel="noopener" style="color:#58a6ff;word-break:break-all">itexamanswers.net/ccna-1-v7-exam-answers-introduction-to-networks-v7-0-itn.html</a></div>
+  </div>
+</div>
+</div>
+<div class="sec" id="s8">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">🎯</span><span class="ttl">Common Exam Traps — Module 17</span></span><button class="sec-check" id="sch-s8" onclick="event.stopPropagation();toggleSection('s8',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb">
+
+  <div class="ca danger"><span class="ic">❌</span><div><strong>Trap 1: Windows ping = 4 packets. Cisco IOS ping = 5 packets. IOS symbols: ! = success, . = timeout, U = unreachable.</strong><br>The count and output format differ completely. Windows shows text with RTT. IOS shows symbols. The U symbol means a router explicitly replied with ICMP Destination Unreachable — different from a timeout (.) where no response came back at all.</div></div>
+
+  <div class="ca danger"><span class="ic">❌</span><div><strong>Trap 2: APIPA = 169.254.0.0/16 = Windows DHCP failure. Linux/macOS do NOT auto-assign when DHCP fails.</strong><br>Seeing a 169.254.x.x address on a Windows host means one thing: DHCP server is unreachable. The host self-assigned from the APIPA range. Linux and macOS leave the interface unconfigured instead. This distinction is directly tested.</div></div>
+
+  <div class="ca danger"><span class="ic">❌</span><div><strong>Trap 3: DNS failure looks like a full network outage to users — but the network is working fine.</strong><br>"The internet is down" often means DNS is failing. Test by pinging an IP directly (8.8.8.8). If the ping succeeds, the network is fine and only DNS has failed. Use nslookup to further diagnose DNS problems.</div></div>
+
+  <div class="ca danger"><span class="ic">❌</span><div><strong>Trap 4: Six troubleshooting steps in order: Identify → Theory → Test → Plan/Implement → Verify/Prevent → Document.</strong><br>Step 6 (documentation) is the most commonly forgotten step in scenarios. Steps 2 and 3 are also commonly confused — you establish the theory first, then test it. Never skip directly from identifying the problem to implementing a fix without forming and testing a theory.</div></div>
+
+  <div class="ca danger"><span class="ic">❌</span><div><strong>Trap 5: debug output only appears on console by default — NOT on vty. Use terminal monitor to fix this.</strong><br>A very common practical mistake. SSH into a router, run debug ip icmp, see nothing. The fix is terminal monitor before the debug command. Always run undebug all when done to avoid CPU overload.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 6: show ip interface brief — Status = L1 (physical), Protocol = L2 (data link). Both must be up/up.</strong><br>Status up / Protocol down = encapsulation mismatch or L2 problem. Status down / down = no physical connection or interface is shut down. This two-column read tells you exactly which layer has the problem.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 7: CDP is Cisco proprietary, Layer 2, discovers directly connected Cisco neighbors only.</strong><br>CDP does not require IP connectivity — it works at Layer 2. show cdp neighbors shows hostname, port, and platform. show cdp neighbors detail also shows IP address. Disable on user-facing ports (no cdp enable) for security.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 8: tracert (Windows uses ICMP). traceroute (IOS/Linux uses UDP with invalid port).</strong><br>The underlying protocol is different. On IOS/Linux, the final destination replies with ICMP Port Unreachable (not Echo Reply) because UDP was sent to an invalid port. This is why IOS traceroute sometimes shows different results than Windows tracert.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 9: Extended ping/traceroute allows specifying a custom source address — entered with no destination argument.</strong><br>Type ping or traceroute in privileged EXEC with no destination to enter extended mode. Critical for testing whether traffic from a specific subnet or interface can reach a destination — important for verifying NAT, routing, and ACL configurations.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 10: Duplex mismatch = link appears UP but performance is extremely poor.</strong><br>This is what makes it deceptive — the interface is not down, so monitoring may not alert on it. Collisions spike, throughput drops severely. Always check duplex settings when performance problems occur on a link that appears operational.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 11: Default gateway must be in the SAME subnet as the host. Wrong gateway = no remote communication.</strong><br>If a host's gateway IP is from a different subnet, the host can't ARP for it and can't send packets off-network. The host can still reach local devices on the same subnet, but nothing beyond the local network will work.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 12: RTP carries voice/video streams. RTCP monitors QoS of RTP. Both need QoS configured.</strong><br>RTP and RTCP work together for real-time media. VoIP converts analog to digital IP packets (lower cost, less quality). IP Telephony uses a dedicated call control server (higher quality, more infrastructure). QoS must be configured on both routers and switches for voice/video to work acceptably.</div></div>
+
+  <div class="ca tip"><span class="ic">✅</span><div><strong>Module 17 quick-reference summary:</strong><br><br>
+  <strong>Device selection factors:</strong> Cost · Speed/ports · Expandability (fixed vs modular) · OS features<br>
+  <strong>IP addressing:</strong> Plan by device type · group into subnets for easy summarization<br>
+  <strong>Redundancy:</strong> Eliminate single points of failure · duplicate equipment or links<br>
+  <strong>QoS:</strong> Classifies traffic by priority · required for voice and video<br>
+  <strong>Scale elements:</strong> Documentation · Device inventory · Budget · Traffic analysis<strong><br>
+  Wireshark:</strong> Capture at peak times and on different segments<br>
+  <strong>Windows ping:</strong> 4 packets · RTT min/avg/max<br>
+  <strong>IOS ping:</strong> 5 packets · ! (success) · . (timeout) · U (unreachable)<br>
+  <strong>Extended ping:</strong> type "ping" with no destination in priv EXEC · specify source address<br>
+  <strong>tracert (Windows):</strong> ICMP · Ctrl-C to stop<br>
+  <strong>traceroute (IOS/Linux):</strong> UDP invalid port · Ctrl-Shift-6 to stop<br>
+  <strong>Baseline:</strong> Timestamped ping/traceroute captures for future comparison<br>
+  <strong>ipconfig:</strong> basic · /all (MAC+DHCP+DNS) · /release · /renew · /displaydns<br>
+  <strong>Linux:</strong> ifconfig / ip address · macOS: ifconfig / networksetup<br>
+  <strong>arp -a:</strong> Shows IP-to-MAC cache · ping device first to populate<br>
+  <strong>IOS show commands:</strong> running-config · interfaces · ip interface · arp · ip route · protocols · version<br>
+  <strong>CDP:</strong> Cisco proprietary · Layer 2 · discovers directly connected Cisco devices · no IP needed<br>
+  <strong>show cdp neighbors detail:</strong> includes IP address of neighbor<br>
+  <strong>no cdp enable / no cdp run:</strong> disable per interface / globally<br>
+  <strong>show ip interface brief:</strong> most-used summary · Status=L1 · Protocol=L2 · both must be up/up<br>
+  <strong>6 troubleshooting steps:</strong> Identify → Theory → Test → Plan/Implement → Verify/Prevent → Document<br>
+  <strong>debug:</strong> real-time messages · high CPU · use targeted · always undebug all when done<br>
+  <strong>terminal monitor:</strong> enables debug output on vty (SSH/Telnet) sessions<br>
+  <strong>Duplex mismatch:</strong> link up but very poor performance · hard to detect<br>
+  <strong>APIPA:</strong> 169.254.0.0/16 · Windows only · means DHCP unreachable · Linux/macOS leave unconfigured<br>
+  <strong>Default gateway:</strong> must be same subnet as host · wrong gateway = no remote access<br>
+  <strong>DNS failure:</strong> looks like full outage · test with IP ping · verify with ipconfig /all and nslookup<br>
+  <strong>Public DNS:</strong> Google 8.8.8.8 / OpenDNS 208.67.222.222<br>
+  <strong>VoIP:</strong> analog→digital IP · lower cost · Skype/WebEx<br>
+  <strong>IP Telephony:</strong> dedicated call control server · Cisco Business Edition 4000<br>
+  <strong>RTP:</strong> carries audio/video streams · RTCP: monitors QoS of RTP session</div></div>
+
+  <!-- SYNTAX CHECKER: 17.5.7 -->
+  <div style="margin:20px 0 6px;padding:16px;background:#0d1117;border:1px solid #30363d;border-left:3px solid #bc8cff;border-radius:8px">
+    <div style="font-size:.7em;font-weight:800;text-transform:uppercase;letter-spacing:.8px;color:#bc8cff;margin-bottom:6px">&#x1F5A5; Syntax Checker &mdash; 17.5.7</div>
+    <div style="font-size:.92em;font-weight:600;color:#e6edf3;margin-bottom:12px">Verify Directly Connected Networks</div>
+    <div style="font-size:.82em;color:#8b949e;margin-bottom:14px">Type each command exactly as shown. Press Enter to submit. The checker validates your syntax step by step.</div>
+    <div class="tool-links" style="display:flex;flex-wrap:wrap;gap:14px">
+      <div style="flex:1 1 220px;min-width:0">
+        <a href="../../syntax-checker-simple/ccna1_syntax_checker.html?lab=17.5.7" target="_blank" rel="noopener" title="Quick, guided drill: type the exact commands for this NetAcad lab, step by step. Opens straight to lab 17.5.7." style="display:inline-flex;align-items:center;gap:8px;color:#fff;text-decoration:none;padding:8px 18px;border-radius:6px;font-size:.85em;font-weight:700;background:#238636;border:1px solid #2ea043">&#x25B6; Open Syntax Checker</a>
+        <div style="font-size:.75em;color:#8b949e;margin-top:6px">Quick, guided drill: type the exact commands for this NetAcad lab, step by step. Opens straight to lab 17.5.7.</div>
+      </div>
+      <div style="flex:1 1 220px;min-width:0">
+        <a class="cli-engine-link" href="../../cli-engine/ccna-cli-engine.html" target="_blank" rel="noopener" title="Full simulated Cisco IOS terminal: Tab completion, device state, Free Practice, Home Labs and Subnetting. In its exercise menu, pick “Course 1 · 17.5 — Verify Directly Connected Networks”." style="display:inline-flex;align-items:center;gap:8px;color:#fff;text-decoration:none;padding:8px 18px;border-radius:6px;font-size:.85em;font-weight:700;background:#1f6feb;border:1px solid #388bfd">&#x1F4BB; Open CLI Engine</a>
+        <div style="font-size:.75em;color:#8b949e;margin-top:6px">Full simulated Cisco IOS terminal: Tab completion, device state, Free Practice, Home Labs and Subnetting. In its exercise menu, pick “Course 1 · 17.5 — Verify Directly Connected Networks”.</div>
+      </div>
+    </div>
+    <div style="margin-top:12px;font-size:.75em"><a href="../../index.html" style="color:#58a6ff;text-decoration:none">&#x1F3E0; All study tools (home)</a></div>
+  </div>
+
+  <!-- PT INLINE -->
+  <div style="margin:20px 0 6px;padding:14px 16px;background:#0d1117;border:1px solid #30363d;border-left:3px solid #1f6feb;border-radius:6px">
+    <div style="font-size:.72em;font-weight:800;text-transform:uppercase;letter-spacing:.8px;color:#1f6feb;margin-bottom:10px">&#x1F4E6; Packet Tracer Activities</div>
+  <div style="display:flex;align-items:baseline;gap:10px;padding:6px 0;border-bottom:1px solid #21262d"><span style="font-family:monospace;font-size:.85em;color:#79c0ff;white-space:nowrap;flex-shrink:0;min-width:52px">17.7.6</span><span style="font-size:.88em;color:#c9d1d9">Troubleshoot Connectivity Issues</span></div>
+  <div style="display:flex;align-items:baseline;gap:10px;padding:6px 0;border-bottom:1px solid #21262d"><span style="font-family:monospace;font-size:.85em;color:#79c0ff;white-space:nowrap;flex-shrink:0;min-width:52px">17.7.7</span><span style="font-size:.88em;color:#c9d1d9">Troubleshoot Connectivity Issues (Physical Mode)</span></div>
+    <div style="margin-top:10px;font-size:.78em;color:#6e7681">Full list: <a href="https://itexamanswers.net/ccna-1-v7-exam-answers-introduction-to-networks-v7-0-itn.html" target="_blank" rel="noopener" style="color:#58a6ff;word-break:break-all">itexamanswers.net/ccna-1-v7-exam-answers-introduction-to-networks-v7-0-itn.html</a></div>
+  </div>
+
+  <!-- PT INLINE -->
+  <div style="margin:20px 0 6px;padding:14px 16px;background:#0d1117;border:1px solid #30363d;border-left:3px solid #1f6feb;border-radius:6px">
+    <div style="font-size:.72em;font-weight:800;text-transform:uppercase;letter-spacing:.8px;color:#1f6feb;margin-bottom:10px">&#x1F4E6; Packet Tracer Activities</div>
+  <div style="display:flex;align-items:baseline;gap:10px;padding:6px 0;border-bottom:1px solid #21262d"><span style="font-family:monospace;font-size:.85em;color:#79c0ff;white-space:nowrap;flex-shrink:0;min-width:52px">17.5.9</span><span style="font-size:.88em;color:#c9d1d9">Interpret show Command Output</span></div>
+    <div style="margin-top:10px;font-size:.78em;color:#6e7681">Full list: <a href="https://itexamanswers.net/ccna-1-v7-exam-answers-introduction-to-networks-v7-0-itn.html" target="_blank" rel="noopener" style="color:#58a6ff;word-break:break-all">itexamanswers.net/ccna-1-v7-exam-answers-introduction-to-networks-v7-0-itn.html</a></div>
+  </div>
+
+</div></div>
+
+
+</div>
+<div class="ft">CCNA 1 ITN v7.02 — Module 17: Build a Small Network v1.5 · FINAL MODULE<br>Based on Cisco NetAcad curriculum · Study guide for personal use</div>
+<button class="tb-btn" id="topb" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+<div class="mod-nav">
+  <a class="mn-hub" href="index.html">🏠 Hub</a>
+  <div class="mn-divider"></div>
+  <a class="mn-prev" href="ccna1_module16_network_security_fundamentals_v2.2.html">‹</a>
+  <span class="mn-label">M17 of 17 · FINAL</span>
+  <a class="mn-next done" href="index.html">🏁 Done!</a>
+</div>
+<script>
+var MOD_KEY="ccna1-m17";
+var SECS=["s1","s2","s3","s4","s5","s6","s7","s-pt-17-8","s8"];
+var checked={};
+
+function loadState(){
+  try{var s=localStorage.getItem(MOD_KEY);if(s)checked=JSON.parse(s);}catch(e){}
+  SECS.forEach(function(id){
+    var pill=document.getElementById('pill-'+id);
+    var row=document.getElementById('row-'+id);
+    var st=document.getElementById('st-'+id);
+    if(checked[id]){
+      if(pill){pill.classList.add('checked');pill.querySelector('.pill-check').textContent='✓';}
+      if(row)row.classList.add('done');
+      if(st)st.textContent='✓';
+    } else {
+      if(pill){pill.classList.remove('checked');pill.querySelector('.pill-check').textContent='○';}
+      if(row)row.classList.remove('done');
+      if(st)st.textContent='○';
+    }
+  });
+}
+
+function toggleSection(id,btn){
+  checked[id]=!checked[id];
+  try{localStorage.setItem(MOD_KEY,JSON.stringify(checked));}catch(e){}
+  loadState();
+}
+
+
+function toggleStudyPanel(){
+  var hdr=document.getElementById('sp-hdr');
+  var body=document.getElementById('sp-body');
+  var arr=document.getElementById('sp-arr');
+  hdr.classList.toggle('open');
+  body.classList.toggle('open');
+  if(arr)arr.textContent=body.classList.contains('open')?'▲':'▼';
+}
+
+function goTo(id){var el=document.getElementById(id);if(!el)return;var h=el.querySelector('.sh'),b=el.querySelector('.sb');if(h&&b&&!b.classList.contains('open')){h.classList.add('open');b.classList.add('open');}setTimeout(function(){window.scrollTo({top:el.getBoundingClientRect().top+window.pageYOffset-60,behavior:'smooth'});;},50);}
+function setFs(size,btn){document.documentElement.style.setProperty('--base-fs',size);document.querySelectorAll('.fs-btn').forEach(function(b){b.classList.remove('active');});btn.classList.add('active');try{localStorage.setItem('ccna-fs',size);}catch(e){}}
+(function(){
+  try{var s=localStorage.getItem('ccna-fs');if(s){document.documentElement.style.setProperty('--base-fs',s);document.querySelectorAll('.fs-btn').forEach(function(b){b.classList.remove('active');if((b.textContent==='S'&&s==='14px')||(b.textContent==='M'&&s==='16px')||(b.textContent==='L'&&s==='18px')||(b.textContent==='XL'&&s==='20px'))b.classList.add('active');});}}catch(e){}
+  loadState();
+})();
+function copyCode(btn){var pre=btn.closest('.cw').querySelector('pre');navigator.clipboard.writeText(pre.innerText||pre.textContent).then(function(){btn.textContent='Copied!';setTimeout(function(){btn.textContent='Copy';},1500);});}
+</script>
+<script src="../../site-config.js"></script>
+</body>
+</html>

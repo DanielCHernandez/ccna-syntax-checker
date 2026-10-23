@@ -1,0 +1,1299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=2.0">
+<title>CCNA 3 Module 2: Single-Area OSPFv2 Configuration v2.2</title>
+<style>
+:root{
+  --blue:#1ba0d7;--dark:#005073;--green:#6cc24a;
+  --ospf:#1a3a5c;--ospfd:#38bdf8;
+  --bg:#f4f6f8;--card:#fff;--text:#1a1a2e;--muted:#5a6a7a;
+  --cbg:#0d1117;--ctxt:#c9d1d9;--r:12px;--sh:0 2px 12px rgba(0,0,0,.08);
+  --base-fs:16px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);font-size:var(--base-fs);line-height:1.7}
+
+.fs-bar{position:sticky;top:0;z-index:200;background:#1a1a2e;display:flex;align-items:center;justify-content:flex-end;padding:6px 14px;gap:6px;box-shadow:0 2px 8px rgba(0,0,0,.3)}
+.fs-label{color:#8b949e;font-size:.72em;font-weight:700;letter-spacing:.5px;text-transform:uppercase;margin-right:4px}
+.fs-btn{background:#30363d;color:#c9d1d9;border:2px solid transparent;border-radius:6px;padding:4px 12px;font-size:.75em;font-weight:700;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:all .2s;line-height:1.4}
+.fs-btn:active,.fs-btn.active{background:var(--ospf);color:#fff;border-color:var(--ospf)}
+
+.hdr{background:linear-gradient(135deg,#0f2744,var(--ospf));color:#fff;padding:32px 20px 24px;text-align:center}
+.hdr .badge{display:inline-block;background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.4);border-radius:20px;padding:4px 14px;font-size:.81em;margin-bottom:12px}
+.hdr h1{font-size:1.625em;font-weight:700;margin-bottom:6px}
+.hdr p{font-size:.94em;opacity:.85}
+.hdr .obj{display:inline-block;background:rgba(255,255,255,.15);border-radius:8px;padding:7px 16px;margin-top:12px;font-size:.875em;font-style:italic}
+
+.pb{background:var(--card);padding:14px 16px;margin:16px 16px 0;border-radius:var(--r);box-shadow:var(--sh)}
+.pbl{font-size:.81em;color:var(--muted);margin-bottom:6px;font-weight:600}
+.pbt{background:#e0e7ef;border-radius:10px;height:8px;overflow:hidden}
+.pbf{background:linear-gradient(90deg,var(--ospf),var(--ospfd));height:100%;border-radius:10px;width:0;transition:width 1s ease}
+
+.toc{background:var(--card);margin:16px;border-radius:var(--r);box-shadow:var(--sh);overflow:hidden}
+.toch{background:var(--ospf);color:#fff;padding:14px 18px;font-weight:700;font-size:.94em;display:flex;justify-content:space-between;align-items:center;cursor:pointer;user-select:none}
+.toch .arr{transition:transform .3s}
+.toch.open .arr{transform:rotate(180deg)}
+.tocb{display:none;padding:10px 0}
+.tocb.open{display:block}
+.tocg{font-size:.69em;font-weight:800;letter-spacing:.8px;color:var(--ospf);text-transform:uppercase;padding:8px 20px 2px}
+.tocb a{display:block;padding:9px 20px 9px 28px;color:var(--text);text-decoration:none;font-size:.875em;border-left:3px solid transparent;transition:all .2s}
+.tocb a:hover,.tocb a:active{background:#e0f2fe;border-left-color:var(--ospfd)}
+.tocb a .n{display:inline-block;background:var(--ospf);color:#fff;border-radius:5px;padding:1px 8px;font-size:.75em;font-weight:700;margin-right:8px}
+
+.wrap{padding:0 16px 100px}
+
+.sec{background:var(--card);border-radius:var(--r);box-shadow:var(--sh);margin-bottom:16px;overflow:hidden}
+.sh{background:linear-gradient(90deg,#0f2744,var(--ospf));color:#fff;padding:16px 18px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;user-select:none;-webkit-tap-highlight-color:transparent}
+.sh .ttl{font-weight:700;font-size:1em}
+.sh .nb{background:rgba(255,255,255,.25);border-radius:6px;padding:3px 10px;font-size:.81em;font-weight:700;margin-right:10px;white-space:nowrap}
+.sh .ch{font-size:1.125em;transition:transform .3s}
+.sh.open .ch{transform:rotate(180deg)}
+.sb{display:none;padding:18px}
+.sb.open{display:block}
+
+.sub{margin-bottom:24px}
+.sub:last-child{margin-bottom:0}
+.sub h3{font-size:.94em;font-weight:700;color:var(--ospf);margin-bottom:10px;padding-bottom:6px;border-bottom:2px solid #e0f2fe;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.sub h3 .sn{background:var(--ospf);color:#fff;border-radius:5px;padding:2px 8px;font-size:.75em;white-space:nowrap}
+.sub h4{font-size:.875em;font-weight:700;color:var(--ospf);margin:14px 0 6px}
+.sub p{margin-bottom:10px;font-size:.94em}
+.sub ul,.sub ol{padding-left:20px;margin:8px 0;font-size:.94em}
+.sub li{margin-bottom:5px}
+
+.cw{background:var(--cbg);border-radius:10px;margin:12px 0;overflow:hidden}
+.cl{background:#21262d;color:#c9d1d9;font-size:.78em;font-weight:700;padding:6px 14px;letter-spacing:.5px;text-transform:uppercase;display:flex;justify-content:space-between;align-items:center}
+.cpb{background:#30363d;color:#c9d1d9;border:none;border-radius:5px;padding:3px 10px;font-size:.69em;cursor:pointer}
+.cpb:active{background:var(--ospf);color:#fff}
+pre{margin:0;padding:14px;overflow-x:auto;-webkit-overflow-scrolling:touch}
+code{font-family:'Courier New',monospace;font-size:.81em;color:var(--ctxt);line-height:1.6}
+p code,li code,td code,.ca code{background:#e0f2fe;color:#0f2744;border-radius:4px;padding:1px 5px;font-size:.81em;font-family:'Courier New',monospace;font-weight:600}
+
+.ca{border-radius:8px;padding:12px 14px;margin:12px 0;font-size:.875em;line-height:1.6;display:flex;gap:10px;align-items:flex-start}
+.ca .ic{font-size:1.125em;flex-shrink:0;margin-top:1px}
+.ca.warn  {background:#fff3cd;border-left:4px solid #b38600;color:#3d2c00}
+.ca.tip   {background:#d4edda;border-left:4px solid #28a745;color:#0d3318}
+.ca.danger{background:#f8d7da;border-left:4px solid #dc3545;color:#3d0010}
+.ca.info  {background:#e0f2fe;border-left:4px solid var(--ospf);color:#0f2744}
+
+.et{background:linear-gradient(135deg,#1a1a2e,#0f2744);color:#fff;border-radius:10px;padding:14px 16px;margin:14px 0;font-size:.875em;line-height:1.6}
+.et .lbl{font-size:.69em;font-weight:800;letter-spacing:1px;color:var(--ospfd);margin-bottom:6px}
+.et ul{padding-left:18px;margin-top:6px}
+.et li{margin-bottom:4px}
+
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:12px 0;border-radius:8px}
+table{width:100%;border-collapse:collapse;font-size:.875em}
+th{background:var(--ospf);color:#fff;padding:10px 12px;text-align:left;font-weight:700;font-size:.81em}
+td{padding:9px 12px;border-bottom:1px solid #e8ecf0;vertical-align:top;color:#1a1a2e}
+tr:nth-child(even) td{background:#e0f2fe;color:#0f2744}
+tr:last-child td{border-bottom:none}
+
+.steps{counter-reset:step;list-style:none;padding:0;margin:12px 0}
+.steps li{counter-increment:step;display:flex;gap:12px;align-items:flex-start;padding:10px 0;border-bottom:1px solid #eef0f3;font-size:.875em;line-height:1.6}
+.steps li:last-child{border-bottom:none}
+.steps li::before{content:counter(step);background:var(--ospf);color:#fff;border-radius:50%;min-width:26px;height:26px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.81em;flex-shrink:0;margin-top:2px}
+
+/* Method comparison cards */
+.method-grid{display:grid;gap:12px;margin:12px 0}
+.method-card{border-radius:10px;overflow:hidden;border:2px solid #e0f2fe}
+.method-card .mc-hdr{padding:9px 14px;font-size:.81em;font-weight:800;color:#fff}
+.method-card.m1 .mc-hdr{background:#1a472a}
+.method-card.m2 .mc-hdr{background:var(--ospf)}
+.method-card .mc-body{padding:12px 14px;font-size:.81em;color:#1a1a2e;line-height:1.7;background:#f9fafb}
+
+/* Wildcard visual */
+.wc-box{background:#0d1117;border:2px solid var(--ospfd);border-radius:10px;padding:14px;margin:12px 0}
+.wc-title{font-size:.75em;font-weight:800;letter-spacing:.8px;color:var(--ospfd);text-transform:uppercase;margin-bottom:10px}
+.wc-row{display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid #21262d;font-size:.81em;color:#c9d1d9;flex-wrap:wrap}
+.wc-row:last-child{border-bottom:none}
+.wc-prefix{font-family:'Courier New',monospace;font-weight:700;color:var(--ospfd);min-width:36px;flex-shrink:0}
+.wc-mask{font-family:'Courier New',monospace;font-size:.875em;flex:1}
+.wc-badge{font-size:.69em;font-weight:700;padding:2px 8px;border-radius:4px;white-space:nowrap;background:var(--ospf);color:#fff}
+
+/* Cost table */
+.cost-grid{display:grid;gap:8px;margin:12px 0}
+.cost-row{display:flex;gap:10px;align-items:center;padding:9px 12px;border-radius:8px;font-size:.81em}
+.cost-row.c-bad{background:#fff5f5;border-left:4px solid #dc3545}
+.cost-row.c-ok{background:#f0fff4;border-left:4px solid #27ae60}
+.cost-row .cr-intf{font-weight:700;flex:1;color:#1a1a2e}
+.cost-row .cr-bw{color:var(--muted);font-size:.875em;flex:1}
+.cost-row .cr-cost{font-family:'Courier New',monospace;font-weight:900;font-size:1em;min-width:32px;text-align:center}
+.cost-row.c-bad .cr-cost{color:#dc3545}
+.cost-row.c-ok .cr-cost{color:#1a472a}
+
+/* DR/BDR state cards */
+.state-grid{display:grid;gap:8px;margin:12px 0}
+.state-card{border-radius:8px;padding:10px 12px;font-size:.81em;display:flex;gap:10px;align-items:flex-start}
+.state-card.full-dr{background:#f0fff4;border-left:4px solid #27ae60}
+.state-card.full-bdr{background:#e8f4fb;border-left:4px solid var(--blue)}
+.state-card.full-drother{background:#fff8f0;border-left:4px solid #e07b00}
+.state-card.two-way{background:#f9fafb;border-left:4px solid #4b5563}
+.state-card .sc-state{font-family:'Courier New',monospace;font-weight:800;font-size:.875em;min-width:130px;flex-shrink:0;margin-top:2px}
+.state-card.full-dr .sc-state{color:#1a472a}
+.state-card.full-bdr .sc-state{color:var(--dark)}
+.state-card.full-drother .sc-state{color:#c87800}
+.state-card.two-way .sc-state{color:#374151}
+
+/* Priority control cards */
+.pri-grid{display:grid;gap:8px;margin:12px 0}
+.pri-card{display:flex;gap:10px;align-items:center;padding:10px 12px;border-radius:8px;font-size:.81em}
+.pri-card.p255{background:#f0fff4;border-left:4px solid #27ae60}
+.pri-card.p1{background:#e0f2fe;border-left:4px solid var(--ospf)}
+.pri-card.p0{background:#fff5f5;border-left:4px solid #dc3545}
+.pri-card .pv{font-family:'Courier New',monospace;font-weight:900;font-size:1.25em;min-width:40px;text-align:center;flex-shrink:0}
+.pri-card.p255 .pv{color:#1a472a}
+.pri-card.p1 .pv{color:var(--ospf)}
+.pri-card.p0 .pv{color:#dc3545}
+.pri-card .pd{flex:1;color:#1a1a2e;line-height:1.5}
+
+/* Passive interface visual */
+.passive-box{background:#0d1117;border-radius:10px;padding:14px;margin:12px 0}
+.passive-box .pb-title{font-size:.75em;font-weight:800;letter-spacing:.8px;color:#fbbf24;text-transform:uppercase;margin-bottom:10px}
+.pb-row{display:flex;gap:10px;align-items:flex-start;padding:7px 0;border-bottom:1px solid #21262d;font-size:.81em;color:#c9d1d9;line-height:1.6}
+.pb-row:last-child{border-bottom:none}
+.pb-icon{font-size:1em;flex-shrink:0;width:20px;text-align:center}
+
+/* Verification command cards */
+.vcmd-grid{display:grid;gap:10px;margin:12px 0}
+.vcmd-card{border-radius:10px;overflow:hidden;border:2px solid #e0f2fe}
+.vcmd-card .vc-hdr{padding:9px 14px;font-size:.81em;font-weight:800;color:#fff;display:flex;align-items:center;gap:8px}
+.vcmd-card .vc-cmd{font-family:'Courier New',monospace}
+.vcmd-card.vn .vc-hdr{background:#1a472a}
+.vcmd-card.vp .vc-hdr{background:var(--ospf)}
+.vcmd-card.vo .vc-hdr{background:#7b2d8b}
+.vcmd-card.vi .vc-hdr{background:#e07b00}
+.vcmd-card .vc-body{padding:12px 14px;font-size:.81em;color:#1a1a2e;line-height:1.7;background:#f9fafb}
+
+/* Default route propagation flow */
+.prop-flow{background:#0d1117;border:2px solid #27ae60;border-radius:10px;padding:14px;margin:12px 0}
+.prop-flow .pf-title{font-size:.75em;font-weight:800;letter-spacing:.8px;color:#4ade80;text-transform:uppercase;margin-bottom:10px}
+.prop-step{display:flex;gap:10px;align-items:flex-start;padding:7px 0;border-bottom:1px solid #21262d;font-size:.81em;color:#c9d1d9;line-height:1.6}
+.prop-step:last-child{border-bottom:none}
+.prop-step .ps-num{background:#27ae60;color:#fff;border-radius:50%;min-width:24px;height:24px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.75em;flex-shrink:0;margin-top:1px}
+
+/* DR failure scenario cards */
+.scenario-grid{display:grid;gap:10px;margin:12px 0}
+.scenario-card{border-radius:10px;padding:12px 14px;border-left:5px solid;font-size:.81em;line-height:1.7}
+.scenario-card.sc-fail{border-left-color:#dc3545;background:#fff5f5}
+.scenario-card.sc-recover{border-left-color:#27ae60;background:#f0fff4}
+.scenario-card.sc-new{border-left-color:#b38600;background:#fffbf0}
+.scenario-card .sc-title{font-weight:800;margin-bottom:4px}
+.scenario-card.sc-fail .sc-title{color:#c0392b}
+.scenario-card.sc-recover .sc-title{color:#1a472a}
+.scenario-card.sc-new .sc-title{color:#b38600}
+
+.tb{position:fixed;bottom:80px;right:16px;background:var(--ospf);color:#fff;border:none;border-radius:50%;width:44px;height:44px;font-size:1.25em;box-shadow:0 4px 14px rgba(0,0,0,.25);cursor:pointer;display:none;align-items:center;justify-content:center;z-index:100}
+.tb.show{display:flex}
+.ft{text-align:center;padding:24px 16px;color:var(--muted);font-size:.81em}
+
+.mod-nav{position:fixed;bottom:0;left:0;right:0;z-index:300;background:#1a1a2e;border-top:1px solid #30363d;display:flex;align-items:center;height:52px;padding:0 8px;gap:6px}
+.mn-hub{background:var(--blue);color:#fff;border:none;border-radius:8px;padding:6px 12px;font-size:.75em;font-weight:700;cursor:pointer;text-decoration:none;display:flex;align-items:center;gap:4px;white-space:nowrap;-webkit-tap-highlight-color:transparent;flex-shrink:0}
+.mn-hub:active{opacity:.8}
+.mn-divider{width:1px;height:28px;background:#30363d;flex-shrink:0}
+.mn-label{flex:1;text-align:center;font-size:.69em;color:#8b949e;font-weight:600;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding:0 4px}
+.mn-prev,.mn-next{background:#30363d;color:#c9d1d9;border:none;border-radius:8px;padding:6px 10px;font-size:.875em;font-weight:700;cursor:pointer;text-decoration:none;display:flex;align-items:center;-webkit-tap-highlight-color:transparent;flex-shrink:0}
+.mn-prev:active,.mn-next:active{background:var(--ospf);color:#fff}
+/* Study progress panel */
+.sp-wrap{background:var(--card);margin:16px 16px 0;border-radius:var(--r);box-shadow:var(--sh);overflow:hidden}
+.sp-hdr{background:var(--nt);color:#fff;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;user-select:none;-webkit-tap-highlight-color:transparent;gap:10px}
+.sp-hdr .sp-title{font-weight:700;font-size:.875em;flex-shrink:0}
+.sp-hdr .sp-arr{transition:transform .3s;flex-shrink:0}
+.sp-hdr.open .sp-arr{transform:rotate(180deg)}
+.sp-body{display:none;padding:12px 14px}
+.sp-body.open{display:block}
+.sp-row{display:flex;align-items:center;gap:10px;padding:6px 4px;border-bottom:1px solid #f0f4f8;font-size:.81em}
+.sp-row:last-child{border-bottom:none}
+.sp-row .sr-status{font-size:1em;flex-shrink:0;width:20px;text-align:center}
+.sp-row .sr-nb{font-weight:800;color:var(--nt);min-width:36px;flex-shrink:0;font-size:.875em}
+.sp-row .sr-ttl{color:var(--text);flex:1}
+.sp-row.done .sr-ttl{color:var(--muted);text-decoration:line-through}
+.sc-pills{display:flex;align-items:center;gap:4px;overflow-x:auto;-webkit-overflow-scrolling:touch;flex:1;padding:0 4px}
+.sc-pill{background:#30363d;color:#8b949e;border:2px solid transparent;border-radius:6px;padding:3px 8px;font-size:.72em;font-weight:700;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:all .15s;white-space:nowrap;flex-shrink:0;line-height:1.4;display:flex;align-items:center;gap:3px}
+.sc-pill.checked{background:var(--nt);color:#fff;border-color:var(--ntd)}
+.sc-pill .pill-check{font-size:.875em}
+
+/* v2.1 — In-section check button */
+.sh{position:relative}
+.sec-check{position:absolute;right:40px;top:50%;transform:translateY(-50%);background:rgba(255,255,255,.15);border:2px solid rgba(255,255,255,.4);border-radius:6px;padding:2px 10px;font-size:.72em;font-weight:800;color:#fff;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:all .2s;white-space:nowrap;z-index:10;line-height:1.5}
+.sec-check.checked{background:var(--ntd);border-color:var(--ntd);color:#052e1e}
+.sec-check:active{opacity:.75}
+/* Sections panel + tick colours (these pages never defined --nt/--ntd, so the panel header was invisible) */
+:root{--nt:var(--ospf);--ntd:#4ade80}
+</style>
+<style>.bc{background:#0d1117;padding:8px 16px;display:flex;align-items:center;flex-wrap:wrap;gap:4px;font-size:.75em;overflow-x:auto;white-space:nowrap;-webkit-overflow-scrolling:touch;border-bottom:1px solid #21262d}.bc a{color:#8b949e;text-decoration:none;font-weight:600;flex-shrink:0}.bc a:active{color:#c9d1d9}.bc .sep{color:#6e7681;flex-shrink:0}.bc .cur{color:#fbbf24;font-weight:700;flex-shrink:0;overflow:hidden;text-overflow:ellipsis;max-width:180px}</style>
+</head>
+<body>
+<nav class="bc"><a href="../../index.html">🏠 Home</a><span class="sep">›</span><a href="index.html">CCNA 3 — ENSA</a><span class="sep">›</span><span class="cur">M2: OSPFv2 Configuration</span></nav>
+
+<div class="fs-bar">
+  <div class="sc-pills" id="sc-pills">
+  <button class="sc-pill" id="pill-s-pt-1-0" onclick="toggleSection('s-pt-1-0',this)"><span class="pill-check">○</span>PT 1.0</button>
+  <button class="sc-pill" id="pill-s1" onclick="toggleSection('s1',this)"><span class="pill-check">○</span>2.1</button>
+  <button class="sc-pill" id="pill-s2" onclick="toggleSection('s2',this)"><span class="pill-check">○</span>2.2</button>
+  <button class="sc-pill" id="pill-s3" onclick="toggleSection('s3',this)"><span class="pill-check">○</span>2.3</button>
+  <button class="sc-pill" id="pill-s4" onclick="toggleSection('s4',this)"><span class="pill-check">○</span>2.4</button>
+  <button class="sc-pill" id="pill-s5" onclick="toggleSection('s5',this)"><span class="pill-check">○</span>2.5</button>
+  <button class="sc-pill" id="pill-s6" onclick="toggleSection('s6',this)"><span class="pill-check">○</span>2.6</button>
+  <button class="sc-pill" id="pill-s-pt-2-7" onclick="toggleSection('s-pt-2-7',this)"><span class="pill-check">○</span>PT 2.7</button>
+  <button class="sc-pill" id="pill-s7" onclick="toggleSection('s7',this)"><span class="pill-check">○</span>CMD</button>
+  <button class="sc-pill" id="pill-s8" onclick="toggleSection('s8',this)"><span class="pill-check">○</span>🎯</button>
+  </div>
+  <span class="fs-label" style="flex-shrink:0;margin-left:6px">Size</span>
+  <button class="fs-btn" onclick="setFs('14px',this)">S</button>
+  <button class="fs-btn active" onclick="setFs('16px',this)">M</button>
+  <button class="fs-btn" onclick="setFs('18px',this)">L</button>
+  <button class="fs-btn" onclick="setFs('20px',this)">XL</button>
+</div>
+
+<div class="hdr">
+  <div class="badge">CCNA 3 — ENSA v7.02</div>
+  <h1>⚙️ Module 2: Single-Area OSPFv2 Configuration</h1>
+  <p>Enterprise Networking, Security &amp; Automation · NetAcad Study Guide</p>
+  <div class="obj">Module Objective: Implement single-area OSPFv2 in point-to-point and broadcast multiaccess networks</div>
+</div>
+
+<div class="sp-wrap">
+  <div class="sp-hdr" id="sp-hdr" onclick="toggleStudyPanel()">
+    <span class="sp-title">📚 Sections</span>
+    <span class="sp-arr" id="sp-arr">▼</span>
+  </div>
+  <div class="sp-body" id="sp-body">
+    <div class="sp-row" id="row-s-pt-1-0"><span class="sr-status" id="st-s-pt-1-0">○</span><span class="sr-nb">PT 1.0</span><span class="sr-ttl">Packet Tracer — Getting Started</span></div>
+    <div class="sp-row" id="row-s1"><span class="sr-status" id="st-s1">○</span><span class="sr-nb">2.1</span><span class="sr-ttl">OSPF Router ID</span></div>
+    <div class="sp-row" id="row-s2"><span class="sr-status" id="st-s2">○</span><span class="sr-nb">2.2</span><span class="sr-ttl">Point-to-Point OSPF Networks</span></div>
+    <div class="sp-row" id="row-s3"><span class="sr-status" id="st-s3">○</span><span class="sr-nb">2.3</span><span class="sr-ttl">Multiaccess OSPF Networks</span></div>
+    <div class="sp-row" id="row-s4"><span class="sr-status" id="st-s4">○</span><span class="sr-nb">2.4</span><span class="sr-ttl">Modify Single-Area OSPFv2</span></div>
+    <div class="sp-row" id="row-s5"><span class="sr-status" id="st-s5">○</span><span class="sr-nb">2.5</span><span class="sr-ttl">Default Route Propagation</span></div>
+    <div class="sp-row" id="row-s6"><span class="sr-status" id="st-s6">○</span><span class="sr-nb">2.6</span><span class="sr-ttl">Verify Single-Area OSPFv2</span></div>
+    <div class="sp-row" id="row-s-pt-2-7"><span class="sr-status" id="st-s-pt-2-7">○</span><span class="sr-nb">PT 2.7</span><span class="sr-ttl">Packet Tracer — Single-Area OSPFv2 Challenges</span></div>
+    <div class="sp-row" id="row-s7"><span class="sr-status" id="st-s7">○</span><span class="sr-nb">CMD</span><span class="sr-ttl">All Module 2 Commands</span></div>
+    <div class="sp-row" id="row-s8"><span class="sr-status" id="st-s8">○</span><span class="sr-nb">🎯</span><span class="sr-ttl">Common Exam Traps — Module 2</span></div>
+  </div>
+</div></div>
+
+<div class="toc">
+  <div class="toch open" onclick="this.classList.toggle('open');document.getElementById('tocb').classList.toggle('open')">
+    📋 Table of Contents — Tap to expand <span class="arr">▼</span>
+  </div>
+  <div class="tocb open" id="tocb">
+    <div class="tocg">2.1 — OSPF Router ID</div>
+    <a href="javascript:void(0)" onclick="goTo('s1')"><span class="n">2.1.2</span> Enable OSPF — router ospf Command</a>
+    <a href="javascript:void(0)" onclick="goTo('s1')"><span class="n">2.1.4</span> Router ID Order of Precedence</a>
+    <a href="javascript:void(0)" onclick="goTo('s1')"><span class="n">2.1.5</span> Configure Loopback as Router ID</a>
+    <a href="javascript:void(0)" onclick="goTo('s1')"><span class="n">2.1.6</span> Explicitly Configure Router ID</a>
+    <a href="javascript:void(0)" onclick="goTo('s1')"><span class="n">2.1.7</span> Modify a Router ID</a>
+    <div class="tocg">2.2 — Point-to-Point OSPF Networks</div>
+    <a href="javascript:void(0)" onclick="goTo('s2')"><span class="n">2.2.1</span> network Command + Wildcard Mask</a>
+    <a href="javascript:void(0)" onclick="goTo('s2')"><span class="n">2.2.4</span> Two Ways to Configure OSPF</a>
+    <a href="javascript:void(0)" onclick="goTo('s2')"><span class="n">2.2.6</span> ip ospf Interface Method</a>
+    <a href="javascript:void(0)" onclick="goTo('s2')"><span class="n">2.2.8</span> Passive Interface</a>
+    <a href="javascript:void(0)" onclick="goTo('s2')"><span class="n">2.2.11</span> OSPF Network Type Point-to-Point</a>
+    <a href="javascript:void(0)" onclick="goTo('s2')"><span class="n">2.2.12</span> Loopbacks and Point-to-Point</a>
+    <div class="tocg">2.3 — Multiaccess OSPF Networks</div>
+    <a href="javascript:void(0)" onclick="goTo('s3')"><span class="n">2.3.4</span> Verify OSPF Router Roles</a>
+    <a href="javascript:void(0)" onclick="goTo('s3')"><span class="n">2.3.5</span> Verify DR/BDR Adjacencies</a>
+    <a href="javascript:void(0)" onclick="goTo('s3')"><span class="n">2.3.6</span> Default DR/BDR Election Process</a>
+    <a href="javascript:void(0)" onclick="goTo('s3')"><span class="n">2.3.7</span> DR Failure and Recovery</a>
+    <a href="javascript:void(0)" onclick="goTo('s3')"><span class="n">2.3.8</span> Control DR/BDR with ip ospf priority</a>
+    <div class="tocg">2.4 — Modify Single-Area OSPFv2</div>
+    <a href="javascript:void(0)" onclick="goTo('s4')"><span class="n">2.4.1</span> OSPF Cost Formula</a>
+    <a href="javascript:void(0)" onclick="goTo('s4')"><span class="n">2.4.2</span> Adjust Reference Bandwidth</a>
+    <a href="javascript:void(0)" onclick="goTo('s4')"><span class="n">2.4.3</span> OSPF Accumulates Costs</a>
+    <a href="javascript:void(0)" onclick="goTo('s4')"><span class="n">2.4.4</span> Manual Cost Override</a>
+    <a href="javascript:void(0)" onclick="goTo('s4')"><span class="n">2.4.7</span> Modify Hello and Dead Intervals</a>
+    <div class="tocg">2.5 — Default Route Propagation</div>
+    <a href="javascript:void(0)" onclick="goTo('s5')"><span class="n">2.5.1</span> default-information originate</a>
+    <a href="javascript:void(0)" onclick="goTo('s5')"><span class="n">2.5.2</span> Verify the Propagated Default Route</a>
+    <div class="tocg">2.6 — Verify Single-Area OSPFv2</div>
+    <a href="javascript:void(0)" onclick="goTo('s6')"><span class="n">2.6.1</span> show ip ospf neighbor</a>
+    <a href="javascript:void(0)" onclick="goTo('s6')"><span class="n">2.6.2</span> show ip protocols</a>
+    <a href="javascript:void(0)" onclick="goTo('s6')"><span class="n">2.6.3</span> show ip ospf</a>
+    <a href="javascript:void(0)" onclick="goTo('s6')"><span class="n">2.6.4</span> show ip ospf interface</a>
+    <div class="tocg">Reference</div>
+    <a href="javascript:void(0)" onclick="goTo('s7')"><span class="n">CMD</span> All Module 2 Commands</a>
+    <a href="javascript:void(0)" onclick="goTo('s8')"><span class="n">🎯</span> Common Exam Traps</a>
+  </div>
+</div>
+
+<div class="wrap">
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- SECTION 2.1 — OSPF ROUTER ID -->
+<!-- ═══════════════════════════════════════════════════════ -->
+
+<div class="sec" id="s-pt-1-0">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">1.0</span><span class="ttl">Packet Tracer — Getting Started</span></span><button class="sec-check" id="sch-s-pt-1-0" onclick="event.stopPropagation();toggleSection('s-pt-1-0',this)">○ Mark done</button>
+</div>
+<div class="sb">
+  <div style="padding:14px 16px;background:#0d1117;border:1px solid #30363d;border-left:3px solid #1f6feb;border-radius:6px">
+    <div style="font-size:.72em;font-weight:800;text-transform:uppercase;letter-spacing:.8px;color:#1f6feb;margin-bottom:10px">&#x1F4E6; Packet Tracer Activities</div>
+    <div style="font-size:.82em;color:#6e7681;margin-bottom:10px">Open in Cisco Packet Tracer via your NetAcad course.</div>
+      <div style="display:flex;align-items:baseline;gap:10px;padding:6px 0;border-bottom:1px solid #21262d"><span style="font-family:monospace;font-size:.85em;color:#79c0ff;white-space:nowrap;flex-shrink:0;min-width:52px">1.0.5</span><span style="font-size:.88em;color:#c9d1d9">Logical and Physical Mode Exploration</span></div>
+    <div style="margin-top:12px;font-size:.78em;color:#6e7681">Full list: <a href="https://itexamanswers.net/ccna-3-packet-tracer-labs-answers-ensa-v7-02.html" target="_blank" rel="noopener" style="color:#58a6ff;word-break:break-all">https://itexamanswers.net/ccna-3-packet-tracer-labs-answers-ensa-v7-02.html</a></div>
+  </div>
+</div>
+</div>
+<div class="sec" id="s1">
+<div class="sh open" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">2.1</span><span class="ttl">OSPF Router ID</span></span><button class="sec-check" id="sch-s1" onclick="event.stopPropagation();toggleSection('s1',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb open">
+
+  <div class="sub">
+  <h3><span class="sn">2.1.2</span> Enable OSPF — router ospf Command</h3>
+  <div class="cw"><div class="cl">Enable OSPF and enter router configuration mode <button class="cpb" onclick="copyCode(this)">Copy</button></div>
+  <pre><code>R1(config)# router ospf 10
+R1(config-router)# ?
+  area                   OSPF area parameters
+  auto-cost              Calculate OSPF interface cost according to bandwidth
+  default-information    Control distribution of default information
+  network                Enable routing on an IP network
+  passive-interface      Suppress routing updates on an interface
+  router-id              router-id for this OSPF process
+R1(config-router)#</code></pre></div>
+  <ul>
+    <li><strong>process-id</strong> = 1–65,535 — chosen by the administrator</li>
+    <li><strong>Locally significant</strong> — does NOT need to match on neighboring routers to form adjacencies</li>
+    <li>Best practice: use the same process-id on all routers in the domain for consistency</li>
+    <li>Entering <code>router ospf</code> drops into <code>(config-router)#</code> mode</li>
+  </ul>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">2.1.4</span> Router ID Order of Precedence</h3>
+  <p>Cisco routers use a three-tier method to select the OSPF Router ID. The first applicable method wins:</p>
+  <div class="tw"><table>
+    <tr><th>Priority</th><th>Source</th><th>Notes</th></tr>
+    <tr><td><strong>① Best</strong></td><td><code>router-id rid</code> command</td><td>Recommended. Any 32-bit value in dotted decimal. Always use this.</td></tr>
+    <tr><td><strong>② Alt</strong></td><td>Highest loopback IPv4 address</td><td>Loopbacks never go down — provides a stable RID without manual config</td></tr>
+    <tr><td><strong>③ Last</strong></td><td>Highest active physical interface IPv4 address</td><td>Least recommended — if the highest-IP interface goes down, RID changes, disrupting OSPF</td></tr>
+  </table></div>
+  <div class="ca info">
+    <span class="ic">💡</span>
+    <div>OSPF does <strong>NOT</strong> need to be enabled on an interface for that interface's IP to be chosen as the Router ID — it just needs to be configured and active on the router.</div>
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">2.1.5</span> Configure a Loopback Interface as the Router ID</h3>
+  <p>Use a /32 mask on loopbacks designated only as a Router ID source — this prevents OSPF from advertising the loopback as a real network to neighbors:</p>
+  <div class="cw"><div class="cl">Loopback as stable Router ID — /32 host mask <button class="cpb" onclick="copyCode(this)">Copy</button></div>
+  <pre><code>R1(config)# interface Loopback 1
+R1(config-if)# ip address 1.1.1.1 255.255.255.255   ! /32 = not advertised as network
+R1(config-if)# end
+R1# show ip protocols | include Router ID
+  Router ID 1.1.1.1</code></pre></div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">2.1.6</span> Explicitly Configure Router ID</h3>
+  <p>Best practice — always manually configure the Router ID using the <code>router-id</code> command:</p>
+  <div class="cw"><div class="cl">Manually configure Router ID on R1, R2, R3 <button class="cpb" onclick="copyCode(this)">Copy</button></div>
+  <pre><code>! R1:
+R1(config)# router ospf 10
+R1(config-router)# router-id 1.1.1.1
+R1(config-router)# end
+R1# show ip protocols | include Router ID
+  Router ID 1.1.1.1
+
+! R2:
+R2(config)# router ospf 10
+R2(config-router)# router-id 2.2.2.2
+
+! R3:
+R3(config)# router ospf 10
+R3(config-router)# router-id 3.3.3.3</code></pre></div>
+  <div class="ca tip">
+    <span class="ic">✅</span>
+    <div>Convention: use the router number as all four octets (R1=1.1.1.1, R2=2.2.2.2, R3=3.3.3.3). Makes it immediately obvious in <code>show ip ospf neighbor</code> output which router is which.</div>
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">2.1.7</span> Modify a Router ID</h3>
+  <p>After a router selects a Router ID, it will <strong>not change until the router is reloaded or the OSPF process is reset</strong>. Preferred method to apply a new Router ID without a full reload:</p>
+  <div class="cw"><div class="cl">Change Router ID on running router — clear ip ospf process <button class="cpb" onclick="copyCode(this)">Copy</button></div>
+  <pre><code>R1# show ip protocols | include Router ID
+  Router ID 10.10.1.1                    ! Old/wrong Router ID
+
+R1(config)# router ospf 10
+R1(config-router)# router-id 1.1.1.1
+% OSPF: Reload or use "clear ip ospf process" command, for this to take effect
+R1(config-router)# end
+
+R1# clear ip ospf process
+Reset ALL OSPF processes? [no]: y
+! Adjacencies drop momentarily then reform with new Router ID
+
+R1# show ip protocols | include Router ID
+  Router ID 1.1.1.1                      ! New Router ID active</code></pre></div>
+  <div class="ca danger">
+    <span class="ic">🚨</span>
+    <div><strong>clear ip ospf process is the exam-expected method.</strong> Not a full reload. The command drops all adjacencies momentarily — they reform automatically with the new Router ID. IOS will not accept the new ID until this command runs or the router reboots.</div>
+  </div>
+  </div>
+
+  <!-- SYNTAX CHECKER: 2.1.5 -->
+  <div style="margin:20px 0 6px;padding:16px;background:#0d1117;border:1px solid #30363d;border-left:3px solid #bc8cff;border-radius:8px">
+    <div style="font-size:.7em;font-weight:800;text-transform:uppercase;letter-spacing:.8px;color:#bc8cff;margin-bottom:6px">&#x1F5A5; Syntax Checker &mdash; 2.1.5</div>
+    <div style="font-size:.92em;font-weight:600;color:#e6edf3;margin-bottom:12px">OSPFv2 Point-to-Point Networks</div>
+    <div style="font-size:.82em;color:#8b949e;margin-bottom:14px">Type each command exactly as shown. Press Enter to submit. The checker validates your syntax step by step.</div>
+    <div class="tool-links" style="display:flex;flex-wrap:wrap;gap:14px">
+      <div style="flex:1 1 220px;min-width:0">
+        <a href="../../syntax-checker-simple/ccna3_syntax_checker.html?lab=2.1.5" target="_blank" rel="noopener" title="Quick, guided drill: type the exact commands for this NetAcad lab, step by step. Opens straight to lab 2.1.5." style="display:inline-flex;align-items:center;gap:8px;color:#fff;text-decoration:none;padding:8px 18px;border-radius:6px;font-size:.85em;font-weight:700;background:#238636;border:1px solid #2ea043">&#x25B6; Open Syntax Checker</a>
+        <div style="font-size:.75em;color:#8b949e;margin-top:6px">Quick, guided drill: type the exact commands for this NetAcad lab, step by step. Opens straight to lab 2.1.5.</div>
+      </div>
+      <div style="flex:1 1 220px;min-width:0">
+        <a class="cli-engine-link" href="../../cli-engine/ccna-cli-engine.html" target="_blank" rel="noopener" title="Full simulated Cisco IOS terminal: Tab completion, device state, Free Practice, Home Labs and Subnetting. In its exercise menu, pick “Course 3 · 2.1 — Configure OSPFv2 on Point-to-Point Networks”." style="display:inline-flex;align-items:center;gap:8px;color:#fff;text-decoration:none;padding:8px 18px;border-radius:6px;font-size:.85em;font-weight:700;background:#1f6feb;border:1px solid #388bfd">&#x1F4BB; Open CLI Engine</a>
+        <div style="font-size:.75em;color:#8b949e;margin-top:6px">Full simulated Cisco IOS terminal: Tab completion, device state, Free Practice, Home Labs and Subnetting. In its exercise menu, pick “Course 3 · 2.1 — Configure OSPFv2 on Point-to-Point Networks”.</div>
+      </div>
+    </div>
+    <div style="margin-top:12px;font-size:.75em"><a href="../../index.html" style="color:#58a6ff;text-decoration:none">&#x1F3E0; All study tools (home)</a></div>
+  </div>
+
+</div></div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- SECTION 2.2 — POINT-TO-POINT OSPF NETWORKS -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div class="sec" id="s2">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">2.2</span><span class="ttl">Point-to-Point OSPF Networks</span></span><button class="sec-check" id="sch-s2" onclick="event.stopPropagation();toggleSection('s2',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb">
+
+  <div class="sub">
+  <h3><span class="sn">2.2.1–2.2.2</span> network Command and Wildcard Mask</h3>
+  <div class="cw"><div class="cl">network command syntax</div>
+  <pre><code>Router(config-router)# network network-address wildcard-mask area area-id</code></pre></div>
+
+  <p><strong>Wildcard mask rules:</strong></p>
+  <ul>
+    <li>Bit = <strong>0</strong> → match that bit exactly (like a regular subnet mask bit 1)</li>
+    <li>Bit = <strong>1</strong> → ignore/wildcard that bit</li>
+    <li>Quick calculation: <code>wildcard = 255.255.255.255 − subnet mask</code></li>
+  </ul>
+
+  <div class="wc-box">
+    <div class="wc-title">🔢 Wildcard Mask Quick Reference</div>
+    <div class="wc-row"><div class="wc-prefix">/30</div><div class="wc-mask">255.255.255.252 → wildcard = <strong>0.0.0.3</strong></div><div class="wc-badge">P2P link</div></div>
+    <div class="wc-row"><div class="wc-prefix">/26</div><div class="wc-mask">255.255.255.192 → wildcard = <strong>0.0.0.63</strong></div></div>
+    <div class="wc-row"><div class="wc-prefix">/24</div><div class="wc-mask">255.255.255.0 → wildcard = <strong>0.0.0.255</strong></div><div class="wc-badge">LAN</div></div>
+    <div class="wc-row"><div class="wc-prefix">/16</div><div class="wc-mask">255.255.0.0 → wildcard = <strong>0.0.255.255</strong></div></div>
+    <div class="wc-row"><div class="wc-prefix">exact</div><div class="wc-mask">Any mask → wildcard = <strong>0.0.0.0</strong> (quad-zero)</div><div class="wc-badge">no math needed</div></div>
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">2.2.4</span> Two Approaches with the network Command</h3>
+  <div class="method-grid">
+    <div class="method-card m1">
+      <div class="mc-hdr">🅐 Network-based wildcard — match all interfaces on that subnet</div>
+      <div class="mc-body">
+        <div class="cw" style="margin:0"><div class="cl">Method A — wildcard per subnet <button class="cpb" onclick="copyCode(this)">Copy</button></div>
+        <pre><code>R1(config)# router ospf 10
+R1(config-router)# network 10.10.1.0 0.0.0.255 area 0   ! /24 LAN
+R1(config-router)# network 10.1.1.4 0.0.0.3 area 0      ! /30 link
+R1(config-router)# network 10.1.1.12 0.0.0.3 area 0     ! /30 link</code></pre></div>
+      </div>
+    </div>
+    <div class="method-card m2">
+      <div class="mc-hdr">🅑 Quad-zero wildcard — exact interface IP, no math needed</div>
+      <div class="mc-body">
+        <div class="cw" style="margin:0"><div class="cl">Method B — 0.0.0.0 wildcard per interface IP <button class="cpb" onclick="copyCode(this)">Copy</button></div>
+        <pre><code>R1(config)# router ospf 10
+R1(config-router)# network 10.10.1.1 0.0.0.0 area 0     ! G0/0/0 exact IP
+R1(config-router)# network 10.1.1.5 0.0.0.0 area 0      ! G0/0/1 exact IP
+R1(config-router)# network 10.1.1.14 0.0.0.0 area 0     ! another interface</code></pre></div>
+      </div>
+    </div>
+  </div>
+  <div class="ca tip">
+    <span class="ic">✅</span>
+    <div><strong>Quad-zero (0.0.0.0) is the most reliable approach</strong> — no wildcard calculation needed. Point at the exact interface IP. If you enter the wrong IP it simply won't match anything.</div>
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">2.2.6</span> Configure OSPF Using the ip ospf Interface Method</h3>
+  <p>Alternative to the <code>network</code> command — configure OSPF directly on each interface. No wildcard mask required:</p>
+  <div class="cw"><div class="cl">ip ospf — per-interface configuration method <button class="cpb" onclick="copyCode(this)">Copy</button></div>
+  <pre><code>! Syntax:
+Router(config-if)# ip ospf process-id area area-id
+
+! Example on R1 — first remove old network commands, then configure per-interface:
+R1(config)# router ospf 10
+R1(config-router)# no network 10.10.1.1 0.0.0.0 area 0   ! remove old method
+R1(config-router)# no network 10.1.1.5 0.0.0.0 area 0
+R1(config-router)# interface GigabitEthernet 0/0/0
+R1(config-if)# ip ospf 10 area 0
+R1(config-if)# interface GigabitEthernet 0/0/1
+R1(config-if)# ip ospf 10 area 0
+R1(config-if)# interface Loopback 0
+R1(config-if)# ip ospf 10 area 0</code></pre></div>
+  <div class="ca info">
+    <span class="ic">💡</span>
+    <div>Both methods achieve identical results. The <code>ip ospf</code> interface method is cleaner for large configurations — just navigate to each interface and add one line. No wildcard calculation, no risk of matching wrong interfaces.</div>
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">2.2.8–2.2.9</span> Passive Interface</h3>
+  <p>By default, OSPF sends Hello packets out <strong>all OSPF-enabled interfaces</strong> — including LAN interfaces where no OSPF neighbor exists. Three reasons this is a problem:</p>
+
+  <div class="passive-box">
+    <div class="pb-title">⚠️ Problems with Hello on LAN interfaces</div>
+    <div class="pb-row"><div class="pb-icon">📡</div><div><strong>Inefficient bandwidth use</strong> — Hello packets consume available bandwidth on user-facing segments where no OSPF neighbor will ever respond</div></div>
+    <div class="pb-row"><div class="pb-icon">💻</div><div><strong>Wasted device resources</strong> — every host on the LAN must receive, process, and discard each OSPF Hello message</div></div>
+    <div class="pb-row"><div class="pb-icon">🔒</div><div><strong>Security risk</strong> — OSPF updates can be intercepted by packet sniffers and modified to inject false routes, corrupting the routing table</div></div>
+  </div>
+
+  <h4>Method 1 — Configure individual passive interfaces:</h4>
+  <div class="cw"><div class="cl">passive-interface — stop Hellos on LAN/loopback <button class="cpb" onclick="copyCode(this)">Copy</button></div>
+  <pre><code>R1(config)# router ospf 10
+R1(config-router)# passive-interface loopback 0       ! Stop Hellos on Lo0
+R1(config-router)# end
+R1# show ip protocols
+! Output shows:
+  Passive Interface(s):
+    Loopback0                                          ← passive confirmed
+  Routing on Interfaces Configured Explicitly (Area 0):
+    Loopback0                                          ← still advertised to neighbors ✅</code></pre></div>
+
+  <h4>Method 2 — Make all interfaces passive, then re-enable router-facing ones:</h4>
+  <div class="cw"><div class="cl">passive-interface default + no passive-interface <button class="cpb" onclick="copyCode(this)">Copy</button></div>
+  <pre><code>R3(config)# router ospf 10
+R3(config-router)# passive-interface default           ! All interfaces → passive
+! Adjacencies immediately drop on G0/0/0 and G0/0/1
+R3(config-router)# no passive-interface g0/0/0        ! Re-enable for OSPF
+R3(config-router)# no passive-interface g0/0/1        ! Re-enable for OSPF
+! Adjacencies reform automatically</code></pre></div>
+  <div class="ca danger">
+    <span class="ic">🚨</span>
+    <div><strong>passive-interface stops Hellos — but the network IS still advertised.</strong> The connected network still appears in OSPF updates sent out other interfaces. The interface just won't send or receive Hello packets, so no neighbor can form on it.</div>
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">2.2.11</span> OSPF Network Type — Point-to-Point on Ethernet</h3>
+  <p>By default, Cisco runs DR/BDR election on ALL Ethernet interfaces — even two-router point-to-point Ethernet links. This is unnecessary overhead. Disable it:</p>
+  <div class="cw"><div class="cl">Disable DR/BDR on Ethernet point-to-point links <button class="cpb" onclick="copyCode(this)">Copy</button></div>
+  <pre><code>R1(config)# interface GigabitEthernet 0/0/0
+R1(config-if)# ip ospf network point-to-point
+! Adjacency briefly drops then reforms — no DR/BDR elected
+
+R1# show ip ospf interface GigabitEthernet 0/0/0
+  Network Type POINT_TO_POINT, Cost: 1    ← confirms no DR/BDR
+  State POINT_TO_POINT                    ← no DR role shown</code></pre></div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">2.2.12</span> Loopbacks and Point-to-Point Networks</h3>
+  <p>By default, loopback interfaces are advertised as <strong>/32 host routes</strong> regardless of the subnet mask configured. This misleads other routers about the actual network size:</p>
+  <div class="cw"><div class="cl">Fix loopback advertisement — use ip ospf network point-to-point <button class="cpb" onclick="copyCode(this)">Copy</button></div>
+  <pre><code>! Before fix — only /32 advertised:
+R2# show ip route | include 10.10.1
+O        10.10.1.1/32 [110/2] via 10.1.1.5     ! /32 host route — wrong
+
+! Apply fix on R1's loopback:
+R1(config)# interface Loopback 0
+R1(config-if)# ip ospf network point-to-point
+
+! After fix — full /24 advertised:
+R2# show ip route | include 10.10.1
+O        10.10.1.0/24 [110/2] via 10.1.1.5     ! /24 network — correct ✅</code></pre></div>
+  </div>
+
+  <!-- PT INLINE -->
+  <div style="margin:20px 0 6px;padding:14px 16px;background:#0d1117;border:1px solid #30363d;border-left:3px solid #1f6feb;border-radius:6px">
+    <div style="font-size:.72em;font-weight:800;text-transform:uppercase;letter-spacing:.8px;color:#1f6feb;margin-bottom:10px">&#x1F4E6; Packet Tracer Activities</div>
+  <div style="display:flex;align-items:baseline;gap:10px;padding:6px 0;border-bottom:1px solid #21262d"><span style="font-family:monospace;font-size:.85em;color:#79c0ff;white-space:nowrap;flex-shrink:0;min-width:52px">2.2.13</span><span style="font-size:.88em;color:#c9d1d9">Point-to-Point Single-Area OSPFv2 Configuration</span></div>
+    <div style="margin-top:10px;font-size:.78em;color:#6e7681">Full list: <a href="https://itexamanswers.net/ccna-3-packet-tracer-labs-answers-ensa-v7-02.html" target="_blank" rel="noopener" style="color:#58a6ff;word-break:break-all">https://itexamanswers.net/ccna-3-packet-tracer-labs-answers-ensa-v7-02.html</a></div>
+  </div>
+
+</div></div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- SECTION 2.3 — MULTIACCESS OSPF NETWORKS -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div class="sec" id="s3">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">2.3</span><span class="ttl">Multiaccess OSPF Networks</span></span><button class="sec-check" id="sch-s3" onclick="event.stopPropagation();toggleSection('s3',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb">
+
+  <div class="sub">
+  <h3><span class="sn">2.3.4</span> Verify OSPF Router Roles — show ip ospf interface</h3>
+  <div class="cw"><div class="cl">show ip ospf interface g0/0/0 — read DR/BDR/DROTHER state <button class="cpb" onclick="copyCode(this)">Copy</button></div>
+  <pre><code>R1# show ip ospf interface GigabitEthernet 0/0/0
+GigabitEthernet0/0/0 is up, line protocol is up
+  Internet Address 192.168.1.1/24, Area 0
+  Process ID 10, Router ID 1.1.1.1, Network Type BROADCAST, Cost: 1
+  Transmit Delay is 1 sec, State DROTHER, Priority 1    ← R1 is DROTHER, priority=1
+  Designated Router (ID) 3.3.3.3, Interface 192.168.1.3 ← DR = R3
+  Backup Designated Router (ID) 2.2.2.2, Interface 192.168.1.2 ← BDR = R2
+  Timer intervals configured, Hello 10, Dead 40
+  Neighbor Count is 2, Adjacent neighbor count is 2
+    Adjacent with neighbor 2.2.2.2  (Backup Designated Router)
+    Adjacent with neighbor 3.3.3.3  (Designated Router)</code></pre></div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">2.3.5</span> Verify DR/BDR Adjacencies — Neighbor States</h3>
+  <div class="cw"><div class="cl">show ip ospf neighbor — multiaccess network states <button class="cpb" onclick="copyCode(this)">Copy</button></div>
+  <pre><code>R1# show ip ospf neighbor
+Neighbor ID     Pri   State           Dead Time   Address         Interface
+2.2.2.2           1   FULL/BDR        00:00:31    192.168.1.2     Gi0/0/0
+3.3.3.3           1   FULL/DR         00:00:39    192.168.1.3     Gi0/0/0
+
+! On a point-to-point link (no DR/BDR):
+3.3.3.3           0   FULL/  -        00:00:35    10.1.1.13       Gi0/0/1
+                                                                    ↑ dash = no DR/BDR</code></pre></div>
+
+  <p>Four possible neighbor states on multiaccess networks:</p>
+  <div class="state-grid">
+    <div class="state-card full-dr"><div class="sc-state">FULL/DR</div><div>Router is fully adjacent with the Designated Router. Full LSA exchange can occur.</div></div>
+    <div class="state-card full-bdr"><div class="sc-state">FULL/BDR</div><div>Router is fully adjacent with the Backup Designated Router. Full LSA exchange can occur.</div></div>
+    <div class="state-card full-drother"><div class="sc-state">FULL/DROTHER</div><div>DR or BDR is fully adjacent with a DROTHER. Full LSA exchange can occur.</div></div>
+    <div class="state-card two-way"><div class="sc-state">2WAY/DROTHER</div><div>Two DROTHERs — only Two-Way state. They exchange Hellos only. This is <strong>normal behavior</strong> for DROTHERs with each other.</div></div>
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">2.3.6</span> Default DR/BDR Election Process</h3>
+  <p>Election order — applied sequentially:</p>
+  <ol class="steps">
+    <li><strong>Highest interface priority</strong> wins DR role. Second highest = BDR. Default priority = 1 for all Ethernet interfaces. Priority 0 = never becomes DR or BDR.</li>
+    <li>If priorities are equal → <strong>highest Router ID wins</strong>. Second highest = BDR.</li>
+  </ol>
+  <div class="ca warn">
+    <span class="ic">⚠️</span>
+    <div><strong>DR/BDR elections are NOT preemptive.</strong> Adding a new router with a higher priority or Router ID after the election does NOT take over the DR/BDR roles. The new router simply becomes a DROTHER. Only a failure event triggers role changes.</div>
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">2.3.7</span> DR Failure and Recovery Scenarios</h3>
+  <div class="scenario-grid">
+    <div class="scenario-card sc-fail">
+      <div class="sc-title">DR Fails</div>
+      The pre-elected BDR automatically promotes to DR. A new BDR election occurs among remaining DROTHERs. The DROTHER with the highest priority/RID becomes the new BDR.
+    </div>
+    <div class="scenario-card sc-recover">
+      <div class="sc-title">Former DR Re-Joins Network</div>
+      The returned router does NOT reclaim the DR role. It becomes a DROTHER. Election results are non-preemptive — the current DR keeps its role.
+    </div>
+    <div class="scenario-card sc-new">
+      <div class="sc-title">New High-Priority Router Joins</div>
+      The new router becomes a DROTHER automatically. No new election triggered. DR and BDR retain their roles regardless of the new router's priority or Router ID.
+    </div>
+    <div class="scenario-card sc-recover">
+      <div class="sc-title">BDR Fails</div>
+      DR keeps its role unchanged. A new BDR election occurs among DROTHERs — highest priority/RID DROTHER becomes the new BDR.
+    </div>
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">2.3.8–2.3.9</span> Control DR/BDR Election — ip ospf priority</h3>
+  <div class="pri-grid">
+    <div class="pri-card p255"><div class="pv">255</div><div class="pd"><strong>Maximum — always becomes DR</strong> (if first in election). Use to guarantee a specific router is DR.</div></div>
+    <div class="pri-card p1"><div class="pv">1</div><div class="pd"><strong>Default</strong> for all Ethernet interfaces. Tie broken by highest Router ID.</div></div>
+    <div class="pri-card p0"><div class="pv">0</div><div class="pd"><strong>Never becomes DR or BDR.</strong> Router is always DROTHER on that interface. Use for low-resource routers that should never handle DR duties.</div></div>
+  </div>
+
+  <div class="cw"><div class="cl">Configure OSPF priority — force specific DR/BDR roles <button class="cpb" onclick="copyCode(this)">Copy</button></div>
+  <pre><code>! Make R1 the DR (priority 255), R3 never DR/BDR (priority 0):
+R1(config)# interface GigabitEthernet 0/0/0
+R1(config-if)# ip ospf priority 255      ! R1 = DR
+
+R3(config)# interface GigabitEthernet 0/0/0
+R3(config-if)# ip ospf priority 0        ! R3 = always DROTHER
+
+! Must reset OSPF process on all routers to trigger new election:
+R1# clear ip ospf process
+R2# clear ip ospf process
+R3# clear ip ospf process
+
+! Verify R1 is now DR:
+R1# show ip ospf interface g0/0/0
+  Transmit Delay is 1 sec, State DR, Priority 255  ✅</code></pre></div>
+  <div class="ca warn">
+    <span class="ic">⚠️</span>
+    <div><strong>Priority changes don't take effect until the OSPF process is cleared or the router reloads.</strong> After configuring priority, run <code>clear ip ospf process</code> on all routers — starting with the intended DR first — to trigger a new election.</div>
+  </div>
+  </div>
+
+  <!-- SYNTAX CHECKER: 2.3.7 -->
+  <div style="margin:20px 0 6px;padding:16px;background:#0d1117;border:1px solid #30363d;border-left:3px solid #bc8cff;border-radius:8px">
+    <div style="font-size:.7em;font-weight:800;text-transform:uppercase;letter-spacing:.8px;color:#bc8cff;margin-bottom:6px">&#x1F5A5; Syntax Checker &mdash; 2.3.7</div>
+    <div style="font-size:.92em;font-weight:600;color:#e6edf3;margin-bottom:12px">OSPFv2 Multiaccess Networks</div>
+    <div style="font-size:.82em;color:#8b949e;margin-bottom:14px">Type each command exactly as shown. Press Enter to submit. The checker validates your syntax step by step.</div>
+    <div class="tool-links" style="display:flex;flex-wrap:wrap;gap:14px">
+      <div style="flex:1 1 220px;min-width:0">
+        <a href="../../syntax-checker-simple/ccna3_syntax_checker.html?lab=2.3.7" target="_blank" rel="noopener" title="Quick, guided drill: type the exact commands for this NetAcad lab, step by step. Opens straight to lab 2.3.7." style="display:inline-flex;align-items:center;gap:8px;color:#fff;text-decoration:none;padding:8px 18px;border-radius:6px;font-size:.85em;font-weight:700;background:#238636;border:1px solid #2ea043">&#x25B6; Open Syntax Checker</a>
+        <div style="font-size:.75em;color:#8b949e;margin-top:6px">Quick, guided drill: type the exact commands for this NetAcad lab, step by step. Opens straight to lab 2.3.7.</div>
+      </div>
+      <div style="flex:1 1 220px;min-width:0">
+        <a class="cli-engine-link" href="../../cli-engine/ccna-cli-engine.html" target="_blank" rel="noopener" title="Full simulated Cisco IOS terminal: Tab completion, device state, Free Practice, Home Labs and Subnetting. In its exercise menu, pick “Course 3 · 2.3 — Configure OSPFv2 on Multiaccess Networks”." style="display:inline-flex;align-items:center;gap:8px;color:#fff;text-decoration:none;padding:8px 18px;border-radius:6px;font-size:.85em;font-weight:700;background:#1f6feb;border:1px solid #388bfd">&#x1F4BB; Open CLI Engine</a>
+        <div style="font-size:.75em;color:#8b949e;margin-top:6px">Full simulated Cisco IOS terminal: Tab completion, device state, Free Practice, Home Labs and Subnetting. In its exercise menu, pick “Course 3 · 2.3 — Configure OSPFv2 on Multiaccess Networks”.</div>
+      </div>
+    </div>
+    <div style="margin-top:12px;font-size:.75em"><a href="../../index.html" style="color:#58a6ff;text-decoration:none">&#x1F3E0; All study tools (home)</a></div>
+  </div>
+
+  <!-- PT INLINE -->
+  <div style="margin:20px 0 6px;padding:14px 16px;background:#0d1117;border:1px solid #30363d;border-left:3px solid #1f6feb;border-radius:6px">
+    <div style="font-size:.72em;font-weight:800;text-transform:uppercase;letter-spacing:.8px;color:#1f6feb;margin-bottom:10px">&#x1F4E6; Packet Tracer Activities</div>
+  <div style="display:flex;align-items:baseline;gap:10px;padding:6px 0;border-bottom:1px solid #21262d"><span style="font-family:monospace;font-size:.85em;color:#79c0ff;white-space:nowrap;flex-shrink:0;min-width:52px">2.3.11</span><span style="font-size:.88em;color:#c9d1d9">Determine the DR and BDR</span></div>
+    <div style="margin-top:10px;font-size:.78em;color:#6e7681">Full list: <a href="https://itexamanswers.net/ccna-3-packet-tracer-labs-answers-ensa-v7-02.html" target="_blank" rel="noopener" style="color:#58a6ff;word-break:break-all">https://itexamanswers.net/ccna-3-packet-tracer-labs-answers-ensa-v7-02.html</a></div>
+  </div>
+
+</div></div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- SECTION 2.4 — MODIFY SINGLE-AREA OSPFv2 -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div class="sec" id="s4">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">2.4</span><span class="ttl">Modify Single-Area OSPFv2</span></span><button class="sec-check" id="sch-s4" onclick="event.stopPropagation();toggleSection('s4',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb">
+
+  <div class="sub">
+  <h3><span class="sn">2.4.1</span> OSPF Cost Formula</h3>
+  <p>OSPF metric = <strong>cost</strong>. Lower cost = preferred path. Cost is <em>inversely proportional</em> to bandwidth:</p>
+  <div class="cw"><div class="cl">Cost formula — default 100 Mbps reference bandwidth</div>
+  <pre><code>Cost = reference bandwidth ÷ interface bandwidth
+Default reference bandwidth = 100,000,000 bps (100 Mbps)
+
+Cost = 100,000,000 bps ÷ interface bandwidth in bps</code></pre></div>
+
+  <p><strong>Default costs with 100 Mbps reference bandwidth:</strong></p>
+  <div class="cost-grid">
+    <div class="cost-row c-ok"><div class="cr-intf">Serial (T1)</div><div class="cr-bw">1.544 Mbps</div><div class="cr-cost">64</div></div>
+    <div class="cost-row c-ok"><div class="cr-intf">Ethernet</div><div class="cr-bw">10 Mbps</div><div class="cr-cost">10</div></div>
+    <div class="cost-row c-bad"><div class="cr-intf">Fast Ethernet</div><div class="cr-bw">100 Mbps</div><div class="cr-cost">1 ⚠️</div></div>
+    <div class="cost-row c-bad"><div class="cr-intf">Gigabit Ethernet</div><div class="cr-bw">1,000 Mbps</div><div class="cr-cost">1 ⚠️</div></div>
+    <div class="cost-row c-bad"><div class="cr-intf">10 Gigabit Ethernet</div><div class="cr-bw">10,000 Mbps</div><div class="cr-cost">1 ⚠️</div></div>
+  </div>
+  <div class="ca danger">
+    <span class="ic">🚨</span>
+    <div><strong>FastEthernet, GigabitEthernet, and 10GigE all share cost = 1</strong> with the default 100 Mbps reference bandwidth. OSPF cannot differentiate between them. This is the primary reason to adjust the reference bandwidth in modern networks.</div>
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">2.4.2</span> Adjust the Reference Bandwidth</h3>
+  <div class="cw"><div class="cl">auto-cost reference-bandwidth — must be applied on ALL routers <button class="cpb" onclick="copyCode(this)">Copy</button></div>
+  <pre><code>! Adjust to 10 Gbps (expressed in Mbps):
+R1(config)# router ospf 10
+R1(config-router)# auto-cost reference-bandwidth 10000
+% OSPF: Reference bandwidth is changed.
+        Please ensure reference bandwidth is consistent across all routers.
+
+! Must also apply on R2 and R3 — same command, same value</code></pre></div>
+
+  <p><strong>Costs with 10,000 Mbps (10 Gbps) reference bandwidth:</strong></p>
+  <div class="tw"><table>
+    <tr><th>Interface</th><th>Bandwidth</th><th>Cost (10G ref)</th></tr>
+    <tr><td>10 Gigabit Ethernet</td><td>10,000 Mbps</td><td><strong>1</strong></td></tr>
+    <tr><td>Gigabit Ethernet</td><td>1,000 Mbps</td><td><strong>10</strong></td></tr>
+    <tr><td>Fast Ethernet</td><td>100 Mbps</td><td><strong>100</strong></td></tr>
+    <tr><td>Ethernet</td><td>10 Mbps</td><td><strong>1000</strong></td></tr>
+  </table></div>
+  <div class="ca warn">
+    <span class="ic">⚠️</span>
+    <div><strong>auto-cost reference-bandwidth must be identical on ALL routers in the OSPF domain.</strong> Inconsistent values cause miscalculated path costs and potentially incorrect routing decisions. Always configure it on every router at the same time.</div>
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">2.4.3</span> OSPF Accumulates Costs</h3>
+  <p>OSPF cost to a destination = <strong>sum of all link costs along the path</strong>. With 10,000 Mbps reference bandwidth and GigE links (cost=10) plus loopbacks (cost=1 by default):</p>
+  <div class="cw"><div class="cl">show ip route — verify accumulated cost <button class="cpb" onclick="copyCode(this)">Copy</button></div>
+  <pre><code>! R1 reaching R2's LAN (10.10.2.0/24):
+! Path: R1 → R2 (GigE link cost 10) + R2 loopback (cost 1) = 11 total
+
+R1# show ip route | include 10.10.2
+O        10.10.2.0/24 [110/11] via 10.1.1.6, Gi0/0/0   ! [AD/cost] = [110/11] ✅
+
+R1# show ip route 10.10.2.0
+  Known via "ospf 10", distance 110, metric 11, type intra area</code></pre></div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">2.4.4</span> Manual Cost Override — ip ospf cost</h3>
+  <p>Override the automatic cost calculation to influence path selection or designate backup links:</p>
+  <div class="cw"><div class="cl">ip ospf cost — manually set cost on an interface <button class="cpb" onclick="copyCode(this)">Copy</button></div>
+  <pre><code>! Make R1-R2 link preferred (cost 10 default) vs R1-R3 link (forced cost 30 = backup):
+R1(config)# interface GigabitEthernet 0/0/1      ! link to R3
+R1(config-if)# ip ospf cost 30                   ! higher cost = less preferred
+
+R1(config-if)# interface Loopback 0
+R1(config-if)# ip ospf cost 10                   ! match GigE cost for accuracy
+
+! Verify — all traffic via R2 now (preferred):
+R1# show ip route ospf | begin 10
+O        10.1.1.8/30 [110/20] via 10.1.1.6, Gi0/0/0    ! via R2 ✅
+O        10.10.2.0/24 [110/20] via 10.1.1.6, Gi0/0/0   ! via R2 ✅
+O        10.10.3.0/24 [110/30] via 10.1.1.6, Gi0/0/0   ! via R2 (not R3 direct)</code></pre></div>
+  <div class="ca info">
+    <span class="ic">💡</span>
+    <div><code>ip ospf cost</code> overrides everything — both reference bandwidth formula AND the <code>bandwidth</code> interface command. It is the most direct and reliable method for traffic engineering in OSPF.</div>
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">2.4.7–2.4.9</span> Modify Hello and Dead Intervals</h3>
+  <p>Default (Ethernet/P2P): Hello = <strong>10 sec</strong>, Dead = <strong>40 sec</strong> (4× Hello). Must match between neighbors or adjacency is lost.</p>
+
+  <div class="cw"><div class="cl">Verify current timers <button class="cpb" onclick="copyCode(this)">Copy</button></div>
+  <pre><code>R1# show ip ospf interface g0/0/0
+  Timer intervals configured, Hello 10, Dead 40, Wait 40, Retransmit 5
+
+R1# show ip ospf neighbor
+Neighbor ID     Pri   State     Dead Time   Address     Interface
+2.2.2.2           0   FULL/-    00:00:31    10.1.1.6    Gi0/0/0   ! Dead Time counting down</code></pre></div>
+
+  <div class="cw"><div class="cl">Modify Hello and Dead intervals per-interface <button class="cpb" onclick="copyCode(this)">Copy</button></div>
+  <pre><code>! Change Hello to 5s on R1's G0/0/0:
+R1(config)# interface GigabitEthernet 0/0/0
+R1(config-if)# ip ospf hello-interval 5      ! Hello = 5 seconds
+R1(config-if)# ip ospf dead-interval 20      ! Dead = 20 seconds (explicit)
+! IOS auto-sets dead to 4x hello, but best practice to set explicitly
+
+! Adjacency DROPS immediately — R2 still has Hello=10, Dead=40
+*OSPF-5-ADJCHG: Nbr 2.2.2.2 from FULL to DOWN, Neighbor Down: Dead timer expired
+
+! Must also change R2's G0/0/0 to match, or adjacency stays down:
+R2(config)# interface GigabitEthernet 0/0/0
+R2(config-if)# ip ospf hello-interval 5
+! Adjacency reforms automatically
+*OSPF-5-ADJCHG: Nbr 1.1.1.1 from LOADING to FULL, Loading Done
+
+! Reset to defaults:
+R1(config-if)# no ip ospf hello-interval
+R1(config-if)# no ip ospf dead-interval</code></pre></div>
+  <div class="et">
+    <div class="lbl">🎯 TIMER MISMATCH = ADJACENCY LOSS — NO ERROR MESSAGE</div>
+    When timers don't match, OSPF simply never forms the adjacency (or drops it if it was formed). IOS does NOT print a clear warning message identifying the timer mismatch as the cause. You must use <code>show ip ospf interface</code> to compare timer values on both sides of a link.
+  </div>
+  </div>
+
+  <!-- SYNTAX CHECKER: 2.4.6 -->
+  <div style="margin:20px 0 6px;padding:16px;background:#0d1117;border:1px solid #30363d;border-left:3px solid #bc8cff;border-radius:8px">
+    <div style="font-size:.7em;font-weight:800;text-transform:uppercase;letter-spacing:.8px;color:#bc8cff;margin-bottom:6px">&#x1F5A5; Syntax Checker &mdash; 2.4.6</div>
+    <div style="font-size:.92em;font-weight:600;color:#e6edf3;margin-bottom:12px">Modify OSPFv2</div>
+    <div style="font-size:.82em;color:#8b949e;margin-bottom:14px">Type each command exactly as shown. Press Enter to submit. The checker validates your syntax step by step.</div>
+    <div class="tool-links" style="display:flex;flex-wrap:wrap;gap:14px">
+      <div style="flex:1 1 220px;min-width:0">
+        <a href="../../syntax-checker-simple/ccna3_syntax_checker.html?lab=2.4.6" target="_blank" rel="noopener" title="Quick, guided drill: type the exact commands for this NetAcad lab, step by step. Opens straight to lab 2.4.6." style="display:inline-flex;align-items:center;gap:8px;color:#fff;text-decoration:none;padding:8px 18px;border-radius:6px;font-size:.85em;font-weight:700;background:#238636;border:1px solid #2ea043">&#x25B6; Open Syntax Checker</a>
+        <div style="font-size:.75em;color:#8b949e;margin-top:6px">Quick, guided drill: type the exact commands for this NetAcad lab, step by step. Opens straight to lab 2.4.6.</div>
+      </div>
+      <div style="flex:1 1 220px;min-width:0">
+        <a class="cli-engine-link" href="../../cli-engine/ccna-cli-engine.html" target="_blank" rel="noopener" title="Full simulated Cisco IOS terminal: Tab completion, device state, Free Practice, Home Labs and Subnetting. In its exercise menu, pick “Course 3 · 2.4 — Modify OSPFv2: Timers and Authentication”." style="display:inline-flex;align-items:center;gap:8px;color:#fff;text-decoration:none;padding:8px 18px;border-radius:6px;font-size:.85em;font-weight:700;background:#1f6feb;border:1px solid #388bfd">&#x1F4BB; Open CLI Engine</a>
+        <div style="font-size:.75em;color:#8b949e;margin-top:6px">Full simulated Cisco IOS terminal: Tab completion, device state, Free Practice, Home Labs and Subnetting. In its exercise menu, pick “Course 3 · 2.4 — Modify OSPFv2: Timers and Authentication”.</div>
+      </div>
+    </div>
+    <div style="margin-top:12px;font-size:.75em"><a href="../../index.html" style="color:#58a6ff;text-decoration:none">&#x1F3E0; All study tools (home)</a></div>
+  </div>
+
+  <!-- PT INLINE -->
+  <div style="margin:20px 0 6px;padding:14px 16px;background:#0d1117;border:1px solid #30363d;border-left:3px solid #1f6feb;border-radius:6px">
+    <div style="font-size:.72em;font-weight:800;text-transform:uppercase;letter-spacing:.8px;color:#1f6feb;margin-bottom:10px">&#x1F4E6; Packet Tracer Activities</div>
+  <div style="display:flex;align-items:baseline;gap:10px;padding:6px 0;border-bottom:1px solid #21262d"><span style="font-family:monospace;font-size:.85em;color:#79c0ff;white-space:nowrap;flex-shrink:0;min-width:52px">2.4.11</span><span style="font-size:.88em;color:#c9d1d9">Modify Single-Area OSPFv2</span></div>
+    <div style="margin-top:10px;font-size:.78em;color:#6e7681">Full list: <a href="https://itexamanswers.net/ccna-3-packet-tracer-labs-answers-ensa-v7-02.html" target="_blank" rel="noopener" style="color:#58a6ff;word-break:break-all">https://itexamanswers.net/ccna-3-packet-tracer-labs-answers-ensa-v7-02.html</a></div>
+  </div>
+
+</div></div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- SECTION 2.5 — DEFAULT ROUTE PROPAGATION -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div class="sec" id="s5">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">2.5</span><span class="ttl">Default Route Propagation</span></span><button class="sec-check" id="sch-s5" onclick="event.stopPropagation();toggleSection('s5',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb">
+
+  <div class="sub">
+  <h3><span class="sn">2.5.1</span> Propagate a Default Route — default-information originate</h3>
+  <p>The edge router connecting the OSPF domain to the internet is called the <strong>ASBR (Autonomous System Boundary Router)</strong>. Two steps to propagate a default route to all OSPF neighbors:</p>
+
+  <div class="prop-flow">
+    <div class="pf-title">🌐 Default Route Propagation — Two Steps</div>
+    <div class="prop-step"><div class="ps-num">1</div><div><strong>Configure the default static route</strong> on the ASBR pointing to the ISP or next-hop:<br><code>ip route 0.0.0.0 0.0.0.0 [next-hop-ip | exit-intf]</code></div></div>
+    <div class="prop-step"><div class="ps-num">2</div><div><strong>Tell OSPF to propagate it</strong> using <code>default-information originate</code> in router OSPF config mode. This makes R2 the source of the default route and includes it in OSPF LSAs to all neighbors.</div></div>
+  </div>
+
+  <div class="cw"><div class="cl">Configure and propagate default route from R2 (ASBR) <button class="cpb" onclick="copyCode(this)">Copy</button></div>
+  <pre><code>! Step 1 — Create default static route (loopback simulates ISP connection):
+R2(config)# interface loopback 1
+R2(config-if)# ip address 64.100.0.1 255.255.255.252
+R2(config-if)# exit
+R2(config)# ip route 0.0.0.0 0.0.0.0 loopback 1
+
+! Step 2 — Propagate via OSPF:
+R2(config)# router ospf 10
+R2(config-router)# default-information originate</code></pre></div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">2.5.2</span> Verify the Propagated Default Route</h3>
+  <div class="cw"><div class="cl">Verify default route propagation — R1 and R3 routing tables <button class="cpb" onclick="copyCode(this)">Copy</button></div>
+  <pre><code>! R2 routing table — shows static default:
+R2# show ip route | begin Gateway
+Gateway of last resort is 0.0.0.0 to network 0.0.0.0
+S*    0.0.0.0/0 is directly connected, Loopback1
+
+! R1 routing table — receives OSPF external default:
+R1# show ip route | begin Gateway
+Gateway of last resort is 10.1.1.6 to network 0.0.0.0
+O*E2  0.0.0.0/0 [110/1] via 10.1.1.6, GigabitEthernet0/0/0
+!↑ O*E2 = OSPF external type 2 = propagated default route
+
+! R3 routing table — also receives the default:
+R3# show ip route | begin Gateway
+Gateway of last resort is 10.1.1.9 to network 0.0.0.0
+O*E2  0.0.0.0/0 [110/1] via 10.1.1.9, GigabitEthernet0/0/1</code></pre></div>
+
+  <div class="tw"><table>
+    <tr><th>Code</th><th>Meaning</th></tr>
+    <tr><td><code>O</code></td><td>Learned via OSPF</td></tr>
+    <tr><td><code>*</code></td><td>Candidate default route (gateway of last resort)</td></tr>
+    <tr><td><code>E2</code></td><td>External type 2 — originated outside the OSPF domain (from ASBR). Cost does NOT accumulate with distance from ASBR.</td></tr>
+    <tr><td><code>[110/1]</code></td><td>AD=110, cost=1 (flat, doesn't grow)</td></tr>
+  </table></div>
+  </div>
+
+  <!-- PT INLINE -->
+  <div style="margin:20px 0 6px;padding:14px 16px;background:#0d1117;border:1px solid #30363d;border-left:3px solid #1f6feb;border-radius:6px">
+    <div style="font-size:.72em;font-weight:800;text-transform:uppercase;letter-spacing:.8px;color:#1f6feb;margin-bottom:10px">&#x1F4E6; Packet Tracer Activities</div>
+  <div style="display:flex;align-items:baseline;gap:10px;padding:6px 0;border-bottom:1px solid #21262d"><span style="font-family:monospace;font-size:.85em;color:#79c0ff;white-space:nowrap;flex-shrink:0;min-width:52px">2.5.3</span><span style="font-size:.88em;color:#c9d1d9">Propagate a Default Route in OSPFv2</span></div>
+    <div style="margin-top:10px;font-size:.78em;color:#6e7681">Full list: <a href="https://itexamanswers.net/ccna-3-packet-tracer-labs-answers-ensa-v7-02.html" target="_blank" rel="noopener" style="color:#58a6ff;word-break:break-all">https://itexamanswers.net/ccna-3-packet-tracer-labs-answers-ensa-v7-02.html</a></div>
+  </div>
+
+</div></div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- SECTION 2.6 — VERIFY SINGLE-AREA OSPFv2 -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div class="sec" id="s6">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">2.6</span><span class="ttl">Verify Single-Area OSPFv2</span></span><button class="sec-check" id="sch-s6" onclick="event.stopPropagation();toggleSection('s6',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb">
+
+  <div class="sub">
+  <h3><span class="sn">2.6.1</span> show ip ospf neighbor</h3>
+  <div class="cw"><div class="cl">show ip ospf neighbor — full output with field explanations <button class="cpb" onclick="copyCode(this)">Copy</button></div>
+  <pre><code>R1# show ip ospf neighbor
+Neighbor ID     Pri   State           Dead Time   Address         Interface
+3.3.3.3           0   FULL/  -        00:00:19    10.1.1.13       Gi0/0/1
+2.2.2.2           0   FULL/  -        00:00:18    10.1.1.6        Gi0/0/0
+!
+! Neighbor ID  = Router ID of the neighbor
+! Pri          = neighbor's interface priority (DR/BDR election)
+! State        = FULL/DR | FULL/BDR | FULL/DROTHER | 2WAY/DROTHER | FULL/-
+!                Dash (-) after FULL = point-to-point link, no DR/BDR
+! Dead Time    = countdown — resets every time a Hello is received
+! Address      = neighbor's interface IP address
+! Interface    = local interface the adjacency formed on</code></pre></div>
+
+  <p><strong>Common reasons two routers do NOT form adjacency:</strong></p>
+  <ul>
+    <li>Subnet masks don't match → appear to be on different networks</li>
+    <li>Hello or Dead timers don't match</li>
+    <li>OSPF network types don't match (BROADCAST vs POINT_TO_POINT)</li>
+    <li>Missing or incorrect <code>network</code> command / <code>ip ospf</code> interface command</li>
+    <li>Duplicate Router IDs</li>
+  </ul>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">2.6.2</span> show ip protocols</h3>
+  <div class="cw"><div class="cl">show ip protocols — OSPF process summary <button class="cpb" onclick="copyCode(this)">Copy</button></div>
+  <pre><code>R1# show ip protocols
+Routing Protocol is "ospf 10"          ← process ID = 10
+  Router ID 1.1.1.1                    ← current Router ID
+  Number of areas in this router is 1. 1 normal 0 stub 0 nssa
+  Maximum path: 4                       ← ECMP load balancing up to 4 paths
+  Routing on Interfaces Configured Explicitly (Area 0):
+    Loopback0                           ← interfaces in OSPF
+    GigabitEthernet0/0/1
+    GigabitEthernet0/0/0
+  Passive Interface(s):
+    Loopback0                           ← passive interfaces listed here
+  Routing Information Sources:
+    Gateway         Distance      Last Update
+    3.3.3.3              110      00:09:30   ← neighbors providing updates
+    2.2.2.2              110      00:09:58
+  Distance: (default is 110)             ← AD = 110 confirmed</code></pre></div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">2.6.3</span> show ip ospf</h3>
+  <div class="cw"><div class="cl">show ip ospf — process details, SPF info, reference bandwidth <button class="cpb" onclick="copyCode(this)">Copy</button></div>
+  <pre><code>R1# show ip ospf
+ Routing Process "ospf 10" with ID 1.1.1.1
+ Reference bandwidth unit is 10000 mbps      ← confirms adjusted reference bandwidth
+    Area BACKBONE(0)
+        Number of interfaces in this area is 3
+        SPF algorithm last executed 00:11:31.231 ago
+        SPF algorithm executed 4 times       ← how many SPF recalculations occurred</code></pre></div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">2.6.4</span> show ip ospf interface</h3>
+  <div class="cw"><div class="cl">show ip ospf interface — detailed per-interface info <button class="cpb" onclick="copyCode(this)">Copy</button></div>
+  <pre><code>R1# show ip ospf interface GigabitEthernet 0/0/0
+GigabitEthernet0/0/0 is up, line protocol is up
+  Internet Address 10.1.1.5/30, Area 0, Attached via Interface Enable
+  Process ID 10, Router ID 1.1.1.1, Network Type POINT_TO_POINT, Cost: 10
+  Transmit Delay is 1 sec, State POINT_TO_POINT
+  Timer intervals configured, Hello 5, Dead 20, Wait 20, Retransmit 5
+  Neighbor Count is 1, Adjacent neighbor count is 1
+    Adjacent with neighbor 2.2.2.2
+
+! Summary view of all OSPF interfaces:
+R1# show ip ospf interface brief
+Interface    PID   Area     IP Address/Mask    Cost  State  Nbrs F/C
+Lo0          10    0        10.10.1.1/24       10    P2P    0/0
+Gi0/0/1      10    0        10.1.1.14/30       30    P2P    1/1
+Gi0/0/0      10    0        10.1.1.5/30        10    P2P    1/1
+!                                                           ↑ F/C = Full/Count</code></pre></div>
+  </div>
+
+  <!-- SYNTAX CHECKER: 2.6.2 -->
+  <div style="margin:20px 0 6px;padding:16px;background:#0d1117;border:1px solid #30363d;border-left:3px solid #bc8cff;border-radius:8px">
+    <div style="font-size:.7em;font-weight:800;text-transform:uppercase;letter-spacing:.8px;color:#bc8cff;margin-bottom:6px">&#x1F5A5; Syntax Checker &mdash; 2.6.2</div>
+    <div style="font-size:.92em;font-weight:600;color:#e6edf3;margin-bottom:12px">Verify Single-Area OSPFv2</div>
+    <div style="font-size:.82em;color:#8b949e;margin-bottom:14px">Type each command exactly as shown. Press Enter to submit. The checker validates your syntax step by step.</div>
+    <div class="tool-links" style="display:flex;flex-wrap:wrap;gap:14px">
+      <div style="flex:1 1 220px;min-width:0">
+        <a href="../../syntax-checker-simple/ccna3_syntax_checker.html?lab=2.6.2" target="_blank" rel="noopener" title="Quick, guided drill: type the exact commands for this NetAcad lab, step by step. Opens straight to lab 2.6.2." style="display:inline-flex;align-items:center;gap:8px;color:#fff;text-decoration:none;padding:8px 18px;border-radius:6px;font-size:.85em;font-weight:700;background:#238636;border:1px solid #2ea043">&#x25B6; Open Syntax Checker</a>
+        <div style="font-size:.75em;color:#8b949e;margin-top:6px">Quick, guided drill: type the exact commands for this NetAcad lab, step by step. Opens straight to lab 2.6.2.</div>
+      </div>
+      <div style="flex:1 1 220px;min-width:0">
+        <a class="cli-engine-link" href="../../cli-engine/ccna-cli-engine.html" target="_blank" rel="noopener" title="Full simulated Cisco IOS terminal: Tab completion, device state, Free Practice, Home Labs and Subnetting. In its exercise menu, pick “Course 3 · 2.6 — Verify Single-Area OSPFv2”." style="display:inline-flex;align-items:center;gap:8px;color:#fff;text-decoration:none;padding:8px 18px;border-radius:6px;font-size:.85em;font-weight:700;background:#1f6feb;border:1px solid #388bfd">&#x1F4BB; Open CLI Engine</a>
+        <div style="font-size:.75em;color:#8b949e;margin-top:6px">Full simulated Cisco IOS terminal: Tab completion, device state, Free Practice, Home Labs and Subnetting. In its exercise menu, pick “Course 3 · 2.6 — Verify Single-Area OSPFv2”.</div>
+      </div>
+    </div>
+    <div style="margin-top:12px;font-size:.75em"><a href="../../index.html" style="color:#58a6ff;text-decoration:none">&#x1F3E0; All study tools (home)</a></div>
+  </div>
+
+  <!-- PT INLINE -->
+  <div style="margin:20px 0 6px;padding:14px 16px;background:#0d1117;border:1px solid #30363d;border-left:3px solid #1f6feb;border-radius:6px">
+    <div style="font-size:.72em;font-weight:800;text-transform:uppercase;letter-spacing:.8px;color:#1f6feb;margin-bottom:10px">&#x1F4E6; Packet Tracer Activities</div>
+  <div style="display:flex;align-items:baseline;gap:10px;padding:6px 0;border-bottom:1px solid #21262d"><span style="font-family:monospace;font-size:.85em;color:#79c0ff;white-space:nowrap;flex-shrink:0;min-width:52px">2.6.6</span><span style="font-size:.88em;color:#c9d1d9">Verify Single-Area OSPFv2</span></div>
+    <div style="margin-top:10px;font-size:.78em;color:#6e7681">Full list: <a href="https://itexamanswers.net/ccna-3-packet-tracer-labs-answers-ensa-v7-02.html" target="_blank" rel="noopener" style="color:#58a6ff;word-break:break-all">https://itexamanswers.net/ccna-3-packet-tracer-labs-answers-ensa-v7-02.html</a></div>
+  </div>
+
+</div></div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- SECTION 2.7 — COMMAND REFERENCE -->
+<!-- ═══════════════════════════════════════════════════════ -->
+
+<div class="sec" id="s-pt-2-7">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">2.7</span><span class="ttl">Packet Tracer — Single-Area OSPFv2 Challenges</span></span><button class="sec-check" id="sch-s-pt-2-7" onclick="event.stopPropagation();toggleSection('s-pt-2-7',this)">○ Mark done</button>
+</div>
+<div class="sb">
+  <div style="padding:14px 16px;background:#0d1117;border:1px solid #30363d;border-left:3px solid #1f6feb;border-radius:6px">
+    <div style="font-size:.72em;font-weight:800;text-transform:uppercase;letter-spacing:.8px;color:#1f6feb;margin-bottom:10px">&#x1F4E6; Packet Tracer Activities</div>
+    <div style="font-size:.82em;color:#6e7681;margin-bottom:10px">Open in Cisco Packet Tracer via your NetAcad course.</div>
+      <div style="display:flex;align-items:baseline;gap:10px;padding:6px 0;border-bottom:1px solid #21262d"><span style="font-family:monospace;font-size:.85em;color:#79c0ff;white-space:nowrap;flex-shrink:0;min-width:52px">2.7.1</span><span style="font-size:.88em;color:#c9d1d9">Single-Area OSPFv2 Configuration</span></div>
+      <div style="display:flex;align-items:baseline;gap:10px;padding:6px 0;border-bottom:1px solid #21262d"><span style="font-family:monospace;font-size:.85em;color:#79c0ff;white-space:nowrap;flex-shrink:0;min-width:52px">2.7.2</span><span style="font-size:.88em;color:#c9d1d9">Configure Single-Area OSPFv2 (Physical Mode)</span></div>
+      <div style="display:flex;align-items:baseline;gap:10px;padding:6px 0;border-bottom:1px solid #21262d"><span style="font-family:monospace;font-size:.85em;color:#79c0ff;white-space:nowrap;flex-shrink:0;min-width:52px">2.7.3</span><span style="font-size:.88em;color:#c9d1d9">Multiarea OSPF Exploration (Physical Mode)</span></div>
+    <div style="margin-top:12px;font-size:.78em;color:#6e7681">Full list: <a href="https://itexamanswers.net/ccna-3-packet-tracer-labs-answers-ensa-v7-02.html" target="_blank" rel="noopener" style="color:#58a6ff;word-break:break-all">https://itexamanswers.net/ccna-3-packet-tracer-labs-answers-ensa-v7-02.html</a></div>
+  </div>
+</div>
+</div>
+<div class="sec" id="s7">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">CMD</span><span class="ttl">All Module 2 Commands</span></span><button class="sec-check" id="sch-s7" onclick="event.stopPropagation();toggleSection('s7',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb">
+  <div class="sub">
+  <h4>OSPF Process and Router ID</h4>
+  <div class="cw"><div class="cl">Router ID and process commands <button class="cpb" onclick="copyCode(this)">Copy</button></div>
+  <pre><code>R1(config)# router ospf 10                          ! Enable OSPF, process ID 10
+R1(config-router)# router-id 1.1.1.1               ! Manually set Router ID
+R1# clear ip ospf process                            ! Apply new RID / reset adjacencies
+R1# show ip protocols | include Router ID            ! Quick RID check</code></pre></div>
+
+  <h4>Advertise Networks in OSPF</h4>
+  <div class="cw"><div class="cl">network command and ip ospf interface method <button class="cpb" onclick="copyCode(this)">Copy</button></div>
+  <pre><code>! Method 1 — network command (from router config mode):
+R1(config-router)# network 10.10.1.0 0.0.0.255 area 0     ! subnet wildcard
+R1(config-router)# network 10.1.1.5 0.0.0.0 area 0        ! quad-zero exact IP
+
+! Method 2 — ip ospf (from interface config mode):
+R1(config-if)# ip ospf 10 area 0
+
+! Remove a network statement:
+R1(config-router)# no network 10.10.1.0 0.0.0.255 area 0</code></pre></div>
+
+  <h4>Passive Interfaces</h4>
+  <div class="cw"><div class="cl">Passive interface commands <button class="cpb" onclick="copyCode(this)">Copy</button></div>
+  <pre><code>R1(config-router)# passive-interface loopback 0             ! One interface passive
+R3(config-router)# passive-interface default                ! All interfaces passive
+R3(config-router)# no passive-interface g0/0/0             ! Re-enable one interface</code></pre></div>
+
+  <h4>OSPF Network Type and Cost</h4>
+  <div class="cw"><div class="cl">Cost and network type modifications <button class="cpb" onclick="copyCode(this)">Copy</button></div>
+  <pre><code>R1(config-if)# ip ospf network point-to-point               ! Disable DR/BDR on Ethernet
+R1(config-router)# auto-cost reference-bandwidth 10000      ! Adjust reference to 10Gbps
+R1(config-if)# ip ospf cost 30                              ! Manual cost override
+R1(config-if)# no ip ospf cost                              ! Reset to auto-calculated cost</code></pre></div>
+
+  <h4>DR/BDR Priority</h4>
+  <div class="cw"><div class="cl">Control DR/BDR election with priority <button class="cpb" onclick="copyCode(this)">Copy</button></div>
+  <pre><code>R1(config-if)# ip ospf priority 255                         ! Force DR role
+R1(config-if)# ip ospf priority 0                           ! Never DR or BDR
+R1(config-if)# ip ospf priority 1                           ! Default (reset)
+R1# clear ip ospf process                                    ! Trigger new election</code></pre></div>
+
+  <h4>Hello/Dead Timers</h4>
+  <div class="cw"><div class="cl">Modify and reset Hello/Dead intervals <button class="cpb" onclick="copyCode(this)">Copy</button></div>
+  <pre><code>R1(config-if)# ip ospf hello-interval 5                     ! Set Hello to 5 seconds
+R1(config-if)# ip ospf dead-interval 20                     ! Set Dead to 20 seconds
+R1(config-if)# no ip ospf hello-interval                    ! Reset to default (10)
+R1(config-if)# no ip ospf dead-interval                     ! Reset to default (40)</code></pre></div>
+
+  <h4>Default Route Propagation</h4>
+  <div class="cw"><div class="cl">Propagate default route via OSPF (ASBR) <button class="cpb" onclick="copyCode(this)">Copy</button></div>
+  <pre><code>R2(config)# ip route 0.0.0.0 0.0.0.0 loopback 1            ! Step 1 — static default
+R2(config)# router ospf 10
+R2(config-router)# default-information originate            ! Step 2 — propagate via OSPF</code></pre></div>
+
+  <h4>Verification Commands</h4>
+  <div class="cw"><div class="cl">All OSPFv2 verification commands <button class="cpb" onclick="copyCode(this)">Copy</button></div>
+  <pre><code>R1# show ip ospf neighbor                    ! Neighbor table — state, Dead Time
+R1# show ip protocols                        ! Process ID, RID, interfaces, AD=110
+R1# show ip ospf                             ! Process info, SPF count, reference BW
+R1# show ip ospf interface g0/0/0            ! Full interface detail — cost, timers, DR/BDR
+R1# show ip ospf interface brief             ! Summary table — all OSPF interfaces
+R1# show ip route ospf                       ! Only OSPF-learned routes
+R1# show ip route                            ! Full routing table (O, O*E2, C, L, S)
+R1# show ip protocols | include Router ID    ! Quick RID check
+R1# show ip ospf interface g0/0/0 | include Timer  ! Just timer line</code></pre></div>
+  </div>
+</div></div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- SECTION 2.8 — EXAM TRAPS -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div class="sec" id="s8">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">🎯</span><span class="ttl">Common Exam Traps — Module 2</span></span><button class="sec-check" id="sch-s8" onclick="event.stopPropagation();toggleSection('s8',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb">
+
+  <div class="ca danger"><span class="ic">❌</span><div><strong>Trap 1: process-id is locally significant — does NOT need to match between neighbors.</strong><br>Two routers with <code>router ospf 10</code> and <code>router ospf 20</code> CAN form an adjacency. The process-id only identifies the local OSPF process. Best practice to keep consistent — but not a requirement for adjacency.</div></div>
+
+  <div class="ca danger"><span class="ic">❌</span><div><strong>Trap 2: Use clear ip ospf process — not reload — to apply a new Router ID.</strong><br>After changing <code>router-id</code>, IOS tells you to reload or use <code>clear ip ospf process</code>. The exam-expected answer is <code>clear ip ospf process</code>. Adjacencies drop momentarily and reform with the new ID.</div></div>
+
+  <div class="ca danger"><span class="ic">❌</span><div><strong>Trap 3: Wildcard mask = 255.255.255.255 − subnet mask.</strong><br>/24 → 0.0.0.255. /26 → 0.0.0.63. /30 → 0.0.0.3. Quad-zero (0.0.0.0) = exact match, no calculation. Know both the formula and how to compute common prefix lengths.</div></div>
+
+  <div class="ca danger"><span class="ic">❌</span><div><strong>Trap 4: passive-interface stops Hellos but the network IS STILL advertised.</strong><br>Passive means no Hello packets sent or received on that interface — so no OSPF neighbor can form. But the connected network still appears in OSPF updates sent out other interfaces. The network is not hidden from OSPF.</div></div>
+
+  <div class="ca danger"><span class="ic">❌</span><div><strong>Trap 5: auto-cost reference-bandwidth MUST be the same on ALL routers.</strong><br>If R1 has reference-bandwidth 10000 and R2 has the default 100, their cost calculations will be inconsistent, causing OSPF to make incorrect path decisions. The IOS warning says it — always apply to every router.</div></div>
+
+  <div class="ca danger"><span class="ic">❌</span><div><strong>Trap 6: Loopbacks advertise /32 by default — use ip ospf network point-to-point to fix.</strong><br>Without this command on the loopback, other routers see a /32 host route instead of the full /24 (or whatever mask is configured). Apply <code>ip ospf network point-to-point</code> on loopbacks used to simulate LAN networks.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 7: DR/BDR elections are NOT preemptive.</strong><br>A new router with higher priority or Router ID joining after the election becomes a DROTHER automatically. Only failures trigger role changes (DR fails → BDR promotes → new BDR elected). Must use <code>clear ip ospf process</code> to force a new election.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 8: ip ospf priority 0 = never DR or BDR — always DROTHER.</strong><br>Setting priority to 0 on an interface permanently excludes that router from DR/BDR roles on that segment. Useful for low-resource routers. Priority changes take effect only after <code>clear ip ospf process</code>.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 9: Timer mismatch drops adjacency with no clear error message.</strong><br>When Hello or Dead intervals don't match, OSPF simply fails to maintain the adjacency — no helpful error is printed. Compare timers on both sides using <code>show ip ospf interface</code>. When you change Hello, IOS auto-sets Dead to 4×, but always set Dead explicitly too.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 10: default-information originate requires BOTH a static default AND the command.</strong><br>The ASBR must have: (1) <code>ip route 0.0.0.0 0.0.0.0</code> pointing to the ISP, AND (2) <code>default-information originate</code> in OSPF config. Either one alone is not sufficient. Other routers install it as <code>O*E2</code>.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 11: FULL/- in show ip ospf neighbor = point-to-point link, normal behavior.</strong><br>The dash after FULL means no DR/BDR election occurred on that link — expected for point-to-point network types. Do NOT confuse this with an adjacency problem. On multiaccess, you'd see FULL/DR or FULL/BDR instead.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 12: By default, Cisco Ethernet interfaces run DR/BDR election — even on 2-router links.</strong><br>Even if only two OSPF routers share an Ethernet link, IOS elects a DR and BDR by default (BROADCAST network type). Use <code>ip ospf network point-to-point</code> on both interfaces to disable the unnecessary election.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 13: O*E2 = OSPF propagated default route — cost is flat.</strong><br>External type 2 routes have a flat cost (doesn't accumulate with distance from the ASBR). All routers in the domain see cost=1 for the default route, regardless of how many hops they are from the ASBR.</div></div>
+
+  <div class="ca tip"><span class="ic">✅</span><div><strong>Module 2 quick-reference summary — all key commands:</strong><br><br>
+  Enable OSPF: <code>router ospf [pid]</code> (pid = locally significant)<br>
+  Set RID: <code>router-id x.x.x.x</code> → apply with <code>clear ip ospf process</code><br>
+  Advertise (method 1): <code>network [addr] [wildcard] area 0</code><br>
+  Advertise (method 2): <code>ip ospf [pid] area 0</code> (on interface)<br>
+  Passive: <code>passive-interface [intf]</code> or <code>passive-interface default</code><br>
+  P2P network type: <code>ip ospf network point-to-point</code> (disables DR/BDR)<br>
+  Fix loopback /32: <code>ip ospf network point-to-point</code> on loopback<br>
+  Reference BW: <code>auto-cost reference-bandwidth [Mbps]</code> (all routers!)<br>
+  Manual cost: <code>ip ospf cost [value]</code><br>
+  Timers: <code>ip ospf hello-interval [sec]</code> / <code>ip ospf dead-interval [sec]</code><br>
+  DR priority: <code>ip ospf priority [0–255]</code> (0=never DR, 255=always)<br>
+  Propagate default: <code>default-information originate</code> + static default route<br>
+  Verify neighbors: <code>show ip ospf neighbor</code><br>
+  Verify settings: <code>show ip protocols</code> / <code>show ip ospf</code><br>
+  Verify interfaces: <code>show ip ospf interface [intf]</code> / <code>show ip ospf interface brief</code></div></div>
+
+</div></div>
+
+</div><!-- end .wrap -->
+
+<div class="ft">
+  CCNA 3 ENSA v7.02 — Module 2: Single-Area OSPFv2 Configuration v2.2<br>
+  Based on Cisco NetAcad curriculum · Study guide for personal use
+</div>
+
+<button class="tb" id="topb" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+
+<div class="mod-nav">
+  <a class="mn-hub" href="index.html">🏠 Hub</a>
+  <div class="mn-divider"></div>
+  <a class="mn-prev" href="ccna3_module1_singlearea_ospfv2_concepts_v2.2.html">‹</a>
+  <span class="mn-label">M2 of 14</span>
+  <a class="mn-next" href="ccna3_module3_network_security_concepts_v2.2.html">›</a>
+</div>
+
+<script>
+var MOD_KEY="ccna3-module2-singlearea-ospfv2-configuration";
+var SECS=["s-pt-1-0","s1","s2","s3","s4","s5","s6","s-pt-2-7","s7","s8"];
+var checked={};
+function loadState(){
+  try{var s=localStorage.getItem(MOD_KEY);if(s)checked=JSON.parse(s);}catch(e){}
+  SECS.forEach(function(id){
+    var pill=document.getElementById('pill-'+id);
+    var row=document.getElementById('row-'+id);
+    var st=document.getElementById('st-'+id);
+    var sch=document.getElementById('sch-'+id);
+    if(checked[id]){
+      if(pill){pill.classList.add('checked');pill.querySelector('.pill-check').textContent='✓';}
+      if(row)row.classList.add('done');
+      if(st)st.textContent='✓';
+      if(sch){sch.classList.add('checked');sch.textContent='✓ Done';}
+    } else {
+      if(pill){pill.classList.remove('checked');pill.querySelector('.pill-check').textContent='○';}
+      if(row)row.classList.remove('done');
+      if(st)st.textContent='○';
+      if(sch){sch.classList.remove('checked');sch.textContent='○ Mark done';}
+    }
+  });
+}
+function toggleSection(id,btn){checked[id]=!checked[id];try{localStorage.setItem(MOD_KEY,JSON.stringify(checked));}catch(e){}loadState();}
+function toggleStudyPanel(){
+  var hdr=document.getElementById('sp-hdr');
+  var body=document.getElementById('sp-body');
+  var arr=document.getElementById('sp-arr');
+  hdr.classList.toggle('open');body.classList.toggle('open');
+  if(arr)arr.textContent=body.classList.contains('open')?'▲':'▼';
+}
+function goTo(id){var el=document.getElementById(id);if(!el)return;var h=el.querySelector('.sh,.section-header'),b=el.querySelector('.sb,.section-body');if(h&&b&&!b.classList.contains('open')){h.classList.add('open');b.classList.add('open');}setTimeout(function(){window.scrollTo({top:el.getBoundingClientRect().top+window.pageYOffset-60,behavior:'smooth'});},50);}
+function setFs(size,btn){document.documentElement.style.setProperty('--base-fs',size);document.querySelectorAll('.fs-btn').forEach(function(b){b.classList.remove('active');});btn.classList.add('active');try{localStorage.setItem('ccna-fs',size);}catch(e){}}
+(function(){try{var s=localStorage.getItem('ccna-fs');if(s){document.documentElement.style.setProperty('--base-fs',s);document.querySelectorAll('.fs-btn').forEach(function(b){b.classList.remove('active');if((b.textContent==='S'&&s==='14px')||(b.textContent==='M'&&s==='16px')||(b.textContent==='L'&&s==='18px')||(b.textContent==='XL'&&s==='20px'))b.classList.add('active');});}}catch(e){}loadState();})();
+function copyCode(b){var t=b.closest('.cw').querySelector('pre').innerText;if(navigator.clipboard){navigator.clipboard.writeText(t).then(function(){b.textContent='Copied!';setTimeout(function(){b.textContent='Copy';},1500);}).catch(function(){fb(t,b);});}else{fb(t,b);}}
+function fb(t,b){var a=document.createElement('textarea');a.value=t;a.style.position='fixed';a.style.opacity='0';document.body.appendChild(a);a.focus();a.select();document.execCommand('copy');document.body.removeChild(a);b.textContent='Copied!';setTimeout(function(){b.textContent='Copy';},1500);}
+</script>
+<script src="../../site-config.js"></script>
+</body>
+</html>

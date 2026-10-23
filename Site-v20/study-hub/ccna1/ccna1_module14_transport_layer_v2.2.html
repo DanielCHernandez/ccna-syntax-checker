@@ -1,0 +1,741 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=2.0">
+<title>CCNA 1 Module 14: Transport Layer v2.2</title>
+<style>
+:root{
+  --nt:#0a6e4e;--ntd:#4ade80;--nt2:#052e1e;--nt3:#021710;
+  --bg:#f4f6f8;--card:#fff;--text:#1a1a2e;--muted:#5a6a7a;
+  --cbg:#0d1117;--ctxt:#c9d1d9;--r:12px;--sh:0 2px 12px rgba(0,0,0,.08);
+  --base-fs:20px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);font-size:var(--base-fs);line-height:1.7}
+.bc{background:#0d1117;padding:8px 16px;display:flex;align-items:center;flex-wrap:wrap;gap:4px;font-size:.75em;overflow-x:auto;white-space:nowrap;-webkit-overflow-scrolling:touch;border-bottom:1px solid #21262d}
+.bc a{color:#8b949e;text-decoration:none;font-weight:600;flex-shrink:0}
+.bc .sep{color:#6e7681;flex-shrink:0}
+.bc .cur{color:var(--ntd);font-weight:700;flex-shrink:0}
+.fs-bar{position:sticky;top:0;z-index:200;background:#1a1a2e;display:flex;align-items:center;justify-content:flex-end;padding:6px 14px;gap:6px;box-shadow:0 2px 8px rgba(0,0,0,.3)}
+.fs-label{color:#8b949e;font-size:.72em;font-weight:700;letter-spacing:.5px;text-transform:uppercase;margin-right:4px}
+.fs-btn{background:#30363d;color:#c9d1d9;border:2px solid transparent;border-radius:6px;padding:4px 12px;font-size:.75em;font-weight:700;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:all .2s;line-height:1.4}
+.fs-btn:active,.fs-btn.active{background:var(--nt);color:#fff;border-color:var(--ntd)}
+.hdr{background:linear-gradient(135deg,var(--nt3),var(--nt2),var(--nt));color:#fff;padding:32px 20px 24px;text-align:center}
+.hdr .badge{display:inline-block;background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.4);border-radius:20px;padding:4px 14px;font-size:.81em;margin-bottom:12px}
+.hdr h1{font-size:1.5em;font-weight:700;margin-bottom:6px}
+.hdr p{font-size:.94em;opacity:.85}
+.hdr .obj{display:inline-block;background:rgba(255,255,255,.15);border-radius:8px;padding:7px 16px;margin-top:12px;font-size:.875em;font-style:italic}
+/* Study progress panel */
+.sp-wrap{background:var(--card);margin:16px 16px 0;border-radius:var(--r);box-shadow:var(--sh);overflow:hidden}
+.sp-hdr{background:var(--nt);color:#fff;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;user-select:none;-webkit-tap-highlight-color:transparent;gap:10px}
+.sp-hdr .sp-title{font-weight:700;font-size:.875em;flex-shrink:0}
+.sp-hdr .sp-arr{transition:transform .3s;flex-shrink:0}
+.sp-hdr.open .sp-arr{transform:rotate(180deg)}
+.sp-body{display:none;padding:12px 14px}
+.sp-body.open{display:block}
+.sp-row{display:flex;align-items:center;gap:10px;padding:6px 4px;border-bottom:1px solid #f0f4f8;font-size:.81em}
+.sp-row:last-child{border-bottom:none}
+.sp-row .sr-status{font-size:1em;flex-shrink:0;width:20px;text-align:center}
+.sp-row .sr-nb{font-weight:800;color:var(--nt);min-width:36px;flex-shrink:0;font-size:.875em}
+.sp-row .sr-ttl{color:var(--text);flex:1}
+.sp-row.done .sr-ttl{color:var(--muted);text-decoration:line-through}
+/* Section check pills in fs-bar */
+.sc-pills{display:flex;align-items:center;gap:4px;overflow-x:auto;-webkit-overflow-scrolling:touch;flex:1;padding:0 4px}
+.sc-pill{background:#30363d;color:#8b949e;border:2px solid transparent;border-radius:6px;padding:3px 8px;font-size:.72em;font-weight:700;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:all .15s;white-space:nowrap;flex-shrink:0;line-height:1.4;display:flex;align-items:center;gap:3px}
+.sc-pill.checked{background:var(--nt);color:#fff;border-color:var(--ntd)}
+.sc-pill .pill-check{font-size:.875em}
+.toc{background:var(--card);margin:16px;border-radius:var(--r);box-shadow:var(--sh);overflow:hidden}
+.toch{background:var(--nt);color:#fff;padding:14px 18px;font-weight:700;font-size:.94em;display:flex;justify-content:space-between;align-items:center;cursor:pointer;user-select:none}
+.toch .arr{transition:transform .3s}
+.toch.open .arr{transform:rotate(180deg)}
+.tocb{display:none;padding:10px 0}
+.tocb.open{display:block}
+.tocg{font-size:.69em;font-weight:800;letter-spacing:.8px;color:var(--nt);text-transform:uppercase;padding:8px 20px 2px}
+.tocb a{display:block;padding:9px 20px 9px 28px;color:var(--text);text-decoration:none;font-size:.875em;border-left:3px solid transparent;transition:all .2s}
+.tocb a:active{background:#f0fdf4;border-left-color:var(--ntd)}
+.tocb a .n{display:inline-block;background:var(--nt);color:#fff;border-radius:5px;padding:1px 8px;font-size:.75em;font-weight:700;margin-right:8px}
+.wrap{padding:0 16px 100px}
+.sec{background:var(--card);border-radius:var(--r);box-shadow:var(--sh);margin-bottom:16px;overflow:hidden}
+.sh{background:linear-gradient(90deg,var(--nt3),var(--nt));color:#fff;padding:16px 18px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;user-select:none;-webkit-tap-highlight-color:transparent}
+.sh .ttl{font-weight:700;font-size:1em}
+.sh .nb{background:rgba(255,255,255,.25);border-radius:6px;padding:3px 10px;font-size:.81em;font-weight:700;margin-right:10px;white-space:nowrap}
+.sh .ch{font-size:1.125em;transition:transform .3s}
+.sh.open .ch{transform:rotate(180deg)}
+.sb{display:none;padding:18px}
+.sb.open{display:block}
+.sub{margin-bottom:24px}
+.sub:last-child{margin-bottom:0}
+.sub h3{font-size:.94em;font-weight:700;color:var(--nt);margin-bottom:10px;padding-bottom:6px;border-bottom:2px solid #f0fdf4;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.sub h3 .sn{background:var(--nt);color:#fff;border-radius:5px;padding:2px 8px;font-size:.75em;white-space:nowrap}
+.sub h4{font-size:.875em;font-weight:700;color:var(--nt);margin:14px 0 6px}
+.sub p{margin-bottom:10px;font-size:.94em}
+.sub ul,.sub ol{padding-left:20px;margin:8px 0;font-size:.94em}
+.sub li{margin-bottom:5px}
+.cw{background:var(--cbg);border-radius:10px;margin:12px 0;overflow:hidden}
+.cl{background:#21262d;color:#c9d1d9;font-size:.78em;font-weight:700;padding:6px 14px;letter-spacing:.5px;text-transform:uppercase}
+pre{margin:0;padding:14px;overflow-x:auto;-webkit-overflow-scrolling:touch}
+code{font-family:'Courier New',monospace;font-size:.81em;color:var(--ctxt);line-height:1.6}
+.ca{border-radius:8px;padding:12px 14px;margin:12px 0;font-size:.875em;line-height:1.6;display:flex;gap:10px;align-items:flex-start}
+.ca .ic{font-size:1.125em;flex-shrink:0;margin-top:1px}
+.ca.warn  {background:#fff3cd;border-left:4px solid #b38600;color:#3d2c00}
+.ca.tip   {background:#d4edda;border-left:4px solid #28a745;color:#0d3318}
+.ca.danger{background:#f8d7da;border-left:4px solid #dc3545;color:#3d0010}
+.ca.info  {background:#f0fdf4;border-left:4px solid var(--nt);color:#052e1e}
+.ca code{color:inherit!important;background:rgba(0,0,0,.1)!important;border:1px solid rgba(0,0,0,.15)}
+.et{background:linear-gradient(135deg,#1a1a2e,var(--nt3));color:#fff;border-radius:10px;padding:14px 16px;margin:14px 0;font-size:.875em;line-height:1.6}
+.et .lbl{font-size:.69em;font-weight:800;letter-spacing:1px;color:var(--ntd);margin-bottom:6px}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:12px 0;border-radius:8px}
+table{width:100%;border-collapse:collapse;font-size:.875em}
+th{background:var(--nt);color:#fff;padding:10px 12px;text-align:left;font-weight:700;font-size:.81em}
+td{padding:9px 12px;border-bottom:1px solid #e8ecf0;vertical-align:top;color:#1a1a2e}
+tr:nth-child(even) td{background:#f0fdf4;color:#052e1e}
+tr:last-child td{border-bottom:none}
+p code,li code,td code,.ca code{background:#f0fdf4;color:#052e1e;border-radius:4px;padding:1px 5px;font-size:.81em;font-family:'Courier New',monospace;font-weight:600}
+
+/* TCP vs UDP compare */
+.proto-compare{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:12px 0}
+@media(max-width:480px){.proto-compare{grid-template-columns:1fr}}
+.proto-card{border-radius:10px;padding:12px 14px;font-size:.81em;line-height:1.8}
+.proto-card.tcp{background:#e0f2fe;border:2px solid #1a3a5c}
+.proto-card.udp{background:#fffbeb;border:2px solid #b38600}
+.proto-card .pc-title{font-weight:800;font-size:.94em;margin-bottom:6px}
+.proto-card.tcp .pc-title{color:#1a3a5c}
+.proto-card.udp .pc-title{color:#b38600}
+.proto-card ul{padding-left:16px}
+.proto-card li{margin-bottom:2px}
+
+/* Header field visual */
+.hdr-field{display:flex;gap:10px;align-items:flex-start;padding:8px 12px;border-radius:6px;font-size:.81em;border-left:3px solid;margin-bottom:4px;line-height:1.5}
+.hdr-field.tcp-f{border-left-color:#1a3a5c;background:#e0f2fe}
+.hdr-field.udp-f{border-left-color:#b38600;background:#fffbeb}
+.hdr-field .hf-name{font-weight:800;min-width:130px;flex-shrink:0;font-family:'Courier New',monospace;font-size:.875em}
+.hdr-field.tcp-f .hf-name{color:#1a3a5c}
+.hdr-field.udp-f .hf-name{color:#b38600}
+.hdr-field .hf-size{background:#0d1117;color:#4ade80;border-radius:4px;padding:1px 6px;font-size:.75em;font-family:'Courier New',monospace;flex-shrink:0;align-self:flex-start}
+
+/* TCP flags */
+.flag-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin:12px 0}
+@media(max-width:400px){.flag-grid{grid-template-columns:repeat(2,1fr)}}
+.flag-card{border-radius:8px;padding:9px 12px;font-size:.75em;text-align:center;line-height:1.5}
+.flag-card.syn{background:#dbeafe;border:2px solid #1e4d85}
+.flag-card.ack{background:#f0fdf4;border:2px solid var(--nt)}
+.flag-card.fin{background:#fce7f3;border:2px solid #9d174d}
+.flag-card.rst{background:#fff5f5;border:2px solid #dc3545}
+.flag-card.psh{background:#fffbeb;border:2px solid #b38600}
+.flag-card.urg{background:#f3e8ff;border:2px solid #7b2d8b}
+.flag-card .fc-abbr{font-family:'Courier New',monospace;font-weight:900;font-size:1.125em;display:block;margin-bottom:3px}
+.flag-card.syn .fc-abbr{color:#1e4d85}
+.flag-card.ack .fc-abbr{color:var(--nt)}
+.flag-card.fin .fc-abbr{color:#9d174d}
+.flag-card.rst .fc-abbr{color:#dc3545}
+.flag-card.psh .fc-abbr{color:#b38600}
+.flag-card.urg .fc-abbr{color:#7b2d8b}
+
+/* Handshake steps */
+.hs-steps{display:grid;gap:6px;margin:12px 0}
+.hs-step{display:flex;gap:10px;align-items:flex-start;padding:9px 12px;border-radius:8px;font-size:.81em;line-height:1.6}
+.hs-step.syn{border-left:4px solid #1e4d85;background:#dbeafe}
+.hs-step.synack{border-left:4px solid var(--nt);background:#f0fdf4}
+.hs-step.ack{border-left:4px solid #7b2d8b;background:#f3e8ff}
+.hs-step.fin{border-left:4px solid #9d174d;background:#fce7f3}
+.hs-step .hs-num{font-weight:900;min-width:24px;flex-shrink:0;font-size:.875em}
+.hs-step.syn    .hs-num{color:#1e4d85}
+.hs-step.synack .hs-num{color:var(--nt)}
+.hs-step.ack    .hs-num{color:#7b2d8b}
+.hs-step.fin    .hs-num{color:#9d174d}
+.hs-step .hs-dir{font-family:'Courier New',monospace;font-size:.75em;font-weight:700;flex-shrink:0;min-width:90px}
+
+/* Port groups */
+.port-groups{display:grid;gap:6px;margin:12px 0}
+.port-group{border-radius:8px;padding:9px 14px;font-size:.81em;border-left:4px solid;line-height:1.5}
+.port-group.wk{border-left-color:#dc3545;background:#fff5f5}
+.port-group.rg{border-left-color:#b38600;background:#fffbeb}
+.port-group.dy{border-left-color:var(--nt);background:#f0fdf4}
+.port-group .pg-range{font-family:'Courier New',monospace;font-weight:900;display:block;margin-bottom:2px}
+.port-group.wk .pg-range{color:#7c1e1e}
+.port-group.rg .pg-range{color:#b38600}
+.port-group.dy .pg-range{color:var(--nt)}
+
+/* Port quick ref */
+.port-qr{background:#0d1117;border-radius:10px;overflow:hidden;margin:12px 0}
+.port-qr-hdr{display:grid;grid-template-columns:60px 80px 1fr;background:#21262d;color:#8b949e;font-size:.69em;font-weight:800;padding:6px 12px;letter-spacing:.5px;text-transform:uppercase}
+.port-qr-row{display:grid;grid-template-columns:60px 80px 1fr;padding:6px 12px;border-top:1px solid #21262d;font-size:.75em;font-family:'Courier New',monospace}
+.port-qr-row .pqr-port{color:#fbbf24;font-weight:900}
+.port-qr-row .pqr-proto{color:#38bdf8}
+.port-qr-row .pqr-app{color:#c9d1d9}
+.port-qr-row.tcp-r .pqr-proto{color:#38bdf8}
+.port-qr-row.udp-r .pqr-proto{color:#b38600}
+
+/* Window/sliding diagram */
+.window-box{background:#0d1117;border-radius:10px;padding:14px;margin:12px 0}
+.window-box .wb-title{color:var(--ntd);font-size:.69em;font-weight:800;letter-spacing:.8px;text-transform:uppercase;margin-bottom:10px}
+.win-step{display:flex;gap:10px;align-items:flex-start;margin-bottom:6px;font-size:.81em}
+.win-step .ws-num{background:#1a3a5c;color:#fff;border-radius:50%;width:22px;height:22px;display:flex;align-items:center;justify-content:center;font-weight:800;flex-shrink:0;font-size:.75em}
+.win-step .ws-text{color:#c9d1d9;line-height:1.6;flex:1}
+.win-step .ws-text strong{color:var(--ntd)}
+
+/* MSS diagram */
+.mss-box{background:#0d1117;border-radius:8px;padding:12px 14px;margin:10px 0;font-family:'Courier New',monospace;font-size:.75em}
+.mss-row{display:flex;gap:8px;margin-bottom:4px;align-items:center}
+.mss-row .mr-label{color:#8b949e;min-width:100px;flex-shrink:0}
+.mss-row .mr-val{color:#4ade80;font-weight:700}
+.mss-row .mr-eq{color:#8b949e;margin:0 4px}
+.mss-row .mr-calc{color:#c9d1d9}
+
+.tb-btn{position:fixed;bottom:80px;right:16px;background:var(--nt);color:#fff;border:none;border-radius:50%;width:44px;height:44px;font-size:1.25em;box-shadow:0 4px 14px rgba(0,0,0,.25);cursor:pointer;display:none;align-items:center;justify-content:center;z-index:100}
+.tb-btn.show{display:flex}
+.ft{text-align:center;padding:24px 16px;color:var(--muted);font-size:.81em}
+.mod-nav{position:fixed;bottom:0;left:0;right:0;z-index:300;background:#1a1a2e;border-top:1px solid #30363d;display:flex;align-items:center;height:52px;padding:0 8px;gap:6px}
+.mn-hub{background:#1ba0d7;color:#fff;border:none;border-radius:8px;padding:6px 12px;font-size:.75em;font-weight:700;cursor:pointer;text-decoration:none;display:flex;align-items:center;gap:4px;white-space:nowrap;-webkit-tap-highlight-color:transparent;flex-shrink:0}
+.mn-hub:active{opacity:.8}
+.mn-divider{width:1px;height:28px;background:#30363d;flex-shrink:0}
+.mn-label{flex:1;text-align:center;font-size:.69em;color:#8b949e;font-weight:600;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding:0 4px}
+.mn-prev,.mn-next{background:#30363d;color:#c9d1d9;border:none;border-radius:8px;padding:6px 10px;font-size:.875em;font-weight:700;cursor:pointer;text-decoration:none;display:flex;align-items:center;-webkit-tap-highlight-color:transparent;flex-shrink:0}
+.mn-prev:active,.mn-next:active{background:var(--nt);color:#fff}
+
+/* v2.1 — In-section check button */
+.sh{position:relative}
+.sec-check{position:absolute;right:40px;top:50%;transform:translateY(-50%);background:rgba(255,255,255,.15);border:2px solid rgba(255,255,255,.4);border-radius:6px;padding:2px 10px;font-size:.72em;font-weight:800;color:#fff;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:all .2s;white-space:nowrap;z-index:10;line-height:1.5}
+.sec-check.checked{background:var(--ntd);border-color:var(--ntd);color:#052e1e}
+.sec-check:active{opacity:.75}
+</style>
+</head>
+<body>
+<nav class="bc">
+  <a href="../../index.html">🏠 Home</a><span class="sep">›</span>
+  <a href="index.html">CCNA 1 — ITN</a><span class="sep">›</span>
+  <span class="cur">M14: Transport Layer</span>
+</nav>
+<div class="fs-bar">
+  <div class="sc-pills" id="sc-pills">
+  <button class="sc-pill" id="pill-s1" onclick="toggleSection('s1',this)"><span class="pill-check">○</span>14.1</button>
+  <button class="sc-pill" id="pill-s2" onclick="toggleSection('s2',this)"><span class="pill-check">○</span>14.2</button>
+  <button class="sc-pill" id="pill-s3" onclick="toggleSection('s3',this)"><span class="pill-check">○</span>14.3</button>
+  <button class="sc-pill" id="pill-s4" onclick="toggleSection('s4',this)"><span class="pill-check">○</span>14.4</button>
+  <button class="sc-pill" id="pill-s5" onclick="toggleSection('s5',this)"><span class="pill-check">○</span>14.5</button>
+  <button class="sc-pill" id="pill-s6" onclick="toggleSection('s6',this)"><span class="pill-check">○</span>14.6</button>
+  <button class="sc-pill" id="pill-s7" onclick="toggleSection('s7',this)"><span class="pill-check">○</span>14.7</button>
+  <button class="sc-pill" id="pill-s-pt-14-8" onclick="toggleSection('s-pt-14-8',this)"><span class="pill-check">○</span>PT 14.8</button>
+  <button class="sc-pill" id="pill-s8" onclick="toggleSection('s8',this)"><span class="pill-check">○</span>🎯</button>
+  </div>
+  <span class="fs-label" style="flex-shrink:0;margin-left:6px">Size</span>
+  <button class="fs-btn" onclick="setFs('14px',this)">S</button>
+  <button class="fs-btn" onclick="setFs('16px',this)">M</button>
+  <button class="fs-btn" onclick="setFs('18px',this)">L</button>
+  <button class="fs-btn active" onclick="setFs('20px',this)">XL</button>
+</div>
+<div class="hdr">
+  <div class="badge">CCNA 1 — ITN v7.02 · Module 14</div>
+  <h1>🚚 Transport Layer</h1>
+  <p>Introduction to Networks · NetAcad Study Guide</p>
+  <div class="obj">Module Objective: Compare the operations of transport layer protocols in supporting end-to-end communication</div>
+</div>
+<div class="sp-wrap">
+  <div class="sp-hdr" id="sp-hdr" onclick="toggleStudyPanel()">
+    <span class="sp-title">📚 Sections</span>
+    <span class="sp-arr" id="sp-arr">▼</span>
+  </div>
+  <div class="sp-body" id="sp-body">
+    <div class="sp-row" id="row-s1"><span class="sr-status" id="st-s1">○</span><span class="sr-nb">14.1</span><span class="sr-ttl">Transportation of Data</span></div>
+    <div class="sp-row" id="row-s2"><span class="sr-status" id="st-s2">○</span><span class="sr-nb">14.2</span><span class="sr-ttl">TCP Overview</span></div>
+    <div class="sp-row" id="row-s3"><span class="sr-status" id="st-s3">○</span><span class="sr-nb">14.3</span><span class="sr-ttl">UDP Overview</span></div>
+    <div class="sp-row" id="row-s4"><span class="sr-status" id="st-s4">○</span><span class="sr-nb">14.4</span><span class="sr-ttl">Port Numbers</span></div>
+    <div class="sp-row" id="row-s5"><span class="sr-status" id="st-s5">○</span><span class="sr-nb">14.5</span><span class="sr-ttl">TCP Communication Process</span></div>
+    <div class="sp-row" id="row-s6"><span class="sr-status" id="st-s6">○</span><span class="sr-nb">14.6</span><span class="sr-ttl">Reliability and Flow Control</span></div>
+    <div class="sp-row" id="row-s7"><span class="sr-status" id="st-s7">○</span><span class="sr-nb">14.7</span><span class="sr-ttl">UDP Communication</span></div>
+    <div class="sp-row" id="row-s-pt-14-8"><span class="sr-status" id="st-s-pt-14-8">○</span><span class="sr-nb">PT 14.8</span><span class="sr-ttl">Packet Tracer — TCP and UDP Communications</span></div>
+    <div class="sp-row" id="row-s8"><span class="sr-status" id="st-s8">○</span><span class="sr-nb">🎯</span><span class="sr-ttl">Common Exam Traps — Module 14</span></div>
+  </div>
+</div>
+
+<div class="toc">
+  <div class="toch open" onclick="this.classList.toggle('open');document.getElementById('tocb').classList.toggle('open')">
+    📋 Table of Contents — Tap to expand <span class="arr">▼</span>
+  </div>
+  <div class="tocb open" id="tocb">
+    <div class="tocg">14.1 — Transportation of Data</div>
+    <a href="javascript:void(0)" onclick="goTo('s1')"><span class="n">14.1.1</span> Role of the Transport Layer</a>
+    <a href="javascript:void(0)" onclick="goTo('s1')"><span class="n">14.1.2</span> Five Transport Layer Responsibilities</a>
+    <a href="javascript:void(0)" onclick="goTo('s1')"><span class="n">14.1.4</span> TCP vs UDP — When to Use Which</a>
+    <div class="tocg">14.2 — TCP Overview</div>
+    <a href="javascript:void(0)" onclick="goTo('s2')"><span class="n">14.2.1</span> TCP Four Key Features</a>
+    <a href="javascript:void(0)" onclick="goTo('s2')"><span class="n">14.2.2</span> TCP Header — 10 Fields · 20 Bytes</a>
+    <a href="javascript:void(0)" onclick="goTo('s2')"><span class="n">14.2.3</span> Six TCP Control Flags — SYN ACK FIN RST PSH URG</a>
+    <div class="tocg">14.3 — UDP Overview</div>
+    <a href="javascript:void(0)" onclick="goTo('s3')"><span class="n">14.3.1</span> UDP Features — Stateless · Best-Effort</a>
+    <a href="javascript:void(0)" onclick="goTo('s3')"><span class="n">14.3.2</span> UDP Header — 4 Fields · 8 Bytes</a>
+    <a href="javascript:void(0)" onclick="goTo('s3')"><span class="n">14.3.4</span> Applications that use UDP</a>
+    <div class="tocg">14.4 — Port Numbers</div>
+    <a href="javascript:void(0)" onclick="goTo('s4')"><span class="n">14.4.1</span> Source and Destination Ports</a>
+    <a href="javascript:void(0)" onclick="goTo('s4')"><span class="n">14.4.2</span> Sockets and Socket Pairs</a>
+    <a href="javascript:void(0)" onclick="goTo('s4')"><span class="n">14.4.3</span> Port Groups · Well-Known Port Table</a>
+    <a href="javascript:void(0)" onclick="goTo('s4')"><span class="n">14.4.4</span> netstat Command</a>
+    <div class="tocg">14.5 — TCP Communication Process</div>
+    <a href="javascript:void(0)" onclick="goTo('s5')"><span class="n">14.5.2</span> Three-Way Handshake — SYN · SYN-ACK · ACK</a>
+    <a href="javascript:void(0)" onclick="goTo('s5')"><span class="n">14.5.3</span> Session Termination — FIN · ACK · FIN · ACK</a>
+    <div class="tocg">14.6 — Reliability and Flow Control</div>
+    <a href="javascript:void(0)" onclick="goTo('s6')"><span class="n">14.6.1</span> Sequence Numbers · ISN · Acknowledgment Number</a>
+    <a href="javascript:void(0)" onclick="goTo('s6')"><span class="n">14.6.3</span> Data Loss · Retransmission · SACK</a>
+    <a href="javascript:void(0)" onclick="goTo('s6')"><span class="n">14.6.5</span> Flow Control — Window Size · Sliding Windows</a>
+    <a href="javascript:void(0)" onclick="goTo('s6')"><span class="n">14.6.6</span> MSS — 1460 Bytes Default</a>
+    <a href="javascript:void(0)" onclick="goTo('s6')"><span class="n">14.6.7</span> Congestion Avoidance</a>
+    <div class="tocg">14.7 — UDP Communication</div>
+    <a href="javascript:void(0)" onclick="goTo('s7')"><span class="n">14.7</span> UDP Reassembly · Server/Client Processes</a>
+    <div class="tocg">Reference</div>
+    <a href="javascript:void(0)" onclick="goTo('s8')"><span class="n">🎯</span> Common Exam Traps</a>
+  </div>
+</div>
+
+<div class="wrap">
+
+<!-- 14.1 TRANSPORT LAYER ROLE -->
+<div class="sec" id="s1">
+<div class="sh open" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">14.1</span><span class="ttl">Transportation of Data</span></span><button class="sec-check" id="sch-s1" onclick="event.stopPropagation();toggleSection('s1',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb open">
+  <div class="sub">
+  <h3><span class="sn">14.1.1</span> Role of the Transport Layer</h3>
+  <p>The transport layer provides <strong>logical communications between applications</strong> running on different hosts. It is the link between the application layer and the lower layers responsible for network transmission.</p>
+  <p>The transport layer has <strong>no knowledge</strong> of: destination host type, media type, path taken, congestion on a link, or network size. Its two protocols are <strong>TCP</strong> and <strong>UDP</strong>.</p>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">14.1.2</span> Five Transport Layer Responsibilities</h3>
+  <div class="tw"><table>
+    <tr><th>#</th><th>Responsibility</th><th>Description</th></tr>
+    <tr><td><strong>1</strong></td><td>Track conversations</td><td>Each app-to-app flow = a separate "conversation" tracked independently. Multiple simultaneous conversations per host.</td></tr>
+    <tr><td><strong>2</strong></td><td>Segment and reassemble data</td><td>Divides app data into blocks. TCP calls them <strong>segments</strong>; UDP calls them <strong>datagrams</strong>.</td></tr>
+    <tr><td><strong>3</strong></td><td>Add header information</td><td>Transport header enables reassembly, error checking, and port identification at the destination.</td></tr>
+    <tr><td><strong>4</strong></td><td>Identify applications</td><td>Uses <strong>port numbers</strong> to route data to the correct application process.</td></tr>
+    <tr><td><strong>5</strong></td><td>Conversation multiplexing</td><td>Multiple conversations interleaved on the same network simultaneously using segmentation and port numbers.</td></tr>
+  </table></div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">14.1.4–14.1.6</span> TCP vs UDP — When to Use Which</h3>
+  <div class="proto-compare">
+    <div class="proto-card tcp">
+      <div class="pc-title">🔒 TCP — Reliable</div>
+      <ul>
+        <li>Connection-oriented</li>
+        <li>Reliable — guaranteed delivery</li>
+        <li>In-order delivery (sequence numbers)</li>
+        <li>Flow control (window size)</li>
+        <li>20-byte header overhead</li>
+        <li>Stateful</li>
+        <li>Slower but complete</li>
+      </ul>
+      <strong>Use for:</strong> HTTP, HTTPS, FTP, SMTP, SSH, Telnet, POP3, IMAP, databases, stored video/audio
+    </div>
+    <div class="proto-card udp">
+      <div class="pc-title">⚡ UDP — Fast</div>
+      <ul>
+        <li>Connectionless</li>
+        <li>Best-effort — no guarantee</li>
+        <li>Delivers in order received (no reorder)</li>
+        <li>No flow control</li>
+        <li>8-byte header overhead</li>
+        <li>Stateless</li>
+        <li>Faster but lossy possible</li>
+      </ul>
+      <strong>Use for:</strong> VoIP, live video, DNS, DHCP, TFTP, SNMP, video conferencing
+    </div>
+  </div>
+  <div class="ca info"><span class="ic">💡</span><div><strong>Stored audio/video (on-demand streaming):</strong> Uses <strong>TCP</strong>. Buffering allows the app to pause and re-establish if the connection drops. The "buffering…" message = TCP working to restore the stream.<br><br><strong>Real-time audio/video (live):</strong> Uses <strong>UDP</strong>. A momentary glitch is more acceptable than the delay caused by waiting for retransmission.</div></div>
+  </div>
+</div></div>
+
+<!-- 14.2 TCP OVERVIEW -->
+<div class="sec" id="s2">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">14.2</span><span class="ttl">TCP Overview</span></span><button class="sec-check" id="sch-s2" onclick="event.stopPropagation();toggleSection('s2',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb">
+  <div class="sub">
+  <h3><span class="sn">14.2.1</span> TCP Four Key Features</h3>
+  <div class="tw"><table>
+    <tr><th>Feature</th><th>Description</th></tr>
+    <tr><td><strong>Establishes a Session</strong></td><td>Connection-oriented — negotiates a session (three-way handshake) before sending any data</td></tr>
+    <tr><td><strong>Ensures Reliable Delivery</strong></td><td>Tracks each segment sent; retransmits any that are lost or corrupted</td></tr>
+    <tr><td><strong>Provides Same-Order Delivery</strong></td><td>Sequence numbers ensure segments are reassembled in the correct order even if they arrive out of order</td></tr>
+    <tr><td><strong>Supports Flow Control</strong></td><td>Window size field adjusts data transmission rate to prevent receiver overload</td></tr>
+  </table></div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">14.2.2–14.2.3</span> TCP Header — 10 Fields · 20 Bytes Total</h3>
+  <p>TCP adds <strong>20 bytes (160 bits)</strong> of overhead to each segment:</p>
+  <div class="hdr-field tcp-f"><span class="hf-name">Source Port</span><span class="hf-size">16 bits</span><div>Identifies the sending application by port number</div></div>
+  <div class="hdr-field tcp-f"><span class="hf-name">Destination Port</span><span class="hf-size">16 bits</span><div>Identifies the receiving application by port number</div></div>
+  <div class="hdr-field tcp-f"><span class="hf-name">Sequence Number</span><span class="hf-size">32 bits</span><div>Position of first data byte in this segment; used for reordering and reassembly</div></div>
+  <div class="hdr-field tcp-f"><span class="hf-name">Acknowledgment #</span><span class="hf-size">32 bits</span><div>Next byte expected from sender; confirms all bytes before this were received</div></div>
+  <div class="hdr-field tcp-f"><span class="hf-name">Header Length</span><span class="hf-size">4 bits</span><div>"Data offset" — length of the TCP header</div></div>
+  <div class="hdr-field tcp-f"><span class="hf-name">Reserved</span><span class="hf-size">6 bits</span><div>Reserved for future use</div></div>
+  <div class="hdr-field tcp-f"><span class="hf-name">Control Bits</span><span class="hf-size">6 bits</span><div>Flags: URG, ACK, PSH, RST, SYN, FIN</div></div>
+  <div class="hdr-field tcp-f"><span class="hf-name">Window Size</span><span class="hf-size">16 bits</span><div>Bytes receiver can accept before requiring an ACK — used for flow control</div></div>
+  <div class="hdr-field tcp-f"><span class="hf-name">Checksum</span><span class="hf-size">16 bits</span><div>Error checking for header and data</div></div>
+  <div class="hdr-field tcp-f"><span class="hf-name">Urgent</span><span class="hf-size">16 bits</span><div>Indicates urgent data that should be processed immediately</div></div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">14.2.3</span> Six TCP Control Flags</h3>
+  <div class="flag-grid">
+    <div class="flag-card syn"><span class="fc-abbr">SYN</span>Synchronize — initiates connection; establishes ISN</div>
+    <div class="flag-card ack"><span class="fc-abbr">ACK</span>Acknowledge — confirms receipt; used in handshake and data transfer</div>
+    <div class="flag-card fin"><span class="fc-abbr">FIN</span>Finish — no more data from sender; graceful close</div>
+    <div class="flag-card rst"><span class="fc-abbr">RST</span>Reset — abruptly closes connection on error or timeout</div>
+    <div class="flag-card psh"><span class="fc-abbr">PSH</span>Push — send data to application immediately without buffering</div>
+    <div class="flag-card urg"><span class="fc-abbr">URG</span>Urgent — data in this segment should be processed first</div>
+  </div>
+  <div class="ca info"><span class="ic">💡</span><div><strong>TCP applications:</strong> HTTP (80) · HTTPS (443) · FTP (20/21) · SSH (22) · Telnet (23) · SMTP (25) · POP3 (110) · IMAP (143)</div></div>
+  </div>
+</div></div>
+
+<!-- 14.3 UDP OVERVIEW -->
+<div class="sec" id="s3">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">14.3</span><span class="ttl">UDP Overview</span></span><button class="sec-check" id="sch-s3" onclick="event.stopPropagation();toggleSection('s3',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb">
+  <div class="sub">
+  <h3><span class="sn">14.3.1</span> UDP Features</h3>
+  <ul>
+    <li>Data reconstructed in order received — no reordering</li>
+    <li>Lost segments are NOT resent</li>
+    <li>No session establishment — connectionless</li>
+    <li>Sender is NOT informed about resource availability at receiver</li>
+    <li>Stateless — neither client nor server tracks session state</li>
+  </ul>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">14.3.2–14.3.3</span> UDP Header — 4 Fields · 8 Bytes Total</h3>
+  <p>UDP adds only <strong>8 bytes (64 bits)</strong> of overhead per datagram — much simpler than TCP:</p>
+  <div class="hdr-field udp-f"><span class="hf-name">Source Port</span><span class="hf-size">16 bits</span><div>Identifies the sending application by port number</div></div>
+  <div class="hdr-field udp-f"><span class="hf-name">Destination Port</span><span class="hf-size">16 bits</span><div>Identifies the receiving application by port number</div></div>
+  <div class="hdr-field udp-f"><span class="hf-name">Length</span><span class="hf-size">16 bits</span><div>Length of the UDP datagram header and data combined</div></div>
+  <div class="hdr-field udp-f"><span class="hf-name">Checksum</span><span class="hf-size">16 bits</span><div>Error checking of the datagram header and data</div></div>
+  <div class="ca info"><span class="ic">💡</span><div>UDP is described as "best-effort" because there is no mechanism to confirm delivery, request retransmission, or control the rate of data flow. What it lacks in reliability it makes up in speed and simplicity.</div></div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">14.3.4</span> Three Categories of UDP Applications</h3>
+  <div class="tw"><table>
+    <tr><th>Category</th><th>Why UDP</th><th>Examples</th></tr>
+    <tr><td><strong>Live video and multimedia</strong></td><td>Tolerates some loss; cannot tolerate delay from retransmission</td><td>VoIP, live video streaming</td></tr>
+    <tr><td><strong>Simple request-reply</strong></td><td>Small transactions; if no reply, client simply resends the request</td><td>DNS (port 53), DHCP (67/68)</td></tr>
+    <tr><td><strong>App handles reliability itself</strong></td><td>Application layer manages sequencing and recovery</td><td>SNMP (161), TFTP (69)</td></tr>
+  </table></div>
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>DNS uses UDP by default (port 53), but switches to TCP when response exceeds 512 bytes</strong> (e.g., zone transfers or large responses with many records). SNMP can also use TCP in some configurations.</div></div>
+  </div>
+</div></div>
+
+<!-- 14.4 PORT NUMBERS -->
+<div class="sec" id="s4">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">14.4</span><span class="ttl">Port Numbers</span></span><button class="sec-check" id="sch-s4" onclick="event.stopPropagation();toggleSection('s4',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb">
+  <div class="sub">
+  <h3><span class="sn">14.4.1</span> Source and Destination Ports</h3>
+  <p>Port numbers are <strong>16-bit values</strong> (range 0–65535) that identify which application process should handle the data.</p>
+  <div class="tw"><table>
+    <tr><th>Port Type</th><th>Who Assigns It</th><th>Purpose</th></tr>
+    <tr><td><strong>Source Port</strong></td><td>Dynamically assigned by the client OS when connection is initiated</td><td>Identifies the specific client conversation — acts as the return address</td></tr>
+    <tr><td><strong>Destination Port</strong></td><td>Well-known or registered (specified by client in request)</td><td>Identifies the service being requested on the server</td></tr>
+  </table></div>
+  <div class="ca info"><span class="ic">💡</span><div>When the server responds, it <strong>reverses the port numbers</strong>: the original destination port becomes the source port of the response, and the original source port becomes the destination port of the response. This is how the response gets back to the correct client application.</div></div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">14.4.2</span> Sockets and Socket Pairs</h3>
+  <p><strong>Socket</strong> = IP address + port number (identifies one endpoint of a connection)</p>
+  <div class="cw"><div class="cl">Socket Examples</div>
+  <pre><code>Client socket:  192.168.1.5:1099    (IP:ephemeral-port)
+Server socket:  192.168.1.7:80      (IP:well-known-port)
+Socket pair:    192.168.1.5:1099, 192.168.1.7:80  (unique conversation)</code></pre></div>
+  <p>A socket pair <strong>uniquely identifies every conversation</strong> on the network. This is how a server distinguishes between thousands of simultaneous client connections to the same port — each has a different client socket (different source IP or port).</p>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">14.4.3</span> Three Port Number Groups</h3>
+  <div class="port-groups">
+    <div class="port-group wk"><span class="pg-range">0 – 1,023 · Well-Known Ports</span>Reserved for common services (HTTP, FTP, SSH, etc.). Defined by IANA. Clients use these as destination ports to request specific services.</div>
+    <div class="port-group rg"><span class="pg-range">1,024 – 49,151 · Registered Ports</span>Assigned by IANA to specific applications on request (e.g., Cisco RADIUS = 1812). Used by vendor-specific applications.</div>
+    <div class="port-group dy"><span class="pg-range">49,152 – 65,535 · Private / Dynamic / Ephemeral Ports</span>Dynamically assigned by the client OS when initiating a connection. Serve as the source port for the client. Released when the session ends.</div>
+  </div>
+
+  <h4>Well-Known Port Numbers — Memorize These</h4>
+  <div class="port-qr">
+    <div class="port-qr-hdr"><span>Port</span><span>Protocol</span><span>Application</span></div>
+    <div class="port-qr-row tcp-r"><span class="pqr-port">20</span><span class="pqr-proto">TCP</span><span class="pqr-app">FTP — Data</span></div>
+    <div class="port-qr-row tcp-r"><span class="pqr-port">21</span><span class="pqr-proto">TCP</span><span class="pqr-app">FTP — Control</span></div>
+    <div class="port-qr-row tcp-r"><span class="pqr-port">22</span><span class="pqr-proto">TCP</span><span class="pqr-app">SSH (Secure Shell)</span></div>
+    <div class="port-qr-row tcp-r"><span class="pqr-port">23</span><span class="pqr-proto">TCP</span><span class="pqr-app">Telnet</span></div>
+    <div class="port-qr-row tcp-r"><span class="pqr-port">25</span><span class="pqr-proto">TCP</span><span class="pqr-app">SMTP (email sending)</span></div>
+    <div class="port-qr-row udp-r"><span class="pqr-port">53</span><span class="pqr-proto">UDP/TCP</span><span class="pqr-app">DNS (UDP default; TCP &gt;512 bytes)</span></div>
+    <div class="port-qr-row udp-r"><span class="pqr-port">67</span><span class="pqr-proto">UDP</span><span class="pqr-app">DHCP — Server</span></div>
+    <div class="port-qr-row udp-r"><span class="pqr-port">68</span><span class="pqr-proto">UDP</span><span class="pqr-app">DHCP — Client</span></div>
+    <div class="port-qr-row udp-r"><span class="pqr-port">69</span><span class="pqr-proto">UDP</span><span class="pqr-app">TFTP (Trivial FTP)</span></div>
+    <div class="port-qr-row tcp-r"><span class="pqr-port">80</span><span class="pqr-proto">TCP</span><span class="pqr-app">HTTP</span></div>
+    <div class="port-qr-row tcp-r"><span class="pqr-port">110</span><span class="pqr-proto">TCP</span><span class="pqr-app">POP3 (email receiving)</span></div>
+    <div class="port-qr-row tcp-r"><span class="pqr-port">143</span><span class="pqr-proto">TCP</span><span class="pqr-app">IMAP (email receiving)</span></div>
+    <div class="port-qr-row udp-r"><span class="pqr-port">161</span><span class="pqr-proto">UDP</span><span class="pqr-app">SNMP (network management)</span></div>
+    <div class="port-qr-row tcp-r"><span class="pqr-port">443</span><span class="pqr-proto">TCP</span><span class="pqr-app">HTTPS (HTTP Secure)</span></div>
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">14.4.4</span> The netstat Command</h3>
+  <div class="cw"><div class="cl">netstat output — Windows</div>
+  <pre><code>C:\> netstat
+Active Connections
+Proto  Local Address          Foreign Address            State
+TCP    192.168.1.124:3126     192.168.0.2:netbios-ssn    ESTABLISHED
+TCP    192.168.1.124:3158     207.138.126.152:http       ESTABLISHED
+TCP    192.168.1.124:3166     www.cisco.com:http         ESTABLISHED
+
+C:\> netstat -n
+TCP    192.168.1.124:3158     207.138.126.152:80         ESTABLISHED</code></pre></div>
+  <p><code>netstat</code> displays all active TCP connections. Useful for detecting unauthorized or unexpected connections. <code>netstat -n</code> shows numerical IP addresses and port numbers instead of resolved names.</p>
+  </div>
+</div></div>
+
+<!-- 14.5 TCP COMMUNICATION -->
+<div class="sec" id="s5">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">14.5</span><span class="ttl">TCP Communication Process</span></span><button class="sec-check" id="sch-s5" onclick="event.stopPropagation();toggleSection('s5',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb">
+  <div class="sub">
+  <h3><span class="sn">14.5.2</span> TCP Three-Way Handshake — Connection Establishment</h3>
+  <p>TCP is full-duplex. Before any data is sent, a <strong>three-way handshake</strong> establishes the connection:</p>
+  <div class="hs-steps">
+    <div class="hs-step syn"><div class="hs-num">1</div><span class="hs-dir">Client → Server</span><div><strong>SYN</strong> — Client requests connection. Sends its Initial Sequence Number (ISN). "I want to start a session on this port."</div></div>
+    <div class="hs-step synack"><div class="hs-num">2</div><span class="hs-dir">Server → Client</span><div><strong>SYN + ACK</strong> — Server acknowledges client SYN and sends its own ISN. "I acknowledge your SYN and I'm ready. Here's my sequence number."</div></div>
+    <div class="hs-step ack"><div class="hs-num">3</div><span class="hs-dir">Client → Server</span><div><strong>ACK</strong> — Client acknowledges server SYN. Connection is now established. Data can flow.</div></div>
+  </div>
+  <div class="ca tip"><span class="ic">✅</span><div><strong>The three-way handshake accomplishes three things:</strong><br>1. Confirms destination device is present on the network<br>2. Confirms destination has an active service on the requested port<br>3. Informs destination that source intends to establish a session on that port</div></div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">14.5.3</span> TCP Session Termination — Four Exchanges</h3>
+  <p>TCP termination requires <strong>4 exchanges</strong> because TCP is full-duplex — each direction is closed separately. Either side can initiate:</p>
+  <div class="hs-steps">
+    <div class="hs-step fin"><div class="hs-num">1</div><span class="hs-dir">Client → Server</span><div><strong>FIN</strong> — Client has no more data to send. "I'm done sending."</div></div>
+    <div class="hs-step ack"><div class="hs-num">2</div><span class="hs-dir">Server → Client</span><div><strong>ACK</strong> — Server acknowledges client FIN. Server may still have data to send.</div></div>
+    <div class="hs-step fin"><div class="hs-num">3</div><span class="hs-dir">Server → Client</span><div><strong>FIN</strong> — Server has no more data to send. "I'm done sending too."</div></div>
+    <div class="hs-step ack"><div class="hs-num">4</div><span class="hs-dir">Client → Server</span><div><strong>ACK</strong> — Client acknowledges server FIN. Connection fully closed.</div></div>
+  </div>
+  <div class="ca warn"><span class="ic">⚠️</span><div>Handshake = <strong>3 steps</strong> (SYN → SYN-ACK → ACK). Termination = <strong>4 steps</strong> (FIN → ACK → FIN → ACK). Never confuse these. Termination is 4 because each one-way session closes independently.</div></div>
+  </div>
+</div></div>
+
+<!-- 14.6 RELIABILITY AND FLOW CONTROL -->
+<div class="sec" id="s6">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">14.6</span><span class="ttl">Reliability and Flow Control</span></span><button class="sec-check" id="sch-s6" onclick="event.stopPropagation();toggleSection('s6',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb">
+  <div class="sub">
+  <h3><span class="sn">14.6.1</span> Sequence Numbers, ISN, and Acknowledgments</h3>
+  <div class="tw"><table>
+    <tr><th>Concept</th><th>Description</th></tr>
+    <tr><td><strong>Sequence Number</strong></td><td>Position of the first data byte in a segment within the full data stream. Used to reorder and reassemble segments at the destination.</td></tr>
+    <tr><td><strong>ISN (Initial Sequence Number)</strong></td><td>Randomly chosen starting value — NOT 1 in real networks (prevents security attacks). Negotiated during the three-way handshake.</td></tr>
+    <tr><td><strong>Acknowledgment Number</strong></td><td>Next byte expected from the sender. Confirms all bytes before this number were received. (Example: ACK=301 means "I received bytes 1–300, send byte 301 next.")</td></tr>
+  </table></div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">14.6.3</span> Data Loss, Retransmission, and SACK</h3>
+  <p><strong>Without SACK:</strong> If segments 3 and 4 are missing out of 10 sent, the receiver ACKs segment 3 (next expected). The sender must retransmit segments 3–10, even though segments 5–10 arrived successfully → wasted bandwidth.</p>
+  <p><strong>With SACK (Selective Acknowledgment):</strong> Receiver explicitly reports which segments it has received, including non-contiguous ones. Sender retransmits <em>only</em> the missing segments (3 and 4 in the example).</p>
+  <div class="ca info"><span class="ic">💡</span><div>SACK is optional and must be negotiated during the three-way handshake. Most modern operating systems support SACK. TCP also uses timers — if a segment isn't acknowledged within the timer period, the sender retransmits it.</div></div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">14.6.5</span> Flow Control — Window Size and Sliding Windows</h3>
+  <div class="window-box">
+    <div class="wb-title">Sliding Window — How Flow Control Works</div>
+    <div class="win-step"><div class="ws-num">1</div><div class="ws-text">During handshake, PC B tells PC A its <strong>window size = 10,000 bytes</strong> — "you can send up to 10,000 bytes before I need to ACK"</div></div>
+    <div class="win-step"><div class="ws-num">2</div><div class="ws-text">PC A begins sending data. It does NOT wait for all 10,000 bytes to be acknowledged before sending more — it keeps sending within the window.</div></div>
+    <div class="win-step"><div class="ws-num">3</div><div class="ws-text">PC B sends ACK after receiving some bytes (e.g., ACK 2,921 = "I've received bytes 1–2920, send me 2921 next")</div></div>
+    <div class="win-step"><div class="ws-num">4</div><div class="ws-text">PC A's send window <strong>slides forward</strong> — it can now send bytes 2,921 through 12,920 (still a 10,000-byte window)</div></div>
+    <div class="win-step"><div class="ws-num">5</div><div class="ws-text">If PC B's buffers fill → it <strong>reduces window size</strong> → PC A slows down. Window can increase again as buffers free up.</div></div>
+  </div>
+  <div class="ca info"><span class="ic">💡</span><div><strong>Window size</strong> = 16-bit field in TCP header = maximum bytes receiver can accept before requiring an ACK.<br><strong>Sliding windows</strong> = the continuous process of receiver sending ACKs + sender adjusting its send window forward. Allows continuous data flow without stop-and-wait.</div></div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">14.6.6</span> Maximum Segment Size (MSS)</h3>
+  <p>MSS = maximum payload (data) bytes in a single TCP segment — does NOT include the TCP header. Negotiated during the three-way handshake.</p>
+  <div class="mss-box">
+    <div class="mss-row"><span class="mr-label">Ethernet MTU:</span><span class="mr-val">1,500 bytes</span></div>
+    <div class="mss-row"><span class="mr-label">minus IP header:</span><span class="mr-eq">−</span><span class="mr-calc">20 bytes</span></div>
+    <div class="mss-row"><span class="mr-label">minus TCP header:</span><span class="mr-eq">−</span><span class="mr-calc">20 bytes</span></div>
+    <div class="mss-row"><span class="mr-label">Default MSS:</span><span class="mr-val">1,460 bytes</span></div>
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">14.6.7</span> Congestion Avoidance</h3>
+  <p>When a router drops packets due to congestion → segments go unacknowledged → source detects congestion → <strong>source reduces the number of unacknowledged bytes it sends</strong> (not the window size set by the destination).</p>
+  <div class="ca warn"><span class="ic">⚠️</span><div>It is the <strong>source</strong> that reduces its send rate in response to congestion — not the destination window size. The destination window size reflects the receiver's buffer capacity; the source's self-imposed limit is the congestion control mechanism.</div></div>
+  </div>
+</div></div>
+
+<!-- 14.7 UDP COMMUNICATION -->
+<div class="sec" id="s7">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">14.7</span><span class="ttl">UDP Communication</span></span><button class="sec-check" id="sch-s7" onclick="event.stopPropagation();toggleSection('s7',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb">
+  <div class="sub">
+  <h3><span class="sn">14.7.1–14.7.4</span> UDP Communication Details</h3>
+  <div class="tw"><table>
+    <tr><th>Aspect</th><th>UDP Behavior</th></tr>
+    <tr><td><strong>Reassembly</strong></td><td>UDP delivers datagrams to the application in the order they arrive — no reordering. If sequencing matters, the <strong>application</strong> must handle it.</td></tr>
+    <tr><td><strong>Lost datagrams</strong></td><td>Simply lost — UDP has no mechanism to detect or recover them. No retransmission.</td></tr>
+    <tr><td><strong>Server port numbers</strong></td><td>UDP servers listen on well-known or registered port numbers, just like TCP servers.</td></tr>
+    <tr><td><strong>Client source port</strong></td><td>UDP client dynamically selects an ephemeral source port (49152–65535) when initiating a session.</td></tr>
+    <tr><td><strong>Server response</strong></td><td>Server reverses source and destination ports in its response — same mechanism as TCP.</td></tr>
+    <tr><td><strong>Port consistency</strong></td><td>Same source/destination port pair used for all datagrams in a transaction.</td></tr>
+  </table></div>
+  </div>
+</div></div>
+
+<!-- EXAM TRAPS -->
+
+
+  <!-- PT MASTER LINK -->
+  <div style="margin:18px 0 6px;padding:12px 14px;background:#0d1117;border:1px solid #30363d;border-left:3px solid #1f6feb;border-radius:6px">
+    <div style="font-size:.7em;font-weight:800;text-transform:uppercase;letter-spacing:.8px;color:#1f6feb;margin-bottom:6px">&#x1F4E6; All Packet Tracer Activities — CCNA 1</div>
+    <div style="font-size:.84em;color:#c9d1d9;margin-bottom:4px">Complete list of all CCNA 1 Packet Tracer activities with instructions:</div>
+    <a href="https://itexamanswers.net/ccna-1-v7-exam-answers-introduction-to-networks-v7-0-itn.html" target="_blank" rel="noopener" style="font-size:.78em;color:#58a6ff;word-break:break-all">https://itexamanswers.net/ccna-1-v7-exam-answers-introduction-to-networks-v7-0-itn.html</a>
+  </div>
+
+
+<div class="sec" id="s-pt-14-8">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">14.8</span><span class="ttl">Packet Tracer — TCP and UDP Communications</span></span><button class="sec-check" id="sch-s-pt-14-8" onclick="event.stopPropagation();toggleSection('s-pt-14-8',this)">○ Mark done</button>
+</div>
+<div class="sb">
+  <div style="padding:14px 16px;background:#0d1117;border:1px solid #30363d;border-left:3px solid #1f6feb;border-radius:6px">
+    <div style="font-size:.72em;font-weight:800;text-transform:uppercase;letter-spacing:.8px;color:#1f6feb;margin-bottom:10px">&#x1F4E6; Packet Tracer Activities</div>
+    <div style="font-size:.82em;color:#6e7681;margin-bottom:10px">Open in Cisco Packet Tracer via your NetAcad course.</div>
+      <div style="display:flex;align-items:baseline;gap:10px;padding:6px 0;border-bottom:1px solid #21262d"><span style="font-family:monospace;font-size:.85em;color:#79c0ff;white-space:nowrap;flex-shrink:0;min-width:52px">14.8.1</span><span style="font-size:.88em;color:#c9d1d9">TCP and UDP Communications</span></div>
+    <div style="margin-top:12px;font-size:.78em;color:#6e7681">Full list: <a href="https://itexamanswers.net/ccna-1-v7-exam-answers-introduction-to-networks-v7-0-itn.html" target="_blank" rel="noopener" style="color:#58a6ff;word-break:break-all">itexamanswers.net/ccna-1-v7-exam-answers-introduction-to-networks-v7-0-itn.html</a></div>
+  </div>
+</div>
+</div>
+<div class="sec" id="s8">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">🎯</span><span class="ttl">Common Exam Traps — Module 14</span></span><button class="sec-check" id="sch-s8" onclick="event.stopPropagation();toggleSection('s8',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb">
+
+  <div class="ca danger"><span class="ic">❌</span><div><strong>Trap 1: TCP = connection-oriented, reliable, stateful. UDP = connectionless, best-effort, stateless.</strong><br>The most fundamental distinction in this module. TCP establishes a session (handshake) before sending. UDP sends without any connection setup. TCP tracks every segment and retransmits if needed. UDP does not.</div></div>
+
+  <div class="ca danger"><span class="ic">❌</span><div><strong>Trap 2: TCP header = 20 bytes (10 fields). UDP header = 8 bytes (4 fields).</strong><br>TCP: Source Port + Destination Port + Sequence # + ACK # + Header Length + Reserved + Control Bits + Window Size + Checksum + Urgent. UDP: Source Port + Destination Port + Length + Checksum. The 4 extra TCP fields (Sequence, ACK, Window, Control Bits) enable reliability and flow control.</div></div>
+
+  <div class="ca danger"><span class="ic">❌</span><div><strong>Trap 3: Handshake = 3 steps (SYN→SYN-ACK→ACK). Termination = 4 steps (FIN→ACK→FIN→ACK).</strong><br>These are directly tested in sequence questions. The handshake opens one bidirectional channel in 3 steps. Termination closes each direction separately — hence 4 steps (2 FIN/ACK pairs). Either side can initiate termination.</div></div>
+
+  <div class="ca danger"><span class="ic">❌</span><div><strong>Trap 4: Acknowledgment number = next expected byte, NOT the last received byte.</strong><br>If bytes 1–300 were received, the ACK number = 301 ("send me byte 301 next"). Students often confuse this as 300. The ACK number is always one more than the last successfully received byte.</div></div>
+
+  <div class="ca danger"><span class="ic">❌</span><div><strong>Trap 5: ISN is randomly chosen — NOT starting at 1 in real networks.</strong><br>The random ISN prevents certain security attacks that could predict sequence numbers. Exams may use ISN=1 for simplicity in worked examples, but always note "for simplicity" — the real ISN is random and negotiated during the handshake.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 6: Port groups — 0–1023 (well-known), 1024–49151 (registered), 49152–65535 (dynamic/ephemeral).</strong><br>The boundary numbers are tested. Well-known = common server services. Registered = vendor applications. Dynamic/ephemeral = client source ports assigned by the OS. Know all three ranges and their names.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 7: Socket = IP + port. Socket pair = unique conversation identifier.</strong><br>A single socket identifies one endpoint. A socket pair (source IP:port + destination IP:port) uniquely identifies a specific conversation. Multiple browser tabs to the same website = different source ports = different socket pairs = different conversations tracked separately.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 8: MSS = 1,460 bytes = MTU(1500) − IP header(20) − TCP header(20).</strong><br>MSS is the TCP payload size, NOT including the TCP header. Negotiated during the three-way handshake. A larger MSS means fewer segments for the same amount of data = more efficient transmission.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 9: SACK allows retransmission of ONLY the missing segments. Without SACK, all subsequent segments must be retransmitted.</strong><br>SACK (Selective Acknowledgment) is negotiated during the three-way handshake. Without it, if segment 3 is missing from segments 1–10, the sender must retransmit 3–10 (even though 4–10 arrived fine). With SACK, only 3 is retransmitted.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 10: Congestion avoidance — SOURCE reduces its send rate. Not the destination window.</strong><br>When the source detects congestion (unacknowledged segments), it self-limits the number of bytes it sends without acknowledgment. The destination's window size reflects buffer capacity — a separate concept from congestion control.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 11: DNS uses UDP port 53 by default but switches to TCP port 53 for responses &gt;512 bytes.</strong><br>Standard DNS queries and responses = UDP. DNS zone transfers between servers = always TCP. Very large responses (many records) = TCP. Both are port 53.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 12: UDP does NOT reorder datagrams — delivers in order received. Application handles sequencing if needed.</strong><br>Unlike TCP which buffers segments and reorders them before passing to the application, UDP simply passes each datagram to the application in the order it arrives. Out-of-order datagrams stay out of order unless the application corrects them.</div></div>
+
+  <div class="ca tip"><span class="ic">✅</span><div><strong>Module 14 quick-reference summary:</strong><br><br>
+  <strong>Transport layer role:</strong> Logical comms between apps · 5 responsibilities: track conversations, segment/reassemble, add headers, identify apps (ports), multiplex<br>
+  <strong>PDU names:</strong> TCP = segment · UDP = datagram<br>
+  <strong>TCP:</strong> Connection-oriented · reliable · stateful · in-order delivery · flow control · 20-byte header · 10 fields<br>
+  <strong>UDP:</strong> Connectionless · best-effort · stateless · no reordering · no flow control · 8-byte header · 4 fields<br>
+  <strong>TCP use:</strong> HTTP/HTTPS · FTP · SMTP · SSH · Telnet · POP3 · IMAP · stored streaming<br>
+  <strong>UDP use:</strong> VoIP · live video · DNS · DHCP · TFTP · SNMP · video conferencing<br>
+  <strong>TCP header fields:</strong> Src Port · Dst Port · Seq# · ACK# · Hdr Len · Reserved · Control Bits · Window · Checksum · Urgent<br>
+  <strong>TCP flags:</strong> SYN (connect) · ACK (confirm) · FIN (close) · RST (reset) · PSH (push) · URG (urgent)<br>
+  <strong>UDP header fields:</strong> Src Port · Dst Port · Length · Checksum<br>
+  <strong>Socket:</strong> IP:port (one endpoint) · Socket pair = unique conversation ID<br>
+  <strong>Port groups:</strong> 0–1023 well-known · 1024–49151 registered · 49152–65535 dynamic/ephemeral<br>
+  <strong>Key ports:</strong> FTP=20/21 · SSH=22 · Telnet=23 · SMTP=25 · DNS=53(UDP/TCP) · DHCP=67/68 · TFTP=69 · HTTP=80 · POP3=110 · IMAP=143 · SNMP=161 · HTTPS=443<br>
+  <strong>Handshake (3 steps):</strong> SYN → SYN-ACK → ACK<br>
+  <strong>Termination (4 steps):</strong> FIN → ACK → FIN → ACK<br>
+  <strong>Sequence #:</strong> first byte position · ISN = random · ACK # = next expected byte (last received + 1)<br>
+  <strong>SACK:</strong> Selective retransmission of only missing segments (negotiated in handshake)<br>
+  <strong>Window size:</strong> Max bytes before ACK needed · 16-bit field · set by receiver<br>
+  <strong>Sliding windows:</strong> Receiver sends ACKs as it processes → sender window slides forward continuously<br>
+  <strong>MSS:</strong> 1,460 bytes default = MTU(1500) − IP(20) − TCP(20) · negotiated in handshake<br>
+  <strong>Congestion avoidance:</strong> Source self-limits send rate when congestion detected<br>
+  <strong>netstat:</strong> Shows active TCP connections · netstat -n = numerical IPs and ports<br>
+  <strong>UDP reassembly:</strong> In order received · no reordering · application handles sequencing if needed<br>
+  <strong>DNS:</strong> UDP port 53 by default · TCP port 53 when response &gt;512 bytes</div></div>
+
+</div></div>
+
+
+</div>
+<div class="ft">CCNA 1 ITN v7.02 — Module 14: Transport Layer v2.2<br>Based on Cisco NetAcad curriculum · Study guide for personal use</div>
+<button class="tb-btn" id="topb" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+<div class="mod-nav">
+  <a class="mn-hub" href="index.html">🏠 Hub</a>
+  <div class="mn-divider"></div>
+  <a class="mn-prev" href="ccna1_module13_icmp_v2.2.html">‹</a>
+  <span class="mn-label">M14 of 17</span>
+  <a class="mn-next" href="ccna1_module15_application_layer_v2.2.html">›</a>
+</div>
+<script>
+var MOD_KEY="ccna1-module14-transport-layer";
+var SECS=["s1","s2","s3","s4","s5","s6","s7","s-pt-14-8","s8"];
+var checked={};
+function loadState(){
+  try{var s=localStorage.getItem(MOD_KEY);if(s)checked=JSON.parse(s);}catch(e){}
+  SECS.forEach(function(id){
+    var pill=document.getElementById('pill-'+id);
+    var row=document.getElementById('row-'+id);
+    var st=document.getElementById('st-'+id);
+    var sch=document.getElementById('sch-'+id);
+    if(checked[id]){
+      if(pill){pill.classList.add('checked');pill.querySelector('.pill-check').textContent='✓';}
+      if(row)row.classList.add('done');
+      if(st)st.textContent='✓';
+      if(sch){sch.classList.add('checked');sch.textContent='✓ Done';}
+    } else {
+      if(pill){pill.classList.remove('checked');pill.querySelector('.pill-check').textContent='○';}
+      if(row)row.classList.remove('done');
+      if(st)st.textContent='○';
+      if(sch){sch.classList.remove('checked');sch.textContent='○ Mark done';}
+    }
+  });
+}
+function toggleSection(id,btn){checked[id]=!checked[id];try{localStorage.setItem(MOD_KEY,JSON.stringify(checked));}catch(e){}loadState();}
+function toggleStudyPanel(){
+  var hdr=document.getElementById('sp-hdr');
+  var body=document.getElementById('sp-body');
+  var arr=document.getElementById('sp-arr');
+  hdr.classList.toggle('open');body.classList.toggle('open');
+  if(arr)arr.textContent=body.classList.contains('open')?'▲':'▼';
+}
+function goTo(id){var el=document.getElementById(id);if(!el)return;var h=el.querySelector('.sh'),b=el.querySelector('.sb');if(h&&b&&!b.classList.contains('open')){h.classList.add('open');b.classList.add('open');}setTimeout(function(){window.scrollTo({top:el.getBoundingClientRect().top+window.pageYOffset-60,behavior:'smooth'});},50);}
+function setFs(size,btn){document.documentElement.style.setProperty('--base-fs',size);document.querySelectorAll('.fs-btn').forEach(function(b){b.classList.remove('active');});btn.classList.add('active');try{localStorage.setItem('ccna-fs',size);}catch(e){}}
+(function(){try{var s=localStorage.getItem('ccna-fs');if(s){document.documentElement.style.setProperty('--base-fs',s);document.querySelectorAll('.fs-btn').forEach(function(b){b.classList.remove('active');if((b.textContent==='S'&&s==='14px')||(b.textContent==='M'&&s==='16px')||(b.textContent==='L'&&s==='18px')||(b.textContent==='XL'&&s==='20px'))b.classList.add('active');});}}catch(e){}loadState();})();
+function copyCode(btn){var pre=btn.closest('.cw').querySelector('pre');navigator.clipboard.writeText(pre.innerText||pre.textContent).then(function(){btn.textContent='Copied!';setTimeout(function(){btn.textContent='Copy';},1500);});}
+</script>
+<script src="../../site-config.js"></script>
+</body>
+</html>

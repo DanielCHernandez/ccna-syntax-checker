@@ -1,0 +1,1170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=2.0">
+<title>CCNA 3 Module 3: Network Security Concepts v2.2</title>
+<style>
+:root{
+  --blue:#1ba0d7;--dark:#005073;--green:#6cc24a;
+  --sec:#7c1e1e;--secd:#f87171;
+  --bg:#f4f6f8;--card:#fff;--text:#1a1a2e;--muted:#5a6a7a;
+  --cbg:#0d1117;--ctxt:#c9d1d9;--r:12px;--sh:0 2px 12px rgba(0,0,0,.08);
+  --base-fs:16px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);font-size:var(--base-fs);line-height:1.7}
+
+.fs-bar{position:sticky;top:0;z-index:200;background:#1a1a2e;display:flex;align-items:center;justify-content:flex-end;padding:6px 14px;gap:6px;box-shadow:0 2px 8px rgba(0,0,0,.3)}
+.fs-label{color:#8b949e;font-size:.72em;font-weight:700;letter-spacing:.5px;text-transform:uppercase;margin-right:4px}
+.fs-btn{background:#30363d;color:#c9d1d9;border:2px solid transparent;border-radius:6px;padding:4px 12px;font-size:.75em;font-weight:700;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:all .2s;line-height:1.4}
+.fs-btn:active,.fs-btn.active{background:var(--sec);color:#fff;border-color:var(--sec)}
+
+.hdr{background:linear-gradient(135deg,#4a0e0e,var(--sec));color:#fff;padding:32px 20px 24px;text-align:center}
+.hdr .badge{display:inline-block;background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.4);border-radius:20px;padding:4px 14px;font-size:.81em;margin-bottom:12px}
+.hdr h1{font-size:1.625em;font-weight:700;margin-bottom:6px}
+.hdr p{font-size:.94em;opacity:.85}
+.hdr .obj{display:inline-block;background:rgba(255,255,255,.15);border-radius:8px;padding:7px 16px;margin-top:12px;font-size:.875em;font-style:italic}
+
+.pb{background:var(--card);padding:14px 16px;margin:16px 16px 0;border-radius:var(--r);box-shadow:var(--sh)}
+.pbl{font-size:.81em;color:var(--muted);margin-bottom:6px;font-weight:600}
+.pbt{background:#e0e7ef;border-radius:10px;height:8px;overflow:hidden}
+.pbf{background:linear-gradient(90deg,var(--sec),var(--secd));height:100%;border-radius:10px;width:0;transition:width 1s ease}
+
+.toc{background:var(--card);margin:16px;border-radius:var(--r);box-shadow:var(--sh);overflow:hidden}
+.toch{background:var(--sec);color:#fff;padding:14px 18px;font-weight:700;font-size:.94em;display:flex;justify-content:space-between;align-items:center;cursor:pointer;user-select:none}
+.toch .arr{transition:transform .3s}
+.toch.open .arr{transform:rotate(180deg)}
+.tocb{display:none;padding:10px 0}
+.tocb.open{display:block}
+.tocg{font-size:.69em;font-weight:800;letter-spacing:.8px;color:var(--sec);text-transform:uppercase;padding:8px 20px 2px}
+.tocb a{display:block;padding:9px 20px 9px 28px;color:var(--text);text-decoration:none;font-size:.875em;border-left:3px solid transparent;transition:all .2s}
+.tocb a:hover,.tocb a:active{background:#fef2f2;border-left-color:var(--secd)}
+.tocb a .n{display:inline-block;background:var(--sec);color:#fff;border-radius:5px;padding:1px 8px;font-size:.75em;font-weight:700;margin-right:8px}
+
+.wrap{padding:0 16px 100px}
+
+.sec{background:var(--card);border-radius:var(--r);box-shadow:var(--sh);margin-bottom:16px;overflow:hidden}
+.sh{background:linear-gradient(90deg,#4a0e0e,var(--sec));color:#fff;padding:16px 18px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;user-select:none;-webkit-tap-highlight-color:transparent}
+.sh .ttl{font-weight:700;font-size:1em}
+.sh .nb{background:rgba(255,255,255,.25);border-radius:6px;padding:3px 10px;font-size:.81em;font-weight:700;margin-right:10px;white-space:nowrap}
+.sh .ch{font-size:1.125em;transition:transform .3s}
+.sh.open .ch{transform:rotate(180deg)}
+.sb{display:none;padding:18px}
+.sb.open{display:block}
+
+.sub{margin-bottom:24px}
+.sub:last-child{margin-bottom:0}
+.sub h3{font-size:.94em;font-weight:700;color:var(--sec);margin-bottom:10px;padding-bottom:6px;border-bottom:2px solid #fef2f2;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.sub h3 .sn{background:var(--sec);color:#fff;border-radius:5px;padding:2px 8px;font-size:.75em;white-space:nowrap}
+.sub h4{font-size:.875em;font-weight:700;color:var(--sec);margin:14px 0 6px}
+.sub p{margin-bottom:10px;font-size:.94em}
+.sub ul,.sub ol{padding-left:20px;margin:8px 0;font-size:.94em}
+.sub li{margin-bottom:5px}
+
+.ca{border-radius:8px;padding:12px 14px;margin:12px 0;font-size:.875em;line-height:1.6;display:flex;gap:10px;align-items:flex-start}
+.ca .ic{font-size:1.125em;flex-shrink:0;margin-top:1px}
+.ca.warn  {background:#fff3cd;border-left:4px solid #b38600;color:#3d2c00}
+.ca.tip   {background:#d4edda;border-left:4px solid #28a745;color:#0d3318}
+.ca.danger{background:#f8d7da;border-left:4px solid #dc3545;color:#3d0010}
+.ca.info  {background:#fef2f2;border-left:4px solid var(--sec);color:#4a0e0e}
+
+.et{background:linear-gradient(135deg,#1a1a2e,#4a0e0e);color:#fff;border-radius:10px;padding:14px 16px;margin:14px 0;font-size:.875em;line-height:1.6}
+.et .lbl{font-size:.69em;font-weight:800;letter-spacing:1px;color:var(--secd);margin-bottom:6px}
+.et ul{padding-left:18px;margin-top:6px}
+.et li{margin-bottom:4px}
+
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:12px 0;border-radius:8px}
+table{width:100%;border-collapse:collapse;font-size:.875em}
+th{background:var(--sec);color:#fff;padding:10px 12px;text-align:left;font-weight:700;font-size:.81em}
+td{padding:9px 12px;border-bottom:1px solid #e8ecf0;vertical-align:top;color:#1a1a2e}
+tr:nth-child(even) td{background:#fef2f2;color:#4a0e0e}
+tr:last-child td{border-bottom:none}
+
+.steps{counter-reset:step;list-style:none;padding:0;margin:12px 0}
+.steps li{counter-increment:step;display:flex;gap:12px;align-items:flex-start;padding:10px 0;border-bottom:1px solid #eef0f3;font-size:.875em;line-height:1.6}
+.steps li:last-child{border-bottom:none}
+.steps li::before{content:counter(step);background:var(--sec);color:#fff;border-radius:50%;min-width:26px;height:26px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.81em;flex-shrink:0;margin-top:2px}
+
+/* Hacker type cards */
+.hat-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin:12px 0}
+@media(max-width:500px){.hat-grid{grid-template-columns:1fr}}
+.hat-card{border-radius:10px;padding:12px;text-align:center}
+.hat-card.white{background:#f0fff4;border:2px solid #27ae60}
+.hat-card.gray{background:#f9fafb;border:2px solid #6b7280}
+.hat-card.black{background:#1a1a2e;border:2px solid #374151}
+.hat-card .hc-icon{font-size:1.75em;margin-bottom:6px}
+.hat-card .hc-title{font-size:.75em;font-weight:800;margin-bottom:4px}
+.hat-card.white .hc-title{color:#1a472a}
+.hat-card.gray .hc-title{color:#374151}
+.hat-card.black .hc-title{color:#d1d5db}
+.hat-card p{font-size:.75em;line-height:1.5}
+.hat-card.white p{color:#1a472a}
+.hat-card.gray p{color:#374151}
+.hat-card.black p{color:#9ca3af}
+
+/* Malware comparison cards */
+.malware-grid{display:grid;gap:10px;margin:12px 0}
+.mal-card{border-radius:10px;padding:14px;border-left:5px solid;display:flex;gap:12px;align-items:flex-start}
+.mal-card.virus{border-left-color:#dc3545;background:#fff5f5}
+.mal-card.worm{border-left-color:#e07b00;background:#fff8f0}
+.mal-card.trojan{border-left-color:#9333ea;background:#f3e8ff}
+.mal-card.ransomware{border-left-color:#1a1a2e;background:#f9fafb}
+.mal-card.rootkit{border-left-color:#374151;background:#f9fafb}
+.mal-card.spyware{border-left-color:#0e7490;background:#e0f2fe}
+.mal-card.adware{border-left-color:#b38600;background:#fffbf0}
+.mal-card .mi{font-size:1.375em;flex-shrink:0;margin-top:2px}
+.mal-card .mc-title{font-weight:800;font-size:.875em;margin-bottom:3px}
+.mal-card.virus .mc-title{color:#c0392b}
+.mal-card.worm .mc-title{color:#c87800}
+.mal-card.trojan .mc-title{color:#9333ea}
+.mal-card.ransomware .mc-title{color:#1a1a2e}
+.mal-card.rootkit .mc-title{color:#374151}
+.mal-card.spyware .mc-title{color:#0e7490}
+.mal-card.adware .mc-title{color:#b38600}
+.mal-card .mc-key{font-size:.69em;font-weight:700;padding:2px 8px;border-radius:4px;display:inline-block;margin-bottom:4px;color:#fff}
+.mal-card.virus .mc-key{background:#dc3545}
+.mal-card.worm .mc-key{background:#e07b00}
+.mal-card.trojan .mc-key{background:#9333ea}
+.mal-card.ransomware .mc-key{background:#1a1a2e}
+.mal-card.rootkit .mc-key{background:#374151}
+.mal-card.spyware .mc-key{background:#0e7490}
+.mal-card.adware .mc-key{background:#b38600}
+.mal-card p{font-size:.81em;color:#1a1a2e;line-height:1.6}
+
+/* Attack category cards */
+.atk-grid{display:grid;gap:10px;margin:12px 0}
+.atk-card{border-radius:10px;padding:12px 14px;border-left:5px solid}
+.atk-card.recon{border-left-color:#1a3a5c;background:#e0f2fe}
+.atk-card.access{border-left-color:var(--sec);background:#fef2f2}
+.atk-card.dos{border-left-color:#e07b00;background:#fff8f0}
+.atk-card .ak-title{font-weight:800;font-size:.875em;margin-bottom:4px}
+.atk-card.recon .ak-title{color:#1a3a5c}
+.atk-card.access .ak-title{color:var(--sec)}
+.atk-card.dos .ak-title{color:#c87800}
+.atk-card ul{padding-left:18px;font-size:.81em;color:#1a1a2e;line-height:1.8}
+
+/* Recon steps flow */
+.recon-flow{background:#0d1117;border:2px solid #1a3a5c;border-radius:10px;padding:14px;margin:12px 0}
+.rf-title{font-size:.75em;font-weight:800;letter-spacing:.8px;color:#38bdf8;text-transform:uppercase;margin-bottom:10px}
+.rf-step{display:flex;gap:10px;align-items:flex-start;padding:7px 0;border-bottom:1px solid #21262d;font-size:.81em;color:#c9d1d9;line-height:1.6}
+.rf-step:last-child{border-bottom:none}
+.rf-num{background:#1a3a5c;color:#fff;border-radius:50%;min-width:24px;height:24px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.75em;flex-shrink:0;margin-top:2px}
+.rf-tool{font-size:.69em;color:#38bdf8;font-weight:700;white-space:nowrap;margin-left:4px;flex-shrink:0}
+
+/* CIA Triad */
+.cia-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin:12px 0}
+@media(max-width:480px){.cia-grid{grid-template-columns:1fr}}
+.cia-card{border-radius:10px;padding:14px;text-align:center}
+.cia-card.c{background:#f3e8ff;border:2px solid #9333ea}
+.cia-card.i{background:#f0fff4;border:2px solid #27ae60}
+.cia-card.a{background:#e0f2fe;border:2px solid #1a3a5c}
+.cia-card .cc-icon{font-size:1.625em;margin-bottom:6px}
+.cia-card .cc-title{font-weight:800;font-size:.875em;margin-bottom:4px}
+.cia-card.c .cc-title{color:#9333ea}
+.cia-card.i .cc-title{color:#1a472a}
+.cia-card.a .cc-title{color:#1a3a5c}
+.cia-card .cc-how{font-size:.75em;font-weight:700;padding:2px 8px;border-radius:4px;display:inline-block;margin-bottom:6px;color:#fff}
+.cia-card.c .cc-how{background:#9333ea}
+.cia-card.i .cc-how{background:#27ae60}
+.cia-card.a .cc-how{background:#1a3a5c}
+.cia-card p{font-size:.75em;color:#1a1a2e;line-height:1.5}
+
+/* Crypto four elements */
+.crypto-grid{display:grid;gap:8px;margin:12px 0}
+.crypto-row{display:flex;gap:10px;align-items:flex-start;padding:10px 12px;border-radius:8px;font-size:.81em}
+.crypto-row.integrity{background:#f0fff4;border-left:4px solid #27ae60}
+.crypto-row.auth{background:#fff8f0;border-left:4px solid #e07b00}
+.crypto-row.conf{background:#f3e8ff;border-left:4px solid #9333ea}
+.crypto-row.nonrep{background:#e0f2fe;border-left:4px solid #1a3a5c}
+.crypto-row .cr-icon{font-size:1.125em;flex-shrink:0;width:24px;text-align:center;margin-top:1px}
+.crypto-row .cr-label{font-weight:800;min-width:120px;flex-shrink:0;color:#1a1a2e}
+.crypto-row.integrity .cr-label{color:#1a472a}
+.crypto-row.auth .cr-label{color:#c87800}
+.crypto-row.conf .cr-label{color:#9333ea}
+.crypto-row.nonrep .cr-label{color:#1a3a5c}
+.crypto-row .cr-desc{flex:1;color:#1a1a2e;line-height:1.5}
+
+/* Hash algorithm comparison */
+.hash-grid{display:grid;gap:8px;margin:12px 0}
+.hash-row{display:flex;gap:10px;align-items:center;padding:9px 12px;border-radius:8px;font-size:.81em}
+.hash-row.md5{background:#fff5f5;border-left:4px solid #dc3545}
+.hash-row.sha1{background:#fff8f0;border-left:4px solid #e07b00}
+.hash-row.sha2{background:#f0fff4;border-left:4px solid #27ae60}
+.hash-row .ha-name{font-weight:800;min-width:80px;flex-shrink:0}
+.hash-row.md5 .ha-name{color:#c0392b}
+.hash-row.sha1 .ha-name{color:#c87800}
+.hash-row.sha2 .ha-name{color:#1a472a}
+.hash-row .ha-bits{font-family:'Courier New',monospace;font-weight:700;min-width:72px;flex-shrink:0;font-size:.875em;color:#1a1a2e}
+.hash-row .ha-status{font-size:.69em;font-weight:700;padding:2px 8px;border-radius:4px;color:#fff;flex-shrink:0}
+.hash-row.md5 .ha-status{background:#dc3545}
+.hash-row.sha1 .ha-status{background:#e07b00}
+.hash-row.sha2 .ha-status{background:#27ae60}
+
+/* Encryption comparison */
+.enc-split{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:12px 0}
+@media(max-width:480px){.enc-split{grid-template-columns:1fr}}
+.enc-panel{border-radius:10px;overflow:hidden;border:2px solid #e8ecf0}
+.enc-panel .ep-hdr{padding:10px 14px;font-size:.81em;font-weight:800;color:#fff;text-align:center}
+.enc-panel.sym .ep-hdr{background:#1a472a}
+.enc-panel.asym .ep-hdr{background:#9333ea}
+.enc-panel .ep-body{padding:12px 14px;font-size:.81em;color:#1a1a2e;line-height:1.7;background:#f9fafb}
+.enc-panel .ep-body ul{padding-left:16px}
+.enc-panel .ep-body li{margin-bottom:4px}
+
+/* ARP attack flow */
+.arp-flow{background:#0d1117;border:2px solid #e07b00;border-radius:10px;padding:14px;margin:12px 0}
+.af-title{font-size:.75em;font-weight:800;letter-spacing:.8px;color:#fbbf24;text-transform:uppercase;margin-bottom:10px}
+.af-step{display:flex;gap:10px;align-items:flex-start;padding:7px 0;border-bottom:1px solid #21262d;font-size:.81em;color:#c9d1d9;line-height:1.6}
+.af-step:last-child{border-bottom:none}
+.af-badge{font-weight:800;font-size:.75em;padding:2px 8px;border-radius:4px;flex-shrink:0;color:#fff;margin-top:2px}
+.af-badge.attacker{background:#dc3545}
+.af-badge.victim{background:#1a3a5c}
+.af-badge.result{background:#27ae60}
+
+/* TCP SYN flood visual */
+.syn-flow{background:#0d1117;border:2px solid var(--secd);border-radius:10px;padding:14px;margin:12px 0}
+.sf2-title{font-size:.75em;font-weight:800;letter-spacing:.8px;color:var(--secd);text-transform:uppercase;margin-bottom:10px}
+.sf2-step{display:flex;gap:10px;align-items:flex-start;padding:7px 0;border-bottom:1px solid #21262d;font-size:.81em;color:#c9d1d9;line-height:1.6}
+.sf2-step:last-child{border-bottom:none}
+.sf2-num{background:var(--sec);color:#fff;border-radius:50%;min-width:24px;height:24px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.75em;flex-shrink:0;margin-top:1px}
+
+/* Social engineering grid */
+.se-grid{display:grid;gap:6px;margin:12px 0}
+.se-row{display:flex;gap:10px;align-items:flex-start;padding:8px 10px;border-radius:8px;background:#fef2f2;font-size:.81em;border-left:3px solid var(--secd)}
+.se-term{font-weight:800;color:var(--sec);min-width:110px;flex-shrink:0;line-height:1.5}
+.se-desc{color:#1a1a2e;line-height:1.6}
+
+/* DDoS botnet visual */
+.botnet-box{background:#0d1117;border:2px solid #374151;border-radius:10px;padding:14px;margin:12px 0}
+.bb-title{font-size:.75em;font-weight:800;letter-spacing:.8px;color:#9ca3af;text-transform:uppercase;margin-bottom:10px}
+.bb-row{display:flex;gap:10px;align-items:flex-start;padding:6px 0;border-bottom:1px solid #21262d;font-size:.81em;color:#c9d1d9;line-height:1.6}
+.bb-row:last-child{border-bottom:none}
+.bb-term{font-family:'Courier New',monospace;font-weight:700;color:#f87171;min-width:90px;flex-shrink:0}
+
+.tb{position:fixed;bottom:80px;right:16px;background:var(--sec);color:#fff;border:none;border-radius:50%;width:44px;height:44px;font-size:1.25em;box-shadow:0 4px 14px rgba(0,0,0,.25);cursor:pointer;display:none;align-items:center;justify-content:center;z-index:100}
+.tb.show{display:flex}
+.ft{text-align:center;padding:24px 16px;color:var(--muted);font-size:.81em}
+
+.mod-nav{position:fixed;bottom:0;left:0;right:0;z-index:300;background:#1a1a2e;border-top:1px solid #30363d;display:flex;align-items:center;height:52px;padding:0 8px;gap:6px}
+.mn-hub{background:var(--blue);color:#fff;border:none;border-radius:8px;padding:6px 12px;font-size:.75em;font-weight:700;cursor:pointer;text-decoration:none;display:flex;align-items:center;gap:4px;white-space:nowrap;-webkit-tap-highlight-color:transparent;flex-shrink:0}
+.mn-hub:active{opacity:.8}
+.mn-divider{width:1px;height:28px;background:#30363d;flex-shrink:0}
+.mn-label{flex:1;text-align:center;font-size:.69em;color:#8b949e;font-weight:600;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding:0 4px}
+.mn-prev,.mn-next{background:#30363d;color:#c9d1d9;border:none;border-radius:8px;padding:6px 10px;font-size:.875em;font-weight:700;cursor:pointer;text-decoration:none;display:flex;align-items:center;-webkit-tap-highlight-color:transparent;flex-shrink:0}
+.mn-prev:active,.mn-next:active{background:var(--sec);color:#fff}
+/* Study progress panel */
+.sp-wrap{background:var(--card);margin:16px 16px 0;border-radius:var(--r);box-shadow:var(--sh);overflow:hidden}
+.sp-hdr{background:var(--nt);color:#fff;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;user-select:none;-webkit-tap-highlight-color:transparent;gap:10px}
+.sp-hdr .sp-title{font-weight:700;font-size:.875em;flex-shrink:0}
+.sp-hdr .sp-arr{transition:transform .3s;flex-shrink:0}
+.sp-hdr.open .sp-arr{transform:rotate(180deg)}
+.sp-body{display:none;padding:12px 14px}
+.sp-body.open{display:block}
+.sp-row{display:flex;align-items:center;gap:10px;padding:6px 4px;border-bottom:1px solid #f0f4f8;font-size:.81em}
+.sp-row:last-child{border-bottom:none}
+.sp-row .sr-status{font-size:1em;flex-shrink:0;width:20px;text-align:center}
+.sp-row .sr-nb{font-weight:800;color:var(--nt);min-width:36px;flex-shrink:0;font-size:.875em}
+.sp-row .sr-ttl{color:var(--text);flex:1}
+.sp-row.done .sr-ttl{color:var(--muted);text-decoration:line-through}
+.sc-pills{display:flex;align-items:center;gap:4px;overflow-x:auto;-webkit-overflow-scrolling:touch;flex:1;padding:0 4px}
+.sc-pill{background:#30363d;color:#8b949e;border:2px solid transparent;border-radius:6px;padding:3px 8px;font-size:.72em;font-weight:700;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:all .15s;white-space:nowrap;flex-shrink:0;line-height:1.4;display:flex;align-items:center;gap:3px}
+.sc-pill.checked{background:var(--nt);color:#fff;border-color:var(--ntd)}
+.sc-pill .pill-check{font-size:.875em}
+
+/* v2.1 — In-section check button */
+.sh{position:relative}
+.sec-check{position:absolute;right:40px;top:50%;transform:translateY(-50%);background:rgba(255,255,255,.15);border:2px solid rgba(255,255,255,.4);border-radius:6px;padding:2px 10px;font-size:.72em;font-weight:800;color:#fff;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:all .2s;white-space:nowrap;z-index:10;line-height:1.5}
+.sec-check.checked{background:var(--ntd);border-color:var(--ntd);color:#052e1e}
+.sec-check:active{opacity:.75}
+/* Sections panel + tick colours (these pages never defined --nt/--ntd, so the panel header was invisible) */
+:root{--nt:var(--sec);--ntd:#4ade80}
+</style>
+<style>.bc{background:#0d1117;padding:8px 16px;display:flex;align-items:center;flex-wrap:wrap;gap:4px;font-size:.75em;overflow-x:auto;white-space:nowrap;-webkit-overflow-scrolling:touch;border-bottom:1px solid #21262d}.bc a{color:#8b949e;text-decoration:none;font-weight:600;flex-shrink:0}.bc a:active{color:#c9d1d9}.bc .sep{color:#6e7681;flex-shrink:0}.bc .cur{color:#fbbf24;font-weight:700;flex-shrink:0;overflow:hidden;text-overflow:ellipsis;max-width:180px}</style>
+</head>
+<body>
+<nav class="bc"><a href="../../index.html">🏠 Home</a><span class="sep">›</span><a href="index.html">CCNA 3 — ENSA</a><span class="sep">›</span><span class="cur">M3: Network Security</span></nav>
+
+<div class="fs-bar">
+  <div class="sc-pills" id="sc-pills">
+  <button class="sc-pill" id="pill-s1" onclick="toggleSection('s1',this)"><span class="pill-check">○</span>3.1</button>
+  <button class="sc-pill" id="pill-s2" onclick="toggleSection('s2',this)"><span class="pill-check">○</span>3.2–3.3</button>
+  <button class="sc-pill" id="pill-s3" onclick="toggleSection('s3',this)"><span class="pill-check">○</span>3.4</button>
+  <button class="sc-pill" id="pill-s4" onclick="toggleSection('s4',this)"><span class="pill-check">○</span>3.5</button>
+  <button class="sc-pill" id="pill-s5" onclick="toggleSection('s5',this)"><span class="pill-check">○</span>3.6–3.7</button>
+  <button class="sc-pill" id="pill-s6" onclick="toggleSection('s6',this)"><span class="pill-check">○</span>3.8</button>
+  <button class="sc-pill" id="pill-s7" onclick="toggleSection('s7',this)"><span class="pill-check">○</span>3.9</button>
+  <button class="sc-pill" id="pill-s8" onclick="toggleSection('s8',this)"><span class="pill-check">○</span>3.10</button>
+  <button class="sc-pill" id="pill-s-pt-3-11" onclick="toggleSection('s-pt-3-11',this)"><span class="pill-check">○</span>PT 3.11</button>
+  <button class="sc-pill" id="pill-s9" onclick="toggleSection('s9',this)"><span class="pill-check">○</span>🎯</button>
+  </div>
+  <span class="fs-label" style="flex-shrink:0;margin-left:6px">Size</span>
+  <button class="fs-btn" onclick="setFs('14px',this)">S</button>
+  <button class="fs-btn active" onclick="setFs('16px',this)">M</button>
+  <button class="fs-btn" onclick="setFs('18px',this)">L</button>
+  <button class="fs-btn" onclick="setFs('20px',this)">XL</button>
+</div>
+
+<div class="hdr">
+  <div class="badge">CCNA 3 — ENSA v7.02</div>
+  <h1>🛡️ Module 3: Network Security Concepts</h1>
+  <p>Enterprise Networking, Security &amp; Automation · NetAcad Study Guide</p>
+  <div class="obj">Module Objective: Explain how vulnerabilities, threats, and exploits can be mitigated to enhance network security</div>
+</div>
+
+<div class="sp-wrap">
+  <div class="sp-hdr" id="sp-hdr" onclick="toggleStudyPanel()">
+    <span class="sp-title">📚 Sections</span>
+    <span class="sp-arr" id="sp-arr">▼</span>
+  </div>
+  <div class="sp-body" id="sp-body">
+    <div class="sp-row" id="row-s1"><span class="sr-status" id="st-s1">○</span><span class="sr-nb">3.1</span><span class="sr-ttl">Current State of Cybersecurity</span></div>
+    <div class="sp-row" id="row-s2"><span class="sr-status" id="st-s2">○</span><span class="sr-nb">3.2–3.3</span><span class="sr-ttl">Threat Actors and Tools</span></div>
+    <div class="sp-row" id="row-s3"><span class="sr-status" id="st-s3">○</span><span class="sr-nb">3.4</span><span class="sr-ttl">Malware</span></div>
+    <div class="sp-row" id="row-s4"><span class="sr-status" id="st-s4">○</span><span class="sr-nb">3.5</span><span class="sr-ttl">Common Network Attacks</span></div>
+    <div class="sp-row" id="row-s5"><span class="sr-status" id="st-s5">○</span><span class="sr-nb">3.6–3.7</span><span class="sr-ttl">IP, TCP, and UDP Vulnerabilities</span></div>
+    <div class="sp-row" id="row-s6"><span class="sr-status" id="st-s6">○</span><span class="sr-nb">3.8</span><span class="sr-ttl">IP Services: ARP, DNS, and DHCP</span></div>
+    <div class="sp-row" id="row-s7"><span class="sr-status" id="st-s7">○</span><span class="sr-nb">3.9</span><span class="sr-ttl">Network Security Best Practices</span></div>
+    <div class="sp-row" id="row-s8"><span class="sr-status" id="st-s8">○</span><span class="sr-nb">3.10</span><span class="sr-ttl">Cryptography</span></div>
+    <div class="sp-row" id="row-s-pt-3-11"><span class="sr-status" id="st-s-pt-3-11">○</span><span class="sr-nb">PT 3.11</span><span class="sr-ttl">Packet Tracer — Network Security Exploration</span></div>
+    <div class="sp-row" id="row-s9"><span class="sr-status" id="st-s9">○</span><span class="sr-nb">🎯</span><span class="sr-ttl">Common Exam Traps — Module 3</span></div>
+  </div>
+</div></div>
+
+<div class="toc">
+  <div class="toch open" onclick="this.classList.toggle('open');document.getElementById('tocb').classList.toggle('open')">
+    📋 Table of Contents — Tap to expand <span class="arr">▼</span>
+  </div>
+  <div class="tocb open" id="tocb">
+    <div class="tocg">3.1 — Current State of Cybersecurity</div>
+    <a href="javascript:void(0)" onclick="goTo('s1')"><span class="n">3.1.1</span> Core Security Terms</a>
+    <a href="javascript:void(0)" onclick="goTo('s1')"><span class="n">3.1.2</span> Attack Vectors — Internal vs External</a>
+    <a href="javascript:void(0)" onclick="goTo('s1')"><span class="n">3.1.3</span> Data Loss Vectors</a>
+    <div class="tocg">3.2–3.3 — Threat Actors and Tools</div>
+    <a href="javascript:void(0)" onclick="goTo('s2')"><span class="n">3.2.1</span> White, Gray, Black Hat Hackers</a>
+    <a href="javascript:void(0)" onclick="goTo('s2')"><span class="n">3.2.2</span> Modern Threat Actor Categories</a>
+    <a href="javascript:void(0)" onclick="goTo('s2')"><span class="n">3.3.3</span> Penetration Testing Tools</a>
+    <a href="javascript:void(0)" onclick="goTo('s2')"><span class="n">3.3.4</span> Common Attack Types</a>
+    <div class="tocg">3.4 — Malware</div>
+    <a href="javascript:void(0)" onclick="goTo('s3')"><span class="n">3.4.2</span> Virus vs Worm vs Trojan Horse</a>
+    <a href="javascript:void(0)" onclick="goTo('s3')"><span class="n">3.4.3</span> Other Malware Types</a>
+    <div class="tocg">3.5 — Common Network Attacks</div>
+    <a href="javascript:void(0)" onclick="goTo('s4')"><span class="n">3.5.3</span> Reconnaissance Attacks — 5 Steps</a>
+    <a href="javascript:void(0)" onclick="goTo('s4')"><span class="n">3.5.5</span> Access Attacks</a>
+    <a href="javascript:void(0)" onclick="goTo('s4')"><span class="n">3.5.6</span> Social Engineering Attacks</a>
+    <a href="javascript:void(0)" onclick="goTo('s4')"><span class="n">3.5.9</span> DoS and DDoS Attacks</a>
+    <div class="tocg">3.6–3.7 — IP, TCP and UDP Vulnerabilities</div>
+    <a href="javascript:void(0)" onclick="goTo('s5')"><span class="n">3.6.3</span> ICMP Attacks</a>
+    <a href="javascript:void(0)" onclick="goTo('s5')"><span class="n">3.6.5</span> Amplification and Reflection</a>
+    <a href="javascript:void(0)" onclick="goTo('s5')"><span class="n">3.6.6</span> Address Spoofing Attacks</a>
+    <a href="javascript:void(0)" onclick="goTo('s5')"><span class="n">3.7.3</span> TCP SYN Flood, Reset, Session Hijacking</a>
+    <a href="javascript:void(0)" onclick="goTo('s5')"><span class="n">3.7.5</span> UDP Flood Attacks</a>
+    <div class="tocg">3.8 — IP Services: ARP, DNS, DHCP</div>
+    <a href="javascript:void(0)" onclick="goTo('s6')"><span class="n">3.8.2</span> ARP Cache Poisoning</a>
+    <a href="javascript:void(0)" onclick="goTo('s6')"><span class="n">3.8.4</span> DNS Attacks</a>
+    <a href="javascript:void(0)" onclick="goTo('s6')"><span class="n">3.8.5</span> DNS Tunneling</a>
+    <a href="javascript:void(0)" onclick="goTo('s6')"><span class="n">3.8.7</span> DHCP Spoofing</a>
+    <div class="tocg">3.9–3.10 — Best Practices and Cryptography</div>
+    <a href="javascript:void(0)" onclick="goTo('s7')"><span class="n">3.9.1</span> CIA Triad</a>
+    <a href="javascript:void(0)" onclick="goTo('s7')"><span class="n">3.9.2</span> Defense-in-Depth</a>
+    <a href="javascript:void(0)" onclick="goTo('s7')"><span class="n">3.9.3</span> Firewalls and IPS</a>
+    <a href="javascript:void(0)" onclick="goTo('s8')"><span class="n">3.10.2</span> Four Elements of Secure Communications</a>
+    <a href="javascript:void(0)" onclick="goTo('s8')"><span class="n">3.10.4</span> Hash Functions — MD5, SHA-1, SHA-2</a>
+    <a href="javascript:void(0)" onclick="goTo('s8')"><span class="n">3.10.5</span> HMAC — Origin Authentication</a>
+    <a href="javascript:void(0)" onclick="goTo('s8')"><span class="n">3.10.7</span> Symmetric Encryption</a>
+    <a href="javascript:void(0)" onclick="goTo('s8')"><span class="n">3.10.8</span> Asymmetric Encryption</a>
+    <a href="javascript:void(0)" onclick="goTo('s8')"><span class="n">3.10.9</span> Diffie-Hellman Key Exchange</a>
+    <div class="tocg">Reference</div>
+    <a href="javascript:void(0)" onclick="goTo('s9')"><span class="n">🎯</span> Common Exam Traps</a>
+  </div>
+</div>
+
+<div class="wrap">
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- SECTION 3.1 — CURRENT STATE -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div class="sec" id="s1">
+<div class="sh open" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">3.1</span><span class="ttl">Current State of Cybersecurity</span></span><button class="sec-check" id="sch-s1" onclick="event.stopPropagation();toggleSection('s1',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb open">
+
+  <div class="sub">
+  <h3><span class="sn">3.1.1</span> Core Security Terms</h3>
+  <div class="tw"><table>
+    <tr><th>Term</th><th>Definition</th></tr>
+    <tr><td><strong>Asset</strong></td><td>Anything of value — people, equipment, resources, and data</td></tr>
+    <tr><td><strong>Vulnerability</strong></td><td>A weakness in a system or its design that could be exploited by a threat</td></tr>
+    <tr><td><strong>Threat</strong></td><td>A potential danger to an organization's assets, data, or network functionality</td></tr>
+    <tr><td><strong>Exploit</strong></td><td>A mechanism that takes advantage of a vulnerability</td></tr>
+    <tr><td><strong>Mitigation</strong></td><td>Counter-measure that reduces likelihood or severity of a potential threat or risk</td></tr>
+    <tr><td><strong>Risk</strong></td><td>Likelihood of a threat exploiting a vulnerability × impact. Risk = probability × consequence.</td></tr>
+  </table></div>
+  <div class="ca info"><span class="ic">💡</span><div><strong>The security chain:</strong> Assets must be identified → Vulnerabilities addressed before they are exploited → Mitigation applied before, during, and after an attack.</div></div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">3.1.2</span> Attack Vectors — External and Internal</h3>
+  <p>An <strong>attack vector</strong> is the path by which a threat actor gains access to a server, host, or network. Vectors originate from inside or outside the corporate network.</p>
+  <div class="ca danger">
+    <span class="ic">🚨</span>
+    <div><strong>Internal threats are often more dangerous than external threats</strong> because insiders have: direct physical access to the building and infrastructure, and detailed knowledge of the corporate network, resources, and confidential data. An internal user can cause damage accidentally or intentionally.</div>
+  </div>
+  <p>Internal users can accidentally or intentionally:</p>
+  <ul>
+    <li>Steal and copy confidential data to removable media, email, or messaging software</li>
+    <li>Compromise internal servers or network infrastructure devices</li>
+    <li>Disconnect critical network connections causing outages</li>
+    <li>Connect an infected USB drive into a corporate computer system</li>
+  </ul>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">3.1.3</span> Data Loss Vectors</h3>
+  <p><strong>Data exfiltration</strong> = data intentionally or unintentionally lost, stolen, or leaked outside the organization. Consequences include brand damage, loss of competitive advantage, revenue loss, and litigation.</p>
+  <div class="tw"><table>
+    <tr><th>Data Loss Vector</th><th>Description</th></tr>
+    <tr><td><strong>Email / Social Networking</strong></td><td>Intercepted email or IM messages can reveal confidential information</td></tr>
+    <tr><td><strong>Unencrypted Devices</strong></td><td>If no encryption is used, a stolen device gives the thief full access to data</td></tr>
+    <tr><td><strong>Cloud Storage</strong></td><td>Weak cloud security settings allow unauthorized access to sensitive data</td></tr>
+    <tr><td><strong>Removable Media</strong></td><td>Unauthorized USB transfers; USB drives with corporate data physically lost</td></tr>
+    <tr><td><strong>Hard Copy</strong></td><td>Confidential documents not properly shredded can be recovered</td></tr>
+    <tr><td><strong>Improper Access Control</strong></td><td>Weak or compromised passwords give threat actors easy access to corporate systems</td></tr>
+  </table></div>
+  </div>
+
+</div></div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- SECTION 3.2–3.3 — THREAT ACTORS AND TOOLS -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div class="sec" id="s2">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">3.2–3.3</span><span class="ttl">Threat Actors and Tools</span></span><button class="sec-check" id="sch-s2" onclick="event.stopPropagation();toggleSection('s2',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb">
+
+  <div class="sub">
+  <h3><span class="sn">3.2.1</span> White, Gray, and Black Hat Hackers</h3>
+  <div class="hat-grid">
+    <div class="hat-card white">
+      <div class="hc-icon">🤍</div>
+      <div class="hc-title">White Hat</div>
+      <p>Ethical hackers. Test networks legally to find vulnerabilities. Report findings to developers to fix before exploitation.</p>
+    </div>
+    <div class="hat-card gray">
+      <div class="hc-icon">🩶</div>
+      <div class="hc-title">Gray Hat</div>
+      <p>Commit crimes but not for personal gain or malicious damage. May disclose vulnerabilities to the organization after compromising it.</p>
+    </div>
+    <div class="hat-card black">
+      <div class="hc-icon">🖤</div>
+      <div class="hc-title">Black Hat</div>
+      <p>Criminals who compromise systems for personal gain or malicious reasons — attacking networks, stealing data, causing damage.</p>
+    </div>
+  </div>
+  <div class="ca info">
+    <span class="ic">💡</span>
+    <div><strong>"Threat actor" is the preferred modern term</strong> — not "hacker." A threat actor includes hackers but also any device, person, group, or nation-state that is intentionally or unintentionally the source of an attack.</div>
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">3.2.2</span> Modern Threat Actor Categories</h3>
+  <div class="tw"><table>
+    <tr><th>Category</th><th>Description</th></tr>
+    <tr><td><strong>Script Kiddies</strong></td><td>Inexperienced/teen hackers running existing scripts and tools; not for profit; typically cause harm</td></tr>
+    <tr><td><strong>Vulnerability Brokers</strong></td><td>Gray hats who discover exploits and report them to vendors — sometimes for prizes or rewards</td></tr>
+    <tr><td><strong>Hacktivists</strong></td><td>Gray hats protesting organizations/governments; publish sensitive info, perform network attacks (e.g., Anonymous)</td></tr>
+    <tr><td><strong>Cyber Criminals</strong></td><td>Black hats — self-employed or in criminal organizations; operate underground economy (buy/sell attack toolkits, zero-day exploits, botnets, keyloggers)</td></tr>
+    <tr><td><strong>State-Sponsored</strong></td><td>Government-backed; steal secrets, gather intelligence, sabotage networks; use <strong>zero-day vulnerabilities</strong> (previously undiscovered flaws). Example: Stuxnet (Iran nuclear facilities)</td></tr>
+  </table></div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">3.3.3</span> Penetration Testing Tools</h3>
+  <div class="tw"><table>
+    <tr><th>Tool Category</th><th>Purpose</th><th>Examples</th></tr>
+    <tr><td><strong>Password Crackers</strong></td><td>Brute force / dictionary attacks to recover passwords</td><td>John the Ripper, THC Hydra, RainbowCrack</td></tr>
+    <tr><td><strong>Wireless Hacking</strong></td><td>Detect wireless security vulnerabilities</td><td>Aircrack-ng, Kismet, NetStumbler</td></tr>
+    <tr><td><strong>Network Scanning</strong></td><td>Probe devices for open TCP/UDP ports</td><td>Nmap, SuperScan, Angry IP Scanner</td></tr>
+    <tr><td><strong>Packet Crafting</strong></td><td>Test firewall robustness with forged packets</td><td>Hping, Scapy, Yersinia</td></tr>
+    <tr><td><strong>Packet Sniffers</strong></td><td>Capture and analyze network traffic</td><td>Wireshark, Tcpdump, Ettercap</td></tr>
+    <tr><td><strong>Vulnerability Scanners</strong></td><td>Identify open ports and known vulnerabilities</td><td>Nessus, OpenVAS, Core Impact</td></tr>
+    <tr><td><strong>Exploitation Frameworks</strong></td><td>Attempt to exploit discovered vulnerabilities</td><td>Metasploit, Social Engineer Toolkit</td></tr>
+    <tr><td><strong>Hacking OS</strong></td><td>Pre-loaded OS with hacking tools</td><td>Kali Linux, BackBox Linux</td></tr>
+  </table></div>
+  <div class="ca info"><span class="ic">💡</span><div>Attack sophistication has increased over time while the technical knowledge required to execute attacks has decreased. Modern tools are automated and require minimal skill to deploy.</div></div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">3.3.4</span> Common Attack Types</h3>
+  <div class="tw"><table>
+    <tr><th>Attack Type</th><th>Description</th></tr>
+    <tr><td><strong>Eavesdropping (Sniffing)</strong></td><td>Capture and listen to network traffic; also called sniffing or snooping</td></tr>
+    <tr><td><strong>Data Modification</strong></td><td>Alter packet data in transit without the sender or receiver knowing</td></tr>
+    <tr><td><strong>IP Address Spoofing</strong></td><td>Construct packet appearing to originate from a valid internal address</td></tr>
+    <tr><td><strong>Password-Based</strong></td><td>Discover passwords; gain the same rights as the legitimate account owner</td></tr>
+    <tr><td><strong>Denial of Service (DoS)</strong></td><td>Prevent normal use by flooding or crashing services/networks</td></tr>
+    <tr><td><strong>Man-in-the-Middle (MITM)</strong></td><td>Position between source and destination; transparently monitor, capture, and control communications</td></tr>
+    <tr><td><strong>Compromised-Key</strong></td><td>Use a stolen encryption key to access secured communications undetected</td></tr>
+    <tr><td><strong>Sniffer</strong></td><td>Read unencrypted network packets — full view of data inside each packet</td></tr>
+  </table></div>
+  </div>
+
+</div></div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- SECTION 3.4 — MALWARE -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div class="sec" id="s3">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">3.4</span><span class="ttl">Malware</span></span><button class="sec-check" id="sch-s3" onclick="event.stopPropagation();toggleSection('s3',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb">
+
+  <div class="sub">
+  <h3><span class="sn">3.4.2</span> The Big Three — Virus, Worm, Trojan Horse</h3>
+  <div class="malware-grid">
+    <div class="mal-card virus">
+      <div class="mi">🦠</div>
+      <div>
+        <div class="mc-title">Virus</div>
+        <div class="mc-key">Requires human action to spread</div>
+        <p>Attaches to code, software, or documents. Executes when opened by user (email attachment, USB, download). Can corrupt files, capture data, spread via email, lay dormant. Types: boot sector, firmware, macro, program, script.</p>
+      </div>
+    </div>
+    <div class="mal-card worm">
+      <div class="mi">🪱</div>
+      <div>
+        <div class="mc-title">Worm</div>
+        <div class="mc-key">Self-replicating — NO user action needed</div>
+        <p>Automatically exploits vulnerabilities in legitimate software. Uses the network to find other vulnerable hosts. Intent is usually to slow or disrupt network operations. Does NOT need a host file — it is a standalone program.</p>
+      </div>
+    </div>
+    <div class="mal-card trojan">
+      <div class="mi">🐴</div>
+      <div>
+        <div class="mc-title">Trojan Horse</div>
+        <div class="mc-key">Disguised as useful software — NOT self-replicating</div>
+        <p>Looks like a legitimate program (e.g., free game). User installs it willingly. Hidden malicious payload activates after installation. Types include: remote-access, data-sending, keylogger, destructive, DoS Trojans.</p>
+      </div>
+    </div>
+  </div>
+  <div class="et">
+    <div class="lbl">🎯 THE KEY DISTINCTIONS — EXAM CRITICAL</div>
+    <ul>
+      <li><strong>Virus</strong> — requires human action · attaches to existing files · self-replicates only when triggered by user</li>
+      <li><strong>Worm</strong> — NO human action needed · standalone · self-replicates automatically across network</li>
+      <li><strong>Trojan</strong> — NOT self-replicating · disguised as legitimate software · user must install it</li>
+    </ul>
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">3.4.3</span> Other Malware Types</h3>
+  <div class="malware-grid">
+    <div class="mal-card ransomware">
+      <div class="mi">💰</div>
+      <div>
+        <div class="mc-title">Ransomware</div>
+        <div class="mc-key">Encrypts files — demands payment</div>
+        <p>Denies user access to their own files by encrypting them. Demands ransom (typically cryptocurrency like Bitcoin) for the decryption key. Victims without backups must pay or lose data permanently.</p>
+      </div>
+    </div>
+    <div class="mal-card rootkit">
+      <div class="mi">🔑</div>
+      <div>
+        <div class="mc-title">Rootkit</div>
+        <div class="mc-key">Admin-level access — hardest to detect</div>
+        <p>Gains administrator-level access. Extremely difficult to detect — modifies OS commands, firewall, and antivirus to conceal itself. Special removal tools required; complete OS reinstall may be necessary.</p>
+      </div>
+    </div>
+    <div class="mal-card spyware">
+      <div class="mi">👁️</div>
+      <div>
+        <div class="mc-title">Spyware</div>
+        <div class="mc-key">Gathers info without consent</div>
+        <p>Collects user data and sends to threat actors without user knowledge. Low threat: browsing data. High threat: personal and financial information, passwords.</p>
+      </div>
+    </div>
+    <div class="mal-card adware">
+      <div class="mi">📢</div>
+      <div>
+        <div class="mc-title">Adware</div>
+        <div class="mc-key">Unsolicited advertising</div>
+        <p>Displays pop-up ads, new toolbars, or redirects web pages. Usually distributed with downloaded free software. Pop-up windows may be impossible to control.</p>
+      </div>
+    </div>
+  </div>
+  </div>
+
+</div></div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- SECTION 3.5 — COMMON NETWORK ATTACKS -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div class="sec" id="s4">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">3.5</span><span class="ttl">Common Network Attacks</span></span><button class="sec-check" id="sch-s4" onclick="event.stopPropagation();toggleSection('s4',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb">
+
+  <div class="sub">
+  <h3><span class="sn">3.5.1</span> Three Attack Categories</h3>
+  <div class="atk-grid">
+    <div class="atk-card recon">
+      <div class="ak-title">🔍 Reconnaissance Attacks</div>
+      <ul>
+        <li>Information gathering — always the <strong>first phase</strong> before access or DoS attacks</li>
+        <li>Unauthorized discovery and mapping of systems, services, and vulnerabilities</li>
+      </ul>
+    </div>
+    <div class="atk-card access">
+      <div class="ak-title">🔓 Access Attacks</div>
+      <ul>
+        <li>Exploit vulnerabilities in authentication, FTP, and web services</li>
+        <li>Goal: gain unauthorized access, retrieve data, or escalate privileges</li>
+        <li>Includes: password attacks, spoofing, trust exploitation, MITM, buffer overflow</li>
+      </ul>
+    </div>
+    <div class="atk-card dos">
+      <div class="ak-title">💥 DoS / DDoS Attacks</div>
+      <ul>
+        <li>Create interruption of network services to legitimate users</li>
+        <li>Methods: overwhelming traffic flood OR maliciously formatted packets</li>
+        <li>DDoS = distributed, coordinated from multiple sources via botnet</li>
+      </ul>
+    </div>
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">3.5.3</span> Reconnaissance Attacks — Five Steps</h3>
+  <div class="recon-flow">
+    <div class="rf-title">🕵️ Reconnaissance Attack Progression</div>
+    <div class="rf-step"><div class="rf-num">1</div><div><strong>Information Query</strong> — gather initial info about the target using Google, whois, target website, job postings. Reveals network structure, personnel, technologies. <span class="rf-tool">Tools: whois, Google, LinkedIn</span></div></div>
+    <div class="rf-step"><div class="rf-num">2</div><div><strong>Ping Sweep</strong> — discover which IP addresses in the target network are active/reachable. <span class="rf-tool">Tools: fping, Nmap ping scan</span></div></div>
+    <div class="rf-step"><div class="rf-num">3</div><div><strong>Port Scan</strong> — probe active hosts to discover which TCP/UDP ports are open and which services are running. <span class="rf-tool">Tools: Nmap, SuperScan, Angry IP Scanner</span></div></div>
+    <div class="rf-step"><div class="rf-num">4</div><div><strong>Vulnerability Scan</strong> — query identified ports to determine app versions and OS. Find known vulnerabilities in discovered services. <span class="rf-tool">Tools: Nessus, OpenVAS, Core Impact</span></div></div>
+    <div class="rf-step"><div class="rf-num">5</div><div><strong>Exploitation</strong> — attempt to exploit vulnerable services discovered in step 4. <span class="rf-tool">Tools: Metasploit, Social Engineer Toolkit</span></div></div>
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">3.5.5</span> Access Attacks</h3>
+  <div class="tw"><table>
+    <tr><th>Attack Type</th><th>How It Works</th></tr>
+    <tr><td><strong>Password Attacks</strong></td><td>Brute force or dictionary attacks to discover passwords. Once gained, attacker has full rights of that account.</td></tr>
+    <tr><td><strong>Spoofing</strong></td><td>IP, MAC, or DHCP spoofing — device poses as another to gain access or intercept traffic</td></tr>
+    <tr><td><strong>Trust Exploitation</strong></td><td>Use unauthorized privileges to access a system by exploiting existing trust relationships between hosts</td></tr>
+    <tr><td><strong>Port Redirection</strong></td><td>Use a compromised host as a relay/pivot to attack other targets that trust the compromised host</td></tr>
+    <tr><td><strong>Man-in-the-Middle</strong></td><td>Position between source and destination; read or modify data passing between two legitimate parties</td></tr>
+    <tr><td><strong>Buffer Overflow</strong></td><td>Overwhelm buffer memory with unexpected values → system crashes or becomes inoperable → DoS effect</td></tr>
+  </table></div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">3.5.6</span> Social Engineering Attacks</h3>
+  <p>Social engineering <strong>targets people, not technology</strong>. Attackers exploit human willingness to help, trust, and authority.</p>
+  <div class="se-grid">
+    <div class="se-row"><div class="se-term">Pretexting</div><div class="se-desc">Pretend to need personal/financial data to confirm recipient's identity — fabricated scenario</div></div>
+    <div class="se-row"><div class="se-term">Phishing</div><div class="se-desc">Fraudulent email disguised as legitimate trusted source → install malware or share credentials</div></div>
+    <div class="se-row"><div class="se-term">Spear Phishing</div><div class="se-desc">Targeted phishing tailored for a specific individual or organization — more convincing than generic phishing</div></div>
+    <div class="se-row"><div class="se-term">Spam</div><div class="se-desc">Unsolicited email (junk mail) containing harmful links, malware, or deceptive content</div></div>
+    <div class="se-row"><div class="se-term">Baiting</div><div class="se-desc">Malware-infected USB left in a public location; victim inserts it and unknowingly installs malware</div></div>
+    <div class="se-row"><div class="se-term">Impersonation</div><div class="se-desc">Pretend to be someone else (IT support, manager) to gain victim's trust and extract information</div></div>
+    <div class="se-row"><div class="se-term">Tailgating</div><div class="se-desc">Quickly follow an authorized person through a secure door to gain physical access to a restricted area</div></div>
+    <div class="se-row"><div class="se-term">Shoulder Surfing</div><div class="se-desc">Inconspicuously look over someone's shoulder to steal passwords or PINs being typed</div></div>
+    <div class="se-row"><div class="se-term">Quid Pro Quo</div><div class="se-desc">Request personal info in exchange for a gift, service, or "prize" — "something for something"</div></div>
+    <div class="se-row"><div class="se-term">Dumpster Diving</div><div class="se-desc">Rummage through trash bins for discarded confidential documents, printouts, or storage media</div></div>
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">3.5.9</span> DoS and DDoS Attacks</h3>
+  <p>DoS creates interruption of services. Two methods:</p>
+  <ul>
+    <li><strong>Overwhelming traffic</strong> — flood network/host with more data than it can handle → slowdown or shutdown</li>
+    <li><strong>Maliciously formatted packets</strong> — send packets the receiver cannot process → crash</li>
+  </ul>
+  <div class="botnet-box">
+    <div class="bb-title">🤖 DDoS Botnet Architecture</div>
+    <div class="bb-row"><div class="bb-term">Bot malware</div><div>Infects a host and makes it a zombie — communicates with the CnC system</div></div>
+    <div class="bb-row"><div class="bb-term">Zombie</div><div>A compromised host infected with bot malware; controlled remotely by the threat actor</div></div>
+    <div class="bb-row"><div class="bb-term">Botnet</div><div>A collection of zombies — the threat actor's army of compromised machines</div></div>
+    <div class="bb-row"><div class="bb-term">CnC System</div><div>Command and Control — the threat actor's infrastructure for controlling zombies and launching attacks</div></div>
+    <div class="bb-row"><div class="bb-term">DDoS attack</div><div>CnC instructs botnet to simultaneously flood the target — distributed, coordinated, hard to block</div></div>
+  </div>
+  </div>
+
+</div></div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- SECTION 3.6–3.7 — IP, TCP, UDP VULNERABILITIES -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div class="sec" id="s5">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">3.6–3.7</span><span class="ttl">IP, TCP, and UDP Vulnerabilities</span></span><button class="sec-check" id="sch-s5" onclick="event.stopPropagation();toggleSection('s5',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb">
+
+  <div class="sub">
+  <h3><span class="sn">3.6.2</span> IP Attack Overview</h3>
+  <p>IP does not validate that the source IP address in a packet actually came from that source — threat actors can easily forge it.</p>
+  <div class="tw"><table>
+    <tr><th>IP Attack Technique</th><th>Description</th></tr>
+    <tr><td><strong>ICMP Attacks</strong></td><td>Use ICMP echo (ping) to map networks, discover hosts, DoS flood, or alter routing tables</td></tr>
+    <tr><td><strong>Amplification &amp; Reflection</strong></td><td>Spoof victim's IP in requests sent to many hosts → all hosts reply to victim → amplified flood (e.g., Smurf attack)</td></tr>
+    <tr><td><strong>Address Spoofing</strong></td><td>Forge source IP to hide identity, pose as legitimate user, or bypass access controls</td></tr>
+    <tr><td><strong>MITM</strong></td><td>Position between source and destination; eavesdrop, capture, or alter packets transparently</td></tr>
+    <tr><td><strong>Session Hijacking</strong></td><td>Use MITM position to take over an already-authenticated session</td></tr>
+  </table></div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">3.6.3</span> ICMP Attacks</h3>
+  <p>ICMP is used for network diagnostics — threat actors abuse it for:</p>
+  <ul>
+    <li><strong>Reconnaissance</strong> — map topology, identify active hosts (ping sweep), OS fingerprinting, probe firewall state</li>
+    <li><strong>DoS flood attacks</strong> — overwhelm target with ICMP echo requests</li>
+  </ul>
+  <div class="tw"><table>
+    <tr><th>ICMP Message</th><th>How Attackers Use It</th></tr>
+    <tr><td>Echo Request / Reply</td><td>Host verification and DoS flood attacks</td></tr>
+    <tr><td>Unreachable</td><td>Network reconnaissance and scanning — maps network structure</td></tr>
+    <tr><td>Mask Reply</td><td>Maps internal IP network addressing</td></tr>
+    <tr><td>Redirect</td><td>Lure target to send all traffic through compromised device → MITM</td></tr>
+    <tr><td>Router Discovery</td><td>Inject bogus routes into target host's routing table</td></tr>
+  </table></div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">3.6.5</span> Amplification and Reflection — Smurf Attack</h3>
+  <ol class="steps">
+    <li><strong>Amplification</strong> — threat actor sends ICMP echo requests to many hosts with the <strong>victim's spoofed IP</strong> as the source address</li>
+    <li><strong>Reflection</strong> — all those hosts reply to the victim's IP — victim is overwhelmed with traffic it never requested</li>
+  </ol>
+  <div class="ca warn"><span class="ic">⚠️</span><div>Modern variants include <strong>DNS-based amplification</strong> and <strong>NTP amplification</strong> attacks, which achieve even higher amplification factors because DNS/NTP responses are much larger than the queries that triggered them.</div></div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">3.6.6</span> Address Spoofing Attacks</h3>
+  <div class="tw"><table>
+    <tr><th>Spoofing Type</th><th>Description</th></tr>
+    <tr><td><strong>Non-blind IP spoofing</strong></td><td>Attacker can see the reply traffic — used to inspect replies, predict sequence numbers, hijack authorized sessions</td></tr>
+    <tr><td><strong>Blind IP spoofing</strong></td><td>Attacker cannot see replies — used in DoS attacks where replies don't matter</td></tr>
+    <tr><td><strong>MAC spoofing</strong></td><td>Attacker changes their MAC to match a known target's MAC → switch updates CAM table → frames destined for target delivered to attacker → MITM</td></tr>
+    <tr><td><strong>DHCP spoofing</strong></td><td>Rogue DHCP server on the network provides false IP configuration — wrong gateway (MITM), wrong DNS (redirect), wrong IP (DoS)</td></tr>
+  </table></div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">3.7.3</span> TCP Attacks</h3>
+
+  <h4>TCP SYN Flood Attack</h4>
+  <div class="syn-flow">
+    <div class="sf2-title">💥 TCP SYN Flood — Half-Open Connection Exhaustion</div>
+    <div class="sf2-step"><div class="sf2-num">1</div><div>Threat actor sends many TCP SYN packets with <strong>randomly spoofed source IPs</strong> to the target server</div></div>
+    <div class="sf2-step"><div class="sf2-num">2</div><div>Server replies with SYN-ACK for each SYN and waits for the final ACK to complete the three-way handshake</div></div>
+    <div class="sf2-step"><div class="sf2-num">3</div><div>The final ACKs <strong>never arrive</strong> — server accumulates thousands of <strong>half-open TCP connections</strong></div></div>
+    <div class="sf2-step"><div class="sf2-num">4</div><div>Server's connection table fills up → <strong>legitimate users cannot connect → effective DoS</strong></div></div>
+  </div>
+
+  <h4>TCP Reset Attack</h4>
+  <p>Threat actor sends a spoofed packet with the <strong>RST (Reset) bit</strong> set to one or both endpoints. TCP immediately terminates the connection — abrupt teardown with no graceful FIN-ACK sequence. Used to forcibly disconnect legitimate sessions.</p>
+
+  <h4>TCP Session Hijacking</h4>
+  <p>Threat actor spoofs the IP of an authenticated host, predicts the next sequence number, and sends an ACK to the other host — taking over the authenticated session. If successful, the attacker can send (but not receive) data as the hijacked host.</p>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">3.7.5</span> UDP Flood Attack</h3>
+  <p>UDP has no encryption, no connection, no acknowledgments. In a UDP flood:</p>
+  <ol class="steps">
+    <li>Tool (UDP Unicorn, Low Orbit Ion Cannon) sends a flood of UDP packets from a spoofed host to the target</li>
+    <li>The attack sweeps through all known ports looking for closed ports</li>
+    <li>Server replies with <strong>ICMP "port unreachable"</strong> messages for every closed port hit</li>
+    <li>Massive ICMP response traffic consumes all available bandwidth → DoS-like effect</li>
+  </ol>
+  </div>
+
+</div></div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- SECTION 3.8 — IP SERVICES -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div class="sec" id="s6">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">3.8</span><span class="ttl">IP Services: ARP, DNS, and DHCP</span></span><button class="sec-check" id="sch-s6" onclick="event.stopPropagation();toggleSection('s6',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb">
+
+  <div class="sub">
+  <h3><span class="sn">3.8.2</span> ARP Cache Poisoning</h3>
+  <p>ARP has no authentication. Any host can send an <strong>unsolicited (gratuitous) ARP reply</strong> claiming ownership of any IP or MAC address. Threat actors exploit this to create MITM attacks.</p>
+  <div class="arp-flow">
+    <div class="af-title">☠️ ARP Cache Poisoning — MITM Setup</div>
+    <div class="af-step"><div class="af-badge attacker">Attacker</div><div>Sends two spoofed gratuitous ARP replies — one to the victim claiming "I am the gateway," one to the router claiming "I am the victim"</div></div>
+    <div class="af-step"><div class="af-badge victim">Victim</div><div>Updates ARP cache: default gateway IP now maps to <strong>attacker's MAC</strong>. All traffic intended for the gateway goes to attacker instead.</div></div>
+    <div class="af-step"><div class="af-badge victim">Router</div><div>Updates ARP cache: victim's IP now maps to <strong>attacker's MAC</strong>. All traffic intended for the victim goes to attacker instead.</div></div>
+    <div class="af-step"><div class="af-badge result">Result</div><div>Attacker is positioned between victim and router — <strong>full MITM</strong>. Can eavesdrop (passive) or modify data (active).</div></div>
+  </div>
+  <div class="ca info"><span class="ic">💡</span><div>ARP poisoning tools: dsniff, Cain &amp; Abel, ettercap, Yersinia. Defense: Dynamic ARP Inspection (DAI) on switches (covered in CCNA 2 M11).</div></div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">3.8.4</span> DNS Attacks</h3>
+  <div class="tw"><table>
+    <tr><th>DNS Attack Type</th><th>Description</th></tr>
+    <tr><td><strong>DNS Cache Poisoning</strong></td><td>Inject falsified resource records into a DNS resolver → redirect users from legitimate sites to malicious ones</td></tr>
+    <tr><td><strong>DNS Amplification/Reflection</strong></td><td>Use DNS open resolvers to amplify DoS — send DNS queries with victim's spoofed IP → large DNS replies flood the victim</td></tr>
+    <tr><td><strong>DNS Resource Exhaustion</strong></td><td>DoS attack consuming all DNS resolver resources → resolver unavailable</td></tr>
+    <tr><td><strong>Fast Flux</strong></td><td>Rapidly change DNS IP addresses (within minutes) to hide malware/phishing sites; botnets use this</td></tr>
+    <tr><td><strong>Double IP Flux</strong></td><td>Rapidly change both hostname-to-IP AND authoritative name server → harder to trace source</td></tr>
+    <tr><td><strong>Domain Generation Algorithms</strong></td><td>Malware randomly generates domain names used as C&amp;C rendezvous points — hard to blacklist</td></tr>
+    <tr><td><strong>Domain Shadowing</strong></td><td>Steal domain credentials → silently create sub-domains pointing to malicious servers without alerting the domain owner</td></tr>
+  </table></div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">3.8.5</span> DNS Tunneling</h3>
+  <p>Encodes non-DNS traffic inside DNS queries to bypass security controls and firewalls:</p>
+  <ol class="steps">
+    <li>Data (e.g., C&C commands or exfiltrated files) is split into encoded chunks</li>
+    <li>Each chunk is placed inside a DNS query's domain name label</li>
+    <li>DNS query forwarded through recursive DNS servers — appears as legitimate DNS traffic</li>
+    <li>Reaches the threat actor's authoritative name server</li>
+    <li>Responses from the threat actor's server carry encoded commands back to the compromised host</li>
+    <li>Malware reassembles the chunks and executes the hidden commands</li>
+  </ol>
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Defense:</strong> Filter inspecting DNS traffic for unusually long queries or suspicious domain names. Cisco OpenDNS blocks DNS tunneling traffic by identifying suspicious patterns.</div></div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">3.8.7</span> DHCP Spoofing Attack</h3>
+  <p>A rogue DHCP server on the network responds to client DHCP Discover messages faster than the legitimate server. The client accepts the first offer — if it's the rogue, it gets false configuration:</p>
+  <ul>
+    <li><strong>Wrong default gateway</strong> → traffic routed through attacker → MITM</li>
+    <li><strong>Wrong DNS server</strong> → users directed to malicious websites</li>
+    <li><strong>Wrong IP address</strong> → client has invalid network config → DoS</li>
+  </ul>
+  <div class="ca info"><span class="ic">💡</span><div><strong>Defense:</strong> DHCP Snooping on switches — only trusted ports can send DHCP Offer/ACK messages (covered in CCNA 2 M11).</div></div>
+  </div>
+
+</div></div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- SECTION 3.9 — SECURITY BEST PRACTICES -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div class="sec" id="s7">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">3.9</span><span class="ttl">Network Security Best Practices</span></span><button class="sec-check" id="sch-s7" onclick="event.stopPropagation();toggleSection('s7',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb">
+
+  <div class="sub">
+  <h3><span class="sn">3.9.1</span> The CIA Triad</h3>
+  <div class="cia-grid">
+    <div class="cia-card c">
+      <div class="cc-icon">🔐</div>
+      <div class="cc-title">Confidentiality</div>
+      <div class="cc-how">Encryption (AES)</div>
+      <p>Only authorized individuals, entities, or processes can access sensitive information</p>
+    </div>
+    <div class="cia-card i">
+      <div class="cc-icon">✅</div>
+      <div class="cc-title">Integrity</div>
+      <div class="cc-how">Hashing (SHA)</div>
+      <p>Data has not been modified without authorization — protect against accidental or deliberate alteration</p>
+    </div>
+    <div class="cia-card a">
+      <div class="cc-icon">⚡</div>
+      <div class="cc-title">Availability</div>
+      <div class="cc-how">Redundancy</div>
+      <p>Authorized users have uninterrupted access to important resources and data</p>
+    </div>
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">3.9.2</span> Defense-in-Depth (Layered Security)</h3>
+  <p>Multiple security layers working together — no single point of failure. Key components:</p>
+  <div class="tw"><table>
+    <tr><th>Component</th><th>Role</th></tr>
+    <tr><td><strong>VPN</strong></td><td>Secure encrypted tunnels for site-to-site and remote-access connectivity</td></tr>
+    <tr><td><strong>ASA Firewall</strong></td><td>Stateful firewall — allows internal-initiated sessions out; blocks external-initiated connections to inside hosts</td></tr>
+    <tr><td><strong>IPS</strong></td><td>Intrusion Prevention System — monitors all traffic; detects and blocks threats in real time</td></tr>
+    <tr><td><strong>ESA</strong></td><td>Email Security Appliance — filters spam and suspicious emails using Cisco Talos intelligence (updated every 3–5 minutes)</td></tr>
+    <tr><td><strong>WSA</strong></td><td>Web Security Appliance — URL filtering, malware scanning, application control for web traffic</td></tr>
+    <tr><td><strong>AAA Server</strong></td><td>Authentication, Authorization, Accounting — secure database for controlling access to network devices</td></tr>
+  </table></div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">3.9.3–3.9.4</span> Firewalls and IPS</h3>
+  <p><strong>Firewall — three common properties:</strong></p>
+  <ul>
+    <li>Resistant to network attacks</li>
+    <li>Only transit point between internal and external networks</li>
+    <li>Enforces the organization's access control policy</li>
+  </ul>
+
+  <div class="tw"><table>
+    <tr><th>Feature</th><th>IDS (Detection)</th><th>IPS (Prevention)</th></tr>
+    <tr><td><strong>Action on threat</strong></td><td>Detect and alert only</td><td>Detect, alert, AND block immediately</td></tr>
+    <tr><td><strong>Deployment</strong></td><td>Out-of-band (copy of traffic)</td><td>Inline (all traffic passes through)</td></tr>
+    <tr><td><strong>Performance impact</strong></td><td>Lower</td><td>Higher — processes all traffic</td></tr>
+    <tr><td><strong>Protection type</strong></td><td>Passive — alerts after the fact</td><td>Active — stops threats in real time</td></tr>
+    <tr><td><strong>Detection method</strong></td><td colspan="2">Signatures — atomic (single-packet) or composite (multi-packet) pattern matching</td></tr>
+  </table></div>
+  </div>
+
+</div></div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- SECTION 3.10 — CRYPTOGRAPHY -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div class="sec" id="s8">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">3.10</span><span class="ttl">Cryptography</span></span><button class="sec-check" id="sch-s8" onclick="event.stopPropagation();toggleSection('s8',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb">
+
+  <div class="sub">
+  <h3><span class="sn">3.10.2</span> Four Elements of Secure Communications</h3>
+  <div class="crypto-grid">
+    <div class="crypto-row integrity"><div class="cr-icon">✅</div><div class="cr-label">Data Integrity</div><div class="cr-desc">Message was not altered in transit. Implemented with hashing (MD5, SHA). Detects any change to the data.</div></div>
+    <div class="crypto-row auth"><div class="cr-icon">🪪</div><div class="cr-label">Origin Authentication</div><div class="cr-desc">Message actually came from the stated sender. Implemented with HMAC (hash + secret key). Defeats MITM.</div></div>
+    <div class="crypto-row conf"><div class="cr-icon">🔐</div><div class="cr-label">Data Confidentiality</div><div class="cr-desc">Only authorized users can read the message. Implemented with symmetric (AES) or asymmetric (RSA) encryption.</div></div>
+    <div class="crypto-row nonrep"><div class="cr-icon">✍️</div><div class="cr-label">Non-Repudiation</div><div class="cr-desc">Sender cannot deny sending the message. Implemented with digital signatures (unique private key proof).</div></div>
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">3.10.3–3.10.4</span> Hash Functions — Data Integrity</h3>
+  <p>A hash function takes input data and produces a fixed-length <strong>digest (fingerprint)</strong>. Any change to the data produces a completely different hash — detects tampering.</p>
+  <div class="hash-grid">
+    <div class="hash-row md5">
+      <div class="ha-name">MD5</div>
+      <div class="ha-bits">128-bit</div>
+      <div class="ha-status">Legacy</div>
+      <div>Use only when no better alternative is available</div>
+    </div>
+    <div class="hash-row sha1">
+      <div class="ha-name">SHA-1</div>
+      <div class="ha-bits">160-bit</div>
+      <div class="ha-status">Deprecated</div>
+      <div>Has known flaws — avoid; use SHA-2 instead</div>
+    </div>
+    <div class="hash-row sha2">
+      <div class="ha-name">SHA-2</div>
+      <div class="ha-bits">256/384/512</div>
+      <div class="ha-status">✅ Recommended</div>
+      <div>SHA-256, SHA-384, SHA-512 — use whenever possible</div>
+    </div>
+  </div>
+  <div class="ca danger">
+    <span class="ic">🚨</span>
+    <div><strong>Hashing alone is NOT secure against MITM.</strong> Anyone with the hash function can intercept a message, modify it, recompute the hash, and append the new hash. The receiver sees a valid hash and can't tell the data was altered. To also authenticate the origin, use HMAC.</div>
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">3.10.5</span> HMAC — Origin Authentication</h3>
+  <p><strong>HMAC (Hash-based Message Authentication Code)</strong> adds a <strong>secret key</strong> to the hashing process — providing both integrity AND origin authentication:</p>
+  <ul>
+    <li>Both sender and receiver share the same secret key</li>
+    <li>Hash is computed on: <strong>data + secret key</strong></li>
+    <li>Only parties with the secret key can produce or verify a valid HMAC</li>
+    <li>A threat actor intercepting and modifying the message <strong>cannot produce a valid HMAC</strong> without the secret key → MITM attack defeated</li>
+  </ul>
+  <div class="ca tip">
+    <span class="ic">✅</span>
+    <div><strong>OSPF uses HMAC for routing update authentication.</strong> R1 sends LSU + HMAC digest (data + secret key). R2 recomputes the HMAC with the same secret key. If they match → update accepted. If not → update discarded. This prevents fake routing updates from being injected.</div>
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">3.10.6–3.10.7</span> Data Confidentiality — Symmetric vs Asymmetric</h3>
+  <div class="enc-split">
+    <div class="enc-panel sym">
+      <div class="ep-hdr">🔑 Symmetric Encryption</div>
+      <div class="ep-body">
+        <strong>Same key to encrypt AND decrypt</strong><br>
+        Both parties share a pre-shared key in advance<br><br>
+        <strong>✅ Fast — used for bulk data (VPN traffic)</strong><br><br>
+        <strong>Algorithms:</strong>
+        <ul>
+          <li><strong>DES</strong> — 56-bit, legacy, insecure</li>
+          <li><strong>3DES</strong> — DES × 3; well-tested, trustworthy</li>
+          <li><strong>AES</strong> — 128/192/256-bit; recommended, widely used</li>
+          <li><strong>SEAL</strong> — 160-bit; faster software alternative</li>
+          <li><strong>RC4</strong> — stream cipher; used in SSL/TLS; now considered weak</li>
+        </ul>
+      </div>
+    </div>
+    <div class="enc-panel asym">
+      <div class="ep-hdr">🗝️ Asymmetric Encryption</div>
+      <div class="ep-body">
+        <strong>Public key + Private key pair</strong><br>
+        Encrypted with public key → only private key decrypts<br>
+        Encrypted with private key → only public key decrypts<br><br>
+        <strong>⚠️ Slow — used for key exchange and digital signatures</strong><br><br>
+        <strong>Algorithms:</strong>
+        <ul>
+          <li><strong>DH</strong> — key exchange; IPsec, SSL, SSH</li>
+          <li><strong>RSA</strong> — encryption + signatures; e-commerce</li>
+          <li><strong>DSA</strong> — digital signatures only</li>
+          <li><strong>ECC</strong> — same security as RSA with smaller keys (160-bit)</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">3.10.9</span> Diffie-Hellman Key Exchange</h3>
+  <p>DH allows two parties to create a <strong>shared secret key without ever transmitting the key</strong> over the network. Both independently compute the same result using public values and their own private values:</p>
+  <ol class="steps">
+    <li>Both parties agree on a <strong>common public value</strong> (the "yellow color" — not secret)</li>
+    <li>Each party selects their own <strong>private secret value</strong> (never shared)</li>
+    <li>Each party combines the common value with their private value → sends the <strong>mixed result</strong> to the other</li>
+    <li>Each party mixes the received value with their own private value → both arrive at the <strong>same shared secret</strong></li>
+    <li>A third party watching all traffic cannot derive the shared secret from the exchanged public values</li>
+  </ol>
+  <div class="et">
+    <div class="lbl">🎯 DH COMMON USES + KEY LIMITATION</div>
+    DH is used in: <strong>IPsec VPN</strong> key exchange · <strong>SSL/TLS</strong> (HTTPS) · <strong>SSH</strong> remote access<br><br>
+    <strong>DH limitation:</strong> Asymmetric algorithms (including DH) are too slow for bulk data. Common approach: use DH to establish the shared secret key, then use that key with a fast symmetric algorithm (AES) to encrypt actual traffic. This is how IPsec and TLS work.
+  </div>
+  </div>
+
+</div></div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- SECTION 3.9 — EXAM TRAPS -->
+<!-- ═══════════════════════════════════════════════════════ -->
+
+<div class="sec" id="s-pt-3-11">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">3.11</span><span class="ttl">Packet Tracer — Network Security Exploration</span></span><button class="sec-check" id="sch-s-pt-3-11" onclick="event.stopPropagation();toggleSection('s-pt-3-11',this)">○ Mark done</button>
+</div>
+<div class="sb">
+  <div style="padding:14px 16px;background:#0d1117;border:1px solid #30363d;border-left:3px solid #1f6feb;border-radius:6px">
+    <div style="font-size:.72em;font-weight:800;text-transform:uppercase;letter-spacing:.8px;color:#1f6feb;margin-bottom:10px">&#x1F4E6; Packet Tracer Activities</div>
+    <div style="font-size:.82em;color:#6e7681;margin-bottom:10px">Open in Cisco Packet Tracer via your NetAcad course.</div>
+      <div style="display:flex;align-items:baseline;gap:10px;padding:6px 0;border-bottom:1px solid #21262d"><span style="font-family:monospace;font-size:.85em;color:#79c0ff;white-space:nowrap;flex-shrink:0;min-width:52px">3.11.1</span><span style="font-size:.88em;color:#c9d1d9">Network Security Exploration (Physical Mode)</span></div>
+    <div style="margin-top:12px;font-size:.78em;color:#6e7681">Full list: <a href="https://itexamanswers.net/ccna-3-packet-tracer-labs-answers-ensa-v7-02.html" target="_blank" rel="noopener" style="color:#58a6ff;word-break:break-all">https://itexamanswers.net/ccna-3-packet-tracer-labs-answers-ensa-v7-02.html</a></div>
+  </div>
+</div>
+</div>
+<div class="sec" id="s9">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">🎯</span><span class="ttl">Common Exam Traps — Module 3</span></span><button class="sec-check" id="sch-s9" onclick="event.stopPropagation();toggleSection('s9',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb">
+
+  <div class="ca danger"><span class="ic">❌</span><div><strong>Trap 1: Virus requires human action — Worm does NOT.</strong><br>Virus spreads when a user opens an attachment, runs a file, or inserts media. Worm is self-replicating and propagates automatically by exploiting network vulnerabilities — no user action needed. This distinction is the most frequently tested malware question.</div></div>
+
+  <div class="ca danger"><span class="ic">❌</span><div><strong>Trap 2: Trojan horse is NOT self-replicating.</strong><br>It disguises itself as useful/legitimate software. User installs it willingly — the hidden malicious payload then activates. Unlike viruses, it does not attach to other files or spread to other hosts on its own.</div></div>
+
+  <div class="ca danger"><span class="ic">❌</span><div><strong>Trap 3: Hashing alone does NOT protect against MITM.</strong><br>A threat actor can intercept a message, modify it, recompute the hash, and append the new hash — the receiver sees a valid hash and cannot detect the tampering. Use HMAC (hash + secret key) to also authenticate the origin.</div></div>
+
+  <div class="ca danger"><span class="ic">❌</span><div><strong>Trap 4: HMAC provides BOTH integrity AND origin authentication.</strong><br>Regular hashing only verifies data integrity. HMAC combines hashing with a shared secret key — only parties with the key can produce or verify a valid HMAC. An attacker without the key cannot forge a valid HMAC even if they intercept and modify the message.</div></div>
+
+  <div class="ca danger"><span class="ic">❌</span><div><strong>Trap 5: Symmetric = same key (fast, bulk data). Asymmetric = different keys (slow, key exchange/signatures).</strong><br>AES (symmetric) is the recommended modern algorithm for encrypting data. DH (asymmetric) is used for key exchange. RSA (asymmetric) for digital signatures and small data encryption. VPN traffic uses AES; the VPN key is exchanged using DH.</div></div>
+
+  <div class="ca danger"><span class="ic">❌</span><div><strong>Trap 6: DH never transmits the shared secret key.</strong><br>Diffie-Hellman creates the same shared secret independently on both ends without ever sending the key across the network. Both parties exchange public values, then each independently derives the shared secret. An eavesdropper cannot compute the secret from the exchanged public values.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 7: Reconnaissance always precedes access and DoS attacks.</strong><br>Recon is the first phase — information query → ping sweep → port scan → vulnerability scan → exploitation. You cannot effectively attack what you haven't mapped first. The order of these steps is tested.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 8: Social engineering attacks target people, not technology.</strong><br>Phishing, spear phishing, baiting, tailgating, pretexting, shoulder surfing — these manipulate human psychology, not technical vulnerabilities. The most technically sophisticated security system is undermined by one employee who holds a door open (tailgating) or clicks a phishing link.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 9: DDoS uses a botnet of zombies controlled by a CnC system.</strong><br>Individual DoS = one attacker. DDoS = attacker infects many hosts with bot malware (making them zombies) → botnet controlled via Command and Control (CnC) → coordinated attack launched from all zombies simultaneously.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 10: TCP SYN Flood exploits half-open connections.</strong><br>Attacker sends many SYNs with spoofed IPs → server sends SYN-ACKs but final ACKs never arrive → server's connection table fills with half-open connections → legitimate users cannot connect → effective DoS even without actually crashing the server.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 11: ARP has no authentication — any host can claim any IP or MAC.</strong><br>Gratuitous ARP replies are accepted without verification. Threat actor sends spoofed gratuitous ARPs to poison the victim's and router's ARP caches — both point to the attacker's MAC. Result: full MITM position. Defense: Dynamic ARP Inspection (DAI).</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 12: Rootkit is the hardest malware to remove.</strong><br>It modifies the OS kernel, commands, firewall, and antivirus to conceal its presence. Standard removal tools often cannot detect it. Special rootkit removal tools are required; a complete OS reinstall may be the only reliable option.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 13: SHA-2 is the current recommended hash — not MD5, not SHA-1.</strong><br>MD5 (128-bit) = legacy, use only if no alternative. SHA-1 (160-bit) = deprecated, known flaws. SHA-256/384/512 = current standard — use whenever possible. SHA-2 is the correct answer for "which hash algorithm should be used today."</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 14: State-sponsored hackers use zero-day vulnerabilities.</strong><br>A zero-day = a vulnerability not yet known to or patched by the software vendor. State actors have the resources to discover, develop, and weaponize zero-days. Example: Stuxnet malware used multiple zero-days to target Iran's nuclear centrifuges.</div></div>
+
+  <div class="ca tip"><span class="ic">✅</span><div><strong>Module 3 quick-reference summary:</strong><br><br>
+  <strong>CIA Triad:</strong> Confidentiality (AES) · Integrity (SHA) · Availability (redundancy)<br>
+  <strong>4 Secure comm elements:</strong> Integrity (hash) · Authentication (HMAC) · Confidentiality (encrypt) · Non-repudiation (signature)<br>
+  <strong>Malware key distinctions:</strong> Virus=human action · Worm=self-replicating auto · Trojan=disguised/not self-replicating · Ransomware=encrypts for ransom · Rootkit=hardest to remove<br>
+  <strong>Attack categories:</strong> Recon → Access → DoS (in that order)<br>
+  <strong>Hashing:</strong> MD5=128-bit legacy · SHA-1=160-bit deprecated · SHA-2=use this<br>
+  <strong>HMAC:</strong> hash + secret key = integrity + authentication<br>
+  <strong>Symmetric:</strong> AES=recommended, fast, bulk data, same key<br>
+  <strong>Asymmetric:</strong> DH=key exchange (never sends key) · RSA=encryption+signatures, slow<br>
+  <strong>TCP SYN flood:</strong> half-open connections exhaustion<br>
+  <strong>ARP poison:</strong> spoofed gratuitous ARP → MITM<br>
+  <strong>DNS tunneling:</strong> non-DNS data hidden in DNS queries<br>
+  <strong>IDS=detect+alert · IPS=detect+alert+BLOCK</strong></div></div>
+
+</div></div>
+
+</div><!-- end .wrap -->
+
+<div class="ft">
+  CCNA 3 ENSA v7.02 — Module 3: Network Security Concepts v2.2<br>
+  Based on Cisco NetAcad curriculum · Study guide for personal use
+</div>
+
+<button class="tb" id="topb" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+
+<div class="mod-nav">
+  <a class="mn-hub" href="index.html">🏠 Hub</a>
+  <div class="mn-divider"></div>
+  <a class="mn-prev" href="ccna3_module2_singlearea_ospfv2_configuration_v2.2.html">‹</a>
+  <span class="mn-label">M3 of 14</span>
+  <a class="mn-next" href="ccna3_module4_acl_concepts_v2.2.html">›</a>
+</div>
+
+<script>
+var MOD_KEY="ccna3-module3-network-security-concepts";
+var SECS=["s1","s2","s3","s4","s5","s6","s7","s8","s-pt-3-11","s9"];
+var checked={};
+function loadState(){
+  try{var s=localStorage.getItem(MOD_KEY);if(s)checked=JSON.parse(s);}catch(e){}
+  SECS.forEach(function(id){
+    var pill=document.getElementById('pill-'+id);
+    var row=document.getElementById('row-'+id);
+    var st=document.getElementById('st-'+id);
+    var sch=document.getElementById('sch-'+id);
+    if(checked[id]){
+      if(pill){pill.classList.add('checked');pill.querySelector('.pill-check').textContent='✓';}
+      if(row)row.classList.add('done');
+      if(st)st.textContent='✓';
+      if(sch){sch.classList.add('checked');sch.textContent='✓ Done';}
+    } else {
+      if(pill){pill.classList.remove('checked');pill.querySelector('.pill-check').textContent='○';}
+      if(row)row.classList.remove('done');
+      if(st)st.textContent='○';
+      if(sch){sch.classList.remove('checked');sch.textContent='○ Mark done';}
+    }
+  });
+}
+function toggleSection(id,btn){checked[id]=!checked[id];try{localStorage.setItem(MOD_KEY,JSON.stringify(checked));}catch(e){}loadState();}
+function toggleStudyPanel(){
+  var hdr=document.getElementById('sp-hdr');
+  var body=document.getElementById('sp-body');
+  var arr=document.getElementById('sp-arr');
+  hdr.classList.toggle('open');body.classList.toggle('open');
+  if(arr)arr.textContent=body.classList.contains('open')?'▲':'▼';
+}
+function goTo(id){var el=document.getElementById(id);if(!el)return;var h=el.querySelector('.sh,.section-header'),b=el.querySelector('.sb,.section-body');if(h&&b&&!b.classList.contains('open')){h.classList.add('open');b.classList.add('open');}setTimeout(function(){window.scrollTo({top:el.getBoundingClientRect().top+window.pageYOffset-60,behavior:'smooth'});},50);}
+function setFs(size,btn){document.documentElement.style.setProperty('--base-fs',size);document.querySelectorAll('.fs-btn').forEach(function(b){b.classList.remove('active');});btn.classList.add('active');try{localStorage.setItem('ccna-fs',size);}catch(e){}}
+(function(){try{var s=localStorage.getItem('ccna-fs');if(s){document.documentElement.style.setProperty('--base-fs',s);document.querySelectorAll('.fs-btn').forEach(function(b){b.classList.remove('active');if((b.textContent==='S'&&s==='14px')||(b.textContent==='M'&&s==='16px')||(b.textContent==='L'&&s==='18px')||(b.textContent==='XL'&&s==='20px'))b.classList.add('active');});}}catch(e){}loadState();})();
+function copyCode(b){var t=b.closest('.cw').querySelector('pre').innerText;if(navigator.clipboard){navigator.clipboard.writeText(t).then(function(){b.textContent='Copied!';setTimeout(function(){b.textContent='Copy';},1500);}).catch(function(){fb(t,b);});}else{fb(t,b);}}
+function fb(t,b){var a=document.createElement('textarea');a.value=t;a.style.position='fixed';a.style.opacity='0';document.body.appendChild(a);a.focus();a.select();document.execCommand('copy');document.body.removeChild(a);b.textContent='Copied!';setTimeout(function(){b.textContent='Copy';},1500);}
+</script>
+<script src="../../site-config.js"></script>
+</body>
+</html>

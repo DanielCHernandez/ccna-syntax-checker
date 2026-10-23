@@ -1,0 +1,896 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=2.0">
+<title>CCNA 2 Module 6: EtherChannel v2.2</title>
+<style>
+:root{
+  --blue:#1ba0d7;--dark:#005073;--green:#6cc24a;
+  --bg:#f4f6f8;--card:#fff;--text:#1a1a2e;--muted:#5a6a7a;
+  --cbg:#0d1117;--ctxt:#c9d1d9;--r:12px;--sh:0 2px 12px rgba(0,0,0,.08);
+  --base-fs:16px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);font-size:var(--base-fs);line-height:1.7}
+
+/* ── Font size toggle ── */
+.fs-bar{position:sticky;top:0;z-index:200;background:#1a1a2e;display:flex;align-items:center;justify-content:flex-end;padding:6px 14px;gap:6px;box-shadow:0 2px 8px rgba(0,0,0,.3)}
+.fs-label{color:#8b949e;font-size:.72em;font-weight:700;letter-spacing:.5px;text-transform:uppercase;margin-right:4px}
+.fs-btn{background:#30363d;color:#c9d1d9;border:2px solid transparent;border-radius:6px;padding:4px 12px;font-size:.75em;font-weight:700;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:all .2s;line-height:1.4}
+.fs-btn:active,.fs-btn.active{background:var(--blue);color:#fff;border-color:var(--blue)}
+
+/* ── Header ── */
+.hdr{background:linear-gradient(135deg,var(--dark),var(--blue));color:#fff;padding:32px 20px 24px;text-align:center}
+.hdr .badge{display:inline-block;background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.4);border-radius:20px;padding:4px 14px;font-size:.81em;margin-bottom:12px}
+.hdr h1{font-size:1.625em;font-weight:700;margin-bottom:6px}
+.hdr p{font-size:.94em;opacity:.85}
+.hdr .obj{display:inline-block;background:rgba(255,255,255,.15);border-radius:8px;padding:7px 16px;margin-top:12px;font-size:.875em;font-style:italic}
+
+/* ── Progress bar ── */
+.pb{background:var(--card);padding:14px 16px;margin:16px 16px 0;border-radius:var(--r);box-shadow:var(--sh)}
+.pbl{font-size:.81em;color:var(--muted);margin-bottom:6px;font-weight:600}
+.pbt{background:#e0e7ef;border-radius:10px;height:8px;overflow:hidden}
+.pbf{background:linear-gradient(90deg,var(--blue),var(--green));height:100%;border-radius:10px;width:0;transition:width 1s ease}
+
+/* ── TOC ── */
+.toc{background:var(--card);margin:16px;border-radius:var(--r);box-shadow:var(--sh);overflow:hidden}
+.toch{background:var(--dark);color:#fff;padding:14px 18px;font-weight:700;font-size:.94em;display:flex;justify-content:space-between;align-items:center;cursor:pointer;user-select:none}
+.toch .arr{transition:transform .3s}
+.toch.open .arr{transform:rotate(180deg)}
+.tocb{display:none;padding:10px 0}
+.tocb.open{display:block}
+.tocg{font-size:.69em;font-weight:800;letter-spacing:.8px;color:var(--dark);text-transform:uppercase;padding:8px 20px 2px}
+.tocb a{display:block;padding:9px 20px 9px 28px;color:var(--dark);text-decoration:none;font-size:.875em;border-left:3px solid transparent;transition:all .2s}
+.tocb a:hover,.tocb a:active{background:#d0e8f5;border-left-color:var(--blue)}
+.tocb a .n{display:inline-block;background:var(--blue);color:#fff;border-radius:5px;padding:1px 8px;font-size:.75em;font-weight:700;margin-right:8px}
+
+/* ── Main wrap ── */
+.wrap{padding:0 16px 100px}
+
+/* ── Section cards ── */
+.sec{background:var(--card);border-radius:var(--r);box-shadow:var(--sh);margin-bottom:16px;overflow:hidden}
+.sh{background:linear-gradient(90deg,var(--dark),var(--blue));color:#fff;padding:16px 18px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;user-select:none;-webkit-tap-highlight-color:transparent}
+.sh .ttl{font-weight:700;font-size:1em}
+.sh .nb{background:rgba(255,255,255,.25);border-radius:6px;padding:3px 10px;font-size:.81em;font-weight:700;margin-right:10px;white-space:nowrap}
+.sh .ch{font-size:1.125em;transition:transform .3s}
+.sh.open .ch{transform:rotate(180deg)}
+.sb{display:none;padding:18px}
+.sb.open{display:block}
+
+/* ── Subsections ── */
+.sub{margin-bottom:24px}
+.sub:last-child{margin-bottom:0}
+.sub h3{font-size:.94em;font-weight:700;color:var(--dark);margin-bottom:10px;padding-bottom:6px;border-bottom:2px solid #d0e8f5;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.sub h3 .sn{background:var(--blue);color:#fff;border-radius:5px;padding:2px 8px;font-size:.75em;white-space:nowrap}
+.sub p{margin-bottom:10px;font-size:.94em}
+.sub ul,.sub ol{padding-left:20px;margin:8px 0;font-size:.94em}
+.sub li{margin-bottom:5px}
+
+/* ── Code blocks ── */
+.cw{background:var(--cbg);border-radius:10px;margin:12px 0;overflow:hidden}
+.cl{background:#21262d;color:#c9d1d9;font-size:.78em;font-weight:700;padding:6px 14px;letter-spacing:.5px;text-transform:uppercase;display:flex;justify-content:space-between;align-items:center}
+.cpb{background:#30363d;color:#c9d1d9;border:none;border-radius:5px;padding:3px 10px;font-size:.69em;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.cpb:active{background:var(--blue);color:#fff}
+pre{margin:0;padding:14px;overflow-x:auto;-webkit-overflow-scrolling:touch}
+code{font-family:'Courier New',monospace;font-size:.81em;color:var(--ctxt);line-height:1.6}
+p code,li code,td code,h3 code,.ca code,.cs-body code{background:#c2d9ea;color:#002233;border-radius:4px;padding:1px 5px;font-size:.81em;font-family:'Courier New',monospace;font-weight:600}
+
+/* ── Callout boxes ── */
+.ca{border-radius:8px;padding:12px 14px;margin:12px 0;font-size:.875em;line-height:1.6;display:flex;gap:10px;align-items:flex-start}
+.ca .ic{font-size:1.125em;flex-shrink:0;margin-top:1px}
+.ca.warn  {background:#fff3cd;border-left:4px solid #b38600;color:#3d2c00}
+.ca.tip   {background:#d4edda;border-left:4px solid #28a745;color:#0d3318}
+.ca.danger{background:#f8d7da;border-left:4px solid #dc3545;color:#3d0010}
+.ca.info  {background:#d0e8f5;border-left:4px solid var(--blue);color:#002d44}
+
+/* ── Exam tip dark box ── */
+.et{background:linear-gradient(135deg,#1a1a2e,var(--dark));color:#fff;border-radius:10px;padding:14px 16px;margin:14px 0;font-size:.875em;line-height:1.6}
+.et .lbl{font-size:.69em;font-weight:800;letter-spacing:1px;color:var(--green);margin-bottom:6px}
+.et ol,.et ul{padding-left:18px;margin-top:6px}
+.et li{margin-bottom:5px}
+
+/* ── Tables ── */
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:12px 0;border-radius:8px}
+table{width:100%;border-collapse:collapse;font-size:.875em}
+th{background:var(--dark);color:#fff;padding:10px 12px;text-align:left;font-weight:700;font-size:.81em}
+td{padding:9px 12px;border-bottom:1px solid #e8ecf0;vertical-align:top;color:#1a1a2e}
+tr:nth-child(even) td{background:#d0e8f5;color:#002d44}
+tr:last-child td{border-bottom:none}
+
+/* ── Numbered steps ── */
+.steps{counter-reset:step;list-style:none;padding:0;margin:12px 0}
+.steps li{counter-increment:step;display:flex;gap:12px;align-items:flex-start;padding:10px 0;border-bottom:1px solid #eef0f3;font-size:.875em;line-height:1.6}
+.steps li:last-child{border-bottom:none}
+.steps li::before{content:counter(step);background:var(--blue);color:#fff;border-radius:50%;min-width:26px;height:26px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.81em;flex-shrink:0;margin-top:2px}
+
+/* ── Diagram box ── */
+.dg{background:#0d1117;border-radius:10px;padding:14px;margin:12px 0;overflow-x:auto;-webkit-overflow-scrolling:touch}
+.dg pre{color:#58a6ff;font-family:'Courier New',monospace;font-size:.75em;line-height:1.6}
+
+/* ── Scenario / Troubleshoot box ── */
+.sc{background:#1a1a2e;color:#c9d1d9;border-radius:8px;padding:14px;margin:12px 0;font-size:.875em;line-height:1.6}
+.sc .scl{font-size:.69em;font-weight:800;letter-spacing:.8px;color:var(--green);margin-bottom:8px}
+
+/* ── Protocol comparison cards ── */
+.proto-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:12px 0}
+@media(max-width:480px){.proto-grid{grid-template-columns:1fr}}
+.proto-card{border-radius:10px;padding:14px;border:2px solid}
+.proto-card.pagp{border-color:#005073;background:#e8f4fb}
+.proto-card.lacp{border-color:#28a745;background:#f0fff4}
+.proto-card.static{border-color:#6c757d;background:#f8f9fa}
+.proto-card .pc-title{font-size:.875em;font-weight:800;margin-bottom:8px}
+.proto-card.pagp .pc-title{color:#005073}
+.proto-card.lacp .pc-title{color:#0d3318}
+.proto-card.static .pc-title{color:#343a40}
+.proto-card ul{padding-left:18px;font-size:.81em;line-height:1.8;color:#1a1a2e}
+
+/* ── Mode compatibility grid ── */
+.compat-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:12px 0}
+@media(max-width:480px){.compat-grid{grid-template-columns:1fr}}
+.compat-card{border-radius:10px;padding:14px}
+.compat-card.yes{background:#d4edda;border:2px solid #28a745}
+.compat-card.no {background:#f8d7da;border:2px solid #dc3545}
+.compat-card .cc-title{font-size:.75em;font-weight:800;letter-spacing:.5px;text-transform:uppercase;margin-bottom:6px}
+.compat-card.yes .cc-title{color:#0d3318}
+.compat-card.no  .cc-title{color:#3d0010}
+.compat-card p{font-size:.81em;color:#1a1a2e;line-height:1.6}
+
+/* ── Step config cards ── */
+.cfg-step{border-left:4px solid var(--blue);background:#e8f4fb;border-radius:0 10px 10px 0;padding:12px 14px;margin:8px 0}
+.cfg-step .cs-num{font-size:.69em;font-weight:800;letter-spacing:.8px;color:var(--dark);text-transform:uppercase;margin-bottom:4px}
+.cfg-step .cs-title{font-weight:700;font-size:.94em;color:var(--dark);margin-bottom:4px}
+.cfg-step .cs-body{font-size:.875em;color:#1a1a2e}
+
+/* ── Flag legend ── */
+.flag-grid{display:grid;grid-template-columns:auto 1fr;gap:4px 12px;margin:10px 0;font-size:.875em;align-items:start}
+.flag-code{font-family:'Courier New',monospace;font-weight:700;background:#c2d9ea;color:#002233;border-radius:4px;padding:2px 6px;white-space:nowrap}
+.flag-desc{color:#1a1a2e;padding:2px 0}
+
+
+/* ── Module navigation bar ── */
+.mod-nav{position:fixed;bottom:0;left:0;right:0;z-index:300;background:#1a1a2e;border-top:1px solid #30363d;display:flex;align-items:center;height:52px;padding:0 8px;gap:6px}
+.mn-hub{background:#1ba0d7;color:#fff;border:none;border-radius:8px;padding:6px 12px;font-size:.75em;font-weight:700;cursor:pointer;text-decoration:none;display:flex;align-items:center;gap:4px;white-space:nowrap;-webkit-tap-highlight-color:transparent;flex-shrink:0}
+.mn-hub:active{opacity:.8}
+.mn-divider{width:1px;height:28px;background:#30363d;flex-shrink:0}
+.mn-label{flex:1;text-align:center;font-size:.69em;color:#8b949e;font-weight:600;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding:0 4px}
+.mn-prev,.mn-next{background:#30363d;color:#c9d1d9;border:none;border-radius:8px;padding:6px 10px;font-size:.875em;font-weight:700;cursor:pointer;text-decoration:none;display:flex;align-items:center;-webkit-tap-highlight-color:transparent;flex-shrink:0}
+.mn-prev:active,.mn-next:active{background:#1ba0d7;color:#fff}
+.mn-prev.disabled,.mn-next.disabled{opacity:.3;pointer-events:none}
+
+/* ── Scroll to top ── */
+.tb{position:fixed;bottom:80px;right:16px;background:var(--blue);color:#fff;border:none;border-radius:50%;width:44px;height:44px;font-size:1.25em;box-shadow:0 4px 14px rgba(0,0,0,.25);cursor:pointer;display:none;align-items:center;justify-content:center;z-index:100}
+.tb.show{display:flex}
+.ft{text-align:center;padding:24px 16px;color:var(--muted);font-size:.81em}
+/* Study progress panel */
+.sp-wrap{background:var(--card);margin:16px 16px 0;border-radius:var(--r);box-shadow:var(--sh);overflow:hidden}
+.sp-hdr{background:var(--nt);color:#fff;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;user-select:none;-webkit-tap-highlight-color:transparent;gap:10px}
+.sp-hdr .sp-title{font-weight:700;font-size:.875em;flex-shrink:0}
+.sp-hdr .sp-arr{transition:transform .3s;flex-shrink:0}
+.sp-hdr.open .sp-arr{transform:rotate(180deg)}
+.sp-body{display:none;padding:12px 14px}
+.sp-body.open{display:block}
+.sp-row{display:flex;align-items:center;gap:10px;padding:6px 4px;border-bottom:1px solid #f0f4f8;font-size:.81em}
+.sp-row:last-child{border-bottom:none}
+.sp-row .sr-status{font-size:1em;flex-shrink:0;width:20px;text-align:center}
+.sp-row .sr-nb{font-weight:800;color:var(--nt);min-width:36px;flex-shrink:0;font-size:.875em}
+.sp-row .sr-ttl{color:var(--text);flex:1}
+.sp-row.done .sr-ttl{color:var(--muted);text-decoration:line-through}
+.sc-pills{display:flex;align-items:center;gap:4px;overflow-x:auto;-webkit-overflow-scrolling:touch;flex:1;padding:0 4px}
+.sc-pill{background:#30363d;color:#8b949e;border:2px solid transparent;border-radius:6px;padding:3px 8px;font-size:.72em;font-weight:700;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:all .15s;white-space:nowrap;flex-shrink:0;line-height:1.4;display:flex;align-items:center;gap:3px}
+.sc-pill.checked{background:var(--nt);color:#fff;border-color:var(--ntd)}
+.sc-pill .pill-check{font-size:.875em}
+
+/* v2.1 — In-section check button */
+.sh{position:relative}
+.sec-check{position:absolute;right:40px;top:50%;transform:translateY(-50%);background:rgba(255,255,255,.15);border:2px solid rgba(255,255,255,.4);border-radius:6px;padding:2px 10px;font-size:.72em;font-weight:800;color:#fff;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:all .2s;white-space:nowrap;z-index:10;line-height:1.5}
+.sec-check.checked{background:var(--ntd);border-color:var(--ntd);color:#052e1e}
+.sec-check:active{opacity:.75}
+/* Sections panel + tick colours (these pages never defined --nt/--ntd, so the panel header was invisible) */
+:root{--nt:var(--dark);--ntd:#4ade80}
+</style>
+<style>.bc{background:#0d1117;padding:8px 16px;display:flex;align-items:center;flex-wrap:wrap;gap:4px;font-size:.75em;overflow-x:auto;white-space:nowrap;-webkit-overflow-scrolling:touch;border-bottom:1px solid #21262d}.bc a{color:#8b949e;text-decoration:none;font-weight:600;flex-shrink:0}.bc a:active{color:#c9d1d9}.bc .sep{color:#6e7681;flex-shrink:0}.bc .cur{color:#1ba0d7;font-weight:700;flex-shrink:0}</style>
+</head>
+<body>
+<nav class="bc"><a href="../../index.html">🏠 Home</a><span class="sep">›</span><a href="index.html">CCNA 2 — SRWE</a><span class="sep">›</span><span class="cur">M6: EtherChannel</span></nav>
+
+<!-- FONT SIZE TOGGLE -->
+<div class="fs-bar">
+  <div class="sc-pills" id="sc-pills">
+  <button class="sc-pill" id="pill-s1" onclick="toggleSection('s1',this)"><span class="pill-check">○</span>6.1</button>
+  <button class="sc-pill" id="pill-s2" onclick="toggleSection('s2',this)"><span class="pill-check">○</span>6.2</button>
+  <button class="sc-pill" id="pill-s3" onclick="toggleSection('s3',this)"><span class="pill-check">○</span>6.3</button>
+  <button class="sc-pill" id="pill-s-pt-6-4" onclick="toggleSection('s-pt-6-4',this)"><span class="pill-check">○</span>PT 6.4</button>
+  <button class="sc-pill" id="pill-s4" onclick="toggleSection('s4',this)"><span class="pill-check">○</span>CMD</button>
+  <button class="sc-pill" id="pill-s5" onclick="toggleSection('s5',this)"><span class="pill-check">○</span>🎯</button>
+  </div>
+  <span class="fs-label" style="flex-shrink:0;margin-left:6px">Size</span>
+  <button class="fs-btn" onclick="setFs('14px',this)">S</button>
+  <button class="fs-btn active" onclick="setFs('16px',this)">M</button>
+  <button class="fs-btn" onclick="setFs('18px',this)">L</button>
+  <button class="fs-btn" onclick="setFs('20px',this)">XL</button>
+</div>
+
+<!-- HEADER -->
+<div class="hdr">
+  <div class="badge">CCNA 2 — SRWE v7.02</div>
+  <h1>🔗 Module 6: EtherChannel</h1>
+  <p>Switching, Routing &amp; Wireless Essentials · NetAcad Study Guide</p>
+  <div class="obj">Module Objective: Troubleshoot EtherChannel on switched links</div>
+</div>
+
+<div class="sp-wrap">
+  <div class="sp-hdr" id="sp-hdr" onclick="toggleStudyPanel()">
+    <span class="sp-title">📚 Sections</span>
+    <span class="sp-arr" id="sp-arr">▼</span>
+  </div>
+  <div class="sp-body" id="sp-body">
+    <div class="sp-row" id="row-s1"><span class="sr-status" id="st-s1">○</span><span class="sr-nb">6.1</span><span class="sr-ttl">EtherChannel Operation</span></div>
+    <div class="sp-row" id="row-s2"><span class="sr-status" id="st-s2">○</span><span class="sr-nb">6.2</span><span class="sr-ttl">Configure EtherChannel</span></div>
+    <div class="sp-row" id="row-s3"><span class="sr-status" id="st-s3">○</span><span class="sr-nb">6.3</span><span class="sr-ttl">Verify and Troubleshoot EtherChannel</span></div>
+    <div class="sp-row" id="row-s-pt-6-4"><span class="sr-status" id="st-s-pt-6-4">○</span><span class="sr-nb">PT 6.4</span><span class="sr-ttl">Packet Tracer — Implement EtherChannel</span></div>
+    <div class="sp-row" id="row-s4"><span class="sr-status" id="st-s4">○</span><span class="sr-nb">CMD</span><span class="sr-ttl">Quick Reference — All Module 6 Commands</span></div>
+    <div class="sp-row" id="row-s5"><span class="sr-status" id="st-s5">○</span><span class="sr-nb">🎯</span><span class="sr-ttl">Common Exam Traps — Module 6</span></div>
+  </div>
+</div>
+
+<!-- TABLE OF CONTENTS -->
+<div class="toc">
+  <div class="toch open" onclick="this.classList.toggle('open');document.getElementById('tocb').classList.toggle('open')">
+    📋 Table of Contents — Tap to expand <span class="arr">▼</span>
+  </div>
+  <div class="tocb open" id="tocb">
+    <div class="tocg">6.1 — EtherChannel Operation</div>
+    <a href="javascript:void(0)" onclick="goTo('s1')"><span class="n">6.1.1</span> Link Aggregation</a>
+    <a href="javascript:void(0)" onclick="goTo('s1')"><span class="n">6.1.2</span> EtherChannel and Port Channels</a>
+    <a href="javascript:void(0)" onclick="goTo('s1')"><span class="n">6.1.3</span> Advantages of EtherChannel</a>
+    <a href="javascript:void(0)" onclick="goTo('s1')"><span class="n">6.1.4</span> Implementation Restrictions</a>
+    <a href="javascript:void(0)" onclick="goTo('s1')"><span class="n">6.1.5</span> AutoNegotiation Protocols</a>
+    <a href="javascript:void(0)" onclick="goTo('s1')"><span class="n">6.1.6</span> PAgP Operation</a>
+    <a href="javascript:void(0)" onclick="goTo('s1')"><span class="n">6.1.7</span> PAgP Mode Compatibility</a>
+    <a href="javascript:void(0)" onclick="goTo('s1')"><span class="n">6.1.8</span> LACP Operation</a>
+    <a href="javascript:void(0)" onclick="goTo('s1')"><span class="n">6.1.9</span> LACP Mode Compatibility</a>
+    <div class="tocg">6.2 — Configure EtherChannel</div>
+    <a href="javascript:void(0)" onclick="goTo('s2')"><span class="n">6.2.1</span> Configuration Guidelines</a>
+    <a href="javascript:void(0)" onclick="goTo('s2')"><span class="n">6.2.2</span> LACP Configuration Example</a>
+    <div class="tocg">6.3 — Verify and Troubleshoot EtherChannel</div>
+    <a href="javascript:void(0)" onclick="goTo('s3')"><span class="n">6.3.1</span> Verify EtherChannel</a>
+    <a href="javascript:void(0)" onclick="goTo('s3')"><span class="n">6.3.2</span> Common EtherChannel Issues</a>
+    <a href="javascript:void(0)" onclick="goTo('s3')"><span class="n">6.3.3</span> Troubleshoot EtherChannel Example</a>
+    <div class="tocg">Reference</div>
+    <a href="javascript:void(0)" onclick="goTo('s4')"><span class="n">CMD</span> All Module 6 Commands</a>
+    <a href="javascript:void(0)" onclick="goTo('s5')"><span class="n">🎯</span> Common Exam Traps</a>
+  </div>
+</div>
+
+<div class="wrap">
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- SECTION 6.1 — ETHERCHANNEL OPERATION -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div class="sec" id="s1">
+<div class="sh open" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">6.1</span><span class="ttl">EtherChannel Operation</span></span><button class="sec-check" id="sch-s1" onclick="event.stopPropagation();toggleSection('s1',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb open">
+
+  <div class="sub">
+  <h3><span class="sn">6.1.1</span> Link Aggregation</h3>
+  <p>You already know from Module 5 that STP blocks redundant links to prevent Layer 2 loops. But what if you need both redundancy AND more bandwidth between switches? Adding more cables won't help — STP will block them.</p>
+  <p><strong>EtherChannel</strong> solves this. It groups multiple physical Ethernet links into one single <strong>logical link</strong>. STP sees the entire bundle as one link — so it never blocks the individual physical ports inside it.</p>
+  <div class="dg"><pre>
+  Without EtherChannel (STP blocks redundant link):
+  [S1] ══Fa0/1══ [S2]   ← active (STP forwarding)
+  [S1] ══Fa0/2══ [S2]   ← BLOCKED by STP — wasted capacity
+
+  With EtherChannel (both links active):
+  [S1] ══Fa0/1══╗
+                ╠══ Port-Channel 1 ══ STP sees ONE logical link
+  [S1] ══Fa0/2══╝
+  Both links carry traffic — load balanced — STP never blocks either</pre></div>
+  <div class="ca info">
+    <span class="ic">💡</span>
+    <div>EtherChannel provides <strong>fault-tolerance, load sharing, increased bandwidth, and redundancy</strong> between switches, routers, and servers — all while remaining transparent to STP.</div>
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">6.1.2</span> EtherChannel and Port Channels</h3>
+  <p>EtherChannel was originally developed by Cisco as a switch-to-switch technique. When an EtherChannel is configured, the resulting virtual interface is called a <strong>port channel</strong>. The physical interfaces are bundled into this port channel interface.</p>
+  <div class="tw"><table>
+    <tr><th>Concept</th><th>Detail</th></tr>
+    <tr><td><strong>Port channel</strong></td><td>The virtual logical interface created when EtherChannel is configured. Referred to as <code>Port-channel1</code>, <code>Po1</code> etc. in IOS</td></tr>
+    <tr><td><strong>Member ports</strong></td><td>The physical interfaces bundled into the port channel (e.g. Fa0/1, Fa0/2)</td></tr>
+    <tr><td><strong>Bandwidth</strong></td><td>Combined — two 1 Gbps links = 2 Gbps port channel. Eight 1 Gbps links = 8 Gbps port channel</td></tr>
+    <tr><td><strong>Configuration</strong></td><td>Applied to the port channel interface — automatically propagated to all member ports</td></tr>
+  </table></div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">6.1.3</span> Advantages of EtherChannel</h3>
+  <div class="tw"><table>
+    <tr><th>Advantage</th><th>Explanation</th></tr>
+    <tr><td><strong>Simplified configuration</strong></td><td>Configure the port channel interface once — settings apply to all member ports automatically. No need to configure each physical port individually.</td></tr>
+    <tr><td><strong>No hardware upgrade needed</strong></td><td>Uses existing switch ports — no need for a faster or more expensive single link to increase bandwidth</td></tr>
+    <tr><td><strong>Load balancing</strong></td><td>Traffic distributed across all physical links using source/destination MAC or IP hashing. Method depends on hardware platform.</td></tr>
+    <tr><td><strong>STP compatibility</strong></td><td>STP sees the entire EtherChannel as one logical link. If STP blocks the port channel, it blocks all member ports. If STP forwards, all member ports forward.</td></tr>
+    <tr><td><strong>Redundancy without STP recalculation</strong></td><td>If one physical link in the bundle fails, traffic shifts to remaining links automatically. No STP topology recalculation — the logical link is still up.</td></tr>
+  </table></div>
+  <div class="et">
+    <div class="lbl">🎯 MOST IMPORTANT ADVANTAGE FOR THE EXAM</div>
+    Loss of one physical link within an EtherChannel does <strong>NOT</strong> trigger an STP recalculation. STP still sees the port channel interface as up. Traffic automatically redistributes across the remaining active physical links — no topology change, no convergence delay.
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">6.1.4</span> Implementation Restrictions</h3>
+  <p>Violating any of these restrictions will prevent the EtherChannel from forming. These are all exam-tested:</p>
+  <div class="tw"><table>
+    <tr><th>Restriction</th><th>Detail</th></tr>
+    <tr><td><strong>No mixed interface types</strong></td><td>FastEthernet and GigabitEthernet cannot be in the same EtherChannel — all member ports must be the same type</td></tr>
+    <tr><td><strong>Maximum 8 ports per EtherChannel</strong></td><td>Up to 8 physical links per bundle. Max bandwidth: 800 Mbps (Fast EtherChannel) or 8 Gbps (Gigabit EtherChannel)</td></tr>
+    <tr><td><strong>Maximum 6 EtherChannels on Catalyst 2960</strong></td><td>The 2960 supports up to 6 EtherChannel groups total</td></tr>
+    <tr><td><strong>All ports must have identical configuration</strong></td><td>Speed, duplex, VLAN assignment, native VLAN, trunk allowed VLANs — all must match on both ends of the link</td></tr>
+    <tr><td><strong>All ports must be Layer 2</strong></td><td>All member ports in an EtherChannel must be configured as Layer 2 switchports</td></tr>
+    <tr><td><strong>Configure via port channel interface</strong></td><td>Apply settings to the port channel interface — it propagates to all member ports. Configuring individual member ports after EtherChannel formation can cause compatibility issues.</td></tr>
+  </table></div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">6.1.5</span> AutoNegotiation Protocols</h3>
+  <p>EtherChannels can be formed three ways:</p>
+  <div class="proto-grid">
+    <div class="proto-card pagp">
+      <div class="pc-title">🔵 PAgP — Cisco Proprietary</div>
+      <ul>
+        <li>Port Aggregation Protocol</li>
+        <li>Cisco devices only</li>
+        <li>Modes: <code>on</code>, <code>desirable</code>, <code>auto</code></li>
+        <li>Packets sent every 30 seconds</li>
+      </ul>
+    </div>
+    <div class="proto-card lacp">
+      <div class="pc-title">✅ LACP — IEEE Standard (Preferred)</div>
+      <ul>
+        <li>Link Aggregation Control Protocol</li>
+        <li>IEEE 802.3ad / 802.1AX</li>
+        <li>Works in multivendor environments</li>
+        <li>Modes: <code>on</code>, <code>active</code>, <code>passive</code></li>
+        <li>Supports 8 active + 8 standby links</li>
+      </ul>
+    </div>
+    <div class="proto-card static">
+      <div class="pc-title">⚠️ Static (On Mode) — No Negotiation</div>
+      <ul>
+        <li>Forces EtherChannel without any protocol</li>
+        <li>Both sides must be set to <code>on</code></li>
+        <li>No compatibility checking — risky</li>
+        <li>No negotiation packets exchanged</li>
+      </ul>
+    </div>
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">6.1.6</span> PAgP Operation</h3>
+  <p><strong>PAgP (Port Aggregation Protocol)</strong> is Cisco-proprietary. It automatically creates EtherChannel links by sending PAgP packets between capable ports to negotiate channel formation. PAgP also manages the channel after formation — sending packets every <strong>30 seconds</strong> to verify configuration consistency.</p>
+  <div class="tw"><table>
+    <tr><th>PAgP Mode</th><th>Behavior</th><th>Initiates Negotiation?</th></tr>
+    <tr><td><strong>On</strong></td><td>Forces EtherChannel with no PAgP packets. Other side must also be <code>on</code>.</td><td>❌ No — bypasses PAgP entirely</td></tr>
+    <tr><td><strong>Desirable</strong></td><td>Active — sends PAgP packets to initiate negotiation. Forms channel with desirable or auto.</td><td>✅ Yes — actively initiates</td></tr>
+    <tr><td><strong>Auto</strong></td><td>Passive — responds to PAgP packets but never sends first. Waits for the other side.</td><td>❌ No — only responds</td></tr>
+  </table></div>
+  <div class="ca info">
+    <span class="ic">💡</span>
+    <div>PAgP also ensures that when an EtherChannel is created, all ports have the same type of configuration. Any port modification after creation also changes all other channel ports — this is enforced by PAgP automatically.</div>
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">6.1.7</span> PAgP Mode Compatibility</h3>
+  <div class="tw"><table>
+    <tr><th>S1 Mode</th><th>S2 Mode</th><th>EtherChannel Forms?</th><th>Why</th></tr>
+    <tr><td>On</td><td>On</td><td>✅ Yes</td><td>Both force the channel — no negotiation needed</td></tr>
+    <tr><td>On</td><td>Desirable</td><td>❌ No</td><td><code>on</code> doesn't respond to PAgP packets</td></tr>
+    <tr><td>On</td><td>Auto</td><td>❌ No</td><td><code>on</code> doesn't respond to PAgP packets</td></tr>
+    <tr><td>Desirable</td><td>Desirable</td><td>✅ Yes</td><td>Both actively negotiate — channel forms</td></tr>
+    <tr><td>Desirable</td><td>Auto</td><td>✅ Yes</td><td>Desirable initiates, auto responds</td></tr>
+    <tr><td>Auto</td><td>Desirable</td><td>✅ Yes</td><td>Desirable initiates, auto responds</td></tr>
+    <tr><td>Auto</td><td>Auto</td><td>❌ No</td><td>Both passive — neither initiates — channel never forms</td></tr>
+  </table></div>
+  <div class="ca danger">
+    <span class="ic">❌</span>
+    <div><strong>Auto + Auto = NO EtherChannel.</strong> Both sides are passive — each waits for the other to start negotiation. Neither does. This is the single most common PAgP misconfiguration. At least one side must be <code>desirable</code>.</div>
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">6.1.8</span> LACP Operation</h3>
+  <p><strong>LACP (Link Aggregation Control Protocol)</strong> is an IEEE standard (IEEE 802.3ad / IEEE 802.1AX) that performs the same function as PAgP but works across any vendor's equipment. LACP is the preferred protocol for new deployments.</p>
+  <div class="tw"><table>
+    <tr><th>LACP Mode</th><th>Behavior</th><th>Initiates Negotiation?</th></tr>
+    <tr><td><strong>On</strong></td><td>Forces EtherChannel with no LACP packets. Other side must also be <code>on</code>.</td><td>❌ No — bypasses LACP entirely</td></tr>
+    <tr><td><strong>Active</strong></td><td>Sends LACP packets to initiate negotiation. Forms channel with active or passive.</td><td>✅ Yes — actively initiates</td></tr>
+    <tr><td><strong>Passive</strong></td><td>Responds to LACP packets but does not initiate. Waits for the other side.</td><td>❌ No — only responds</td></tr>
+  </table></div>
+  <div class="et">
+    <div class="lbl">🎯 LACP STANDBY LINKS — UNIQUE TO LACP</div>
+    LACP supports up to <strong>8 active links + 8 standby links</strong> (16 total configured, 8 active at a time).<br><br>
+    If one active link fails, a standby link automatically becomes active — immediately, with no STP recalculation.<br><br>
+    PAgP has no standby link concept — only 8 active links maximum.
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">6.1.9</span> LACP Mode Compatibility</h3>
+  <div class="tw"><table>
+    <tr><th>S1 Mode</th><th>S2 Mode</th><th>EtherChannel Forms?</th><th>Why</th></tr>
+    <tr><td>On</td><td>On</td><td>✅ Yes</td><td>Both force the channel — no negotiation needed</td></tr>
+    <tr><td>On</td><td>Active</td><td>❌ No</td><td><code>on</code> doesn't respond to LACP packets</td></tr>
+    <tr><td>On</td><td>Passive</td><td>❌ No</td><td><code>on</code> doesn't respond to LACP packets</td></tr>
+    <tr><td>Active</td><td>Active</td><td>✅ Yes</td><td>Both actively negotiate — channel forms</td></tr>
+    <tr><td>Active</td><td>Passive</td><td>✅ Yes</td><td>Active initiates, passive responds</td></tr>
+    <tr><td>Passive</td><td>Active</td><td>✅ Yes</td><td>Active initiates, passive responds</td></tr>
+    <tr><td>Passive</td><td>Passive</td><td>❌ No</td><td>Both passive — neither initiates — channel never forms</td></tr>
+  </table></div>
+  <div class="ca tip">
+    <span class="ic">✅</span>
+    <div><strong>PAgP vs LACP parallel — the modes map directly:</strong><br>
+    PAgP <code>desirable</code> ↔ LACP <code>active</code> (both = initiator)<br>
+    PAgP <code>auto</code> ↔ LACP <code>passive</code> (both = responder)<br>
+    <code>on</code> is identical in both — forces channel, no packets, other side must also be <code>on</code>.</div>
+  </div>
+  </div>
+
+</div></div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- SECTION 6.2 — CONFIGURE ETHERCHANNEL -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div class="sec" id="s2">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">6.2</span><span class="ttl">Configure EtherChannel</span></span><button class="sec-check" id="sch-s2" onclick="event.stopPropagation();toggleSection('s2',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb">
+
+  <div class="sub">
+  <h3><span class="sn">6.2.1</span> Configuration Guidelines</h3>
+  <p>Before configuring EtherChannel, all four of these requirements must be satisfied on all member interfaces:</p>
+  <ol class="steps">
+    <li><strong>EtherChannel support</strong> — All Ethernet interfaces must support EtherChannel. No requirement that interfaces be physically adjacent or on the same module.</li>
+    <li><strong>Speed and duplex match</strong> — All interfaces in the bundle must operate at the same speed and duplex mode. A half-duplex port on one switch and full-duplex on the other = no EtherChannel.</li>
+    <li><strong>VLAN match</strong> — All interfaces must be assigned to the same VLAN (access mode) OR all configured as trunks. You cannot mix access and trunk ports in one EtherChannel.</li>
+    <li><strong>Allowed VLAN range match</strong> — If trunking, all interfaces must have the identical allowed VLAN range. Different allowed VLAN lists prevent EtherChannel formation even if modes are compatible.</li>
+  </ol>
+  <div class="ca danger">
+    <span class="ic">🚨</span>
+    <div><strong>Configure settings on the port channel interface — not on individual member ports.</strong> After EtherChannel is formed, changes applied to the port channel propagate to all members. Changes applied directly to a member port can cause incompatibility and STP errors (ports may go err-disabled).</div>
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">6.2.2</span> LACP Configuration Example (Three Steps)</h3>
+  <p>Configuring EtherChannel always follows the same three-step sequence regardless of protocol:</p>
+
+  <div class="cfg-step">
+    <div class="cs-num">Step 1</div>
+    <div class="cs-title">Select the interfaces using interface range</div>
+    <div class="cs-body">Use <code>interface range</code> to select all the physical ports that will be part of the EtherChannel bundle in one command.</div>
+  </div>
+  <div class="cfg-step">
+    <div class="cs-num">Step 2</div>
+    <div class="cs-title">Create the port channel and assign the mode</div>
+    <div class="cs-body">Use <code>channel-group [id] mode [mode]</code> to create the logical port channel interface and specify PAgP or LACP mode. IOS automatically creates the port channel interface and you will see console messages as ports briefly cycle.</div>
+  </div>
+  <div class="cfg-step">
+    <div class="cs-num">Step 3</div>
+    <div class="cs-title">Configure the port channel interface</div>
+    <div class="cs-body">Enter <code>interface port-channel [id]</code> and configure trunking, VLANs, or other settings here. Settings propagate to all member ports automatically.</div>
+  </div>
+
+  <div class="cw">
+    <div class="cl">S1 — Complete LACP EtherChannel Configuration <button class="cpb" onclick="copyCode(this)">Copy</button></div>
+    <pre><code>! STEP 1: Select the physical interfaces
+S1(config)# interface range FastEthernet 0/1 - 2
+
+! STEP 2: Create port channel with LACP active mode
+S1(config-if-range)# channel-group 1 mode active
+Creating a port-channel interface Port-channel 1
+
+! IOS console messages -- normal, not errors:
+*Mar 21 00:02:28.184: %LINEPROTO-5-UPDOWN: Line protocol on Interface
+  FastEthernet0/1, changed state to down
+*Mar 21 00:02:28.193: %LINEPROTO-5-UPDOWN: Line protocol on Interface
+  FastEthernet0/2, changed state to down
+*Mar 21 00:02:36.179: %LINEPROTO-5-UPDOWN: Line protocol on Interface
+  FastEthernet0/1, changed state to up
+*Mar 21 00:04:34.114: %LINK-3-UPDOWN: Interface Port-channel1, changed state to up
+*Mar 21 00:04:35.121: %LINEPROTO-5-UPDOWN: Line protocol on Interface
+  Port-channel1, changed state to up
+
+! STEP 3: Configure the port channel interface
+S1(config-if-range)# exit
+S1(config)# interface port-channel 1
+S1(config-if)# switchport mode trunk
+S1(config-if)# switchport trunk allowed vlan 1,2,20</code></pre>
+  </div>
+
+  <div class="cw">
+    <div class="cl">S2 — Mirror configuration (LACP active or passive — both work with S1 active) <button class="cpb" onclick="copyCode(this)">Copy</button></div>
+    <pre><code>S2(config)# interface range FastEthernet 0/1 - 2
+S2(config-if-range)# channel-group 1 mode active
+S2(config-if-range)# exit
+S2(config)# interface port-channel 1
+S2(config-if)# switchport mode trunk
+S2(config-if)# switchport trunk allowed vlan 1,2,20</code></pre>
+  </div>
+
+  <div class="cw">
+    <div class="cl">PAgP Alternative — replace mode active with mode desirable <button class="cpb" onclick="copyCode(this)">Copy</button></div>
+    <pre><code>! For PAgP instead of LACP, use 'desirable' instead of 'active'
+! Everything else is identical
+
+S1(config)# interface range FastEthernet 0/1 - 2
+S1(config-if-range)# channel-group 1 mode desirable
+S1(config-if-range)# exit
+S1(config)# interface port-channel 1
+S1(config-if)# switchport mode trunk
+S1(config-if)# switchport trunk allowed vlan 1,2,20</code></pre>
+  </div>
+
+  <div class="ca info">
+    <span class="ic">💡</span>
+    <div><strong>Channel group number:</strong> The number after <code>channel-group</code> (e.g., 1) is a local identifier — it does not have to match on both switches. What matters is that the physical ports on both sides connect to each other and have compatible modes. However, Cisco best practice is to use the same group number on both ends for clarity.</div>
+  </div>
+  </div>
+
+  <!-- PT INLINE -->
+  <div style="margin:20px 0 6px;padding:14px 16px;background:#0d1117;border:1px solid #30363d;border-left:3px solid #1f6feb;border-radius:6px">
+    <div style="font-size:.72em;font-weight:800;text-transform:uppercase;letter-spacing:.8px;color:#1f6feb;margin-bottom:10px">&#x1F4E6; Packet Tracer Activities</div>
+  <div style="display:flex;align-items:baseline;gap:10px;padding:6px 0;border-bottom:1px solid #21262d"><span style="font-family:monospace;font-size:.85em;color:#79c0ff;white-space:nowrap;flex-shrink:0;min-width:52px">6.2.4</span><span style="font-size:.88em;color:#c9d1d9">Configure EtherChannel</span></div>
+    <div style="margin-top:10px;font-size:.78em;color:#6e7681">Full list: <a href="https://itexamanswers.net/ccna-2-packet-tracer-labs-answers-srwe-v7-02.html" target="_blank" rel="noopener" style="color:#58a6ff;word-break:break-all">https://itexamanswers.net/ccna-2-packet-tracer-labs-answers-srwe-v7-02.html</a></div>
+  </div>
+
+</div></div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- SECTION 6.3 — VERIFY AND TROUBLESHOOT -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div class="sec" id="s3">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">6.3</span><span class="ttl">Verify and Troubleshoot EtherChannel</span></span><button class="sec-check" id="sch-s3" onclick="event.stopPropagation();toggleSection('s3',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb">
+
+  <div class="sub">
+  <h3><span class="sn">6.3.1</span> Verify EtherChannel</h3>
+  <p>Four commands are used to verify EtherChannel. Know all four for the exam.</p>
+
+  <p style="font-weight:700;color:var(--dark);margin:12px 0 4px;">Command 1 — show interfaces port-channel [id]</p>
+  <div class="cw">
+    <div class="cl">show interfaces port-channel 1 — overall port channel status <button class="cpb" onclick="copyCode(this)">Copy</button></div>
+    <pre><code>S1# show interfaces port-channel 1
+Port-channel1 is up, line protocol is up (connected)
+  Hardware is EtherChannel, address is c07b.bcc4.a981
+  MTU 1500 bytes, BW 200000 Kbit/sec, DLY 100 usec,
+!                    ↑ 200 Mbps = two bundled 100 Mbps links
+  reliability 255/255, txload 1/255, rxload 1/255</code></pre>
+  </div>
+
+  <p style="font-weight:700;color:var(--dark);margin:12px 0 4px;">Command 2 — show etherchannel summary (most useful — use this first)</p>
+  <div class="cw">
+    <div class="cl">show etherchannel summary — quick health check for all groups <button class="cpb" onclick="copyCode(this)">Copy</button></div>
+    <pre><code>S1# show etherchannel summary
+Flags:  D - down        P - bundled in port-channel
+        I - stand-alone s - suspended
+        H - Hot-standby (LACP only)
+        R - Layer3      S - Layer2
+        U - in use      f - failed to allocate aggregator
+
+Group  Port-channel  Protocol    Ports
+------+-------------+-----------+---------------------------
+1      Po1(SU)         LACP      Fa0/1(P)    Fa0/2(P)
+!           ↑↑                         ↑           ↑
+!           SU = Layer2, in Use        P = bundled (active member)
+!     (Working correctly)</code></pre>
+  </div>
+
+  <p style="font-weight:700;color:var(--dark);margin:14px 0 6px;">Reading the flags in show etherchannel summary:</p>
+  <div class="flag-grid">
+    <span class="flag-code">SU</span><span class="flag-desc">✅ Layer 2 EtherChannel, in Use — channel is operational</span>
+    <span class="flag-code">SD</span><span class="flag-desc">❌ Layer 2 EtherChannel, Down — channel is NOT working</span>
+    <span class="flag-code">RU</span><span class="flag-desc">Layer 3 EtherChannel, in Use</span>
+    <span class="flag-code">P</span><span class="flag-desc">Port is bundled in the port channel (active member)</span>
+    <span class="flag-code">D</span><span class="flag-desc">Port is down</span>
+    <span class="flag-code">I</span><span class="flag-desc">Stand-alone — port is not part of any bundle</span>
+    <span class="flag-code">s</span><span class="flag-desc">Suspended — port is suspended from the channel</span>
+    <span class="flag-code">H</span><span class="flag-desc">Hot-standby — LACP standby link (ready to take over)</span>
+  </div>
+
+  <p style="font-weight:700;color:var(--dark);margin:12px 0 4px;">Command 3 — show etherchannel port-channel</p>
+  <div class="cw">
+    <div class="cl">show etherchannel port-channel — detailed info about one port channel <button class="cpb" onclick="copyCode(this)">Copy</button></div>
+    <pre><code>S1# show etherchannel port-channel
+Group: 1
+Port-channel: Po1  (Primary Aggregator)
+  Age of the Port-channel = 0d:01h:02m:10s
+  Number of ports = 2
+  Protocol            = LACP
+  Port state          = Port-channel Ag-Inuse
+  Ports in the Port-channel:
+  Index   Load   Port     EC state
+    0     00     Fa0/1    Active
+    0     00     Fa0/2    Active
+  Time since last port bundled: 0d:00h:09m:30s  Fa0/2</code></pre>
+  </div>
+
+  <p style="font-weight:700;color:var(--dark);margin:12px 0 4px;">Command 4 — show interfaces [int] etherchannel</p>
+  <div class="cw">
+    <div class="cl">show interfaces fa0/1 etherchannel — role of one physical member port <button class="cpb" onclick="copyCode(this)">Copy</button></div>
+    <pre><code>S1# show interfaces f0/1 etherchannel
+Port state    = Up Mstr Assoc In-Bndl   ← "In-Bndl" = this port is bundled
+Channel group = 1           Mode = Active
+Port-channel  = Po1         Protocol    = LACP</code></pre>
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">6.3.2</span> Common Issues with EtherChannel Configurations</h3>
+  <p>All four of these are directly tested on the CCNA exam. Each one prevents EtherChannel from forming:</p>
+  <div class="tw"><table>
+    <tr><th>Issue</th><th>Why It Breaks EtherChannel</th><th>Fix</th></tr>
+    <tr><td><strong>Ports in different VLANs</strong></td><td>All access ports must be in the same VLAN. Ports with different native VLANs cannot form an EtherChannel.</td><td>Assign all member ports to the same VLAN, or configure all as trunks</td></tr>
+    <tr><td><strong>Trunking on some ports but not all</strong></td><td>Never configure trunking on individual member ports. Configure trunk on the port channel interface only.</td><td>Remove trunk config from member ports; configure on <code>port-channel</code> interface instead</td></tr>
+    <tr><td><strong>Different allowed VLAN ranges</strong></td><td>If allowed VLAN lists differ, ports do not form EtherChannel — even when PAgP/LACP modes are compatible.</td><td>Ensure identical allowed VLAN range on all member ports (via port channel interface)</td></tr>
+    <tr><td><strong>Incompatible negotiation modes</strong></td><td>On + active/passive = no channel. Auto + auto = no channel. Passive + passive = no channel.</td><td>Ensure at least one side is <code>desirable</code> (PAgP) or <code>active</code> (LACP). Or set both to <code>on</code>.</td></tr>
+  </table></div>
+  <div class="ca warn">
+    <span class="ic">⚠️</span>
+    <div><strong>Easy to confuse — PAgP/LACP vs DTP:</strong> Both operate on trunk links but serve different purposes. PAgP/LACP negotiate <strong>EtherChannel formation</strong> (link aggregation). DTP negotiates <strong>trunk formation</strong>. When configuring an EtherChannel trunk, configure EtherChannel (PAgP/LACP) first, then configure trunking on the port channel interface.</div>
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">6.3.3</span> Troubleshoot EtherChannel Example</h3>
+  <div class="sc">
+    <div class="scl">🔍 TROUBLESHOOT SCENARIO</div>
+    S1 and S2 have EtherChannel configured on Fa0/1 and Fa0/2. The EtherChannel is not operational. Find and fix the problem.
+  </div>
+
+  <p style="font-weight:700;color:var(--dark);margin:12px 0 4px;">Step 1 — Check the summary:</p>
+  <div class="cw">
+    <div class="cl">show etherchannel summary — identify the problem <button class="cpb" onclick="copyCode(this)">Copy</button></div>
+    <pre><code>S1# show etherchannel summary
+Group  Port-channel  Protocol    Ports
+------+-------------+-----------+---------------------------
+1      Po1(SD)         -      Fa0/1(D)    Fa0/2(D)
+!           ↑↑                      ↑
+!           SD = Layer2, DOWN        D = port is down
+! EtherChannel is completely non-functional</code></pre>
+  </div>
+
+  <p style="font-weight:700;color:var(--dark);margin:12px 0 4px;">Step 2 — Check the running config on both switches:</p>
+  <div class="cw">
+    <div class="cl">show run | begin interface port-channel — compare both sides <button class="cpb" onclick="copyCode(this)">Copy</button></div>
+    <pre><code>S1# show run | begin interface port-channel
+interface FastEthernet0/1
+ channel-group 1 mode on        ← S1 is set to "on"
+
+interface FastEthernet0/2
+ channel-group 1 mode on        ← S1 is set to "on"
+!================================================
+S2# show run | begin interface port-channel
+interface FastEthernet0/1
+ channel-group 1 mode desirable ← S2 is set to "desirable"
+
+interface FastEthernet0/2
+ channel-group 1 mode desirable ← S2 is set to "desirable"
+
+! PROBLEM: S1 = "on", S2 = "desirable" -- incompatible!
+! "on" forces EtherChannel but sends NO negotiation packets
+! "desirable" sends PAgP packets and waits for a response
+! Since "on" never responds to PAgP, the channel never forms</code></pre>
+  </div>
+
+  <p style="font-weight:700;color:var(--dark);margin:12px 0 4px;">Step 3 — Fix it (critical order of operations):</p>
+  <div class="cw">
+    <div class="cl">Fix — remove and recreate port channel (do NOT change mode directly) <button class="cpb" onclick="copyCode(this)">Copy</button></div>
+    <pre><code>! WARNING: Do NOT just change channel-group mode on active ports
+! Doing so causes STP to put the ports into err-disabled state
+! Always remove the port channel first, then recreate
+
+S1(config)# no interface port-channel 1       ! Remove first
+S1(config)# interface range fa0/1 - 2
+S1(config-if-range)# channel-group 1 mode desirable   ! Recreate
+S1(config-if-range)# no shutdown
+S1(config-if-range)# exit
+S1(config)# interface port-channel 1
+S1(config-if)# switchport mode trunk
+S1(config-if)# switchport trunk allowed vlan 1,2,20
+S1(config-if)# end</code></pre>
+  </div>
+
+  <p style="font-weight:700;color:var(--dark);margin:12px 0 4px;">Step 4 — Verify the fix:</p>
+  <div class="cw">
+    <div class="cl">show etherchannel summary — confirm operational <button class="cpb" onclick="copyCode(this)">Copy</button></div>
+    <pre><code>S1# show etherchannel summary
+Group  Port-channel  Protocol    Ports
+------+-------------+-----------+---------------------------
+1      Po1(SU)         PAgP      Fa0/1(P)    Fa0/2(P)
+!           ↑↑                        ↑
+!           SU = in Use (working)     P = bundled
+! EtherChannel is now operational</code></pre>
+  </div>
+  <div class="ca danger">
+    <span class="ic">🚨</span>
+    <div><strong>Critical order of operations:</strong> Always use <code>no interface port-channel [id]</code> to remove the port channel BEFORE reconfiguring the channel-group mode. Changing the mode directly on active member ports causes STP to err-disable the ports. The remove-then-recreate approach avoids this.</div>
+  </div>
+  </div>
+
+  <!-- PT INLINE -->
+  <div style="margin:20px 0 6px;padding:14px 16px;background:#0d1117;border:1px solid #30363d;border-left:3px solid #1f6feb;border-radius:6px">
+    <div style="font-size:.72em;font-weight:800;text-transform:uppercase;letter-spacing:.8px;color:#1f6feb;margin-bottom:10px">&#x1F4E6; Packet Tracer Activities</div>
+  <div style="display:flex;align-items:baseline;gap:10px;padding:6px 0;border-bottom:1px solid #21262d"><span style="font-family:monospace;font-size:.85em;color:#79c0ff;white-space:nowrap;flex-shrink:0;min-width:52px">6.3.4</span><span style="font-size:.88em;color:#c9d1d9">Troubleshoot EtherChannel</span></div>
+    <div style="margin-top:10px;font-size:.78em;color:#6e7681">Full list: <a href="https://itexamanswers.net/ccna-2-packet-tracer-labs-answers-srwe-v7-02.html" target="_blank" rel="noopener" style="color:#58a6ff;word-break:break-all">https://itexamanswers.net/ccna-2-packet-tracer-labs-answers-srwe-v7-02.html</a></div>
+  </div>
+
+</div></div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- SECTION 6.4 — COMMANDS -->
+<!-- ═══════════════════════════════════════════════════════ -->
+
+<div class="sec" id="s-pt-6-4">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">6.4</span><span class="ttl">Packet Tracer — Implement EtherChannel</span></span><button class="sec-check" id="sch-s-pt-6-4" onclick="event.stopPropagation();toggleSection('s-pt-6-4',this)">○ Mark done</button>
+</div>
+<div class="sb">
+  <div style="padding:14px 16px;background:#0d1117;border:1px solid #30363d;border-left:3px solid #1f6feb;border-radius:6px">
+    <div style="font-size:.72em;font-weight:800;text-transform:uppercase;letter-spacing:.8px;color:#1f6feb;margin-bottom:10px">&#x1F4E6; Packet Tracer Activities</div>
+    <div style="font-size:.82em;color:#6e7681;margin-bottom:10px">Open in Cisco Packet Tracer via your NetAcad course.</div>
+      <div style="display:flex;align-items:baseline;gap:10px;padding:6px 0;border-bottom:1px solid #21262d"><span style="font-family:monospace;font-size:.85em;color:#79c0ff;white-space:nowrap;flex-shrink:0;min-width:52px">6.4.1</span><span style="font-size:.88em;color:#c9d1d9">Implement EtherChannel</span></div>
+    <div style="margin-top:12px;font-size:.78em;color:#6e7681">Full list: <a href="https://itexamanswers.net/ccna-2-packet-tracer-labs-answers-srwe-v7-02.html" target="_blank" rel="noopener" style="color:#58a6ff;word-break:break-all">https://itexamanswers.net/ccna-2-packet-tracer-labs-answers-srwe-v7-02.html</a></div>
+  </div>
+</div>
+</div>
+<div class="sec" id="s4">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">CMD</span><span class="ttl">Quick Reference — All Module 6 Commands</span></span><button class="sec-check" id="sch-s4" onclick="event.stopPropagation();toggleSection('s4',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb">
+
+  <p style="font-weight:700;color:var(--dark);margin-bottom:10px;">EtherChannel Configuration</p>
+  <div class="tw"><table>
+    <tr><th>Command</th><th>What It Does</th></tr>
+    <tr><td><code>interface range [type] [start] - [end]</code></td><td>Enter range mode to configure multiple interfaces simultaneously</td></tr>
+    <tr><td><code>channel-group [id] mode active</code></td><td>Create EtherChannel group — LACP active (initiates negotiation)</td></tr>
+    <tr><td><code>channel-group [id] mode passive</code></td><td>Create EtherChannel group — LACP passive (responds only)</td></tr>
+    <tr><td><code>channel-group [id] mode desirable</code></td><td>Create EtherChannel group — PAgP desirable (initiates negotiation)</td></tr>
+    <tr><td><code>channel-group [id] mode auto</code></td><td>Create EtherChannel group — PAgP auto (responds only)</td></tr>
+    <tr><td><code>channel-group [id] mode on</code></td><td>Create EtherChannel group — static, no negotiation protocol</td></tr>
+    <tr><td><code>interface port-channel [id]</code></td><td>Enter port channel interface configuration mode</td></tr>
+    <tr><td><code>no interface port-channel [id]</code></td><td>Remove the port channel — must do this BEFORE changing mode</td></tr>
+  </table></div>
+
+  <p style="font-weight:700;color:var(--dark);margin:20px 0 10px;">EtherChannel Verification</p>
+  <div class="tw"><table>
+    <tr><th>Command</th><th>What It Shows</th></tr>
+    <tr><td><code>show etherchannel summary</code></td><td>One-line health check for all EtherChannel groups — use this first when troubleshooting</td></tr>
+    <tr><td><code>show interfaces port-channel [id]</code></td><td>Overall status and combined bandwidth of the port channel interface</td></tr>
+    <tr><td><code>show etherchannel port-channel</code></td><td>Detailed info about a specific port channel — protocol, member ports, EC state</td></tr>
+    <tr><td><code>show interfaces [int] etherchannel</code></td><td>Role and status of one physical member interface within the bundle</td></tr>
+    <tr><td><code>show run | begin interface port-channel</code></td><td>View EtherChannel configuration in running config — compare both switches when troubleshooting</td></tr>
+  </table></div>
+
+  <p style="font-weight:700;color:var(--dark);margin:20px 0 10px;">Mode Summary — Which keyword to use</p>
+  <div class="tw"><table>
+    <tr><th>Protocol</th><th>Role</th><th>IOS Keyword</th><th>Works With</th></tr>
+    <tr><td>LACP</td><td>Active initiator</td><td><code>active</code></td><td><code>active</code> or <code>passive</code></td></tr>
+    <tr><td>LACP</td><td>Passive responder</td><td><code>passive</code></td><td><code>active</code> only</td></tr>
+    <tr><td>PAgP</td><td>Active initiator</td><td><code>desirable</code></td><td><code>desirable</code> or <code>auto</code></td></tr>
+    <tr><td>PAgP</td><td>Passive responder</td><td><code>auto</code></td><td><code>desirable</code> only</td></tr>
+    <tr><td>None (static)</td><td>No negotiation</td><td><code>on</code></td><td><code>on</code> only</td></tr>
+  </table></div>
+
+  <p style="font-weight:700;color:var(--dark);margin:20px 0 10px;">show etherchannel summary — Flag Reference</p>
+  <div class="tw"><table>
+    <tr><th>Flag</th><th>Location</th><th>Meaning</th></tr>
+    <tr><td><code>SU</code></td><td>Next to port channel (e.g. Po1)</td><td>✅ Layer 2, in Use — EtherChannel is operational</td></tr>
+    <tr><td><code>SD</code></td><td>Next to port channel</td><td>❌ Layer 2, Down — EtherChannel is NOT working</td></tr>
+    <tr><td><code>P</code></td><td>Next to member port</td><td>Port is bundled and active in the channel</td></tr>
+    <tr><td><code>D</code></td><td>Next to member port</td><td>Port is down</td></tr>
+    <tr><td><code>I</code></td><td>Next to member port</td><td>Stand-alone — not part of any bundle</td></tr>
+    <tr><td><code>s</code></td><td>Next to member port</td><td>Suspended from the channel</td></tr>
+    <tr><td><code>H</code></td><td>Next to member port</td><td>Hot-standby LACP link — ready to take over</td></tr>
+  </table></div>
+
+</div></div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- SECTION 6.5 — EXAM TRAPS -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div class="sec" id="s5">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">🎯</span><span class="ttl">Common Exam Traps — Module 6</span></span><button class="sec-check" id="sch-s5" onclick="event.stopPropagation();toggleSection('s5',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb">
+
+  <div class="ca danger"><span class="ic">❌</span><div><strong>Trap 1: Auto + Auto = no EtherChannel (PAgP). Passive + Passive = no EtherChannel (LACP).</strong><br>Both sides are passive — each waits for the other to initiate. Neither does. At least one side must be <code>desirable</code> (PAgP) or <code>active</code> (LACP) for the channel to form.</div></div>
+
+  <div class="ca danger"><span class="ic">❌</span><div><strong>Trap 2: On + Desirable or On + Active = no EtherChannel.</strong><br>The <code>on</code> mode forces EtherChannel without sending any negotiation packets. A side set to <code>desirable</code> or <code>active</code> sends negotiation packets and waits for a response — <code>on</code> never responds. The only working combination with <code>on</code> is <code>on</code> + <code>on</code>.</div></div>
+
+  <div class="ca danger"><span class="ic">❌</span><div><strong>Trap 3: Losing one physical link in an EtherChannel does NOT trigger STP recalculation.</strong><br>STP sees the port channel as one logical link. As long as at least one physical link is up, the port channel is still up from STP's perspective. Traffic redistributes automatically — no topology change, no convergence delay.</div></div>
+
+  <div class="ca danger"><span class="ic">❌</span><div><strong>Trap 4: Configure settings on the port channel interface — never on individual member ports.</strong><br>Changes on the port channel propagate to all members. Changes on individual member ports after EtherChannel formation cause incompatibility errors and may err-disable the ports.</div></div>
+
+  <div class="ca danger"><span class="ic">❌</span><div><strong>Trap 5: When reconfiguring EtherChannel mode, remove and recreate — never change directly.</strong><br>Always use <code>no interface port-channel [id]</code> first, then recreate with the correct mode. Changing <code>channel-group mode</code> directly on active member ports causes STP to err-disable those ports.</div></div>
+
+  <div class="ca danger"><span class="ic">❌</span><div><strong>Trap 6: All member interfaces must match on speed, duplex, VLAN assignment, and trunk allowed list.</strong><br>Any single mismatch in any of these four prevents EtherChannel formation — even if PAgP/LACP modes are correctly and compatibly configured on both sides.</div></div>
+
+  <div class="ca danger"><span class="ic">❌</span><div><strong>Trap 7: Interface types cannot be mixed.</strong><br>FastEthernet and GigabitEthernet cannot be bundled in the same EtherChannel. All member ports must be the same interface type and speed.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 8: Maximum 8 physical ports per EtherChannel. LACP also supports 8 standby ports.</strong><br>LACP uniquely supports 8 active + 8 standby links (16 total configured). If an active link fails, a standby takes over immediately. PAgP has no standby concept — only 8 active links maximum.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 9: SU = working, SD = broken in show etherchannel summary.</strong><br>The two-letter code next to the port channel number is the fastest diagnostic. <code>SU</code> (Layer 2, in Use) = operational. <code>SD</code> (Layer 2, Down) = not working. <code>P</code> next to a member port = bundled and active.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 10: PAgP = Cisco proprietary. LACP = IEEE standard (multivendor).</strong><br>PAgP only works between Cisco devices. LACP (IEEE 802.3ad / 802.1AX) works between any vendor that supports the standard. LACP is preferred when connecting Cisco to non-Cisco equipment.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 11: EtherChannel and DTP are different protocols with different purposes.</strong><br>PAgP and LACP negotiate <strong>EtherChannel</strong> (link aggregation). DTP negotiates <strong>trunking</strong>. Both operate on the same link simultaneously. Configure EtherChannel first (PAgP or LACP), then configure trunking on the port channel interface.</div></div>
+
+  <div class="ca tip"><span class="ic">✅</span><div><strong>Quick mode compatibility summary:</strong><br><br>
+  <strong>PAgP:</strong> desirable+desirable ✅ &nbsp;|&nbsp; desirable+auto ✅ &nbsp;|&nbsp; auto+auto ❌ &nbsp;|&nbsp; on+on ✅ &nbsp;|&nbsp; on+desirable/auto ❌<br><br>
+  <strong>LACP:</strong> active+active ✅ &nbsp;|&nbsp; active+passive ✅ &nbsp;|&nbsp; passive+passive ❌ &nbsp;|&nbsp; on+on ✅ &nbsp;|&nbsp; on+active/passive ❌<br><br>
+  <strong>Memory trick:</strong> At least one side must be "active" in both protocols (desirable for PAgP, active for LACP). Two passive sides = no channel. <code>on</code> only pairs with <code>on</code>.</div></div>
+
+</div></div>
+
+</div><!-- end .wrap -->
+
+<div class="ft">
+  CCNA 2 SRWE v7.02 — Module 6: EtherChannel v1.4<br>
+  Based on Cisco NetAcad curriculum · Study guide for personal use
+</div>
+
+<button class="tb" id="topb" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+
+<script>
+var MOD_KEY="ccna2-module6-etherchannel";
+var SECS=["s1","s2","s3","s-pt-6-4","s4","s5"];
+var checked={};
+function loadState(){
+  try{var s=localStorage.getItem(MOD_KEY);if(s)checked=JSON.parse(s);}catch(e){}
+  SECS.forEach(function(id){
+    var pill=document.getElementById('pill-'+id);
+    var row=document.getElementById('row-'+id);
+    var st=document.getElementById('st-'+id);
+    var sch=document.getElementById('sch-'+id);
+    if(checked[id]){
+      if(pill){pill.classList.add('checked');pill.querySelector('.pill-check').textContent='✓';}
+      if(row)row.classList.add('done');
+      if(st)st.textContent='✓';
+      if(sch){sch.classList.add('checked');sch.textContent='✓ Done';}
+    } else {
+      if(pill){pill.classList.remove('checked');pill.querySelector('.pill-check').textContent='○';}
+      if(row)row.classList.remove('done');
+      if(st)st.textContent='○';
+      if(sch){sch.classList.remove('checked');sch.textContent='○ Mark done';}
+    }
+  });
+}
+function toggleSection(id,btn){checked[id]=!checked[id];try{localStorage.setItem(MOD_KEY,JSON.stringify(checked));}catch(e){}loadState();}
+function toggleStudyPanel(){
+  var hdr=document.getElementById('sp-hdr');
+  var body=document.getElementById('sp-body');
+  var arr=document.getElementById('sp-arr');
+  hdr.classList.toggle('open');body.classList.toggle('open');
+  if(arr)arr.textContent=body.classList.contains('open')?'▲':'▼';
+}
+function goTo(id){var el=document.getElementById(id);if(!el)return;var h=el.querySelector('.sh,.section-header'),b=el.querySelector('.sb,.section-body');if(h&&b&&!b.classList.contains('open')){h.classList.add('open');b.classList.add('open');}setTimeout(function(){window.scrollTo({top:el.getBoundingClientRect().top+window.pageYOffset-60,behavior:'smooth'});},50);}
+function setFs(size,btn){document.documentElement.style.setProperty('--base-fs',size);document.querySelectorAll('.fs-btn').forEach(function(b){b.classList.remove('active');});btn.classList.add('active');try{localStorage.setItem('ccna-fs',size);}catch(e){}}
+(function(){try{var s=localStorage.getItem('ccna-fs');if(s){document.documentElement.style.setProperty('--base-fs',s);document.querySelectorAll('.fs-btn').forEach(function(b){b.classList.remove('active');if((b.textContent==='S'&&s==='14px')||(b.textContent==='M'&&s==='16px')||(b.textContent==='L'&&s==='18px')||(b.textContent==='XL'&&s==='20px'))b.classList.add('active');});}}catch(e){}loadState();})();
+function copyCode(b){var t=b.closest('.cw').querySelector('pre').innerText;if(navigator.clipboard){navigator.clipboard.writeText(t).then(function(){b.textContent='Copied!';setTimeout(function(){b.textContent='Copy';},1500);}).catch(function(){fb(t,b);});}else{fb(t,b);}}
+function fb(t,b){var a=document.createElement('textarea');a.value=t;a.style.position='fixed';a.style.opacity='0';document.body.appendChild(a);a.focus();a.select();document.execCommand('copy');document.body.removeChild(a);b.textContent='Copied!';setTimeout(function(){b.textContent='Copy';},1500);}
+</script>
+<script src="../../site-config.js"></script>
+</body>
+</html>

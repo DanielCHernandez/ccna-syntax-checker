@@ -1,0 +1,1072 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=2.0">
+<title>CCNA 3 Module 5: ACLs for IPv4 Configuration v2.2</title>
+<style>
+:root{
+  --blue:#1ba0d7;--dark:#005073;--green:#6cc24a;
+  --acl:#1a4731;--acld:#4ade80;
+  --bg:#f4f6f8;--card:#fff;--text:#1a1a2e;--muted:#5a6a7a;
+  --cbg:#0d1117;--ctxt:#c9d1d9;--r:12px;--sh:0 2px 12px rgba(0,0,0,.08);
+  --base-fs:16px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);font-size:var(--base-fs);line-height:1.7}
+
+.fs-bar{position:sticky;top:0;z-index:200;background:#1a1a2e;display:flex;align-items:center;justify-content:flex-end;padding:6px 14px;gap:6px;box-shadow:0 2px 8px rgba(0,0,0,.3)}
+.fs-label{color:#8b949e;font-size:.72em;font-weight:700;letter-spacing:.5px;text-transform:uppercase;margin-right:4px}
+.fs-btn{background:#30363d;color:#c9d1d9;border:2px solid transparent;border-radius:6px;padding:4px 12px;font-size:.75em;font-weight:700;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:all .2s;line-height:1.4}
+.fs-btn:active,.fs-btn.active{background:var(--acl);color:#fff;border-color:var(--acl)}
+
+.hdr{background:linear-gradient(135deg,#0f2d1e,var(--acl));color:#fff;padding:32px 20px 24px;text-align:center}
+.hdr .badge{display:inline-block;background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.4);border-radius:20px;padding:4px 14px;font-size:.81em;margin-bottom:12px}
+.hdr h1{font-size:1.625em;font-weight:700;margin-bottom:6px}
+.hdr p{font-size:.94em;opacity:.85}
+.hdr .obj{display:inline-block;background:rgba(255,255,255,.15);border-radius:8px;padding:7px 16px;margin-top:12px;font-size:.875em;font-style:italic}
+
+.pb{background:var(--card);padding:14px 16px;margin:16px 16px 0;border-radius:var(--r);box-shadow:var(--sh)}
+.pbl{font-size:.81em;color:var(--muted);margin-bottom:6px;font-weight:600}
+.pbt{background:#e0e7ef;border-radius:10px;height:8px;overflow:hidden}
+.pbf{background:linear-gradient(90deg,var(--acl),var(--acld));height:100%;border-radius:10px;width:0;transition:width 1s ease}
+
+.toc{background:var(--card);margin:16px;border-radius:var(--r);box-shadow:var(--sh);overflow:hidden}
+.toch{background:var(--acl);color:#fff;padding:14px 18px;font-weight:700;font-size:.94em;display:flex;justify-content:space-between;align-items:center;cursor:pointer;user-select:none}
+.toch .arr{transition:transform .3s}
+.toch.open .arr{transform:rotate(180deg)}
+.tocb{display:none;padding:10px 0}
+.tocb.open{display:block}
+.tocg{font-size:.69em;font-weight:800;letter-spacing:.8px;color:var(--acl);text-transform:uppercase;padding:8px 20px 2px}
+.tocb a{display:block;padding:9px 20px 9px 28px;color:var(--text);text-decoration:none;font-size:.875em;border-left:3px solid transparent;transition:all .2s}
+.tocb a:hover,.tocb a:active{background:#f0fdf4;border-left-color:var(--acld)}
+.tocb a .n{display:inline-block;background:var(--acl);color:#fff;border-radius:5px;padding:1px 8px;font-size:.75em;font-weight:700;margin-right:8px}
+
+.wrap{padding:0 16px 100px}
+
+.sec{background:var(--card);border-radius:var(--r);box-shadow:var(--sh);margin-bottom:16px;overflow:hidden}
+.sh{background:linear-gradient(90deg,#0f2d1e,var(--acl));color:#fff;padding:16px 18px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;user-select:none;-webkit-tap-highlight-color:transparent}
+.sh .ttl{font-weight:700;font-size:1em}
+.sh .nb{background:rgba(255,255,255,.25);border-radius:6px;padding:3px 10px;font-size:.81em;font-weight:700;margin-right:10px;white-space:nowrap}
+.sh .ch{font-size:1.125em;transition:transform .3s}
+.sh.open .ch{transform:rotate(180deg)}
+.sb{display:none;padding:18px}
+.sb.open{display:block}
+
+.sub{margin-bottom:24px}
+.sub:last-child{margin-bottom:0}
+.sub h3{font-size:.94em;font-weight:700;color:var(--acl);margin-bottom:10px;padding-bottom:6px;border-bottom:2px solid #f0fdf4;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.sub h3 .sn{background:var(--acl);color:#fff;border-radius:5px;padding:2px 8px;font-size:.75em;white-space:nowrap}
+.sub h4{font-size:.875em;font-weight:700;color:var(--acl);margin:14px 0 6px}
+.sub p{margin-bottom:10px;font-size:.94em}
+.sub ul,.sub ol{padding-left:20px;margin:8px 0;font-size:.94em}
+.sub li{margin-bottom:5px}
+
+.cw{background:var(--cbg);border-radius:10px;margin:12px 0;overflow:hidden}
+.cl{background:#21262d;color:#c9d1d9;font-size:.78em;font-weight:700;padding:6px 14px;letter-spacing:.5px;text-transform:uppercase;display:flex;justify-content:space-between;align-items:center}
+.cpb{background:#30363d;color:#c9d1d9;border:none;border-radius:5px;padding:3px 10px;font-size:.69em;cursor:pointer}
+.cpb:active{background:var(--acl);color:#fff}
+pre{margin:0;padding:14px;overflow-x:auto;-webkit-overflow-scrolling:touch}
+code{font-family:'Courier New',monospace;font-size:.81em;color:var(--ctxt);line-height:1.6}
+p code,li code,td code,.ca code{background:#f0fdf4;color:#0f2d1e;border-radius:4px;padding:1px 5px;font-size:.81em;font-family:'Courier New',monospace;font-weight:600}
+
+.ca{border-radius:8px;padding:12px 14px;margin:12px 0;font-size:.875em;line-height:1.6;display:flex;gap:10px;align-items:flex-start}
+.ca .ic{font-size:1.125em;flex-shrink:0;margin-top:1px}
+.ca.warn  {background:#fff3cd;border-left:4px solid #b38600;color:#3d2c00}
+.ca.tip   {background:#d4edda;border-left:4px solid #28a745;color:#0d3318}
+.ca.danger{background:#f8d7da;border-left:4px solid #dc3545;color:#3d0010}
+.ca.info  {background:#f0fdf4;border-left:4px solid var(--acl);color:#0f2d1e}
+
+.et{background:linear-gradient(135deg,#1a1a2e,#0f2d1e);color:#fff;border-radius:10px;padding:14px 16px;margin:14px 0;font-size:.875em;line-height:1.6}
+.et .lbl{font-size:.69em;font-weight:800;letter-spacing:1px;color:var(--acld);margin-bottom:6px}
+.et ul{padding-left:18px;margin-top:6px}
+.et li{margin-bottom:4px}
+
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:12px 0;border-radius:8px}
+table{width:100%;border-collapse:collapse;font-size:.875em}
+th{background:var(--acl);color:#fff;padding:10px 12px;text-align:left;font-weight:700;font-size:.81em}
+td{padding:9px 12px;border-bottom:1px solid #e8ecf0;vertical-align:top;color:#1a1a2e}
+tr:nth-child(even) td{background:#f0fdf4;color:#0f2d1e}
+tr:last-child td{border-bottom:none}
+
+.steps{counter-reset:step;list-style:none;padding:0;margin:12px 0}
+.steps li{counter-increment:step;display:flex;gap:12px;align-items:flex-start;padding:10px 0;border-bottom:1px solid #eef0f3;font-size:.875em;line-height:1.6}
+.steps li:last-child{border-bottom:none}
+.steps li::before{content:counter(step);background:var(--acl);color:#fff;border-radius:50%;min-width:26px;height:26px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.81em;flex-shrink:0;margin-top:2px}
+
+/* Dual panels */
+.dual{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:12px 0}
+@media(max-width:520px){.dual{grid-template-columns:1fr}}
+.dual-card{border-radius:10px;overflow:hidden}
+.dual-card .dc-hdr{padding:8px 12px;font-size:.81em;font-weight:800;color:#fff;text-align:center}
+.dual-card.std .dc-hdr{background:#1a3a5c}
+.dual-card.ext .dc-hdr{background:var(--acl)}
+.dual-card.vty .dc-hdr{background:#7b2d8b}
+.dual-card .dc-body{background:var(--cbg);padding:12px;font-family:'Courier New',monospace;font-size:.75em;color:var(--ctxt);line-height:1.7;overflow-x:auto}
+
+/* Modify method cards */
+.mod-grid{display:grid;gap:10px;margin:12px 0}
+.mod-card{border-radius:10px;padding:14px;border-left:5px solid}
+.mod-card.text{border-left-color:#1a3a5c;background:#e0f2fe}
+.mod-card.seq{border-left-color:var(--acl);background:#f0fdf4}
+.mod-card .mc-title{font-weight:800;font-size:.875em;margin-bottom:6px}
+.mod-card.text .mc-title{color:#1a3a5c}
+.mod-card.seq .mc-title{color:var(--acl)}
+.mod-card ul{padding-left:18px;font-size:.81em;color:#1a1a2e;line-height:1.8}
+
+/* Sequence edit flow */
+.seq-flow{background:#0d1117;border:2px solid var(--acld);border-radius:10px;padding:16px;margin:12px 0}
+.sf-title{font-size:.75em;font-weight:800;letter-spacing:.8px;color:var(--acld);text-transform:uppercase;margin-bottom:10px}
+.sf-step{display:flex;gap:10px;align-items:flex-start;padding:7px 0;border-bottom:1px solid #21262d;font-size:.81em;color:#c9d1d9;line-height:1.6}
+.sf-step:last-child{border-bottom:none}
+.sf-num{background:var(--acl);color:#fff;border-radius:50%;min-width:24px;height:24px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.75em;flex-shrink:0;margin-top:1px}
+.sf-cmd{font-family:'Courier New',monospace;color:var(--acld);font-size:.875em}
+
+/* VTY vs interface comparison */
+.cmd-compare{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:12px 0}
+@media(max-width:480px){.cmd-compare{grid-template-columns:1fr}}
+.cmp-card{border-radius:10px;padding:14px;text-align:center;border:2px solid}
+.cmp-card.intf{border-color:var(--acl);background:#f0fdf4}
+.cmp-card.vty{border-color:#7b2d8b;background:#f3e8ff}
+.cmp-card .cc-context{font-size:.69em;font-weight:700;color:var(--muted);text-transform:uppercase;margin-bottom:4px}
+.cmp-card .cc-cmd{font-family:'Courier New',monospace;font-size:.875em;font-weight:800;margin-bottom:6px}
+.cmp-card.intf .cc-cmd{color:var(--acl)}
+.cmp-card.vty .cc-cmd{color:#7b2d8b}
+.cmp-card p{font-size:.75em;color:#1a1a2e;line-height:1.5}
+
+/* established keyword visual */
+.est-flow{background:#0d1117;border:2px solid #1a3a5c;border-radius:10px;padding:14px;margin:12px 0}
+.ef-title{font-size:.75em;font-weight:800;letter-spacing:.8px;color:#38bdf8;text-transform:uppercase;margin-bottom:10px}
+.ef-row{display:flex;gap:10px;align-items:flex-start;padding:7px 0;border-bottom:1px solid #21262d;font-size:.81em;color:#c9d1d9;line-height:1.6}
+.ef-row:last-child{border-bottom:none}
+.ef-badge{font-weight:800;font-size:.75em;padding:2px 8px;border-radius:4px;flex-shrink:0;color:#fff;margin-top:2px;min-width:70px;text-align:center}
+.ef-badge.allow{background:#27ae60}
+.ef-badge.block{background:#dc3545}
+.ef-badge.dir{background:#1a3a5c}
+
+/* Port quick reference */
+.port-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:8px;margin:12px 0}
+.port-card{border-radius:8px;padding:10px;text-align:center;border:2px solid #e8ecf0;background:#f9fafb}
+.port-card .pc-port{font-family:'Courier New',monospace;font-weight:900;font-size:1em;color:var(--acl)}
+.port-card .pc-kw{font-size:.75em;font-weight:700;color:#374151;margin-top:2px}
+.port-card .pc-name{font-size:.69em;color:var(--muted);margin-top:1px}
+.port-card.nkw{border-color:#dc3545;background:#fff5f5}
+.port-card.nkw .pc-port{color:#dc3545}
+.port-card.nkw .pc-kw{color:#dc3545}
+
+/* Show command comparison */
+.show-grid{display:grid;gap:8px;margin:12px 0}
+.show-row{display:flex;gap:10px;align-items:flex-start;padding:10px 12px;border-radius:8px;font-size:.81em;border-left:4px solid}
+.show-row.al{background:#f0fdf4;border-left-color:var(--acl)}
+.show-row.rc{background:#e0f2fe;border-left-color:#1a3a5c}
+.show-row.ii{background:#f3e8ff;border-left-color:#9333ea}
+.show-row .sr-cmd{font-family:'Courier New',monospace;font-weight:700;min-width:0;flex:1;color:#1a1a2e;line-height:1.5}
+.show-row .sr-shows{flex:2;color:#374151;line-height:1.6}
+
+.tb{position:fixed;bottom:80px;right:16px;background:var(--acl);color:#fff;border:none;border-radius:50%;width:44px;height:44px;font-size:1.25em;box-shadow:0 4px 14px rgba(0,0,0,.25);cursor:pointer;display:none;align-items:center;justify-content:center;z-index:100}
+.tb.show{display:flex}
+.ft{text-align:center;padding:24px 16px;color:var(--muted);font-size:.81em}
+
+.mod-nav{position:fixed;bottom:0;left:0;right:0;z-index:300;background:#1a1a2e;border-top:1px solid #30363d;display:flex;align-items:center;height:52px;padding:0 8px;gap:6px}
+.mn-hub{background:var(--blue);color:#fff;border:none;border-radius:8px;padding:6px 12px;font-size:.75em;font-weight:700;cursor:pointer;text-decoration:none;display:flex;align-items:center;gap:4px;white-space:nowrap;-webkit-tap-highlight-color:transparent;flex-shrink:0}
+.mn-hub:active{opacity:.8}
+.mn-divider{width:1px;height:28px;background:#30363d;flex-shrink:0}
+.mn-label{flex:1;text-align:center;font-size:.69em;color:#8b949e;font-weight:600;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding:0 4px}
+.mn-prev,.mn-next{background:#30363d;color:#c9d1d9;border:none;border-radius:8px;padding:6px 10px;font-size:.875em;font-weight:700;cursor:pointer;text-decoration:none;display:flex;align-items:center;-webkit-tap-highlight-color:transparent;flex-shrink:0}
+.mn-prev:active,.mn-next:active{background:var(--acl);color:#fff}
+/* Study progress panel */
+.sp-wrap{background:var(--card);margin:16px 16px 0;border-radius:var(--r);box-shadow:var(--sh);overflow:hidden}
+.sp-hdr{background:var(--nt);color:#fff;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;user-select:none;-webkit-tap-highlight-color:transparent;gap:10px}
+.sp-hdr .sp-title{font-weight:700;font-size:.875em;flex-shrink:0}
+.sp-hdr .sp-arr{transition:transform .3s;flex-shrink:0}
+.sp-hdr.open .sp-arr{transform:rotate(180deg)}
+.sp-body{display:none;padding:12px 14px}
+.sp-body.open{display:block}
+.sp-row{display:flex;align-items:center;gap:10px;padding:6px 4px;border-bottom:1px solid #f0f4f8;font-size:.81em}
+.sp-row:last-child{border-bottom:none}
+.sp-row .sr-status{font-size:1em;flex-shrink:0;width:20px;text-align:center}
+.sp-row .sr-nb{font-weight:800;color:var(--nt);min-width:36px;flex-shrink:0;font-size:.875em}
+.sp-row .sr-ttl{color:var(--text);flex:1}
+.sp-row.done .sr-ttl{color:var(--muted);text-decoration:line-through}
+.sc-pills{display:flex;align-items:center;gap:4px;overflow-x:auto;-webkit-overflow-scrolling:touch;flex:1;padding:0 4px}
+.sc-pill{background:#30363d;color:#8b949e;border:2px solid transparent;border-radius:6px;padding:3px 8px;font-size:.72em;font-weight:700;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:all .15s;white-space:nowrap;flex-shrink:0;line-height:1.4;display:flex;align-items:center;gap:3px}
+.sc-pill.checked{background:var(--nt);color:#fff;border-color:var(--ntd)}
+.sc-pill .pill-check{font-size:.875em}
+
+/* v2.1 — In-section check button */
+.sh{position:relative}
+.sec-check{position:absolute;right:40px;top:50%;transform:translateY(-50%);background:rgba(255,255,255,.15);border:2px solid rgba(255,255,255,.4);border-radius:6px;padding:2px 10px;font-size:.72em;font-weight:800;color:#fff;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:all .2s;white-space:nowrap;z-index:10;line-height:1.5}
+.sec-check.checked{background:var(--ntd);border-color:var(--ntd);color:#052e1e}
+.sec-check:active{opacity:.75}
+/* Sections panel + tick colours (these pages never defined --nt/--ntd, so the panel header was invisible) */
+:root{--nt:var(--acl);--ntd:#4ade80}
+</style>
+<style>.bc{background:#0d1117;padding:8px 16px;display:flex;align-items:center;flex-wrap:wrap;gap:4px;font-size:.75em;overflow-x:auto;white-space:nowrap;-webkit-overflow-scrolling:touch;border-bottom:1px solid #21262d}.bc a{color:#8b949e;text-decoration:none;font-weight:600;flex-shrink:0}.bc a:active{color:#c9d1d9}.bc .sep{color:#6e7681;flex-shrink:0}.bc .cur{color:#fbbf24;font-weight:700;flex-shrink:0;overflow:hidden;text-overflow:ellipsis;max-width:180px}</style>
+</head>
+<body>
+<nav class="bc"><a href="../../index.html">🏠 Home</a><span class="sep">›</span><a href="index.html">CCNA 3 — ENSA</a><span class="sep">›</span><span class="cur">M5: ACLs Configuration</span></nav>
+
+<div class="fs-bar">
+  <div class="sc-pills" id="sc-pills">
+  <button class="sc-pill" id="pill-s1" onclick="toggleSection('s1',this)"><span class="pill-check">○</span>5.1</button>
+  <button class="sc-pill" id="pill-s2" onclick="toggleSection('s2',this)"><span class="pill-check">○</span>5.2</button>
+  <button class="sc-pill" id="pill-s3" onclick="toggleSection('s3',this)"><span class="pill-check">○</span>5.3</button>
+  <button class="sc-pill" id="pill-s4" onclick="toggleSection('s4',this)"><span class="pill-check">○</span>5.4</button>
+  <button class="sc-pill" id="pill-s-pt-5-5" onclick="toggleSection('s-pt-5-5',this)"><span class="pill-check">○</span>PT 5.5</button>
+  <button class="sc-pill" id="pill-s5" onclick="toggleSection('s5',this)"><span class="pill-check">○</span>CMD</button>
+  <button class="sc-pill" id="pill-s6" onclick="toggleSection('s6',this)"><span class="pill-check">○</span>🎯</button>
+  </div>
+  <span class="fs-label" style="flex-shrink:0;margin-left:6px">Size</span>
+  <button class="fs-btn" onclick="setFs('14px',this)">S</button>
+  <button class="fs-btn active" onclick="setFs('16px',this)">M</button>
+  <button class="fs-btn" onclick="setFs('18px',this)">L</button>
+  <button class="fs-btn" onclick="setFs('20px',this)">XL</button>
+</div>
+
+<div class="hdr">
+  <div class="badge">CCNA 3 — ENSA v7.02</div>
+  <h1>⚙️ Module 5: ACLs for IPv4 Configuration</h1>
+  <p>Enterprise Networking, Security &amp; Automation · NetAcad Study Guide</p>
+  <div class="obj">Module Objective: Implement IPv4 ACLs to filter traffic and secure administrative access</div>
+</div>
+
+<div class="sp-wrap">
+  <div class="sp-hdr" id="sp-hdr" onclick="toggleStudyPanel()">
+    <span class="sp-title">📚 Sections</span>
+    <span class="sp-arr" id="sp-arr">▼</span>
+  </div>
+  <div class="sp-body" id="sp-body">
+    <div class="sp-row" id="row-s1"><span class="sr-status" id="st-s1">○</span><span class="sr-nb">5.1</span><span class="sr-ttl">Configure Standard IPv4 ACLs</span></div>
+    <div class="sp-row" id="row-s2"><span class="sr-status" id="st-s2">○</span><span class="sr-nb">5.2</span><span class="sr-ttl">Modify IPv4 ACLs</span></div>
+    <div class="sp-row" id="row-s3"><span class="sr-status" id="st-s3">○</span><span class="sr-nb">5.3</span><span class="sr-ttl">Secure VTY Ports with a Standard IPv4 ACL</span></div>
+    <div class="sp-row" id="row-s4"><span class="sr-status" id="st-s4">○</span><span class="sr-nb">5.4</span><span class="sr-ttl">Configure Extended IPv4 ACLs</span></div>
+    <div class="sp-row" id="row-s-pt-5-5"><span class="sr-status" id="st-s-pt-5-5">○</span><span class="sr-nb">PT 5.5</span><span class="sr-ttl">Packet Tracer — IPv4 ACL Implementation Challenge</span></div>
+    <div class="sp-row" id="row-s5"><span class="sr-status" id="st-s5">○</span><span class="sr-nb">CMD</span><span class="sr-ttl">Complete Command Reference</span></div>
+    <div class="sp-row" id="row-s6"><span class="sr-status" id="st-s6">○</span><span class="sr-nb">🎯</span><span class="sr-ttl">Common Exam Traps — Module 5</span></div>
+  </div>
+</div></div>
+
+<div class="toc">
+  <div class="toch open" onclick="this.classList.toggle('open');document.getElementById('tocb').classList.toggle('open')">
+    📋 Table of Contents — Tap to expand <span class="arr">▼</span>
+  </div>
+  <div class="tocb open" id="tocb">
+    <div class="tocg">5.1 — Configure Standard IPv4 ACLs</div>
+    <a href="javascript:void(0)" onclick="goTo('s1')"><span class="n">5.1.2</span> Numbered Standard ACL Syntax</a>
+    <a href="javascript:void(0)" onclick="goTo('s1')"><span class="n">5.1.3</span> Named Standard ACL Syntax</a>
+    <a href="javascript:void(0)" onclick="goTo('s1')"><span class="n">5.1.4</span> Apply ACL to Interface — ip access-group</a>
+    <a href="javascript:void(0)" onclick="goTo('s1')"><span class="n">5.1.5</span> Numbered Standard ACL — Full Example</a>
+    <a href="javascript:void(0)" onclick="goTo('s1')"><span class="n">5.1.6</span> Named Standard ACL — Full Example</a>
+    <div class="tocg">5.2 — Modify IPv4 ACLs</div>
+    <a href="javascript:void(0)" onclick="goTo('s2')"><span class="n">5.2.1</span> Two Methods — Text Editor vs Sequence Numbers</a>
+    <a href="javascript:void(0)" onclick="goTo('s2')"><span class="n">5.2.3</span> Sequence Numbers — Edit an ACE</a>
+    <a href="javascript:void(0)" onclick="goTo('s2')"><span class="n">5.2.4</span> Insert an ACE Between Existing Entries</a>
+    <a href="javascript:void(0)" onclick="goTo('s2')"><span class="n">5.2.5</span> ACL Statistics and clear access-list counters</a>
+    <div class="tocg">5.3 — Secure VTY Ports with a Standard ACL</div>
+    <a href="javascript:void(0)" onclick="goTo('s3')"><span class="n">5.3.1</span> access-class vs ip access-group</a>
+    <a href="javascript:void(0)" onclick="goTo('s3')"><span class="n">5.3.2</span> Secure VTY Access — Full Example</a>
+    <a href="javascript:void(0)" onclick="goTo('s3')"><span class="n">5.3.3</span> Verify VTY ACL Statistics</a>
+    <div class="tocg">5.4 — Configure Extended IPv4 ACLs</div>
+    <a href="javascript:void(0)" onclick="goTo('s4')"><span class="n">5.4.2</span> Numbered Extended ACL Syntax</a>
+    <a href="javascript:void(0)" onclick="goTo('s4')"><span class="n">5.4.3</span> Protocols and Port Keywords Reference</a>
+    <a href="javascript:void(0)" onclick="goTo('s4')"><span class="n">5.4.5</span> Numbered Extended ACL — HTTP/HTTPS Example</a>
+    <a href="javascript:void(0)" onclick="goTo('s4')"><span class="n">5.4.6</span> TCP established Keyword</a>
+    <a href="javascript:void(0)" onclick="goTo('s4')"><span class="n">5.4.8</span> Named Extended — SURFING / BROWSING Example</a>
+    <a href="javascript:void(0)" onclick="goTo('s4')"><span class="n">5.4.9</span> Edit Extended ACLs</a>
+    <a href="javascript:void(0)" onclick="goTo('s4')"><span class="n">5.4.10</span> PERMIT-PC1 / REPLY-PC1 Multi-Port Example</a>
+    <a href="javascript:void(0)" onclick="goTo('s4')"><span class="n">5.4.11</span> Verify Extended ACLs</a>
+    <div class="tocg">Reference</div>
+    <a href="javascript:void(0)" onclick="goTo('s5')"><span class="n">CMD</span> Complete Command Reference</a>
+    <a href="javascript:void(0)" onclick="goTo('s6')"><span class="n">🎯</span> Common Exam Traps</a>
+  </div>
+</div>
+
+<div class="wrap">
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- SECTION 5.1 — CONFIGURE STANDARD IPv4 ACLs -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div class="sec" id="s1">
+<div class="sh open" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">5.1</span><span class="ttl">Configure Standard IPv4 ACLs</span></span><button class="sec-check" id="sch-s1" onclick="event.stopPropagation();toggleSection('s1',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb open">
+
+  <div class="sub">
+  <h3><span class="sn">5.1.2</span> Numbered Standard IPv4 ACL Syntax</h3>
+  <div class="cw"><div class="cl">Numbered standard ACL — global configuration command</div>
+  <pre><code>Router(config)# access-list access-list-number {deny | permit | remark text} source [source-wildcard] [log]
+
+! Remove entire numbered ACL:
+Router(config)# no access-list access-list-number</code></pre></div>
+  <div class="tw"><table>
+    <tr><th>Parameter</th><th>Description</th></tr>
+    <tr><td><code>access-list-number</code></td><td>Standard ACL range: <strong>1–99</strong> or <strong>1300–1999</strong></td></tr>
+    <tr><td><code>deny</code> / <code>permit</code></td><td>Action taken when condition matches</td></tr>
+    <tr><td><code>remark text</code></td><td>Optional documentation — max 100 characters. Shown in <code>show run</code> but <strong>NOT in <code>show access-lists</code></strong></td></tr>
+    <tr><td><code>source</code></td><td>Source network or host. Use <code>any</code> for all, <code>host ip-address</code> for one specific host</td></tr>
+    <tr><td><code>source-wildcard</code></td><td>Optional wildcard mask. If omitted: defaults to <code>0.0.0.0</code> (exact host match)</td></tr>
+    <tr><td><code>log</code></td><td>Optional — generates log message on first match. Use for troubleshooting only.</td></tr>
+  </table></div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">5.1.3</span> Named Standard IPv4 ACL Syntax</h3>
+  <div class="cw"><div class="cl">Named standard ACL — ip access-list command <button class="cpb" onclick="copyCode(this)">Copy</button></div>
+  <pre><code>! Create named standard ACL and enter config mode:
+Router(config)# ip access-list standard ACCESS-LIST-NAME
+Router(config-std-nacl)# [sequence-number] {permit | deny | remark} source [wildcard]
+
+! Remove named ACL:
+Router(config)# no ip access-list standard ACCESS-LIST-NAME</code></pre></div>
+  <ul>
+    <li>Names are alphanumeric, <strong>case-sensitive</strong>, and must be unique</li>
+    <li>Convention: <strong>CAPITAL LETTERS</strong> to stand out in <code>show running-config</code></li>
+    <li><code>ADMIN-HOST</code> and <code>admin-host</code> are two different ACLs</li>
+    <li>No spaces or punctuation in names</li>
+  </ul>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">5.1.4</span> Apply a Standard ACL to an Interface</h3>
+  <div class="cw"><div class="cl">ip access-group — bind ACL to interface <button class="cpb" onclick="copyCode(this)">Copy</button></div>
+  <pre><code>! Apply ACL to interface:
+Router(config-if)# ip access-group {access-list-number | access-list-name} {in | out}
+
+! Remove ACL from interface only (ACL still exists on router):
+Router(config-if)# no ip access-group {number | name} {in | out}
+
+! Remove ACL from router entirely:
+Router(config)# no access-list number               ! numbered ACL
+Router(config)# no ip access-list standard name     ! named ACL</code></pre></div>
+  <div class="ca info">
+    <span class="ic">💡</span>
+    <div>Removing an ACL from an interface with <code>no ip access-group</code> does NOT delete the ACL definition. The ACL still exists in the router's memory — it's just no longer applied to that interface. Use <code>no access-list</code> to delete the ACL itself.</div>
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">5.1.5</span> Numbered Standard ACL — Complete Example</h3>
+  <p><strong>Policy:</strong> Only PC1 (192.168.10.10) and all LAN2 hosts (192.168.20.0/24) can reach the internet. All other 192.168.10.0 hosts are denied. Applied outbound on Serial 0/1/0.</p>
+  <div class="cw"><div class="cl">Configure and apply numbered standard ACL 10 <button class="cpb" onclick="copyCode(this)">Copy</button></div>
+  <pre><code>R1(config)# access-list 10 remark ACE permits ONLY host 192.168.10.10 to the internet
+R1(config)# access-list 10 permit host 192.168.10.10
+R1(config)# access-list 10 remark ACE permits all hosts in LAN 2
+R1(config)# access-list 10 permit 192.168.20.0 0.0.0.255
+R1(config)# interface Serial 0/1/0
+R1(config-if)# ip access-group 10 out
+R1(config-if)# end
+
+! Verify — show access-lists does NOT show remarks:
+R1# show access-lists
+Standard IP access list 10
+    10 permit 192.168.10.10
+    20 permit 192.168.20.0, wildcard bits 0.0.0.255
+
+! show run DOES show remarks:
+R1# show run | section access-list
+access-list 10 remark ACE permits host 192.168.10.10
+access-list 10 permit 192.168.10.10
+access-list 10 remark ACE permits all hosts in LAN 2
+access-list 10 permit 192.168.20.0 0.0.0.255
+
+! Verify ACL applied to interface:
+R1# show ip int Serial 0/1/0 | include access list
+  Outgoing access list is 10
+  Inbound  access list is not set</code></pre></div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">5.1.6</span> Named Standard ACL — Complete Example</h3>
+  <p>Same policy, implemented as named ACL <strong>PERMIT-ACCESS</strong>:</p>
+  <div class="cw"><div class="cl">Configure and apply named standard ACL PERMIT-ACCESS <button class="cpb" onclick="copyCode(this)">Copy</button></div>
+  <pre><code>R1(config)# no access-list 10                       ! Remove old numbered ACL first
+R1(config)# ip access-list standard PERMIT-ACCESS
+R1(config-std-nacl)# remark ACE permits host 192.168.10.10
+R1(config-std-nacl)# permit host 192.168.10.10
+R1(config-std-nacl)# remark ACE permits all hosts in LAN 2
+R1(config-std-nacl)# permit 192.168.20.0 0.0.0.255
+R1(config-std-nacl)# exit
+R1(config)# interface Serial 0/1/0
+R1(config-if)# ip access-group PERMIT-ACCESS out
+R1(config-if)# end
+
+R1# show access-lists
+Standard IP access list PERMIT-ACCESS
+    10 permit 192.168.10.10
+    20 permit 192.168.20.0, wildcard bits 0.0.0.255
+
+R1# show ip int Serial 0/1/0 | include access list
+  Outgoing access list is PERMIT-ACCESS</code></pre></div>
+  </div>
+
+  <!-- SYNTAX CHECKER: 5.2.8 -->
+  <div style="margin:20px 0 6px;padding:16px;background:#0d1117;border:1px solid #30363d;border-left:3px solid #bc8cff;border-radius:8px">
+    <div style="font-size:.7em;font-weight:800;text-transform:uppercase;letter-spacing:.8px;color:#bc8cff;margin-bottom:6px">&#x1F5A5; Syntax Checker &mdash; 5.2.8</div>
+    <div style="font-size:.92em;font-weight:600;color:#e6edf3;margin-bottom:12px">Configure Numbered Standard ACLs</div>
+    <div style="font-size:.82em;color:#8b949e;margin-bottom:14px">Type each command exactly as shown. Press Enter to submit. The checker validates your syntax step by step.</div>
+    <div class="tool-links" style="display:flex;flex-wrap:wrap;gap:14px">
+      <div style="flex:1 1 220px;min-width:0">
+        <a href="../../syntax-checker-simple/ccna3_syntax_checker.html?lab=5.2.8" target="_blank" rel="noopener" title="Quick, guided drill: type the exact commands for this NetAcad lab, step by step. Opens straight to lab 5.2.8." style="display:inline-flex;align-items:center;gap:8px;color:#fff;text-decoration:none;padding:8px 18px;border-radius:6px;font-size:.85em;font-weight:700;background:#238636;border:1px solid #2ea043">&#x25B6; Open Syntax Checker</a>
+        <div style="font-size:.75em;color:#8b949e;margin-top:6px">Quick, guided drill: type the exact commands for this NetAcad lab, step by step. Opens straight to lab 5.2.8.</div>
+      </div>
+      <div style="flex:1 1 220px;min-width:0">
+        <a class="cli-engine-link" href="../../cli-engine/ccna-cli-engine.html" target="_blank" rel="noopener" title="Full simulated Cisco IOS terminal: Tab completion, device state, Free Practice, Home Labs and Subnetting. In its exercise menu, pick “Course 3 · 5.2 — Configure Numbered Standard ACLs”." style="display:inline-flex;align-items:center;gap:8px;color:#fff;text-decoration:none;padding:8px 18px;border-radius:6px;font-size:.85em;font-weight:700;background:#1f6feb;border:1px solid #388bfd">&#x1F4BB; Open CLI Engine</a>
+        <div style="font-size:.75em;color:#8b949e;margin-top:6px">Full simulated Cisco IOS terminal: Tab completion, device state, Free Practice, Home Labs and Subnetting. In its exercise menu, pick “Course 3 · 5.2 — Configure Numbered Standard ACLs”.</div>
+      </div>
+    </div>
+    <div style="margin-top:12px;font-size:.75em"><a href="../../index.html" style="color:#58a6ff;text-decoration:none">&#x1F3E0; All study tools (home)</a></div>
+  </div>
+
+  <!-- PT INLINE -->
+  <div style="margin:20px 0 6px;padding:14px 16px;background:#0d1117;border:1px solid #30363d;border-left:3px solid #1f6feb;border-radius:6px">
+    <div style="font-size:.72em;font-weight:800;text-transform:uppercase;letter-spacing:.8px;color:#1f6feb;margin-bottom:10px">&#x1F4E6; Packet Tracer Activities</div>
+  <div style="display:flex;align-items:baseline;gap:10px;padding:6px 0;border-bottom:1px solid #21262d"><span style="font-family:monospace;font-size:.85em;color:#79c0ff;white-space:nowrap;flex-shrink:0;min-width:52px">5.1.8</span><span style="font-size:.88em;color:#c9d1d9">Configure Numbered Standard IPv4 ACLs</span></div>
+  <div style="display:flex;align-items:baseline;gap:10px;padding:6px 0;border-bottom:1px solid #21262d"><span style="font-family:monospace;font-size:.85em;color:#79c0ff;white-space:nowrap;flex-shrink:0;min-width:52px">5.1.9</span><span style="font-size:.88em;color:#c9d1d9">Configure Named Standard IPv4 ACLs</span></div>
+    <div style="margin-top:10px;font-size:.78em;color:#6e7681">Full list: <a href="https://itexamanswers.net/ccna-3-packet-tracer-labs-answers-ensa-v7-02.html" target="_blank" rel="noopener" style="color:#58a6ff;word-break:break-all">https://itexamanswers.net/ccna-3-packet-tracer-labs-answers-ensa-v7-02.html</a></div>
+  </div>
+
+</div></div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- SECTION 5.2 — MODIFY IPv4 ACLs -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div class="sec" id="s2">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">5.2</span><span class="ttl">Modify IPv4 ACLs</span></span><button class="sec-check" id="sch-s2" onclick="event.stopPropagation();toggleSection('s2',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb">
+
+  <div class="sub">
+  <h3><span class="sn">5.2.1</span> Two Methods to Modify an ACL</h3>
+  <div class="mod-grid">
+    <div class="mod-card text">
+      <div class="mc-title">📝 Method 1 — Text Editor</div>
+      <ul>
+        <li>Best when <strong>many ACEs</strong> need to change</li>
+        <li>Copy ACL from <code>show running-config</code> → paste into text editor</li>
+        <li>Make corrections in the editor</li>
+        <li><strong>Delete the old ACL</strong> from router first: <code>no access-list number</code></li>
+        <li>Paste corrected version into router</li>
+      </ul>
+    </div>
+    <div class="mod-card seq">
+      <div class="mc-title">🔢 Method 2 — Sequence Numbers</div>
+      <ul>
+        <li>Best for <strong>one or two ACE changes</strong></li>
+        <li><code>show access-lists</code> reveals sequence numbers</li>
+        <li>Enter: <code>ip access-list standard {number|name}</code></li>
+        <li>Delete: <code>no {sequence-number}</code></li>
+        <li>Re-add: <code>{seq-num} {permit|deny} ...</code></li>
+      </ul>
+    </div>
+  </div>
+  <div class="ca danger">
+    <span class="ic">🚨</span>
+    <div><strong>Text editor method: delete the old ACL BEFORE pasting the corrected version.</strong> If you paste new ACE commands without removing the original ACL, IOS simply appends the new commands to the end of the existing list. The result is a combined broken ACL — not the intended replacement.</div>
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">5.2.3</span> Sequence Numbers — Edit a Specific ACE</h3>
+  <div class="seq-flow">
+    <div class="sf-title">🔢 Fix Wrong ACE Using Sequence Numbers</div>
+    <div class="sf-step"><div class="sf-num">1</div><div>Check current ACL with <span class="sf-cmd">show access-lists</span> — identify wrong ACE and its sequence number</div></div>
+    <div class="sf-step"><div class="sf-num">2</div><div>Enter edit mode: <span class="sf-cmd">R1(config)# ip access-list standard {number|name}</span></div></div>
+    <div class="sf-step"><div class="sf-num">3</div><div>Delete wrong ACE: <span class="sf-cmd">R1(config-std-nacl)# no 10</span> (replace 10 with the sequence number)</div></div>
+    <div class="sf-step"><div class="sf-num">4</div><div>Add corrected ACE at same position: <span class="sf-cmd">R1(config-std-nacl)# 10 deny host 192.168.10.10</span></div></div>
+    <div class="sf-step"><div class="sf-num">5</div><div>Verify with <span class="sf-cmd">show access-lists</span> — confirm correction is in place</div></div>
+  </div>
+  <div class="cw"><div class="cl">Sequence number edit — full example <button class="cpb" onclick="copyCode(this)">Copy</button></div>
+  <pre><code>! Step 1 — identify problem (19 instead of 192):
+R1# show access-lists
+Standard IP access list 1
+    10 deny   19.168.10.10    ← WRONG
+    20 permit 192.168.10.0, wildcard bits 0.0.0.255
+
+! Steps 2–4 — enter edit mode, delete wrong ACE, re-add correct one:
+R1# configure terminal
+R1(config)# ip access-list standard 1
+R1(config-std-nacl)# no 10
+R1(config-std-nacl)# 10 deny host 192.168.10.10
+R1(config-std-nacl)# end
+
+! Step 5 — verify:
+R1# show access-lists
+Standard IP access list 1
+    10 deny   192.168.10.10   ← CORRECT
+    20 permit 192.168.10.0, wildcard bits 0.0.0.255</code></pre></div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">5.2.4</span> Insert an ACE Between Existing Entries</h3>
+  <p>Sequence numbers are spaced in increments of 10 (10, 20, 30...) to allow inserting ACEs between existing entries:</p>
+  <div class="cw"><div class="cl">Insert ACE 15 between ACE 10 and ACE 20 <button class="cpb" onclick="copyCode(this)">Copy</button></div>
+  <pre><code>! Problem: Need to also deny 192.168.10.5, but can't append to end —
+! ACE 20 (permit 192.168.10.0 0.0.0.255) would match it first
+
+R1# show access-lists
+Standard IP access list NO-ACCESS
+    10 deny   192.168.10.10
+    20 permit 192.168.10.0, wildcard bits 0.0.0.255
+
+! Solution: insert ACE 15 (between 10 and 20):
+R1(config)# ip access-list standard NO-ACCESS
+R1(config-std-nacl)# 15 deny 192.168.10.5     ! "host" keyword is optional here
+
+R1# show access-lists
+Standard IP access list NO-ACCESS
+    15 deny   192.168.10.5   ← appears first (IOS hashing puts hosts first)
+    10 deny   192.168.10.10
+    20 permit 192.168.10.0, wildcard bits 0.0.0.255</code></pre></div>
+  <div class="ca warn">
+    <span class="ic">⚠️</span>
+    <div><strong>Standard ACL hashing function:</strong> IOS reorders host statements before range statements in <code>show access-lists</code> output — regardless of entry order. ACE 15 appears before ACE 10 even though 15 > 10. This optimization does NOT apply to extended ACLs, which always display in the exact order entered.</div>
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">5.2.5</span> ACL Statistics and Clearing Counters</h3>
+  <p><code>show access-lists</code> shows how many times each ACE has been matched. The implicit deny at the end does NOT increment — add an explicit <code>deny any</code> to count denied packets.</p>
+  <div class="cw"><div class="cl">ACL match statistics and clear counters <button class="cpb" onclick="copyCode(this)">Copy</button></div>
+  <pre><code>R1# show access-lists
+Standard IP access list NO-ACCESS
+    10 deny   192.168.10.10  (20 matches)     ← matched 20 times
+    20 permit 192.168.10.0, wildcard bits 0.0.0.255  (64 matches)
+
+! Reset counters for one ACL:
+R1# clear access-list counters NO-ACCESS
+
+! Reset counters for all ACLs:
+R1# clear access-list counters
+
+R1# show access-lists
+Standard IP access list NO-ACCESS
+    10 deny   192.168.10.10                   ← counters cleared
+    20 permit 192.168.10.0, wildcard bits 0.0.0.255</code></pre></div>
+  </div>
+
+  <!-- PT INLINE -->
+  <div style="margin:20px 0 6px;padding:14px 16px;background:#0d1117;border:1px solid #30363d;border-left:3px solid #1f6feb;border-radius:6px">
+    <div style="font-size:.72em;font-weight:800;text-transform:uppercase;letter-spacing:.8px;color:#1f6feb;margin-bottom:10px">&#x1F4E6; Packet Tracer Activities</div>
+  <div style="display:flex;align-items:baseline;gap:10px;padding:6px 0;border-bottom:1px solid #21262d"><span style="font-family:monospace;font-size:.85em;color:#79c0ff;white-space:nowrap;flex-shrink:0;min-width:52px">5.2.7</span><span style="font-size:.88em;color:#c9d1d9">Configure and Modify Standard IPv4 ACLs</span></div>
+    <div style="margin-top:10px;font-size:.78em;color:#6e7681">Full list: <a href="https://itexamanswers.net/ccna-3-packet-tracer-labs-answers-ensa-v7-02.html" target="_blank" rel="noopener" style="color:#58a6ff;word-break:break-all">https://itexamanswers.net/ccna-3-packet-tracer-labs-answers-ensa-v7-02.html</a></div>
+  </div>
+
+</div></div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- SECTION 5.3 — SECURE VTY PORTS -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div class="sec" id="s3">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">5.3</span><span class="ttl">Secure VTY Ports with a Standard IPv4 ACL</span></span><button class="sec-check" id="sch-s3" onclick="event.stopPropagation();toggleSection('s3',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb">
+
+  <div class="sub">
+  <h3><span class="sn">5.3.1</span> access-class vs ip access-group</h3>
+  <div class="cmd-compare">
+    <div class="cmp-card intf">
+      <div class="cc-context">Interface ACLs</div>
+      <div class="cc-cmd">ip access-group</div>
+      <p>Applied in interface config mode <code>(config-if)#</code>. Filters traffic entering or leaving a physical/logical interface. Applies to routed traffic.</p>
+    </div>
+    <div class="cmp-card vty">
+      <div class="cc-context">VTY Line ACLs</div>
+      <div class="cc-cmd">access-class</div>
+      <p>Applied in line config mode <code>(config-line)#</code>. Filters who can establish a Telnet or SSH session TO or FROM this router. Does NOT use <code>ip access-group</code>.</p>
+    </div>
+  </div>
+  <div class="et">
+    <div class="lbl">🎯 MOST-TESTED COMMAND DISTINCTION IN MODULE 5</div>
+    VTY line ACLs use <strong>access-class</strong> — NOT ip access-group.<br>
+    Using <code>ip access-group</code> on a vty line is wrong syntax.<br><br>
+    <strong>Two key rules for VTY ACLs:</strong>
+    <ul>
+      <li>Apply to <strong>ALL VTY lines</strong> (e.g., <code>line vty 0 4</code>) — users can connect to any VTY line</li>
+      <li>Apply in the <strong>inbound</strong> direction to filter who can connect TO the router</li>
+    </ul>
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">5.3.2</span> Secure VTY Access — Complete Example</h3>
+  <p><strong>Policy:</strong> Only PC1 (192.168.10.10) can SSH to R1. All other hosts are denied.</p>
+  <div class="cw"><div class="cl">Three-step VTY security configuration <button class="cpb" onclick="copyCode(this)">Copy</button></div>
+  <pre><code>! Step 1 — Create local user for authentication:
+R1(config)# username ADMIN secret class
+
+! Step 2 — Create ACL identifying permitted admin hosts:
+R1(config)# ip access-list standard ADMIN-HOST
+R1(config-std-nacl)# remark This ACL secures incoming vty lines
+R1(config-std-nacl)# permit 192.168.10.10
+R1(config-std-nacl)# deny any             ! Explicit deny for counter tracking
+R1(config-std-nacl)# exit
+
+! Step 3 — Apply ACL to ALL VTY lines using access-class:
+R1(config)# line vty 0 4
+R1(config-line)# login local
+R1(config-line)# transport input ssh      ! Production: SSH only (not telnet)
+R1(config-line)# access-class ADMIN-HOST in    ← access-class (NOT ip access-group!)
+R1(config-line)# end</code></pre></div>
+  <div class="ca info">
+    <span class="ic">💡</span>
+    <div>For Telnet-only (lab/demo only): use <code>transport input telnet</code>. For production: always use <code>transport input ssh</code>. For both: <code>transport input ssh telnet</code>. The Cisco exam default for labs is Telnet, but SSH is the correct security answer.</div>
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">5.3.3</span> Verify the VTY ACL is Working</h3>
+  <div class="cw"><div class="cl">Verify VTY ACL — show access-lists after test connections <button class="cpb" onclick="copyCode(this)">Copy</button></div>
+  <pre><code>! After PC1 (permitted) connects and PC2 (denied) attempts:
+R1# show access-lists
+Standard IP access list ADMIN-HOST
+    10 permit 192.168.10.10  (2 matches)  ← PC1 connected successfully
+    20 deny   any            (2 matches)  ← PC2 was denied
+
+! Console shows login event for authorized user:
+%SEC_LOGIN-5-LOGIN_SUCCESS: Login Success [user: ADMIN] [Source: 192.168.10.10]</code></pre></div>
+  </div>
+
+</div></div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- SECTION 5.4 — CONFIGURE EXTENDED IPv4 ACLs -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div class="sec" id="s4">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">5.4</span><span class="ttl">Configure Extended IPv4 ACLs</span></span><button class="sec-check" id="sch-s4" onclick="event.stopPropagation();toggleSection('s4',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb">
+
+  <div class="sub">
+  <h3><span class="sn">5.4.2</span> Numbered Extended IPv4 ACL Syntax</h3>
+  <div class="cw"><div class="cl">Extended ACL syntax — full parameter set</div>
+  <pre><code>Router(config)# access-list number {deny|permit|remark} protocol source source-wildcard [operator [port]] destination destination-wildcard [operator [port]] [established] [log]
+
+! Remove numbered extended ACL:
+Router(config)# no access-list number
+! Remove named extended ACL:
+Router(config)# no ip access-list extended name</code></pre></div>
+  <div class="tw"><table>
+    <tr><th>Parameter</th><th>Description</th></tr>
+    <tr><td><code>number</code></td><td>Extended ACL range: <strong>100–199</strong> or <strong>2000–2699</strong></td></tr>
+    <tr><td><code>protocol</code></td><td><code>ip</code> (all IP), <code>tcp</code>, <code>udp</code>, <code>icmp</code>, or protocol number (1=ICMP, 6=TCP, 17=UDP)</td></tr>
+    <tr><td><code>source source-wildcard</code></td><td>Source address with wildcard mask. Use <code>any</code> or <code>host ip</code></td></tr>
+    <tr><td><code>operator</code></td><td><code>eq</code> (equal) · <code>neq</code> (not equal) · <code>lt</code> (less than) · <code>gt</code> (greater than) · <code>range</code></td></tr>
+    <tr><td><code>port</code></td><td>Port number 0–65535 or keyword (<code>www</code>=80, <code>ftp</code>=21, <code>telnet</code>=23, <code>smtp</code>=25, <code>domain</code>=53)</td></tr>
+    <tr><td><code>destination destination-wildcard</code></td><td>Destination address with wildcard mask</td></tr>
+    <tr><td><code>established</code></td><td>TCP only — matches packets with ACK or RST flag set (returning traffic from established connection)</td></tr>
+    <tr><td><code>log</code></td><td>Optional — logs matched packets; use for troubleshooting only</td></tr>
+  </table></div>
+  <div class="ca info">
+    <span class="ic">💡</span>
+    <div><strong>Extended ACL order is PRESERVED exactly as entered.</strong> Unlike standard ACLs which apply a hashing function to host entries, extended ACLs display and process entries in exactly the order they were configured. Use sequence numbers to insert entries at specific positions.</div>
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">5.4.3</span> Protocols and Port Keywords Reference</h3>
+  <div class="port-grid">
+    <div class="port-card"><div class="pc-port">20</div><div class="pc-kw">ftp-data</div><div class="pc-name">FTP data</div></div>
+    <div class="port-card"><div class="pc-port">21</div><div class="pc-kw">ftp</div><div class="pc-name">FTP control</div></div>
+    <div class="port-card nkw"><div class="pc-port">22</div><div class="pc-kw">no keyword</div><div class="pc-name">SSH — use eq 22</div></div>
+    <div class="port-card"><div class="pc-port">23</div><div class="pc-kw">telnet</div><div class="pc-name">Telnet</div></div>
+    <div class="port-card"><div class="pc-port">25</div><div class="pc-kw">smtp</div><div class="pc-name">Email (send)</div></div>
+    <div class="port-card"><div class="pc-port">53</div><div class="pc-kw">domain</div><div class="pc-name">DNS</div></div>
+    <div class="port-card"><div class="pc-port">80</div><div class="pc-kw">www</div><div class="pc-name">HTTP</div></div>
+    <div class="port-card"><div class="pc-port">110</div><div class="pc-kw">pop3</div><div class="pc-name">Email (receive)</div></div>
+    <div class="port-card nkw"><div class="pc-port">443</div><div class="pc-kw">no keyword</div><div class="pc-name">HTTPS — use eq 443</div></div>
+  </div>
+  <div class="ca danger">
+    <span class="ic">🚨</span>
+    <div><strong>SSH (port 22) and HTTPS (port 443) have NO IOS keyword.</strong> You must use the port number directly: <code>eq 22</code> for SSH, <code>eq 443</code> for HTTPS. This is directly tested — students who try to type <code>eq ssh</code> or <code>eq https</code> will fail the configuration.</div>
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">5.4.5</span> Numbered Extended ACL — HTTP/HTTPS Example</h3>
+  <p><strong>Policy:</strong> Permit HTTP and HTTPS from 192.168.10.0/24 to any destination. Applied inbound on G0/0/0 (close to source).</p>
+  <div class="cw"><div class="cl">Extended ACL 110 — permit web traffic outbound <button class="cpb" onclick="copyCode(this)">Copy</button></div>
+  <pre><code>R1(config)# access-list 110 permit tcp 192.168.10.0 0.0.0.255 any eq www
+R1(config)# access-list 110 permit tcp 192.168.10.0 0.0.0.255 any eq 443
+R1(config)# interface g0/0/0
+R1(config-if)# ip access-group 110 in
+R1(config-if)# exit</code></pre></div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">5.4.6</span> TCP established Keyword — Basic Stateful Firewall</h3>
+  <p>The <code>established</code> keyword matches TCP packets that have the <strong>ACK or RST flag</strong> set — these are return packets from an existing TCP connection. Initial SYN packets from external hosts have no ACK flag — they are blocked.</p>
+
+  <div class="est-flow">
+    <div class="ef-title">🔒 How TCP established Creates a One-Way Firewall</div>
+    <div class="ef-row"><div class="ef-badge dir">OUTBOUND</div><div>Inside host (192.168.10.x) sends TCP SYN to web server on internet → <strong>ACL 110 inbound on G0/0/0 permits it</strong> (matches source network + port 80/443)</div></div>
+    <div class="ef-row"><div class="ef-badge allow">ALLOW</div><div>Web server sends TCP SYN-ACK reply back → <strong>ACK flag IS set</strong> → <code>established</code> keyword matches → <strong>ACL 120 outbound on G0/0/0 permits it</strong></div></div>
+    <div class="ef-row"><div class="ef-badge block">BLOCK</div><div>External host tries to initiate NEW connection to inside host → sends TCP SYN with <strong>NO ACK flag</strong> → <code>established</code> does NOT match → packet dropped by implicit deny</div></div>
+  </div>
+
+  <div class="cw"><div class="cl">ACL 110 (outbound) + ACL 120 (return only) — established pair <button class="cpb" onclick="copyCode(this)">Copy</button></div>
+  <pre><code>! ACL 110 inbound — permits inside hosts to initiate outbound web connections:
+R1(config)# access-list 110 permit tcp 192.168.10.0 0.0.0.255 any eq www
+R1(config)# access-list 110 permit tcp 192.168.10.0 0.0.0.255 any eq 443
+
+! ACL 120 outbound — permits ONLY returning traffic (ACK or RST flag must be set):
+R1(config)# access-list 120 permit tcp any 192.168.10.0 0.0.0.255 established
+
+R1(config)# interface g0/0/0
+R1(config-if)# ip access-group 110 in
+R1(config-if)# ip access-group 120 out
+R1(config-if)# end
+
+R1# show access-lists
+Extended IP access list 110
+    10 permit tcp 192.168.10.0 0.0.0.255 any eq www
+    20 permit tcp 192.168.10.0 0.0.0.255 any eq 443 (657 matches)
+Extended IP access list 120
+    10 permit tcp any 192.168.10.0 0.0.0.255 established (1166 matches)</code></pre></div>
+  <div class="ca warn">
+    <span class="ic">⚠️</span>
+    <div><strong>established only works with TCP — NOT UDP or ICMP.</strong> UDP and ICMP have no ACK/RST flags, so the <code>established</code> keyword cannot be applied to them. For UDP return traffic, other methods (like an outbound permit for returning UDP) are needed.</div>
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">5.4.8</span> Named Extended ACL — SURFING / BROWSING Example</h3>
+  <p>Same policy as 5.4.6 but using named extended ACLs:</p>
+  <div class="cw"><div class="cl">Named extended ACLs SURFING (inbound) and BROWSING (outbound) <button class="cpb" onclick="copyCode(this)">Copy</button></div>
+  <pre><code>R1(config)# ip access-list extended SURFING
+R1(config-ext-nacl)# Remark Permits inside HTTP and HTTPS traffic
+R1(config-ext-nacl)# permit tcp 192.168.10.0 0.0.0.255 any eq 80
+R1(config-ext-nacl)# permit tcp 192.168.10.0 0.0.0.255 any eq 443
+R1(config-ext-nacl)# exit
+
+R1(config)# ip access-list extended BROWSING
+R1(config-ext-nacl)# Remark Only permit returning HTTP and HTTPS traffic
+R1(config-ext-nacl)# permit tcp any 192.168.10.0 0.0.0.255 established
+R1(config-ext-nacl)# exit
+
+R1(config)# interface g0/0/0
+R1(config-if)# ip access-group SURFING in
+R1(config-if)# ip access-group BROWSING out
+R1(config-if)# end</code></pre></div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">5.4.9</span> Edit Extended ACLs — Sequence Numbers</h3>
+  <p>Extended ACLs use the same sequence number editing method as standard ACLs. Unlike standard ACLs, extended ACLs do NOT reorder entries — the order displayed is the order processed.</p>
+  <div class="cw"><div class="cl">Fix wrong ACE in extended ACL using sequence numbers <button class="cpb" onclick="copyCode(this)">Copy</button></div>
+  <pre><code>! Problem — ACE 10 has wrong source address (19 instead of 192):
+R1# show access-lists
+Extended IP access list SURFING
+    10 permit tcp 19.168.10.0 0.0.0.255 any eq www   ← WRONG
+    20 permit tcp 192.168.10.0 0.0.0.255 any eq 443
+
+! Fix using sequence numbers:
+R1(config)# ip access-list extended SURFING
+R1(config-ext-nacl)# no 10
+R1(config-ext-nacl)# 10 permit tcp 192.168.10.0 0.0.0.255 any eq www
+R1(config-ext-nacl)# end
+
+! Verify:
+R1# show access-lists
+Extended IP access list SURFING
+    10 permit tcp 192.168.10.0 0.0.0.255 any eq www   ← CORRECT
+    20 permit tcp 192.168.10.0 0.0.0.255 any eq 443</code></pre></div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">5.4.10</span> PERMIT-PC1 / REPLY-PC1 — Multi-Port Example</h3>
+  <p><strong>Policy:</strong> PC1 (192.168.10.10) only may use FTP, SSH, Telnet, DNS, HTTP, HTTPS. All other hosts in 192.168.10.0/24 are denied. Return traffic to PC1 is permitted.</p>
+  <div class="cw"><div class="cl">PERMIT-PC1 (inbound) and REPLY-PC1 (outbound) on G0/0/0 <button class="cpb" onclick="copyCode(this)">Copy</button></div>
+  <pre><code>R1(config)# ip access-list extended PERMIT-PC1
+R1(config-ext-nacl)# Remark Permit PC1 TCP access to internet
+R1(config-ext-nacl)# permit tcp host 192.168.10.10 any eq 20    ! FTP data
+R1(config-ext-nacl)# permit tcp host 192.168.10.10 any eq 21    ! FTP control
+R1(config-ext-nacl)# permit tcp host 192.168.10.10 any eq 22    ! SSH
+R1(config-ext-nacl)# permit tcp host 192.168.10.10 any eq 23    ! Telnet
+R1(config-ext-nacl)# permit tcp host 192.168.10.10 any eq 53    ! DNS
+R1(config-ext-nacl)# permit tcp host 192.168.10.10 any eq 80    ! HTTP
+R1(config-ext-nacl)# permit tcp host 192.168.10.10 any eq 443   ! HTTPS
+R1(config-ext-nacl)# deny ip 192.168.10.0 0.0.0.255 any         ! deny all other .10 hosts
+R1(config-ext-nacl)# exit
+
+R1(config)# ip access-list extended REPLY-PC1
+R1(config-ext-nacl)# Remark Only permit returning traffic to PC1
+R1(config-ext-nacl)# permit tcp any host 192.168.10.10 established
+R1(config-ext-nacl)# exit
+
+R1(config)# interface g0/0/0
+R1(config-if)# ip access-group PERMIT-PC1 in
+R1(config-if)# ip access-group REPLY-PC1 out
+R1(config-if)# end</code></pre></div>
+  <div class="ca tip">
+    <span class="ic">✅</span>
+    <div>Note how IOS converts port numbers to keywords in <code>show access-lists</code> output — <code>eq 21</code> displays as <code>eq ftp</code>, <code>eq 80</code> displays as <code>eq www</code>. SSH (22) and HTTPS (443) have no keywords so they display as numbers. This is display-only — functionally identical.</div>
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">5.4.11</span> Verify Extended ACLs</h3>
+  <div class="show-grid">
+    <div class="show-row al">
+      <div class="sr-cmd">show access-lists</div>
+      <div class="sr-shows">All ACLs with match statistics. Shows sequence numbers. Does NOT show remarks. IOS displays port keywords where available.</div>
+    </div>
+    <div class="show-row rc">
+      <div class="sr-cmd">show run | begin ip access-list</div>
+      <div class="sr-shows">Full ACL config from first ACL entry. Shows remarks. Does NOT show sequence numbers or match statistics.</div>
+    </div>
+    <div class="show-row ii">
+      <div class="sr-cmd">show ip int [intf] | include access list</div>
+      <div class="sr-shows">Which ACL is applied to an interface and in which direction. Quick single-line answer.</div>
+    </div>
+  </div>
+  <div class="cw"><div class="cl">Verification command examples — extended ACLs <button class="cpb" onclick="copyCode(this)">Copy</button></div>
+  <pre><code>! Show all ACLs with statistics:
+R1# show access-lists
+Extended IP access list PERMIT-PC1
+    10 permit tcp host 192.168.10.10 any eq 20
+    20 permit tcp host 192.168.10.10 any eq ftp       ← IOS shows keyword (eq 21 → ftp)
+    30 permit tcp host 192.168.10.10 any eq 22
+    40 permit tcp host 192.168.10.10 any eq telnet
+    50 permit tcp host 192.168.10.10 any eq domain
+    60 permit tcp host 192.168.10.10 any eq www
+    70 permit tcp host 192.168.10.10 any eq 443        ← no keyword for 443
+    80 deny ip 192.168.10.0 0.0.0.255 any
+Extended IP access list REPLY-PC1
+    10 permit tcp any host 192.168.10.10 established
+
+! Show which ACL applied to interface (filter for speed):
+R1# show ip interface g0/0/0 | include access list
+  Outgoing access list is REPLY-PC1
+  Inbound  access list is PERMIT-PC1
+
+! Show full config with remarks:
+R1# show running-config | begin ip access-list</code></pre></div>
+  </div>
+
+  <!-- SYNTAX CHECKER: 5.4.13 -->
+  <div style="margin:20px 0 6px;padding:16px;background:#0d1117;border:1px solid #30363d;border-left:3px solid #bc8cff;border-radius:8px">
+    <div style="font-size:.7em;font-weight:800;text-transform:uppercase;letter-spacing:.8px;color:#bc8cff;margin-bottom:6px">&#x1F5A5; Syntax Checker &mdash; 5.4.13</div>
+    <div style="font-size:.92em;font-weight:600;color:#e6edf3;margin-bottom:12px">Configure Extended ACLs</div>
+    <div style="font-size:.82em;color:#8b949e;margin-bottom:14px">Type each command exactly as shown. Press Enter to submit. The checker validates your syntax step by step.</div>
+    <div class="tool-links" style="display:flex;flex-wrap:wrap;gap:14px">
+      <div style="flex:1 1 220px;min-width:0">
+        <a href="../../syntax-checker-simple/ccna3_syntax_checker.html?lab=5.4.13" target="_blank" rel="noopener" title="Quick, guided drill: type the exact commands for this NetAcad lab, step by step. Opens straight to lab 5.4.13." style="display:inline-flex;align-items:center;gap:8px;color:#fff;text-decoration:none;padding:8px 18px;border-radius:6px;font-size:.85em;font-weight:700;background:#238636;border:1px solid #2ea043">&#x25B6; Open Syntax Checker</a>
+        <div style="font-size:.75em;color:#8b949e;margin-top:6px">Quick, guided drill: type the exact commands for this NetAcad lab, step by step. Opens straight to lab 5.4.13.</div>
+      </div>
+      <div style="flex:1 1 220px;min-width:0">
+        <a class="cli-engine-link" href="../../cli-engine/ccna-cli-engine.html" target="_blank" rel="noopener" title="Full simulated Cisco IOS terminal: Tab completion, device state, Free Practice, Home Labs and Subnetting. In its exercise menu, pick “Course 3 · 5.4 — Configure Named Extended ACLs”." style="display:inline-flex;align-items:center;gap:8px;color:#fff;text-decoration:none;padding:8px 18px;border-radius:6px;font-size:.85em;font-weight:700;background:#1f6feb;border:1px solid #388bfd">&#x1F4BB; Open CLI Engine</a>
+        <div style="font-size:.75em;color:#8b949e;margin-top:6px">Full simulated Cisco IOS terminal: Tab completion, device state, Free Practice, Home Labs and Subnetting. In its exercise menu, pick “Course 3 · 5.4 — Configure Named Extended ACLs”.</div>
+      </div>
+    </div>
+    <div style="margin-top:12px;font-size:.75em"><a href="../../index.html" style="color:#58a6ff;text-decoration:none">&#x1F3E0; All study tools (home)</a></div>
+  </div>
+
+  <!-- PT INLINE -->
+  <div style="margin:20px 0 6px;padding:14px 16px;background:#0d1117;border:1px solid #30363d;border-left:3px solid #1f6feb;border-radius:6px">
+    <div style="font-size:.72em;font-weight:800;text-transform:uppercase;letter-spacing:.8px;color:#1f6feb;margin-bottom:10px">&#x1F4E6; Packet Tracer Activities</div>
+  <div style="display:flex;align-items:baseline;gap:10px;padding:6px 0;border-bottom:1px solid #21262d"><span style="font-family:monospace;font-size:.85em;color:#79c0ff;white-space:nowrap;flex-shrink:0;min-width:52px">5.4.12</span><span style="font-size:.88em;color:#c9d1d9">Configure Extended IPv4 ACLs — Scenario 1</span></div>
+  <div style="display:flex;align-items:baseline;gap:10px;padding:6px 0;border-bottom:1px solid #21262d"><span style="font-family:monospace;font-size:.85em;color:#79c0ff;white-space:nowrap;flex-shrink:0;min-width:52px">5.4.13</span><span style="font-size:.88em;color:#c9d1d9">Configure Extended IPv4 ACLs — Scenario 2</span></div>
+    <div style="margin-top:10px;font-size:.78em;color:#6e7681">Full list: <a href="https://itexamanswers.net/ccna-3-packet-tracer-labs-answers-ensa-v7-02.html" target="_blank" rel="noopener" style="color:#58a6ff;word-break:break-all">https://itexamanswers.net/ccna-3-packet-tracer-labs-answers-ensa-v7-02.html</a></div>
+  </div>
+
+</div></div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- SECTION 5.5 — COMMAND REFERENCE -->
+<!-- ═══════════════════════════════════════════════════════ -->
+
+<div class="sec" id="s-pt-5-5">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">5.5</span><span class="ttl">Packet Tracer — IPv4 ACL Implementation Challenge</span></span><button class="sec-check" id="sch-s-pt-5-5" onclick="event.stopPropagation();toggleSection('s-pt-5-5',this)">○ Mark done</button>
+</div>
+<div class="sb">
+  <div style="padding:14px 16px;background:#0d1117;border:1px solid #30363d;border-left:3px solid #1f6feb;border-radius:6px">
+    <div style="font-size:.72em;font-weight:800;text-transform:uppercase;letter-spacing:.8px;color:#1f6feb;margin-bottom:10px">&#x1F4E6; Packet Tracer Activities</div>
+    <div style="font-size:.82em;color:#6e7681;margin-bottom:10px">Open in Cisco Packet Tracer via your NetAcad course.</div>
+      <div style="display:flex;align-items:baseline;gap:10px;padding:6px 0;border-bottom:1px solid #21262d"><span style="font-family:monospace;font-size:.85em;color:#79c0ff;white-space:nowrap;flex-shrink:0;min-width:52px">5.5.1</span><span style="font-size:.88em;color:#c9d1d9">IPv4 ACL Implementation Challenge</span></div>
+      <div style="display:flex;align-items:baseline;gap:10px;padding:6px 0;border-bottom:1px solid #21262d"><span style="font-family:monospace;font-size:.85em;color:#79c0ff;white-space:nowrap;flex-shrink:0;min-width:52px">5.5.2</span><span style="font-size:.88em;color:#c9d1d9">Configure and Verify Extended IPv4 ACLs (Physical Mode)</span></div>
+    <div style="margin-top:12px;font-size:.78em;color:#6e7681">Full list: <a href="https://itexamanswers.net/ccna-3-packet-tracer-labs-answers-ensa-v7-02.html" target="_blank" rel="noopener" style="color:#58a6ff;word-break:break-all">https://itexamanswers.net/ccna-3-packet-tracer-labs-answers-ensa-v7-02.html</a></div>
+  </div>
+</div>
+</div>
+<div class="sec" id="s5">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">CMD</span><span class="ttl">Complete Command Reference</span></span><button class="sec-check" id="sch-s5" onclick="event.stopPropagation();toggleSection('s5',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb">
+  <div class="sub">
+  <h4>Standard ACL Commands</h4>
+  <div class="cw"><div class="cl">Standard ACL — all commands <button class="cpb" onclick="copyCode(this)">Copy</button></div>
+  <pre><code>! Create numbered standard ACL:
+access-list {1-99|1300-1999} {permit|deny|remark} source [wildcard] [log]
+
+! Create named standard ACL:
+ip access-list standard NAME
+  [seq] {permit|deny|remark} source [wildcard]
+
+! Remove numbered ACL:
+no access-list number
+
+! Remove named ACL:
+no ip access-list standard NAME
+
+! Apply to interface:
+ip access-group {number|NAME} {in|out}
+
+! Remove from interface:
+no ip access-group {number|NAME} {in|out}</code></pre></div>
+
+  <h4>Extended ACL Commands</h4>
+  <div class="cw"><div class="cl">Extended ACL — all commands <button class="cpb" onclick="copyCode(this)">Copy</button></div>
+  <pre><code>! Create numbered extended ACL:
+access-list {100-199|2000-2699} {permit|deny|remark} protocol src src-wc [op port] dst dst-wc [op port] [established] [log]
+
+! Create named extended ACL:
+ip access-list extended NAME
+  [seq] {permit|deny|remark} protocol src src-wc [op port] dst dst-wc [op port] [established]
+
+! Remove named extended ACL:
+no ip access-list extended NAME
+
+! Apply to interface (same as standard):
+ip access-group {number|NAME} {in|out}</code></pre></div>
+
+  <h4>VTY Security Command</h4>
+  <div class="cw"><div class="cl">VTY ACL — access-class (NOT ip access-group) <button class="cpb" onclick="copyCode(this)">Copy</button></div>
+  <pre><code>line vty 0 4
+  access-class {number|NAME} {in|out}    ← access-class, not ip access-group!</code></pre></div>
+
+  <h4>Modification Commands</h4>
+  <div class="cw"><div class="cl">Edit ACE by sequence number <button class="cpb" onclick="copyCode(this)">Copy</button></div>
+  <pre><code>! Enter edit mode (works for both numbered and named):
+ip access-list standard {number|NAME}
+ip access-list extended {number|NAME}
+
+! Inside edit mode:
+no {sequence-number}                    ! Delete ACE by sequence number
+{sequence-number} {permit|deny} ...     ! Add ACE at specific position</code></pre></div>
+
+  <h4>Verification Commands</h4>
+  <div class="cw"><div class="cl">All ACL verification commands <button class="cpb" onclick="copyCode(this)">Copy</button></div>
+  <pre><code>show access-lists                              ! All ACLs — sequences + statistics (no remarks)
+show access-lists {number|NAME}                ! One specific ACL
+show ip interface {intf} | include access list ! Which ACL on interface + direction
+show run | section access-list                 ! Numbered ACL config + remarks (no sequences)
+show run | section ip access-list              ! Named ACL config + remarks (no sequences)
+show run | begin ip access-list                ! All ACL config from first entry
+clear access-list counters [number|NAME]       ! Reset match statistics</code></pre></div>
+  </div>
+</div></div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- SECTION 5.6 — EXAM TRAPS -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div class="sec" id="s6">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">🎯</span><span class="ttl">Common Exam Traps — Module 5</span></span><button class="sec-check" id="sch-s6" onclick="event.stopPropagation();toggleSection('s6',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb">
+
+  <div class="ca danger"><span class="ic">❌</span><div><strong>Trap 1: VTY lines use access-class — NOT ip access-group.</strong><br>This is the single most tested distinction in Module 5. Interface ACLs use <code>ip access-group</code> in <code>(config-if)#</code> mode. VTY ACLs use <code>access-class</code> in <code>(config-line)#</code> mode. Using <code>ip access-group</code> on a VTY line is wrong syntax. Know both commands cold.</div></div>
+
+  <div class="ca danger"><span class="ic">❌</span><div><strong>Trap 2: Apply VTY ACL to ALL lines (0 4) in the INBOUND direction.</strong><br>Users can attempt to connect to any VTY line. If only some lines are protected, an attacker connects to an unprotected one. The <code>in</code> direction filters who can connect TO the router. Apply identically to all VTY lines.</div></div>
+
+  <div class="ca danger"><span class="ic">❌</span><div><strong>Trap 3: show access-lists shows sequences and statistics — NOT remarks.</strong><br>Remarks are only visible in <code>show running-config</code>. If the exam asks "which command shows remark statements," the answer is <code>show running-config</code>. If it asks "which command shows match statistics," the answer is <code>show access-lists</code>.</div></div>
+
+  <div class="ca danger"><span class="ic">❌</span><div><strong>Trap 4: show running-config shows remarks — NOT sequence numbers or statistics.</strong><br>These two commands are complementary: <code>show access-lists</code> = sequences + match counters. <code>show run</code> = remarks + wildcard notation. Neither alone gives the full picture.</div></div>
+
+  <div class="ca danger"><span class="ic">❌</span><div><strong>Trap 5: SSH (22) and HTTPS (443) have no IOS port keyword — must use numbers.</strong><br><code>eq 22</code> for SSH, <code>eq 443</code> for HTTPS. There is no <code>eq ssh</code> or <code>eq https</code> in IOS. Students who try to type these will fail. Know which ports DO have keywords: www=80, ftp=21, telnet=23, smtp=25, domain=53.</div></div>
+
+  <div class="ca danger"><span class="ic">❌</span><div><strong>Trap 6: Delete the old ACL BEFORE pasting corrected version (text editor method).</strong><br>Pasting corrected ACL commands without first removing the original appends them to the end — creating a combined, broken ACL. Always: <code>no access-list number</code> first, then paste the corrected version.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 7: established matches TCP ACK or RST flags — blocks new external TCP connections.</strong><br>Initial SYN from external host has no ACK → blocked. Return SYN-ACK from server has ACK → permitted. This creates a basic one-way firewall for TCP. Does NOT work for UDP or ICMP (no ACK/RST flags in those protocols).</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 8: Standard ACL hashing reorders host entries — extended ACL order is preserved.</strong><br>In standard ACLs, IOS applies a hashing function that moves host-specific entries before range entries in <code>show access-lists</code> output. Extended ACLs always display exactly as entered. Don't be surprised when sequence 15 appears before sequence 10 in a standard ACL.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 9: deny ip any any vs deny any — syntax differs between standard and extended.</strong><br>Standard ACL: <code>deny any</code> (source-only; "any" means any source). Extended ACL: <code>deny ip any any</code> (protocol required; "any any" means any source to any destination). Using <code>deny any</code> in an extended ACL is a syntax error.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 10: Removing ACL from interface doesn't delete the ACL from the router.</strong><br><code>no ip access-group 10 out</code> removes the binding from the interface but the ACL still exists. <code>no access-list 10</code> deletes the ACL entirely. Two separate operations.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 11: IOS shows port keywords in show access-lists even if you entered numbers.</strong><br>If you configure <code>eq 80</code>, show output displays <code>eq www</code>. If you configure <code>eq 21</code>, output shows <code>eq ftp</code>. This is display-only — the ACL functions identically. For SSH (22) and HTTPS (443), IOS shows the number since no keyword exists.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 12: Explicit deny any at end for statistics — implicit deny is invisible.</strong><br>The implicit deny any at the end of every ACL does NOT increment a counter and is NOT visible in <code>show access-lists</code>. To track how many packets were dropped, add an explicit <code>deny any</code> as the last ACE — it will show match statistics.</div></div>
+
+  <div class="ca tip"><span class="ic">✅</span><div><strong>Module 5 quick-reference summary — all key commands:</strong><br><br>
+  <strong>Standard numbered:</strong> <code>access-list {1-99|1300-1999} {permit|deny} source [wc]</code><br>
+  <strong>Standard named:</strong> <code>ip access-list standard NAME</code> → then ACEs<br>
+  <strong>Extended numbered:</strong> <code>access-list {100-199|2000-2699} {permit|deny} proto src swc [op port] dst dwc [op port] [established]</code><br>
+  <strong>Extended named:</strong> <code>ip access-list extended NAME</code> → then ACEs<br>
+  <strong>Apply to interface:</strong> <code>ip access-group {num|NAME} {in|out}</code><br>
+  <strong>Apply to VTY:</strong> <code>access-class {num|NAME} in</code> ← NOT ip access-group!<br>
+  <strong>Edit ACE:</strong> <code>ip access-list std|ext {num|NAME}</code> → <code>no {seq}</code> → <code>{seq} permit|deny ...</code><br>
+  <strong>Verify (sequences+stats):</strong> <code>show access-lists</code><br>
+  <strong>Verify (remarks):</strong> <code>show run | section access-list</code><br>
+  <strong>Verify (interface):</strong> <code>show ip int [intf] | include access list</code><br>
+  <strong>Clear stats:</strong> <code>clear access-list counters [name]</code><br>
+  <strong>Port keywords:</strong> www=80 · ftp=21 · telnet=23 · smtp=25 · domain=53 · SSH=<em>no kw</em>=22 · HTTPS=<em>no kw</em>=443<br>
+  <strong>established:</strong> TCP only · matches ACK or RST · blocks new external connections</div></div>
+
+</div></div>
+
+</div><!-- end .wrap -->
+
+<div class="ft">
+  CCNA 3 ENSA v7.02 — Module 5: ACLs for IPv4 Configuration v2.2<br>
+  Based on Cisco NetAcad curriculum · Study guide for personal use
+</div>
+
+<button class="tb" id="topb" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+
+<div class="mod-nav">
+  <a class="mn-hub" href="index.html">🏠 Hub</a>
+  <div class="mn-divider"></div>
+  <a class="mn-prev" href="ccna3_module4_acl_concepts_v2.2.html">‹</a>
+  <span class="mn-label">M5 of 14</span>
+  <a class="mn-next" href="ccna3_module6_nat_for_ipv4_v2.2.html">›</a>
+</div>
+
+<script>
+var MOD_KEY="ccna3-module5-acls-ipv4-configuration";
+var SECS=["s1","s2","s3","s4","s-pt-5-5","s5","s6"];
+var checked={};
+function loadState(){
+  try{var s=localStorage.getItem(MOD_KEY);if(s)checked=JSON.parse(s);}catch(e){}
+  SECS.forEach(function(id){
+    var pill=document.getElementById('pill-'+id);
+    var row=document.getElementById('row-'+id);
+    var st=document.getElementById('st-'+id);
+    var sch=document.getElementById('sch-'+id);
+    if(checked[id]){
+      if(pill){pill.classList.add('checked');pill.querySelector('.pill-check').textContent='✓';}
+      if(row)row.classList.add('done');
+      if(st)st.textContent='✓';
+      if(sch){sch.classList.add('checked');sch.textContent='✓ Done';}
+    } else {
+      if(pill){pill.classList.remove('checked');pill.querySelector('.pill-check').textContent='○';}
+      if(row)row.classList.remove('done');
+      if(st)st.textContent='○';
+      if(sch){sch.classList.remove('checked');sch.textContent='○ Mark done';}
+    }
+  });
+}
+function toggleSection(id,btn){checked[id]=!checked[id];try{localStorage.setItem(MOD_KEY,JSON.stringify(checked));}catch(e){}loadState();}
+function toggleStudyPanel(){
+  var hdr=document.getElementById('sp-hdr');
+  var body=document.getElementById('sp-body');
+  var arr=document.getElementById('sp-arr');
+  hdr.classList.toggle('open');body.classList.toggle('open');
+  if(arr)arr.textContent=body.classList.contains('open')?'▲':'▼';
+}
+function goTo(id){var el=document.getElementById(id);if(!el)return;var h=el.querySelector('.sh,.section-header'),b=el.querySelector('.sb,.section-body');if(h&&b&&!b.classList.contains('open')){h.classList.add('open');b.classList.add('open');}setTimeout(function(){window.scrollTo({top:el.getBoundingClientRect().top+window.pageYOffset-60,behavior:'smooth'});},50);}
+function setFs(size,btn){document.documentElement.style.setProperty('--base-fs',size);document.querySelectorAll('.fs-btn').forEach(function(b){b.classList.remove('active');});btn.classList.add('active');try{localStorage.setItem('ccna-fs',size);}catch(e){}}
+(function(){try{var s=localStorage.getItem('ccna-fs');if(s){document.documentElement.style.setProperty('--base-fs',s);document.querySelectorAll('.fs-btn').forEach(function(b){b.classList.remove('active');if((b.textContent==='S'&&s==='14px')||(b.textContent==='M'&&s==='16px')||(b.textContent==='L'&&s==='18px')||(b.textContent==='XL'&&s==='20px'))b.classList.add('active');});}}catch(e){}loadState();})();
+function copyCode(b){var t=b.closest('.cw').querySelector('pre').innerText;if(navigator.clipboard){navigator.clipboard.writeText(t).then(function(){b.textContent='Copied!';setTimeout(function(){b.textContent='Copy';},1500);}).catch(function(){fb(t,b);});}else{fb(t,b);}}
+function fb(t,b){var a=document.createElement('textarea');a.value=t;a.style.position='fixed';a.style.opacity='0';document.body.appendChild(a);a.focus();a.select();document.execCommand('copy');document.body.removeChild(a);b.textContent='Copied!';setTimeout(function(){b.textContent='Copy';},1500);}
+</script>
+<script src="../../site-config.js"></script>
+</body>
+</html>

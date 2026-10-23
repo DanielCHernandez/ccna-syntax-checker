@@ -1,0 +1,1097 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=2.0">
+<title>CCNA 2 Module 11: Switch Security Configuration v2.2</title>
+<style>
+:root{
+  --blue:#1ba0d7;--dark:#005073;--green:#6cc24a;
+  --sec:#1a472a;--secd:#2ecc71;
+  --bg:#f4f6f8;--card:#fff;--text:#1a1a2e;--muted:#5a6a7a;
+  --cbg:#0d1117;--ctxt:#c9d1d9;--r:12px;--sh:0 2px 12px rgba(0,0,0,.08);
+  --base-fs:16px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);font-size:var(--base-fs);line-height:1.7}
+
+/* ── Font size toggle ── */
+.fs-bar{position:sticky;top:0;z-index:200;background:#1a1a2e;display:flex;align-items:center;justify-content:flex-end;padding:6px 14px;gap:6px;box-shadow:0 2px 8px rgba(0,0,0,.3)}
+.fs-label{color:#8b949e;font-size:.72em;font-weight:700;letter-spacing:.5px;text-transform:uppercase;margin-right:4px}
+.fs-btn{background:#30363d;color:#c9d1d9;border:2px solid transparent;border-radius:6px;padding:4px 12px;font-size:.75em;font-weight:700;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:all .2s;line-height:1.4}
+.fs-btn:active,.fs-btn.active{background:var(--secd);color:#0d1117;border-color:var(--secd)}
+
+/* ── Header ── */
+.hdr{background:linear-gradient(135deg,var(--sec),#27ae60);color:#fff;padding:32px 20px 24px;text-align:center}
+.hdr .badge{display:inline-block;background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.4);border-radius:20px;padding:4px 14px;font-size:.81em;margin-bottom:12px}
+.hdr h1{font-size:1.625em;font-weight:700;margin-bottom:6px}
+.hdr p{font-size:.94em;opacity:.85}
+.hdr .obj{display:inline-block;background:rgba(255,255,255,.15);border-radius:8px;padding:7px 16px;margin-top:12px;font-size:.875em;font-style:italic}
+
+/* ── Progress bar ── */
+.pb{background:var(--card);padding:14px 16px;margin:16px 16px 0;border-radius:var(--r);box-shadow:var(--sh)}
+.pbl{font-size:.81em;color:var(--muted);margin-bottom:6px;font-weight:600}
+.pbt{background:#e0e7ef;border-radius:10px;height:8px;overflow:hidden}
+.pbf{background:linear-gradient(90deg,var(--sec),var(--secd));height:100%;border-radius:10px;width:0;transition:width 1s ease}
+
+/* ── TOC ── */
+.toc{background:var(--card);margin:16px;border-radius:var(--r);box-shadow:var(--sh);overflow:hidden}
+.toch{background:var(--sec);color:#fff;padding:14px 18px;font-weight:700;font-size:.94em;display:flex;justify-content:space-between;align-items:center;cursor:pointer;user-select:none}
+.toch .arr{transition:transform .3s}
+.toch.open .arr{transform:rotate(180deg)}
+.tocb{display:none;padding:10px 0}
+.tocb.open{display:block}
+.tocg{font-size:.69em;font-weight:800;letter-spacing:.8px;color:var(--sec);text-transform:uppercase;padding:8px 20px 2px}
+.tocb a{display:block;padding:9px 20px 9px 28px;color:var(--text);text-decoration:none;font-size:.875em;border-left:3px solid transparent;transition:all .2s}
+.tocb a:hover,.tocb a:active{background:#d4edda;border-left-color:var(--secd)}
+.tocb a .n{display:inline-block;background:var(--sec);color:#fff;border-radius:5px;padding:1px 8px;font-size:.75em;font-weight:700;margin-right:8px}
+
+/* ── Main wrap ── */
+.wrap{padding:0 16px 100px}
+
+/* ── Section cards ── */
+.sec{background:var(--card);border-radius:var(--r);box-shadow:var(--sh);margin-bottom:16px;overflow:hidden}
+.sh{background:linear-gradient(90deg,var(--sec),#27ae60);color:#fff;padding:16px 18px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;user-select:none;-webkit-tap-highlight-color:transparent}
+.sh .ttl{font-weight:700;font-size:1em}
+.sh .nb{background:rgba(255,255,255,.25);border-radius:6px;padding:3px 10px;font-size:.81em;font-weight:700;margin-right:10px;white-space:nowrap}
+.sh .ch{font-size:1.125em;transition:transform .3s}
+.sh.open .ch{transform:rotate(180deg)}
+.sb{display:none;padding:18px}
+.sb.open{display:block}
+
+/* ── Subsections ── */
+.sub{margin-bottom:24px}
+.sub:last-child{margin-bottom:0}
+.sub h3{font-size:.94em;font-weight:700;color:var(--sec);margin-bottom:10px;padding-bottom:6px;border-bottom:2px solid #d4edda;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.sub h3 .sn{background:var(--sec);color:#fff;border-radius:5px;padding:2px 8px;font-size:.75em;white-space:nowrap}
+.sub h4{font-size:.875em;font-weight:700;color:var(--sec);margin:14px 0 6px}
+.sub p{margin-bottom:10px;font-size:.94em}
+.sub ul,.sub ol{padding-left:20px;margin:8px 0;font-size:.94em}
+.sub li{margin-bottom:5px}
+
+/* ── Code blocks ── */
+.cw{background:var(--cbg);border-radius:10px;margin:12px 0;overflow:hidden}
+.cl{background:#21262d;color:#c9d1d9;font-size:.78em;font-weight:700;padding:6px 14px;letter-spacing:.5px;text-transform:uppercase;display:flex;justify-content:space-between;align-items:center}
+.cpb{background:#30363d;color:#c9d1d9;border:none;border-radius:5px;padding:3px 10px;font-size:.69em;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.cpb:active{background:var(--secd);color:#0d1117}
+pre{margin:0;padding:14px;overflow-x:auto;-webkit-overflow-scrolling:touch}
+code{font-family:'Courier New',monospace;font-size:.81em;color:var(--ctxt);line-height:1.6}
+p code,li code,td code,h3 code,h4 code,.ca code{background:#d4edda;color:var(--sec);border-radius:4px;padding:1px 5px;font-size:.81em;font-family:'Courier New',monospace;font-weight:600}
+
+/* ── Callout boxes ── */
+.ca{border-radius:8px;padding:12px 14px;margin:12px 0;font-size:.875em;line-height:1.6;display:flex;gap:10px;align-items:flex-start}
+.ca .ic{font-size:1.125em;flex-shrink:0;margin-top:1px}
+.ca.warn  {background:#fff3cd;border-left:4px solid #b38600;color:#3d2c00}
+.ca.tip   {background:#d4edda;border-left:4px solid #28a745;color:#0d3318}
+.ca.danger{background:#f8d7da;border-left:4px solid #dc3545;color:#3d0010}
+.ca.info  {background:#d0e8f5;border-left:4px solid var(--blue);color:#002d44}
+
+/* ── Exam tip dark box ── */
+.et{background:linear-gradient(135deg,#1a1a2e,var(--sec));color:#fff;border-radius:10px;padding:14px 16px;margin:14px 0;font-size:.875em;line-height:1.6}
+.et .lbl{font-size:.69em;font-weight:800;letter-spacing:1px;color:var(--secd);margin-bottom:6px}
+.et ol,.et ul{padding-left:18px;margin-top:6px}
+.et li{margin-bottom:5px}
+
+/* ── Tables ── */
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:12px 0;border-radius:8px}
+table{width:100%;border-collapse:collapse;font-size:.875em}
+th{background:var(--sec);color:#fff;padding:10px 12px;text-align:left;font-weight:700;font-size:.81em}
+td{padding:9px 12px;border-bottom:1px solid #e8ecf0;vertical-align:top;color:#1a1a2e}
+tr:nth-child(even) td{background:#d4edda;color:#0d3318}
+tr:last-child td{border-bottom:none}
+
+/* ── Numbered steps ── */
+.steps{counter-reset:step;list-style:none;padding:0;margin:12px 0}
+.steps li{counter-increment:step;display:flex;gap:12px;align-items:flex-start;padding:10px 0;border-bottom:1px solid #eef0f3;font-size:.875em;line-height:1.6}
+.steps li:last-child{border-bottom:none}
+.steps li::before{content:counter(step);background:var(--sec);color:#fff;border-radius:50%;min-width:26px;height:26px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.81em;flex-shrink:0;margin-top:2px}
+
+/* ── Diagram box ── */
+.dg{background:#0d1117;border-radius:10px;padding:14px;margin:12px 0;overflow-x:auto;-webkit-overflow-scrolling:touch}
+.dg pre{color:#58a6ff;font-family:'Courier New',monospace;font-size:.75em;line-height:1.6}
+
+/* ── Violation mode cards ── */
+.vmode-grid{display:grid;gap:10px;margin:12px 0}
+.vmode-card{border-radius:10px;padding:14px;border-left:5px solid}
+.vmode-card.protect{border-left-color:#f39c12;background:#fffbf0}
+.vmode-card.restrict{border-left-color:var(--blue);background:#e8f4fb}
+.vmode-card.shutdown{border-left-color:#dc3545;background:#fff5f5}
+.vmode-card .vc-title{font-size:.875em;font-weight:800;margin-bottom:4px}
+.vmode-card.protect .vc-title{color:#c87800}
+.vmode-card.restrict .vc-title{color:var(--dark)}
+.vmode-card.shutdown .vc-title{color:#c0392b}
+.vmode-card .vc-badge{font-size:.69em;font-weight:700;padding:2px 8px;border-radius:4px;display:inline-block;margin-bottom:6px;color:#fff}
+.vmode-card.protect .vc-badge{background:#f39c12}
+.vmode-card.restrict .vc-badge{background:var(--blue)}
+.vmode-card.shutdown .vc-badge{background:#dc3545}
+.vmode-card ul{padding-left:18px;font-size:.81em;color:#1a1a2e;line-height:1.8}
+
+/* ── MAC learning method cards ── */
+.mac-grid{display:grid;gap:10px;margin:12px 0}
+.mac-card{border-radius:10px;padding:14px;border:2px solid}
+.mac-card.static{border-color:var(--sec);background:#f0fff4}
+.mac-card.dynamic{border-color:var(--blue);background:#e8f4fb}
+.mac-card.sticky{border-color:#9b59b6;background:#f8f0ff}
+.mac-card .mc-title{font-size:.875em;font-weight:800;margin-bottom:4px}
+.mac-card.static .mc-title{color:var(--sec)}
+.mac-card.dynamic .mc-title{color:var(--dark)}
+.mac-card.sticky .mc-title{color:#7d3c98}
+.mac-card ul{padding-left:18px;font-size:.81em;color:#1a1a2e;line-height:1.8}
+
+/* ── DAI trust diagram ── */
+.trust-flow{background:#0d1117;border:2px solid var(--secd);border-radius:10px;padding:16px;margin:14px 0}
+.trust-flow .tf-title{font-size:.75em;font-weight:800;letter-spacing:.8px;color:var(--secd);text-transform:uppercase;margin-bottom:10px}
+.trust-row{display:flex;gap:12px;align-items:flex-start;padding:7px 0;border-bottom:1px solid #21262d;font-size:.81em;color:#c9d1d9;line-height:1.6}
+.trust-row:last-child{border-bottom:none}
+.trust-badge{min-width:80px;font-weight:800;font-size:.75em;text-align:center;padding:3px 8px;border-radius:4px;flex-shrink:0}
+.trust-badge.trusted{background:#27ae60;color:#fff}
+.trust-badge.untrusted{background:#dc3545;color:#fff}
+
+/* ── PortFast / BPDU comparison ── */
+.pf-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:12px 0}
+@media(max-width:480px){.pf-grid{grid-template-columns:1fr}}
+.pf-card{border-radius:10px;overflow:hidden}
+.pf-card .pf-hdr{padding:10px 12px;font-size:.875em;font-weight:800;color:#fff;text-align:center}
+.pf-card.portfast .pf-hdr{background:var(--sec)}
+.pf-card.bpdu .pf-hdr{background:#c0392b}
+.pf-card .pf-body{padding:12px;font-size:.81em;background:#f8f9fa;color:#1a1a2e;line-height:1.7}
+
+/* ── Command quick-ref ── */
+.cmd-section{margin-bottom:16px}
+.cmd-section h4{font-size:.875em;font-weight:800;color:var(--sec);margin-bottom:8px;padding:6px 10px;background:#d4edda;border-radius:6px}
+
+/* ── Scroll to top ── */
+.tb{position:fixed;bottom:80px;right:16px;background:var(--sec);color:#fff;border:none;border-radius:50%;width:44px;height:44px;font-size:1.25em;box-shadow:0 4px 14px rgba(0,0,0,.25);cursor:pointer;display:none;align-items:center;justify-content:center;z-index:100}
+.tb.show{display:flex}
+.ft{text-align:center;padding:24px 16px;color:var(--muted);font-size:.81em}
+
+/* ── Module navigation bar ── */
+.mod-nav{position:fixed;bottom:0;left:0;right:0;z-index:300;background:#1a1a2e;border-top:1px solid #30363d;display:flex;align-items:center;height:52px;padding:0 8px;gap:6px}
+.mn-hub{background:var(--blue);color:#fff;border:none;border-radius:8px;padding:6px 12px;font-size:.75em;font-weight:700;cursor:pointer;text-decoration:none;display:flex;align-items:center;gap:4px;white-space:nowrap;-webkit-tap-highlight-color:transparent;flex-shrink:0}
+.mn-hub:active{opacity:.8}
+.mn-divider{width:1px;height:28px;background:#30363d;flex-shrink:0}
+.mn-label{flex:1;text-align:center;font-size:.69em;color:#8b949e;font-weight:600;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding:0 4px}
+.mn-prev,.mn-next{background:#30363d;color:#c9d1d9;border:none;border-radius:8px;padding:6px 10px;font-size:.875em;font-weight:700;cursor:pointer;text-decoration:none;display:flex;align-items:center;-webkit-tap-highlight-color:transparent;flex-shrink:0}
+.mn-prev:active,.mn-next:active{background:var(--blue);color:#fff}
+.mn-prev.disabled,.mn-next.disabled{opacity:.3;pointer-events:none}
+/* Study progress panel */
+.sp-wrap{background:var(--card);margin:16px 16px 0;border-radius:var(--r);box-shadow:var(--sh);overflow:hidden}
+.sp-hdr{background:var(--nt);color:#fff;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;user-select:none;-webkit-tap-highlight-color:transparent;gap:10px}
+.sp-hdr .sp-title{font-weight:700;font-size:.875em;flex-shrink:0}
+.sp-hdr .sp-arr{transition:transform .3s;flex-shrink:0}
+.sp-hdr.open .sp-arr{transform:rotate(180deg)}
+.sp-body{display:none;padding:12px 14px}
+.sp-body.open{display:block}
+.sp-row{display:flex;align-items:center;gap:10px;padding:6px 4px;border-bottom:1px solid #f0f4f8;font-size:.81em}
+.sp-row:last-child{border-bottom:none}
+.sp-row .sr-status{font-size:1em;flex-shrink:0;width:20px;text-align:center}
+.sp-row .sr-nb{font-weight:800;color:var(--nt);min-width:36px;flex-shrink:0;font-size:.875em}
+.sp-row .sr-ttl{color:var(--text);flex:1}
+.sp-row.done .sr-ttl{color:var(--muted);text-decoration:line-through}
+.sc-pills{display:flex;align-items:center;gap:4px;overflow-x:auto;-webkit-overflow-scrolling:touch;flex:1;padding:0 4px}
+.sc-pill{background:#30363d;color:#8b949e;border:2px solid transparent;border-radius:6px;padding:3px 8px;font-size:.72em;font-weight:700;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:all .15s;white-space:nowrap;flex-shrink:0;line-height:1.4;display:flex;align-items:center;gap:3px}
+.sc-pill.checked{background:var(--nt);color:#fff;border-color:var(--ntd)}
+.sc-pill .pill-check{font-size:.875em}
+
+/* v2.1 — In-section check button */
+.sh{position:relative}
+.sec-check{position:absolute;right:40px;top:50%;transform:translateY(-50%);background:rgba(255,255,255,.15);border:2px solid rgba(255,255,255,.4);border-radius:6px;padding:2px 10px;font-size:.72em;font-weight:800;color:#fff;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:all .2s;white-space:nowrap;z-index:10;line-height:1.5}
+.sec-check.checked{background:var(--ntd);border-color:var(--ntd);color:#052e1e}
+.sec-check:active{opacity:.75}
+/* Sections panel + tick colours (these pages never defined --nt/--ntd, so the panel header was invisible) */
+:root{--nt:var(--sec);--ntd:#4ade80}
+</style>
+<style>.bc{background:#0d1117;padding:8px 16px;display:flex;align-items:center;flex-wrap:wrap;gap:4px;font-size:.75em;overflow-x:auto;white-space:nowrap;-webkit-overflow-scrolling:touch;border-bottom:1px solid #21262d}.bc a{color:#8b949e;text-decoration:none;font-weight:600;flex-shrink:0}.bc a:active{color:#c9d1d9}.bc .sep{color:#6e7681;flex-shrink:0}.bc .cur{color:#1ba0d7;font-weight:700;flex-shrink:0}</style>
+</head>
+<body>
+<nav class="bc"><a href="../../index.html">🏠 Home</a><span class="sep">›</span><a href="index.html">CCNA 2 — SRWE</a><span class="sep">›</span><span class="cur">M11: Switch Security</span></nav>
+
+<!-- FONT SIZE TOGGLE -->
+<div class="fs-bar">
+  <div class="sc-pills" id="sc-pills">
+  <button class="sc-pill" id="pill-s1" onclick="toggleSection('s1',this)"><span class="pill-check">○</span>11.1</button>
+  <button class="sc-pill" id="pill-s2" onclick="toggleSection('s2',this)"><span class="pill-check">○</span>11.2</button>
+  <button class="sc-pill" id="pill-s3" onclick="toggleSection('s3',this)"><span class="pill-check">○</span>11.3</button>
+  <button class="sc-pill" id="pill-s4" onclick="toggleSection('s4',this)"><span class="pill-check">○</span>11.4</button>
+  <button class="sc-pill" id="pill-s5" onclick="toggleSection('s5',this)"><span class="pill-check">○</span>11.5</button>
+  <button class="sc-pill" id="pill-s-pt-11-6" onclick="toggleSection('s-pt-11-6',this)"><span class="pill-check">○</span>PT 11.6</button>
+  <button class="sc-pill" id="pill-s6" onclick="toggleSection('s6',this)"><span class="pill-check">○</span>CMD</button>
+  <button class="sc-pill" id="pill-s7" onclick="toggleSection('s7',this)"><span class="pill-check">○</span>🎯</button>
+  </div>
+  <span class="fs-label" style="flex-shrink:0;margin-left:6px">Size</span>
+  <button class="fs-btn" onclick="setFs('14px',this)">S</button>
+  <button class="fs-btn active" onclick="setFs('16px',this)">M</button>
+  <button class="fs-btn" onclick="setFs('18px',this)">L</button>
+  <button class="fs-btn" onclick="setFs('20px',this)">XL</button>
+</div>
+
+<!-- HEADER -->
+<div class="hdr">
+  <div class="badge">CCNA 2 — SRWE v7.02</div>
+  <h1>🛡️ Module 11: Switch Security Configuration</h1>
+  <p>Switching, Routing &amp; Wireless Essentials · NetAcad Study Guide</p>
+  <div class="obj">Module Objective: Configure switch security to mitigate LAN attacks</div>
+</div>
+
+<div class="sp-wrap">
+  <div class="sp-hdr" id="sp-hdr" onclick="toggleStudyPanel()">
+    <span class="sp-title">📚 Sections</span>
+    <span class="sp-arr" id="sp-arr">▼</span>
+  </div>
+  <div class="sp-body" id="sp-body">
+    <div class="sp-row" id="row-s1"><span class="sr-status" id="st-s1">○</span><span class="sr-nb">11.1</span><span class="sr-ttl">Implement Port Security</span></div>
+    <div class="sp-row" id="row-s2"><span class="sr-status" id="st-s2">○</span><span class="sr-nb">11.2</span><span class="sr-ttl">Mitigate VLAN Attacks</span></div>
+    <div class="sp-row" id="row-s3"><span class="sr-status" id="st-s3">○</span><span class="sr-nb">11.3</span><span class="sr-ttl">Mitigate DHCP Attacks</span></div>
+    <div class="sp-row" id="row-s4"><span class="sr-status" id="st-s4">○</span><span class="sr-nb">11.4</span><span class="sr-ttl">Mitigate ARP Attacks</span></div>
+    <div class="sp-row" id="row-s5"><span class="sr-status" id="st-s5">○</span><span class="sr-nb">11.5</span><span class="sr-ttl">Mitigate STP Attacks</span></div>
+    <div class="sp-row" id="row-s-pt-11-6"><span class="sr-status" id="st-s-pt-11-6">○</span><span class="sr-nb">PT 11.6</span><span class="sr-ttl">Packet Tracer — Switch Security Configuration</span></div>
+    <div class="sp-row" id="row-s6"><span class="sr-status" id="st-s6">○</span><span class="sr-nb">CMD</span><span class="sr-ttl">All Module 11 Commands</span></div>
+    <div class="sp-row" id="row-s7"><span class="sr-status" id="st-s7">○</span><span class="sr-nb">🎯</span><span class="sr-ttl">Common Exam Traps — Module 11</span></div>
+  </div>
+</div>
+
+<!-- TABLE OF CONTENTS -->
+<div class="toc">
+  <div class="toch open" onclick="this.classList.toggle('open');document.getElementById('tocb').classList.toggle('open')">
+    📋 Table of Contents — Tap to expand <span class="arr">▼</span>
+  </div>
+  <div class="tocb open" id="tocb">
+    <div class="tocg">11.1 — Implement Port Security</div>
+    <a href="javascript:void(0)" onclick="goTo('s1')"><span class="n">11.1.1</span> Secure Unused Ports</a>
+    <a href="javascript:void(0)" onclick="goTo('s1')"><span class="n">11.1.2</span> Mitigate MAC Address Table Attacks</a>
+    <a href="javascript:void(0)" onclick="goTo('s1')"><span class="n">11.1.3</span> Enable Port Security</a>
+    <a href="javascript:void(0)" onclick="goTo('s1')"><span class="n">11.1.4</span> Limit and Learn MAC Addresses</a>
+    <a href="javascript:void(0)" onclick="goTo('s1')"><span class="n">11.1.5</span> Port Security Aging</a>
+    <a href="javascript:void(0)" onclick="goTo('s1')"><span class="n">11.1.6</span> Port Security Violation Modes</a>
+    <a href="javascript:void(0)" onclick="goTo('s1')"><span class="n">11.1.7</span> Ports in Error-Disabled State</a>
+    <a href="javascript:void(0)" onclick="goTo('s1')"><span class="n">11.1.8</span> Verify Port Security</a>
+    <div class="tocg">11.2 — Mitigate VLAN Attacks</div>
+    <a href="javascript:void(0)" onclick="goTo('s2')"><span class="n">11.2.2</span> Five Steps to Mitigate VLAN Hopping</a>
+    <div class="tocg">11.3 — Mitigate DHCP Attacks</div>
+    <a href="javascript:void(0)" onclick="goTo('s3')"><span class="n">11.3.2</span> DHCP Snooping — Trusted vs Untrusted</a>
+    <a href="javascript:void(0)" onclick="goTo('s3')"><span class="n">11.3.3</span> Four Steps to Implement DHCP Snooping</a>
+    <div class="tocg">11.4 — Mitigate ARP Attacks</div>
+    <a href="javascript:void(0)" onclick="goTo('s4')"><span class="n">11.4.1</span> Dynamic ARP Inspection (DAI)</a>
+    <a href="javascript:void(0)" onclick="goTo('s4')"><span class="n">11.4.2</span> DAI Implementation Guidelines</a>
+    <a href="javascript:void(0)" onclick="goTo('s4')"><span class="n">11.4.3</span> DAI Configuration Example</a>
+    <div class="tocg">11.5 — Mitigate STP Attacks</div>
+    <a href="javascript:void(0)" onclick="goTo('s5')"><span class="n">11.5.2</span> Configure PortFast</a>
+    <a href="javascript:void(0)" onclick="goTo('s5')"><span class="n">11.5.3</span> Configure BPDU Guard</a>
+    <div class="tocg">Reference</div>
+    <a href="javascript:void(0)" onclick="goTo('s6')"><span class="n">CMD</span> All Module 11 Commands</a>
+    <a href="javascript:void(0)" onclick="goTo('s7')"><span class="n">🎯</span> Common Exam Traps</a>
+  </div>
+</div>
+
+<div class="wrap">
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- SECTION 11.1 — PORT SECURITY -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div class="sec" id="s1">
+<div class="sh open" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">11.1</span><span class="ttl">Implement Port Security</span></span><button class="sec-check" id="sch-s1" onclick="event.stopPropagation();toggleSection('s1',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb open">
+
+  <div class="sub">
+  <h3><span class="sn">11.1.1</span> Secure Unused Ports</h3>
+  <p>Switch ports are <strong>enabled by default</strong> — the opposite of router interfaces. Every unused enabled port is an open entry point into the network. The first step in switch hardening is shutting down all unused ports.</p>
+  <div class="cw"><div class="cl">Disable unused ports using interface range <button class="cpb" onclick="copyCode(this)">Copy</button></div>
+  <pre><code>! Shut down ports Fa0/8 through Fa0/24:
+S1(config)# interface range fa0/8 - 24
+S1(config-if-range)# shutdown
+%LINK-5-CHANGED: Interface FastEthernet0/8, changed state to administratively down
+(output omitted)
+%LINK-5-CHANGED: Interface FastEthernet0/24, changed state to administratively down
+
+! To re-enable a port later:
+S1(config-if-range)# no shutdown</code></pre></div>
+  <div class="ca tip">
+    <span class="ic">✅</span>
+    <div><strong>Best practice:</strong> Assign unused ports to an unused VLAN <em>and</em> shut them down. Two layers of protection — even if someone accidentally re-enables a port, it lands in an isolated VLAN with no network access.</div>
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">11.1.2</span> Mitigate MAC Address Table Attacks</h3>
+  <p><strong>Port security</strong> is the simplest and most effective method to prevent MAC address table overflow attacks. It limits the number of valid MAC addresses allowed on a port. When a frame arrives, its source MAC is compared against the port's secure MAC list. If the MAC is unknown and the maximum is reached, a violation occurs.</p>
+  <p>By setting the maximum to 1, only one device can communicate through that port — any other device triggers an immediate violation response.</p>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">11.1.3</span> Enable Port Security</h3>
+  <div class="ca danger">
+    <span class="ic">🚨</span>
+    <div><strong>Port security cannot be configured on dynamic (DTP) ports.</strong> By default, switch ports are set to <code>dynamic auto</code>. You must first set the port to <code>switchport mode access</code> (or <code>switchport mode trunk</code>) before enabling port security. Forgetting this step is the most common lab error in Module 11.</div>
+  </div>
+  <div class="cw"><div class="cl">Enable port security — access mode required first <button class="cpb" onclick="copyCode(this)">Copy</button></div>
+  <pre><code>S1(config)# interface f0/1
+
+! This will fail on a dynamic port:
+S1(config-if)# switchport port-security
+Command rejected: FastEthernet0/1 is a dynamic port.
+
+! Set mode first, then enable:
+S1(config-if)# switchport mode access
+S1(config-if)# switchport port-security
+S1(config-if)# end</code></pre></div>
+
+  <div class="et">
+    <div class="lbl">📋 PORT SECURITY DEFAULTS (when enabled with no other commands)</div>
+    Maximum MAC addresses: <strong>1</strong><br>
+    Violation mode: <strong>Shutdown</strong><br>
+    Aging: <strong>Disabled</strong><br>
+    MAC learning: <strong>Dynamic</strong> (first learned MAC is secured)
+  </div>
+
+  <div class="cw"><div class="cl">show port-security interface — verify defaults after enabling <button class="cpb" onclick="copyCode(this)">Copy</button></div>
+  <pre><code>S1# show port-security interface f0/1
+Port Security              : Enabled
+Port Status                : Secure-shutdown
+Violation Mode             : Shutdown        ← default
+Aging Time                 : 0 mins          ← aging disabled
+Maximum MAC Addresses      : 1               ← default max
+Total MAC Addresses        : 0
+Configured MAC Addresses   : 0
+Sticky MAC Addresses       : 0
+Last Source Address:Vlan   : 0000.0000.0000:0
+Security Violation Count   : 0</code></pre></div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">11.1.4</span> Limit and Learn MAC Addresses</h3>
+  <p>The switch can learn which MAC addresses are allowed on a port in three different ways:</p>
+
+  <div class="mac-grid">
+    <div class="mac-card static">
+      <div class="mc-title">Method 1 — Static (Manually Configured)</div>
+      <ul>
+        <li>Admin manually types the allowed MAC address</li>
+        <li>Stored in running config — persists after save</li>
+        <li>Most secure — admin controls exactly which device is allowed</li>
+        <li>Most labor-intensive — must type every MAC manually</li>
+        <li>Command: <code>switchport port-security mac-address aaaa.bbbb.1234</code></li>
+      </ul>
+    </div>
+    <div class="mac-card dynamic">
+      <div class="mc-title">Method 2 — Dynamic (Auto-Learned)</div>
+      <ul>
+        <li>Switch learns the first MAC that appears on the port</li>
+        <li>Stored in RAM only — <strong>lost on reboot</strong></li>
+        <li>Port must re-learn the MAC address after a switch restart</li>
+        <li>Just enter <code>switchport port-security</code> — no extra commands</li>
+      </ul>
+    </div>
+    <div class="mac-card sticky">
+      <div class="mc-title">Method 3 — Sticky (Dynamic + Persistent)</div>
+      <ul>
+        <li>Switch learns MACs dynamically AND adds them to running config</li>
+        <li>When saved with <code>write memory</code>, sticky MACs go to NVRAM and survive reboots</li>
+        <li>Best of both worlds — no manual typing, but persists across reboots</li>
+        <li>Most common method in production environments</li>
+        <li>Command: <code>switchport port-security mac-address sticky</code></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="cw"><div class="cl">Complete port security config — max 4, one static + sticky for rest <button class="cpb" onclick="copyCode(this)">Copy</button></div>
+  <pre><code>S1(config)# interface fa0/1
+S1(config-if)# switchport mode access
+S1(config-if)# switchport port-security
+S1(config-if)# switchport port-security maximum 4
+S1(config-if)# switchport port-security mac-address aaaa.bbbb.1234  ! static
+S1(config-if)# switchport port-security mac-address sticky           ! sticky for rest
+S1(config-if)# end
+
+! Verify:
+S1# show port-security interface fa0/1
+Port Security              : Enabled
+Port Status                : Secure-up
+Violation Mode             : Shutdown
+Maximum MAC Addresses      : 4
+Total MAC Addresses        : 1
+Configured MAC Addresses   : 1
+Sticky MAC Addresses       : 0
+Security Violation Count   : 0
+
+S1# show port-security address
+Vlan    Mac Address       Type               Ports
+----    -----------       ----               -----
+   1    aaaa.bbbb.1234    SecureConfigured   Fa0/1</code></pre></div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">11.1.5</span> Port Security Aging</h3>
+  <p>Aging automatically removes secure MAC addresses after a set time — useful for shared spaces like conference rooms where different devices connect each day.</p>
+  <div class="tw"><table>
+    <tr><th>Aging Type</th><th>Behavior</th><th>Use Case</th></tr>
+    <tr><td><strong>Absolute</strong></td><td>MAC deleted exactly after the timer expires, regardless of activity</td><td>Fixed-time rotation — strict control</td></tr>
+    <tr><td><strong>Inactivity</strong></td><td>MAC deleted only if no traffic from that source for the specified time</td><td>Remove inactive devices — keeps active ones</td></tr>
+  </table></div>
+  <div class="cw"><div class="cl">Configure aging — 10 minutes of inactivity <button class="cpb" onclick="copyCode(this)">Copy</button></div>
+  <pre><code>S1(config)# interface fa0/1
+S1(config-if)# switchport port-security aging time 10
+S1(config-if)# switchport port-security aging type inactivity
+
+! Also enable aging for statically configured MACs (disabled by default):
+S1(config-if)# switchport port-security aging static
+
+! Aging time range: 0–1440 minutes (0 = disabled)</code></pre></div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">11.1.6</span> Port Security Violation Modes</h3>
+  <p>A violation occurs when a frame arrives from an unauthorized MAC address and the maximum has been reached. The three modes determine what happens next:</p>
+
+  <div class="vmode-grid">
+    <div class="vmode-card protect">
+      <div class="vc-title">Protect</div>
+      <div class="vc-badge">Least Secure</div>
+      <ul>
+        <li>✅ Drops frames from unauthorized MACs</li>
+        <li>❌ No syslog message sent</li>
+        <li>❌ Violation counter NOT incremented</li>
+        <li>❌ Port stays up — no err-disable</li>
+        <li>⚠️ Silent drop — you may never know an attack occurred</li>
+      </ul>
+    </div>
+    <div class="vmode-card restrict">
+      <div class="vc-title">Restrict</div>
+      <div class="vc-badge">Middle Ground</div>
+      <ul>
+        <li>✅ Drops frames from unauthorized MACs</li>
+        <li>✅ Syslog message sent</li>
+        <li>✅ Violation counter incremented</li>
+        <li>❌ Port stays up — no err-disable</li>
+        <li>Good when you want visibility without disrupting the port</li>
+      </ul>
+    </div>
+    <div class="vmode-card shutdown">
+      <div class="vc-title">Shutdown</div>
+      <div class="vc-badge">Default — Most Secure</div>
+      <ul>
+        <li>✅ Drops frames from unauthorized MACs</li>
+        <li>✅ Syslog message sent</li>
+        <li>✅ Violation counter incremented</li>
+        <li>✅ Port immediately placed in err-disabled state</li>
+        <li>✅ Port LED turns off</li>
+        <li>Admin must manually re-enable the port</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="tw"><table>
+    <tr><th>Mode</th><th>Drops Traffic</th><th>Syslog</th><th>Counter</th><th>Shuts Port</th></tr>
+    <tr><td><strong>Protect</strong></td><td>✅ Yes</td><td>❌ No</td><td>❌ No</td><td>❌ No</td></tr>
+    <tr><td><strong>Restrict</strong></td><td>✅ Yes</td><td>✅ Yes</td><td>✅ Yes</td><td>❌ No</td></tr>
+    <tr><td><strong>Shutdown</strong></td><td>✅ Yes</td><td>✅ Yes</td><td>✅ Yes</td><td>✅ Yes</td></tr>
+  </table></div>
+
+  <div class="cw"><div class="cl">Set violation mode <button class="cpb" onclick="copyCode(this)">Copy</button></div>
+  <pre><code>S1(config-if)# switchport port-security violation restrict
+! Options: protect | restrict | shutdown (default)</code></pre></div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">11.1.7</span> Ports in Error-Disabled State</h3>
+  <p>When a violation occurs with <strong>shutdown</strong> mode, the port enters <strong>err-disabled state</strong> — port LED off, all traffic stopped. Console messages appear immediately:</p>
+  <div class="cw"><div class="cl">Console messages when port enters err-disabled <button class="cpb" onclick="copyCode(this)">Copy</button></div>
+  <pre><code>%PM-4-ERR_DISABLE: psecure-violation error detected on Fa0/18, putting Fa0/18 in err-disable state
+%PORT_SECURITY-2-PSECURE_VIOLATION: Security violation caused by MAC address 000c.292b.4c75 on port FastEthernet0/18.
+%LINEPROTO-5-PPDOWN: Line protocol on Interface FastEthernet0/18, changed state to down
+%LINK-3-UPDOWN: Interface FastEthernet0/18, changed state to down</code></pre></div>
+
+  <div class="cw"><div class="cl">Verify err-disabled state <button class="cpb" onclick="copyCode(this)">Copy</button></div>
+  <pre><code>S1# show interface fa0/18
+FastEthernet0/18 is down, line protocol is down (err-disabled)
+
+S1# show port-security interface fa0/18
+Port Security              : Enabled
+Port Status                : Secure-shutdown    ← err-disabled state
+Violation Mode             : Shutdown
+Security Violation Count   : 1                  ← counter incremented</code></pre></div>
+
+  <div class="cw"><div class="cl">Manual recovery — shutdown then no shutdown <button class="cpb" onclick="copyCode(this)">Copy</button></div>
+  <pre><code>! Step 1: First remove the offending device from the port
+! Step 2: Then re-enable the port:
+S1(config)# interface fa0/18
+S1(config-if)# shutdown
+S1(config-if)# no shutdown
+
+! Optional — automatic recovery (use with caution):
+S1(config)# errdisable recovery cause psecure-violation
+S1(config)# errdisable recovery interval 30   ! seconds before auto-re-enable</code></pre></div>
+  <div class="ca warn">
+    <span class="ic">⚠️</span>
+    <div>Always <strong>investigate and remove the offending device first</strong> before re-enabling the port. Auto-recovery repeatedly re-enables a port that may still be under attack.</div>
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">11.1.8</span> Verify Port Security</h3>
+  <div class="cw"><div class="cl">Four key verification commands <button class="cpb" onclick="copyCode(this)">Copy</button></div>
+  <pre><code>! 1. Summary for ALL interfaces:
+S1# show port-security
+Secure Port  MaxSecureAddr  CurrentAddr  SecurityViolation  Security Action
+      Fa0/1              1            0                  0         Shutdown
+      Fa0/2              1            0                  0         Shutdown
+
+! 2. Full details for ONE interface:
+S1# show port-security interface fa0/18
+Port Security              : Enabled
+Port Status                : Secure-up
+Violation Mode             : Shutdown
+Maximum MAC Addresses      : 1
+Total MAC Addresses        : 1
+Last Source Address:Vlan   : 0025.83e6.4b01:1
+Security Violation Count   : 0
+
+! 3. Confirm sticky MACs are in running config:
+S1# show run | begin interface FastEthernet0/19
+interface FastEthernet0/19
+ switchport mode access
+ switchport port-security
+ switchport port-security mac-address sticky
+ switchport port-security mac-address sticky 0025.83e6.4b02
+
+! 4. All secure MACs across all ports:
+S1# show port-security address
+Vlan   Mac Address      Type            Ports
+1      0025.83e6.4b01   SecureDynamic   Fa0/18
+1      0025.83e6.4b02   SecureSticky    Fa0/19</code></pre></div>
+  </div>
+
+  <!-- SYNTAX CHECKER: 11.1.10 -->
+  <div style="margin:20px 0 6px;padding:16px;background:#0d1117;border:1px solid #30363d;border-left:3px solid #bc8cff;border-radius:8px">
+    <div style="font-size:.7em;font-weight:800;text-transform:uppercase;letter-spacing:.8px;color:#bc8cff;margin-bottom:6px">&#x1F5A5; Syntax Checker &mdash; 11.1.10</div>
+    <div style="font-size:.92em;font-weight:600;color:#e6edf3;margin-bottom:12px">Configure Port Security</div>
+    <div style="font-size:.82em;color:#8b949e;margin-bottom:14px">Type each command exactly as shown. Press Enter to submit. The checker validates your syntax step by step.</div>
+    <div class="tool-links" style="display:flex;flex-wrap:wrap;gap:14px">
+      <div style="flex:1 1 220px;min-width:0">
+        <a href="../../syntax-checker-simple/ccna2_syntax_checker.html?lab=11.1.10" target="_blank" rel="noopener" title="Quick, guided drill: type the exact commands for this NetAcad lab, step by step. Opens straight to lab 11.1.10." style="display:inline-flex;align-items:center;gap:8px;color:#fff;text-decoration:none;padding:8px 18px;border-radius:6px;font-size:.85em;font-weight:700;background:#238636;border:1px solid #2ea043">&#x25B6; Open Syntax Checker</a>
+        <div style="font-size:.75em;color:#8b949e;margin-top:6px">Quick, guided drill: type the exact commands for this NetAcad lab, step by step. Opens straight to lab 11.1.10.</div>
+      </div>
+      <div style="flex:1 1 220px;min-width:0">
+        <a class="cli-engine-link" href="../../cli-engine/ccna-cli-engine.html" target="_blank" rel="noopener" title="Full simulated Cisco IOS terminal: Tab completion, device state, Free Practice, Home Labs and Subnetting. In its exercise menu, pick “Course 2 · 11.1 — Configure Port Security”." style="display:inline-flex;align-items:center;gap:8px;color:#fff;text-decoration:none;padding:8px 18px;border-radius:6px;font-size:.85em;font-weight:700;background:#1f6feb;border:1px solid #388bfd">&#x1F4BB; Open CLI Engine</a>
+        <div style="font-size:.75em;color:#8b949e;margin-top:6px">Full simulated Cisco IOS terminal: Tab completion, device state, Free Practice, Home Labs and Subnetting. In its exercise menu, pick “Course 2 · 11.1 — Configure Port Security”.</div>
+      </div>
+    </div>
+    <div style="margin-top:12px;font-size:.75em"><a href="../../index.html" style="color:#58a6ff;text-decoration:none">&#x1F3E0; All study tools (home)</a></div>
+  </div>
+
+  <!-- PT INLINE -->
+  <div style="margin:20px 0 6px;padding:14px 16px;background:#0d1117;border:1px solid #30363d;border-left:3px solid #1f6feb;border-radius:6px">
+    <div style="font-size:.72em;font-weight:800;text-transform:uppercase;letter-spacing:.8px;color:#1f6feb;margin-bottom:10px">&#x1F4E6; Packet Tracer Activities</div>
+  <div style="display:flex;align-items:baseline;gap:10px;padding:6px 0;border-bottom:1px solid #21262d"><span style="font-family:monospace;font-size:.85em;color:#79c0ff;white-space:nowrap;flex-shrink:0;min-width:52px">11.1.10</span><span style="font-size:.88em;color:#c9d1d9">Implement Port Security</span></div>
+    <div style="margin-top:10px;font-size:.78em;color:#6e7681">Full list: <a href="https://itexamanswers.net/ccna-2-packet-tracer-labs-answers-srwe-v7-02.html" target="_blank" rel="noopener" style="color:#58a6ff;word-break:break-all">https://itexamanswers.net/ccna-2-packet-tracer-labs-answers-srwe-v7-02.html</a></div>
+  </div>
+
+</div></div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- SECTION 11.2 — MITIGATE VLAN ATTACKS -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div class="sec" id="s2">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">11.2</span><span class="ttl">Mitigate VLAN Attacks</span></span><button class="sec-check" id="sch-s2" onclick="event.stopPropagation();toggleSection('s2',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb">
+
+  <div class="sub">
+  <h3><span class="sn">11.2.2</span> Five Steps to Mitigate VLAN Hopping Attacks</h3>
+  <p>VLAN hopping works because DTP auto-trunking is enabled by default. These five steps eliminate that attack surface:</p>
+
+  <ol class="steps">
+    <li><strong>Force access mode on all non-trunking ports</strong> — disables DTP negotiation on user-facing ports<br><code>switchport mode access</code></li>
+    <li><strong>Disable unused ports AND assign them to an unused VLAN</strong> — even if re-enabled, the port is isolated<br><code>switchport access vlan 1000</code> then <code>shutdown</code></li>
+    <li><strong>Manually configure trunk links</strong> — do not rely on DTP negotiation<br><code>switchport mode trunk</code></li>
+    <li><strong>Disable DTP on trunk ports too</strong> — prevents DTP negotiation even on trunks<br><code>switchport nonegotiate</code></li>
+    <li><strong>Change the native VLAN from VLAN 1 to an unused VLAN</strong> — eliminates double-tagging attack<br><code>switchport trunk native vlan 999</code></li>
+  </ol>
+
+  <div class="cw"><div class="cl">Complete VLAN attack mitigation — full switch example <button class="cpb" onclick="copyCode(this)">Copy</button></div>
+  <pre><code>! Active access ports (Fa0/1–16): disable DTP
+S1(config)# interface range fa0/1 - 16
+S1(config-if-range)# switchport mode access
+S1(config-if-range)# exit
+
+! Unused ports (Fa0/17–20): isolate and disable
+S1(config)# interface range fa0/17 - 20
+S1(config-if-range)# switchport mode access
+S1(config-if-range)# switchport access vlan 1000   ! unused VLAN
+S1(config-if-range)# shutdown
+S1(config-if-range)# exit
+
+! Trunk ports (Fa0/21–24): manual trunk, no DTP, change native VLAN
+S1(config)# interface range fa0/21 - 24
+S1(config-if-range)# switchport mode trunk
+S1(config-if-range)# switchport nonegotiate
+S1(config-if-range)# switchport trunk native vlan 999  ! not VLAN 1
+S1(config-if-range)# end</code></pre></div>
+  </div>
+
+</div></div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- SECTION 11.3 — MITIGATE DHCP ATTACKS -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div class="sec" id="s3">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">11.3</span><span class="ttl">Mitigate DHCP Attacks</span></span><button class="sec-check" id="sch-s3" onclick="event.stopPropagation();toggleSection('s3',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb">
+
+  <div class="sub">
+  <h3><span class="sn">11.3.2</span> DHCP Snooping — Trusted vs Untrusted Ports</h3>
+  <p>DHCP snooping classifies every port as either <strong>trusted</strong> or <strong>untrusted</strong>. It then filters DHCP messages based on which type of port they arrive on:</p>
+
+  <div class="trust-flow">
+    <div class="tf-title">🔍 DHCP Snooping Port Classification</div>
+    <div class="trust-row"><div class="trust-badge trusted">TRUSTED</div><div>Allowed to pass all DHCP messages including Offers and ACKs (server responses). Assign to: uplink ports, trunk links, ports directly connected to a legitimate DHCP server.</div></div>
+    <div class="trust-row"><div class="trust-badge untrusted">UNTRUSTED</div><div>Only client-side messages (Discover, Request) are allowed. DHCP Offers and ACKs arriving here are <strong>dropped immediately</strong> — indicates a rogue DHCP server. This is the default for all ports.</div></div>
+  </div>
+
+  <div class="ca info">
+    <span class="ic">💡</span>
+    <div>DHCP snooping also builds a <strong>binding table</strong> mapping client MAC → assigned IP → VLAN → interface. This table is the foundation for DAI (Dynamic ARP Inspection) in section 11.4. DHCP snooping must be configured before DAI.</div>
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">11.3.3–11.3.4</span> Four Steps to Implement DHCP Snooping</h3>
+
+  <ol class="steps">
+    <li><strong>Enable DHCP snooping globally</strong><br><code>ip dhcp snooping</code></li>
+    <li><strong>Mark trusted ports</strong> (uplinks and server-facing ports)<br><code>ip dhcp snooping trust</code> on the interface</li>
+    <li><strong>Rate-limit DHCP messages on untrusted ports</strong> — stops starvation attacks<br><code>ip dhcp snooping limit rate 6</code> (6 packets per second)</li>
+    <li><strong>Enable DHCP snooping on specific VLANs</strong><br><code>ip dhcp snooping vlan 5,10,50-52</code></li>
+  </ol>
+
+  <div class="cw"><div class="cl">DHCP snooping — complete configuration example <button class="cpb" onclick="copyCode(this)">Copy</button></div>
+  <pre><code>! Step 1: Enable globally
+S1(config)# ip dhcp snooping
+
+! Step 2: Trust the uplink to the DHCP server
+S1(config)# interface f0/1
+S1(config-if)# ip dhcp snooping trust
+S1(config-if)# exit
+
+! Step 3: Rate-limit untrusted access ports (stops starvation attacks)
+S1(config)# interface range f0/5 - 24
+S1(config-if-range)# ip dhcp snooping limit rate 6
+S1(config-if-range)# exit
+
+! Step 4: Enable per VLAN
+S1(config)# ip dhcp snooping vlan 5,10,50-52
+S1(config)# end</code></pre></div>
+
+  <div class="cw"><div class="cl">Verify DHCP snooping <button class="cpb" onclick="copyCode(this)">Copy</button></div>
+  <pre><code>S1# show ip dhcp snooping
+Switch DHCP snooping is enabled
+DHCP snooping is configured on following VLANs: 5,10,50-52
+
+Interface                  Trusted    Rate limit (pps)
+-----------------------    -------    ----------------
+FastEthernet0/1            yes        unlimited     ← trusted uplink
+FastEthernet0/5            no         6             ← untrusted access port
+
+S1# show ip dhcp snooping binding
+MacAddress         IpAddress       Lease(sec)  VLAN  Interface
+00:03:47:B5:9F:AD  192.168.10.10   193185      5     FastEthernet0/5
+! This binding table is what DAI will use to validate ARP packets</code></pre></div>
+  </div>
+
+</div></div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- SECTION 11.4 — MITIGATE ARP ATTACKS -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div class="sec" id="s4">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">11.4</span><span class="ttl">Mitigate ARP Attacks</span></span><button class="sec-check" id="sch-s4" onclick="event.stopPropagation();toggleSection('s4',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb">
+
+  <div class="sub">
+  <h3><span class="sn">11.4.1</span> Dynamic ARP Inspection (DAI)</h3>
+  <div class="ca danger">
+    <span class="ic">🚨</span>
+    <div><strong>DAI requires DHCP snooping.</strong> DAI validates ARP packets by checking them against the DHCP snooping binding table (MAC → IP mappings). Without DHCP snooping running first, there is no table to validate against — DAI cannot function. Always configure DHCP snooping before enabling DAI.</div>
+  </div>
+  <p>DAI intercepts and validates <strong>all ARP packets on untrusted ports</strong>. For each intercepted ARP:</p>
+  <ul>
+    <li>Checks the IP-to-MAC mapping against the DHCP snooping binding table</li>
+    <li>Forwards valid ARPs — drops and logs invalid ones</li>
+    <li>Does NOT relay gratuitous ARPs to other ports in the same VLAN</li>
+    <li>Rate-limits ARP packets — err-disables the interface if the rate is exceeded</li>
+  </ul>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">11.4.2</span> DAI Implementation Guidelines</h3>
+  <p><strong>General rule: all access ports = untrusted, all uplink ports = trusted.</strong></p>
+
+  <div class="trust-flow">
+    <div class="tf-title">🔍 DAI Trusted vs Untrusted — Same Logic as DHCP Snooping</div>
+    <div class="trust-row"><div class="trust-badge trusted">TRUSTED</div><div>ARP packets pass without inspection. Assign to: uplink ports connecting to routers or other switches where you control both sides.</div></div>
+    <div class="trust-row"><div class="trust-badge untrusted">UNTRUSTED</div><div>All ARP Requests and Replies are intercepted and validated against the DHCP snooping binding table. Invalid ARPs are dropped and logged. Default for all ports.</div></div>
+  </div>
+
+  <div class="ca warn">
+    <span class="ic">⚠️</span>
+    <div><strong>Trusted for DHCP snooping ≠ trusted for DAI.</strong> These are two separate commands on the same interface. Setting <code>ip dhcp snooping trust</code> does NOT automatically make the port trusted for DAI. You must configure <code>ip arp inspection trust</code> separately on the same interface.</div>
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">11.4.3</span> DAI Configuration Example</h3>
+  <div class="cw"><div class="cl">DAI — complete configuration (DHCP snooping must come first) <button class="cpb" onclick="copyCode(this)">Copy</button></div>
+  <pre><code>! Prerequisite: DHCP snooping must be configured first
+S1(config)# ip dhcp snooping
+S1(config)# ip dhcp snooping vlan 10
+
+! Enable DAI on the VLAN
+S1(config)# ip arp inspection vlan 10
+
+! Configure trusted uplink — both DHCP snooping AND DAI trust must be set
+S1(config)# interface fa0/24
+S1(config-if)# ip dhcp snooping trust      ! for DHCP snooping
+S1(config-if)# ip arp inspection trust     ! for DAI — separate command!
+S1(config-if)# exit</code></pre></div>
+
+  <h4>Optional — DAI Additional Validation</h4>
+  <p>DAI can also validate fields inside the ARP packet body. These three checks can be combined on a single line:</p>
+
+  <div class="tw"><table>
+    <tr><th>Validation</th><th>What It Checks</th></tr>
+    <tr><td><code>src-mac</code></td><td>Sender MAC in ARP body must match source MAC in Ethernet header</td></tr>
+    <tr><td><code>dst-mac</code></td><td>Target MAC in ARP body must match destination MAC in Ethernet header</td></tr>
+    <tr><td><code>ip</code></td><td>ARP body must not contain invalid IPs: 0.0.0.0, 255.255.255.255, or multicast addresses</td></tr>
+  </table></div>
+
+  <div class="cw"><div class="cl">DAI validate — MUST be configured on ONE line <button class="cpb" onclick="copyCode(this)">Copy</button></div>
+  <pre><code>! ❌ WRONG — each command overwrites the previous:
+S1(config)# ip arp inspection validate src-mac
+S1(config)# ip arp inspection validate dst-mac   ! overwrites above
+S1(config)# ip arp inspection validate ip         ! overwrites above
+! Result: only "ip" validation is active
+
+! ✅ CORRECT — all three on ONE line:
+S1(config)# ip arp inspection validate src-mac dst-mac ip
+
+! Verify:
+S1(config)# do show run | include validate
+ip arp inspection validate src-mac dst-mac ip</code></pre></div>
+
+  <div class="ca danger">
+    <span class="ic">🚨</span>
+    <div>This is one of the most commonly tested exam traps in Module 11. Multiple <code>ip arp inspection validate</code> commands each overwrite the previous one. <strong>Always enter all desired validations on a single line.</strong></div>
+  </div>
+  </div>
+
+</div></div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- SECTION 11.5 — MITIGATE STP ATTACKS -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div class="sec" id="s5">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">11.5</span><span class="ttl">Mitigate STP Attacks</span></span><button class="sec-check" id="sch-s5" onclick="event.stopPropagation();toggleSection('s5',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb">
+
+  <div class="sub">
+  <h3><span class="sn">11.5.1</span> PortFast and BPDU Guard — Overview</h3>
+  <div class="pf-grid">
+    <div class="pf-card portfast">
+      <div class="pf-hdr">PortFast</div>
+      <div class="pf-body">
+        <strong>What it does:</strong> Bypasses STP Listening (15s) and Learning (15s) states — port goes immediately to Forwarding.<br><br>
+        <strong>Use on:</strong> Access ports connected to end devices only (PCs, printers, IP phones).<br><br>
+        <strong>Why:</strong> Eliminates the 30-second STP convergence wait on ports that will never form loops.<br><br>
+        <strong>Risk:</strong> If enabled on a switch-to-switch link, a loop forms instantly before STP can intervene.
+      </div>
+    </div>
+    <div class="pf-card bpdu">
+      <div class="pf-hdr">BPDU Guard</div>
+      <div class="pf-body">
+        <strong>What it does:</strong> Immediately err-disables any PortFast port that receives a BPDU.<br><br>
+        <strong>Use on:</strong> All PortFast-enabled ports — always pair these two together.<br><br>
+        <strong>Why:</strong> End devices never send BPDUs. If a BPDU arrives on an access port, something unauthorized (rogue switch or attacker) is connected.<br><br>
+        <strong>Recovery:</strong> Manual shutdown/no shutdown or errdisable auto-recovery.
+      </div>
+    </div>
+  </div>
+  <div class="ca tip">
+    <span class="ic">✅</span>
+    <div><strong>Always enable BPDU Guard on all PortFast-enabled ports.</strong> PortFast alone still listens for BPDUs — it just ignores the STP state machine. BPDU Guard is the enforcement mechanism that prevents rogue switches from participating in STP elections via PortFast ports.</div>
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">11.5.2</span> Configure PortFast</h3>
+  <div class="cw"><div class="cl">PortFast — per interface and global <button class="cpb" onclick="copyCode(this)">Copy</button></div>
+  <pre><code>! Per interface (access port):
+S1(config)# interface fa0/1
+S1(config-if)# switchport mode access
+S1(config-if)# spanning-tree portfast
+%Warning: portfast should only be enabled on ports connected to a single
+ host. Connecting hubs, concentrators, switches, bridges, etc... to this
+ interface when portfast is enabled, can cause temporary bridging loops.
+ Use with CAUTION
+
+! Globally on ALL access ports (no need to configure each port):
+S1(config)# spanning-tree portfast default
+%Warning: this command enables portfast by default on all interfaces. You
+ should now disable portfast explicitly on switched ports leading to hubs,
+ switches and bridges as they may create temporary bridging loops.</code></pre></div>
+
+  <div class="cw"><div class="cl">Verify PortFast configuration <button class="cpb" onclick="copyCode(this)">Copy</button></div>
+  <pre><code>! Check global status:
+S1# show running-config | begin span
+spanning-tree mode pvst
+spanning-tree portfast default     ← global PortFast enabled
+spanning-tree extend system-id
+
+! Check specific interface:
+S1# show running-config interface fa0/1
+interface FastEthernet0/1
+ switchport mode access
+ spanning-tree portfast             ← per-interface PortFast
+
+! Show spanning tree summary:
+S1# show spanning-tree summary
+Portfast Default             is enabled</code></pre></div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">11.5.3</span> Configure BPDU Guard</h3>
+  <div class="cw"><div class="cl">BPDU Guard — per interface and global <button class="cpb" onclick="copyCode(this)">Copy</button></div>
+  <pre><code>! Per interface:
+S1(config)# interface fa0/1
+S1(config-if)# spanning-tree bpduguard enable
+S1(config-if)# exit
+
+! Globally on all PortFast-enabled ports (recommended):
+S1(config)# spanning-tree portfast bpduguard default
+S1(config)# end</code></pre></div>
+
+  <div class="cw"><div class="cl">Verify BPDU Guard and recover from err-disabled <button class="cpb" onclick="copyCode(this)">Copy</button></div>
+  <pre><code>! Verify both PortFast and BPDU Guard are active:
+S1# show spanning-tree summary
+Switch is in pvst mode
+Portfast Default             is enabled
+PortFast BPDU Guard Default  is enabled    ← confirmed
+Portfast BPDU Filter Default is disabled
+
+! Manual recovery from BPDU Guard err-disable:
+S1(config)# interface fa0/1
+S1(config-if)# shutdown
+S1(config-if)# no shutdown
+
+! Automatic recovery (optional):
+S1(config)# errdisable recovery cause bpduguard
+S1(config)# errdisable recovery interval 30</code></pre></div>
+  </div>
+
+</div></div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- SECTION 11.6 — COMMAND REFERENCE -->
+<!-- ═══════════════════════════════════════════════════════ -->
+
+<div class="sec" id="s-pt-11-6">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">11.6</span><span class="ttl">Packet Tracer — Switch Security Configuration</span></span><button class="sec-check" id="sch-s-pt-11-6" onclick="event.stopPropagation();toggleSection('s-pt-11-6',this)">○ Mark done</button>
+</div>
+<div class="sb">
+  <div style="padding:14px 16px;background:#0d1117;border:1px solid #30363d;border-left:3px solid #1f6feb;border-radius:6px">
+    <div style="font-size:.72em;font-weight:800;text-transform:uppercase;letter-spacing:.8px;color:#1f6feb;margin-bottom:10px">&#x1F4E6; Packet Tracer Activities</div>
+    <div style="font-size:.82em;color:#6e7681;margin-bottom:10px">Open in Cisco Packet Tracer via your NetAcad course.</div>
+      <div style="display:flex;align-items:baseline;gap:10px;padding:6px 0;border-bottom:1px solid #21262d"><span style="font-family:monospace;font-size:.85em;color:#79c0ff;white-space:nowrap;flex-shrink:0;min-width:52px">11.6.1</span><span style="font-size:.88em;color:#c9d1d9">Switch Security Configuration</span></div>
+    <div style="margin-top:12px;font-size:.78em;color:#6e7681">Full list: <a href="https://itexamanswers.net/ccna-2-packet-tracer-labs-answers-srwe-v7-02.html" target="_blank" rel="noopener" style="color:#58a6ff;word-break:break-all">https://itexamanswers.net/ccna-2-packet-tracer-labs-answers-srwe-v7-02.html</a></div>
+  </div>
+</div>
+</div>
+<div class="sec" id="s6">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">CMD</span><span class="ttl">All Module 11 Commands</span></span><button class="sec-check" id="sch-s6" onclick="event.stopPropagation();toggleSection('s6',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb">
+
+  <div class="cmd-section">
+    <h4>🔒 Port Security</h4>
+    <div class="tw"><table>
+      <tr><th>Command</th><th>Mode</th><th>What It Does</th></tr>
+      <tr><td><code>switchport mode access</code></td><td>Interface</td><td>Required first step — enables port security on access ports</td></tr>
+      <tr><td><code>switchport port-security</code></td><td>Interface</td><td>Enable port security (defaults: max=1, mode=shutdown)</td></tr>
+      <tr><td><code>switchport port-security maximum [n]</code></td><td>Interface</td><td>Set max MAC addresses (default: 1, range: 1–8192)</td></tr>
+      <tr><td><code>switchport port-security mac-address [mac]</code></td><td>Interface</td><td>Statically configure a secure MAC address</td></tr>
+      <tr><td><code>switchport port-security mac-address sticky</code></td><td>Interface</td><td>Enable sticky learning — dynamic MACs added to running config</td></tr>
+      <tr><td><code>switchport port-security violation [protect|restrict|shutdown]</code></td><td>Interface</td><td>Set violation mode (default: shutdown)</td></tr>
+      <tr><td><code>switchport port-security aging time [mins]</code></td><td>Interface</td><td>Set aging timer (0–1440 minutes)</td></tr>
+      <tr><td><code>switchport port-security aging type [absolute|inactivity]</code></td><td>Interface</td><td>Set aging type</td></tr>
+      <tr><td><code>show port-security</code></td><td>Exec</td><td>Summary of port security on all interfaces</td></tr>
+      <tr><td><code>show port-security interface [int]</code></td><td>Exec</td><td>Detailed status for one interface — mode, max, counter</td></tr>
+      <tr><td><code>show port-security address</code></td><td>Exec</td><td>All secure MACs across all ports with type (static/dynamic/sticky)</td></tr>
+      <tr><td><code>errdisable recovery cause psecure-violation</code></td><td>Global</td><td>Auto-recovery for port security err-disabled ports</td></tr>
+    </table></div>
+  </div>
+
+  <div class="cmd-section">
+    <h4>🔀 VLAN Attack Mitigation</h4>
+    <div class="tw"><table>
+      <tr><th>Command</th><th>What It Does</th></tr>
+      <tr><td><code>switchport mode access</code></td><td>Force access mode — disables DTP on user-facing ports</td></tr>
+      <tr><td><code>switchport mode trunk</code></td><td>Force trunk mode — manual trunking without DTP</td></tr>
+      <tr><td><code>switchport nonegotiate</code></td><td>Disable DTP on trunk ports</td></tr>
+      <tr><td><code>switchport trunk native vlan [id]</code></td><td>Change native VLAN from VLAN 1 to unused VLAN</td></tr>
+      <tr><td><code>switchport access vlan [id]</code></td><td>Assign unused ports to an unused VLAN</td></tr>
+    </table></div>
+  </div>
+
+  <div class="cmd-section">
+    <h4>🛡️ DHCP Snooping</h4>
+    <div class="tw"><table>
+      <tr><th>Command</th><th>Mode</th><th>What It Does</th></tr>
+      <tr><td><code>ip dhcp snooping</code></td><td>Global</td><td>Enable DHCP snooping globally (Step 1)</td></tr>
+      <tr><td><code>ip dhcp snooping trust</code></td><td>Interface</td><td>Mark as trusted — allows DHCP server messages (Step 2)</td></tr>
+      <tr><td><code>ip dhcp snooping limit rate [pps]</code></td><td>Interface</td><td>Rate-limit DHCP on untrusted ports — stops starvation (Step 3)</td></tr>
+      <tr><td><code>ip dhcp snooping vlan [id]</code></td><td>Global</td><td>Enable DHCP snooping on specific VLANs (Step 4)</td></tr>
+      <tr><td><code>show ip dhcp snooping</code></td><td>Exec</td><td>Verify DHCP snooping status and trusted/untrusted ports</td></tr>
+      <tr><td><code>show ip dhcp snooping binding</code></td><td>Exec</td><td>View the binding table (MAC → IP → VLAN → interface)</td></tr>
+    </table></div>
+  </div>
+
+  <div class="cmd-section">
+    <h4>🔍 Dynamic ARP Inspection</h4>
+    <div class="tw"><table>
+      <tr><th>Command</th><th>Mode</th><th>What It Does</th></tr>
+      <tr><td><code>ip arp inspection vlan [id]</code></td><td>Global</td><td>Enable DAI on specific VLANs (requires DHCP snooping first)</td></tr>
+      <tr><td><code>ip arp inspection trust</code></td><td>Interface</td><td>Mark as trusted for ARP inspection (separate from DHCP snooping trust)</td></tr>
+      <tr><td><code>ip arp inspection validate src-mac dst-mac ip</code></td><td>Global</td><td>Additional ARP body validation — ALL options on ONE line</td></tr>
+      <tr><td><code>show ip arp inspection</code></td><td>Exec</td><td>Verify DAI configuration</td></tr>
+      <tr><td><code>show ip arp inspection vlan [id]</code></td><td>Exec</td><td>DAI statistics for a specific VLAN</td></tr>
+    </table></div>
+  </div>
+
+  <div class="cmd-section">
+    <h4>🌳 PortFast and BPDU Guard</h4>
+    <div class="tw"><table>
+      <tr><th>Command</th><th>Mode</th><th>What It Does</th></tr>
+      <tr><td><code>spanning-tree portfast</code></td><td>Interface</td><td>Enable PortFast on one access port</td></tr>
+      <tr><td><code>spanning-tree portfast default</code></td><td>Global</td><td>Enable PortFast on all access ports globally</td></tr>
+      <tr><td><code>spanning-tree bpduguard enable</code></td><td>Interface</td><td>Enable BPDU Guard on one port</td></tr>
+      <tr><td><code>spanning-tree portfast bpduguard default</code></td><td>Global</td><td>Enable BPDU Guard on all PortFast-enabled ports</td></tr>
+      <tr><td><code>show spanning-tree summary</code></td><td>Exec</td><td>Verify PortFast Default and BPDU Guard Default status</td></tr>
+      <tr><td><code>errdisable recovery cause bpduguard</code></td><td>Global</td><td>Auto-recovery for BPDU Guard err-disabled ports</td></tr>
+      <tr><td><code>errdisable recovery interval [seconds]</code></td><td>Global</td><td>Set auto-recovery timer for err-disabled ports</td></tr>
+    </table></div>
+  </div>
+
+</div></div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- SECTION 11.7 — EXAM TRAPS -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div class="sec" id="s7">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">🎯</span><span class="ttl">Common Exam Traps — Module 11</span></span><button class="sec-check" id="sch-s7" onclick="event.stopPropagation();toggleSection('s7',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb">
+
+  <div class="ca danger"><span class="ic">❌</span><div><strong>Trap 1: Port security cannot be configured on dynamic (DTP) ports.</strong><br>Must set <code>switchport mode access</code> first. The exam frequently shows the rejected command and asks why it failed. Switch ports are dynamic auto by default — this is the opposite of router interfaces which are shutdown by default.</div></div>
+
+  <div class="ca danger"><span class="ic">❌</span><div><strong>Trap 2: Port security defaults are max=1 and violation=shutdown.</strong><br>Just entering <code>switchport port-security</code> gives you these defaults. No other parameters are required. The exam tests whether you know what happens with just this one command.</div></div>
+
+  <div class="ca danger"><span class="ic">❌</span><div><strong>Trap 3: Sticky MACs must be saved or they are lost on reboot.</strong><br>Sticky adds learned MACs to the running config — but <code>write memory</code> must be used to save them to NVRAM. Without saving, sticky MACs are lost on a switch reload, defeating their purpose.</div></div>
+
+  <div class="ca danger"><span class="ic">❌</span><div><strong>Trap 4: Protect is the LEAST secure violation mode — silent drop, no log.</strong><br>Protect drops frames but sends no syslog and increments no counter. A threat actor flooding the port would never be detected. Students often think "protect" sounds most secure — it is actually the least secure because you get no visibility.</div></div>
+
+  <div class="ca danger"><span class="ic">❌</span><div><strong>Trap 5: DAI requires DHCP snooping — configure DHCP snooping first.</strong><br>DAI validates ARP packets against the DHCP snooping binding table. Without DHCP snooping, there is no table and DAI cannot validate anything. This prerequisite is frequently tested in exam scenarios and labs.</div></div>
+
+  <div class="ca danger"><span class="ic">❌</span><div><strong>Trap 6: ip arp inspection validate — all options must be on ONE line.</strong><br>Each separate <code>ip arp inspection validate</code> command overwrites the previous one. The only correct way to combine validations: <code>ip arp inspection validate src-mac dst-mac ip</code> on a single line. This is explicitly tested in labs and quizzes.</div></div>
+
+  <div class="ca danger"><span class="ic">❌</span><div><strong>Trap 7: ip dhcp snooping trust and ip arp inspection trust are separate commands.</strong><br>Configuring a port as trusted for DHCP snooping does NOT make it trusted for DAI. Both commands must be entered on the same uplink interface independently. Forgetting one or the other causes DAI to inspect traffic it shouldn't — or fail to inspect traffic it should.</div></div>
+
+  <div class="ca danger"><span class="ic">❌</span><div><strong>Trap 8: PortFast only on end-device access ports — never on switch uplinks.</strong><br>PortFast bypasses STP convergence entirely. On a link connecting two switches, this instantly creates a loop before STP has any chance to detect and block it. The IOS warning message says this explicitly — and the exam tests it.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 9: BPDU Guard recovery requires manual shutdown then no shutdown.</strong><br>A port err-disabled by BPDU Guard does not automatically recover. Admin must manually issue <code>shutdown</code> followed by <code>no shutdown</code>. Auto-recovery requires explicitly configuring <code>errdisable recovery cause bpduguard</code>.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 10: show port-security vs show port-security interface.</strong><br><code>show port-security</code> = one-line summary per port across all ports. <code>show port-security interface [int]</code> = full details for one interface including violation count, aging settings, sticky count, and last violating MAC. Know which to use when.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 11: Changing the native VLAN eliminates double-tagging attacks.</strong><br>The double-tagging attack requires the attacker's port to be in the same VLAN as the native VLAN of the trunk. Changing the native VLAN to an unused VLAN (e.g., VLAN 999) that carries no user traffic prevents this entirely — not just mitigates it.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 12: DHCP snooping rate limiting stops starvation — not spoofing.</strong><br>Rate limiting (<code>ip dhcp snooping limit rate</code>) limits DHCP Discover messages per second, slowing starvation attacks. It does NOT stop DHCP spoofing (rogue server). DHCP spoofing is stopped by the trusted/untrusted port model — DHCP Offers on untrusted ports are dropped.</div></div>
+
+  <div class="ca tip"><span class="ic">✅</span><div><strong>Module 11 quick summary — attack to command:</strong><br><br>
+  MAC flooding → <code>switchport port-security</code> (on access ports)<br>
+  DHCP starvation → <code>ip dhcp snooping limit rate [pps]</code><br>
+  DHCP spoofing → <code>ip dhcp snooping</code> (trusted/untrusted model)<br>
+  ARP poisoning → <code>ip arp inspection vlan [id]</code> (requires DHCP snooping first)<br>
+  STP manipulation → <code>spanning-tree bpduguard enable</code> / <code>portfast bpduguard default</code><br>
+  VLAN hopping → <code>switchport mode access</code> + <code>switchport nonegotiate</code><br>
+  Double-tagging → <code>switchport trunk native vlan 999</code> (change from VLAN 1)</div></div>
+
+</div></div>
+
+</div><!-- end .wrap -->
+
+<div class="ft">
+  CCNA 2 SRWE v7.02 — Module 11: Switch Security Configuration v2.2<br>
+  Based on Cisco NetAcad curriculum · Study guide for personal use
+</div>
+
+<button class="tb" id="topb" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+
+<!-- MODULE NAVIGATION BAR -->
+<div class="mod-nav">
+  <a class="mn-hub" href="index.html">🏠 Hub</a>
+  <div class="mn-divider"></div>
+  <a class="mn-prev" href="ccna2_module10_lan_security_concepts_v2.2.html">‹</a>
+  <span class="mn-label">M11 of 16</span>
+  <a class="mn-next" href="ccna2_module12_wlan_concepts_v2.2.html">›</a>
+</div>
+
+<script>
+var MOD_KEY="ccna2-module11-switch-security-configuration";
+var SECS=["s1","s2","s3","s4","s5","s-pt-11-6","s6","s7"];
+var checked={};
+function loadState(){
+  try{var s=localStorage.getItem(MOD_KEY);if(s)checked=JSON.parse(s);}catch(e){}
+  SECS.forEach(function(id){
+    var pill=document.getElementById('pill-'+id);
+    var row=document.getElementById('row-'+id);
+    var st=document.getElementById('st-'+id);
+    var sch=document.getElementById('sch-'+id);
+    if(checked[id]){
+      if(pill){pill.classList.add('checked');pill.querySelector('.pill-check').textContent='✓';}
+      if(row)row.classList.add('done');
+      if(st)st.textContent='✓';
+      if(sch){sch.classList.add('checked');sch.textContent='✓ Done';}
+    } else {
+      if(pill){pill.classList.remove('checked');pill.querySelector('.pill-check').textContent='○';}
+      if(row)row.classList.remove('done');
+      if(st)st.textContent='○';
+      if(sch){sch.classList.remove('checked');sch.textContent='○ Mark done';}
+    }
+  });
+}
+function toggleSection(id,btn){checked[id]=!checked[id];try{localStorage.setItem(MOD_KEY,JSON.stringify(checked));}catch(e){}loadState();}
+function toggleStudyPanel(){
+  var hdr=document.getElementById('sp-hdr');
+  var body=document.getElementById('sp-body');
+  var arr=document.getElementById('sp-arr');
+  hdr.classList.toggle('open');body.classList.toggle('open');
+  if(arr)arr.textContent=body.classList.contains('open')?'▲':'▼';
+}
+function goTo(id){var el=document.getElementById(id);if(!el)return;var h=el.querySelector('.sh,.section-header'),b=el.querySelector('.sb,.section-body');if(h&&b&&!b.classList.contains('open')){h.classList.add('open');b.classList.add('open');}setTimeout(function(){window.scrollTo({top:el.getBoundingClientRect().top+window.pageYOffset-60,behavior:'smooth'});},50);}
+function setFs(size,btn){document.documentElement.style.setProperty('--base-fs',size);document.querySelectorAll('.fs-btn').forEach(function(b){b.classList.remove('active');});btn.classList.add('active');try{localStorage.setItem('ccna-fs',size);}catch(e){}}
+(function(){try{var s=localStorage.getItem('ccna-fs');if(s){document.documentElement.style.setProperty('--base-fs',s);document.querySelectorAll('.fs-btn').forEach(function(b){b.classList.remove('active');if((b.textContent==='S'&&s==='14px')||(b.textContent==='M'&&s==='16px')||(b.textContent==='L'&&s==='18px')||(b.textContent==='XL'&&s==='20px'))b.classList.add('active');});}}catch(e){}loadState();})();
+function copyCode(b){var t=b.closest('.cw').querySelector('pre').innerText;if(navigator.clipboard){navigator.clipboard.writeText(t).then(function(){b.textContent='Copied!';setTimeout(function(){b.textContent='Copy';},1500);}).catch(function(){fb(t,b);});}else{fb(t,b);}}
+function fb(t,b){var a=document.createElement('textarea');a.value=t;a.style.position='fixed';a.style.opacity='0';document.body.appendChild(a);a.focus();a.select();document.execCommand('copy');document.body.removeChild(a);b.textContent='Copied!';setTimeout(function(){b.textContent='Copy';},1500);}
+</script>
+<script src="../../site-config.js"></script>
+</body>
+</html>

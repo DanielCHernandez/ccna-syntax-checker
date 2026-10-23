@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CCNA 2 Syntax Checker</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#1a1a2e;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;color:#c9d1d9;min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:14px}
+.page{width:100%;max-width:780px;display:flex;flex-direction:column;gap:10px}
+.hdr{text-align:center;padding:6px 0 2px}
+.hdr h1{font-size:1.05em;font-weight:700;color:#f0f6fc}
+.hdr p{font-size:.75em;color:#6e7681;margin-top:3px}
+.lab-row{display:flex;align-items:center;gap:8px;font-size:.8em;color:#6e7681}
+.lab-row select{background:#161b22;border:1px solid #30363d;border-radius:6px;color:#c9d1d9;padding:5px 10px;font-size:.875em;cursor:pointer;outline:none;flex:1}
+.prog-wrap{display:flex;align-items:center;gap:10px}
+.prog-track{flex:1;height:6px;background:#21262d;border-radius:10px;overflow:hidden}
+.prog-fill{height:100%;background:linear-gradient(90deg,#238636,#3fb950);border-radius:10px;transition:width .4s ease;width:0%}
+.prog-lbl{font-size:.72em;font-weight:700;color:#6e7681;white-space:nowrap;min-width:56px;text-align:right}
+.instr-card{background:#161b22;border:1px solid #30363d;border-radius:8px;padding:12px 16px}
+.instr-lbl{font-size:.68em;font-weight:800;text-transform:uppercase;letter-spacing:.8px;color:#58a6ff;margin-bottom:5px}
+.instr-text{font-size:.92em;color:#e6edf3;line-height:1.55}
+.instr-text code{background:#21262d;border:1px solid #30363d;border-radius:4px;padding:1px 6px;font-family:'Courier New',monospace;font-size:.88em;color:#79c0ff}
+.terminal{background:#010409;border:1px solid #30363d;border-radius:8px;overflow:hidden}
+.term-bar{background:#161b22;border-bottom:1px solid #21262d;padding:6px 12px;display:flex;align-items:center;gap:6px}
+.dot{width:11px;height:11px;border-radius:50%}
+.d1{background:#ff5f57}.d2{background:#ffbd2e}.d3{background:#28c840}
+.term-ttl{margin-left:6px;font-size:.7em;color:#6e7681;font-weight:600}
+#term-out{padding:10px 14px 4px;font-family:'Courier New',Courier,monospace;font-size:13px;line-height:1.7;min-height:160px;max-height:340px;overflow-y:auto}
+.t-row{display:flex;gap:0}
+.t-prompt{white-space:nowrap;flex-shrink:0}
+.t-cmd{color:#e6edf3}
+.t-out{display:block;white-space:pre-wrap}
+.t-out.ok{color:#3fb950}.t-out.err{color:#f85149}.t-out.info{color:#58a6ff}.t-out.dim{color:#484f58}.t-out.warn{color:#e3b341}
+.term-input{display:flex;align-items:center;border-top:1px solid #161b22;padding:5px 14px 9px;gap:0}
+#cur-prompt{font-family:'Courier New',Courier,monospace;font-size:13px;white-space:nowrap;flex-shrink:0;color:#58a6ff;transition:color .2s;user-select:none}
+#cur-input{background:transparent;border:none;outline:none;color:#e6edf3;font-family:'Courier New',Courier,monospace;font-size:13px;flex:1;padding:0 4px;caret-color:#3fb950}
+.feedback{display:flex;align-items:center;gap:10px;padding:8px 14px;background:#161b22;border:1px solid #30363d;border-radius:8px;font-size:.8em;min-height:36px}
+.fb-icon{font-size:.8em;font-weight:800;font-family:monospace;flex-shrink:0;min-width:28px;text-align:center;padding:2px 4px;border-radius:4px;background:#21262d;color:#c9d1d9}
+.fb-text{flex:1;color:#8b949e}
+.fb-text.ok{color:#3fb950}.fb-text.err{color:#f85149}.fb-text.warn{color:#e3b341}
+.btn-row{display:flex;gap:8px;flex-wrap:wrap}
+.btn{border:1px solid #30363d;border-radius:6px;padding:6px 14px;font-size:.8em;font-weight:600;cursor:pointer;transition:all .15s;-webkit-tap-highlight-color:transparent}
+.btn-hint{background:#161b22;color:#8b949e}
+.btn-hint:hover{background:#21262d;color:#c9d1d9}
+.btn-reset{background:#161b22;color:#6e7681;margin-left:auto}
+.btn-reset:hover{background:#21262d;color:#f85149}
+.success{display:none;background:#161b22;border:1px solid #238636;border-radius:8px;padding:24px 20px;text-align:center}
+.success.show{display:block}
+.s-icon{font-size:2.2em;margin-bottom:8px}
+.s-title{font-size:1.1em;font-weight:800;color:#3fb950;margin-bottom:6px}
+.s-msg{font-size:.82em;color:#8b949e;line-height:1.6}
+.btn-again{background:#238636;color:#fff;border-color:#2ea043;margin-top:14px;padding:8px 22px;font-size:.88em}
+.btn-again:hover{background:#2ea043}
+</style>
+</head>
+<body>
+<div class="page">
+
+<a href="../index.html" style="align-self:flex-start;color:#58a6ff;text-decoration:none;font-size:.85em;font-weight:600">&#x1F3E0; Home</a>
+<div class="hdr">
+  <h1>CCNA 2 SRWE -- Syntax Checker Activities</h1>
+  <p>Type each command exactly. Press Enter to submit.</p>
+</div>
+
+<div class="lab-row">
+  <span>Lab:</span>
+  <select id="lab-picker" onchange="loadLab(this.value)">
+    <option value="0">1.1.5 Configure SSH on a Switch</option>
+    <option value="1">1.2.4 Configure Router Interfaces</option>
+    <option value="2">1.3.6 Secure Remote Access (Switch)</option>
+    <option value="3">3.2.8 Configure VLANs</option>
+    <option value="4">3.3.12 Configure 802.1Q Trunk Links</option>
+    <option value="5">4.2.7 Router-on-a-Stick Inter-VLAN Routing</option>
+    <option value="6">7.1.8 Configure DHCPv4 on a Router</option>
+    <option value="7">7.2.5 Configure a DHCP Relay Agent</option>
+    <option value="8">8.2.6 Configure Stateless DHCPv6</option>
+    <option value="9">8.3.7 Configure Stateful DHCPv6</option>
+    <option value="10">11.1.10 Configure Port Security</option>
+    <option value="11">14.3.4 Basic Router Configuration Review</option>
+    <option value="12">15.4.4 Configure IP Static Routes</option>
+    <option value="13">16.2.4 Configure Floating Static Routes</option>
+  </select>
+</div>
+
+<div class="prog-wrap">
+  <div class="prog-track"><div class="prog-fill" id="prog-fill"></div></div>
+  <div class="prog-lbl" id="prog-lbl">Step 0/0</div>
+</div>
+
+<div class="instr-card">
+  <div class="instr-lbl">Instruction</div>
+  <div class="instr-text" id="instr-text">Loading...</div>
+</div>
+
+<div class="terminal">
+  <div class="term-bar">
+    <div class="dot d1"></div><div class="dot d2"></div><div class="dot d3"></div>
+    <span class="term-ttl" id="term-ttl">Cisco IOS Console</span>
+  </div>
+  <div id="term-out"></div>
+  <div class="term-input">
+    <span id="cur-prompt">Switch&gt;&nbsp;</span>
+    <input id="cur-input" type="text" autocomplete="off" autocorrect="off"
+           autocapitalize="off" spellcheck="false" autofocus
+           placeholder="Type command here...">
+  </div>
+</div>
+
+<div class="feedback" id="feedback">
+  <span class="fb-icon">💡</span>
+  <span class="fb-text" id="fb-text">Type the command shown in the instruction, then press Enter.</span>
+</div>
+
+<div class="btn-row">
+  <button class="btn btn-hint" onclick="showHint()">Show Hint</button>
+  <button class="btn btn-reset" onclick="resetLab()">Restart Lab</button>
+</div>
+
+<div class="success" id="success">
+  <div class="s-icon">🎉</div>
+  <div class="s-title">Lab Complete!</div>
+  <div class="s-msg" id="s-msg"></div>
+  <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:14px">
+    <button class="btn btn-again" onclick="resetLab()">Restart This Lab</button>
+    <button class="btn btn-again" onclick="pickAnother()" style="background:#1f6feb;border-color:#388bfd">Try Another Lab</button>
+  </div>
+</div>
+
+</div>
+<script>
+var PC={
+  '>':'#58a6ff','#':'#bc8cff',
+  '(config)#':'#e3b341','(config-if)#':'#ffa657',
+  '(config-line)#':'#ffa657','(config-router)#':'#ffa657',
+  '(config-subif)#':'#ffa657','(config-dhcp)#':'#ffa657',
+  '(config-std-nacl)#':'#ffa657','(config-ext-nacl)#':'#ffa657'
+};
+function pc(p){for(var k in PC){if(p.indexOf(k)>=0)return PC[k];}return '#58a6ff';}
+
+var LABS=[
+
+// 0 -- 1.1.5 Configure SSH on a Switch
+{title:'1.1.5 Configure SSH on a Switch',
+done:'You configured SSH on a switch. The key steps are: domain name, RSA keys, local user with secret, VTY lines set to login local and transport input ssh. Always use SSHv2 -- SSHv1 has known vulnerabilities.',
+steps:[
+{i:'Enter privileged EXEC mode.',p:'S1>',c:'enable',h:'Type: enable',ok:'Correct! Now in privileged EXEC mode.',no:'Type: enable',o:[]},
+{i:'Enter global configuration mode.',p:'S1#',c:'configure terminal',h:'Type: configure terminal',ok:'Correct!',no:'Type: configure terminal',o:[{t:'Enter configuration commands, one per line.  End with CNTL/Z.',c:'dim'}]},
+{i:'Set the domain name to <code>cisco.com</code>.',p:'S1(config)#',c:'ip domain-name cisco.com',h:'Type: ip domain-name cisco.com',ok:'Correct! A domain name is required before generating RSA keys for SSH.',no:'Type: ip domain-name cisco.com',o:[]},
+{i:'Create local user <code>admin</code> with secret <code>ccna</code>.',p:'S1(config)#',c:'username admin secret ccna',h:'Type: username admin secret ccna',ok:'Correct! Local user created for SSH authentication.',no:'Type: username admin secret ccna',o:[]},
+{i:'Generate RSA keys with modulus <code>1024</code>.',p:'S1(config)#',c:'crypto key generate rsa modulus 1024',h:'Type: crypto key generate rsa modulus 1024',ok:'Correct! RSA keys generated. SSH is now enabled on the switch.',no:'Type: crypto key generate rsa modulus 1024',o:[{t:'The name for the keys will be: S1.cisco.com',c:'dim'},{t:'Generating 1024 bit RSA keys, keys will be non-exportable...',c:'dim'},{t:'[OK] (elapsed time was 1 seconds)',c:'ok'},{t:'S1(config)#%SSH-5-ENABLED: SSH 1.99 has been enabled',c:'ok'}]},
+{i:'Set SSH to version 2.',p:'S1(config)#',c:'ip ssh version 2',h:'Type: ip ssh version 2',ok:'Correct! SSHv2 is more secure than SSHv1.',no:'Type: ip ssh version 2',o:[]},
+{i:'Enter VTY lines 0 through 15.',p:'S1(config)#',c:'line vty 0 15',h:'Type: line vty 0 15',ok:'Correct! Switches have 16 VTY lines (0-15).',no:'Type: line vty 0 15',o:[]},
+{i:'Set VTY login to use the local username database.',p:'S1(config-line)#',c:'login local',h:'Type: login local',ok:'Correct! login local requires the username and password created earlier.',no:'Type: login local',o:[]},
+{i:'Allow only SSH on VTY lines -- disable Telnet.',p:'S1(config-line)#',c:'transport input ssh',h:'Type: transport input ssh',ok:'Correct! Telnet sends data in plaintext. SSH encrypts all traffic.',no:'Type: transport input ssh',o:[]},
+{i:'Return to privileged EXEC mode.',p:'S1(config-line)#',c:'end',h:'Type: end',ok:'Correct!',no:'Type: end',o:[]},
+{i:'Verify SSH configuration.',p:'S1#',c:'show ip ssh',h:'Type: show ip ssh',ok:'Correct! Confirms SSH version, timeout, and authentication retries.',no:'Type: show ip ssh',o:[{t:'SSH Enabled - version 2.0',c:'ok'},{t:'Authentication timeout: 120 secs; Authentication retries: 3',c:''},{t:'Minimum expected Diffie Hellman key size : 1024 bits',c:'dim'}]}
+]},
+
+// 1 -- 1.2.4 Configure Router Interfaces
+{title:'1.2.4 Configure Router Interfaces',
+done:'You configured two router interfaces with IP addresses, descriptions, and brought them up. Always use show ip interface brief to verify your work after configuring interfaces.',
+steps:[
+{i:'Enter global configuration mode.',p:'R1#',c:'configure terminal',h:'Type: configure terminal',ok:'Correct!',no:'Type: configure terminal',o:[{t:'Enter configuration commands, one per line.  End with CNTL/Z.',c:'dim'}]},
+{i:'Enter interface GigabitEthernet 0/0/0.',p:'R1(config)#',c:'interface GigabitEthernet 0/0/0',h:'Type: interface GigabitEthernet 0/0/0',ok:'Correct! Now in interface configuration mode for G0/0/0.',no:'Type: interface GigabitEthernet 0/0/0',o:[]},
+{i:'Assign IP address <code>10.0.0.1</code> mask <code>255.255.255.0</code>.',p:'R1(config-if)#',c:'ip address 10.0.0.1 255.255.255.0',h:'Type: ip address 10.0.0.1 255.255.255.0',ok:'Correct! IP address assigned to G0/0/0.',no:'Type: ip address 10.0.0.1 255.255.255.0',o:[]},
+{i:'Add description <code>Link to S1</code>.',p:'R1(config-if)#',c:'description Link to S1',h:'Type: description Link to S1',ok:'Correct! Always document interfaces with meaningful descriptions.',no:'Type: description Link to S1',o:[]},
+{i:'Enable the interface.',p:'R1(config-if)#',c:'no shutdown',h:'Type: no shutdown',ok:'Correct! Interface G0/0/0 is now up.',no:'Type: no shutdown',o:[{t:'%LINK-5-CHANGED: Interface GigabitEthernet0/0/0, changed state to up',c:'ok'},{t:'%LINEPROTO-5-UPDOWN: Line protocol on Interface GigabitEthernet0/0/0, changed state to up',c:'ok'}]},
+{i:'Enter interface GigabitEthernet 0/0/1.',p:'R1(config-if)#',c:'interface GigabitEthernet 0/0/1',h:'Type: interface GigabitEthernet 0/0/1',ok:'Correct! Now configuring G0/0/1.',no:'Type: interface GigabitEthernet 0/0/1',o:[]},
+{i:'Assign IP address <code>10.0.1.1</code> mask <code>255.255.255.0</code>.',p:'R1(config-if)#',c:'ip address 10.0.1.1 255.255.255.0',h:'Type: ip address 10.0.1.1 255.255.255.0',ok:'Correct!',no:'Type: ip address 10.0.1.1 255.255.255.0',o:[]},
+{i:'Add description <code>Link to S2</code>.',p:'R1(config-if)#',c:'description Link to S2',h:'Type: description Link to S2',ok:'Correct!',no:'Type: description Link to S2',o:[]},
+{i:'Enable the interface.',p:'R1(config-if)#',c:'no shutdown',h:'Type: no shutdown',ok:'Correct! Both router interfaces are now up.',no:'Type: no shutdown',o:[{t:'%LINK-5-CHANGED: Interface GigabitEthernet0/0/1, changed state to up',c:'ok'},{t:'%LINEPROTO-5-UPDOWN: Line protocol on Interface GigabitEthernet0/0/1, changed state to up',c:'ok'}]},
+{i:'Return to privileged EXEC mode.',p:'R1(config-if)#',c:'end',h:'Type: end',ok:'Correct!',no:'Type: end',o:[]},
+{i:'Verify with <code>show ip interface brief</code>.',p:'R1#',c:'show ip interface brief',h:'Type: show ip interface brief',ok:'Correct! Both interfaces should show up/up with their IP addresses.',no:'Type: show ip interface brief',o:[{t:'Interface                  IP-Address      OK? Method Status                Protocol',c:'info'},{t:'GigabitEthernet0/0/0       10.0.0.1        YES manual up                    up',c:''},{t:'GigabitEthernet0/0/1       10.0.1.1        YES manual up                    up',c:''}]}
+]},
+
+// 2 -- 1.3.6 Secure Remote Access (Switch)
+{title:'1.3.6 Secure Remote Access on a Switch',
+done:'You secured remote access to a switch using SSH with login block-for, minimum password length, local user authentication, and SSH-only VTY lines. This is the full hardening sequence used in real networks.',
+steps:[
+{i:'Enter global configuration mode.',p:'S1#',c:'configure terminal',h:'Type: configure terminal',ok:'Correct!',no:'Type: configure terminal',o:[{t:'Enter configuration commands, one per line.  End with CNTL/Z.',c:'dim'}]},
+{i:'Block logins for <code>120</code> seconds after <code>3</code> failed attempts within <code>60</code> seconds.',p:'S1(config)#',c:'login block-for 120 attempts 3 within 60',h:'Type: login block-for 120 attempts 3 within 60',ok:'Correct! This protects against brute-force login attacks.',no:'Type: login block-for 120 attempts 3 within 60',o:[]},
+{i:'Set minimum password length to <code>8</code> characters.',p:'S1(config)#',c:'security passwords min-length 8',h:'Type: security passwords min-length 8',ok:'Correct! Weak passwords are rejected at configuration time.',no:'Type: security passwords min-length 8',o:[]},
+{i:'Set the enable secret to <code>class12345</code>.',p:'S1(config)#',c:'enable secret class12345',h:'Type: enable secret class12345',ok:'Correct! enable secret is MD5-hashed and more secure than enable password.',no:'Type: enable secret class12345',o:[]},
+{i:'Set the domain name to <code>ccna-lab.com</code>.',p:'S1(config)#',c:'ip domain-name ccna-lab.com',h:'Type: ip domain-name ccna-lab.com',ok:'Correct! Required for RSA key generation.',no:'Type: ip domain-name ccna-lab.com',o:[]},
+{i:'Create local user <code>netadmin</code> with privilege <code>15</code> and secret <code>Cisco_CCNA7</code>.',p:'S1(config)#',c:'username netadmin privilege 15 secret Cisco_CCNA7',h:'Type: username netadmin privilege 15 secret Cisco_CCNA7',ok:'Correct! Privilege 15 gives full access. The secret is MD5-hashed.',no:'Type: username netadmin privilege 15 secret Cisco_CCNA7',o:[]},
+{i:'Generate RSA keys with modulus <code>1024</code>.',p:'S1(config)#',c:'crypto key generate rsa modulus 1024',h:'Type: crypto key generate rsa modulus 1024',ok:'Correct! SSH is now enabled.',no:'Type: crypto key generate rsa modulus 1024',o:[{t:'Generating 1024 bit RSA keys, keys will be non-exportable...',c:'dim'},{t:'[OK]',c:'ok'},{t:'%SSH-5-ENABLED: SSH 1.99 has been enabled',c:'ok'}]},
+{i:'Set SSH version to 2.',p:'S1(config)#',c:'ip ssh version 2',h:'Type: ip ssh version 2',ok:'Correct!',no:'Type: ip ssh version 2',o:[]},
+{i:'Set SSH authentication timeout to <code>90</code> seconds.',p:'S1(config)#',c:'ip ssh time-out 90',h:'Type: ip ssh time-out 90',ok:'Correct! Limits time for SSH session establishment.',no:'Type: ip ssh time-out 90',o:[]},
+{i:'Limit SSH to <code>2</code> authentication retries.',p:'S1(config)#',c:'ip ssh authentication-retries 2',h:'Type: ip ssh authentication-retries 2',ok:'Correct! After 2 failed attempts the SSH session disconnects.',no:'Type: ip ssh authentication-retries 2',o:[]},
+{i:'Enter VTY lines 0 through 15.',p:'S1(config)#',c:'line vty 0 15',h:'Type: line vty 0 15',ok:'Correct!',no:'Type: line vty 0 15',o:[]},
+{i:'Set VTY login to use local user database.',p:'S1(config-line)#',c:'login local',h:'Type: login local',ok:'Correct!',no:'Type: login local',o:[]},
+{i:'Allow only SSH on VTY lines.',p:'S1(config-line)#',c:'transport input ssh',h:'Type: transport input ssh',ok:'Correct! Telnet is now disabled on all VTY lines.',no:'Type: transport input ssh',o:[]},
+{i:'Set exec timeout to <code>5</code> minutes <code>0</code> seconds.',p:'S1(config-line)#',c:'exec-timeout 5 0',h:'Type: exec-timeout 5 0',ok:'Correct! Idle sessions disconnect after 5 minutes.',no:'Type: exec-timeout 5 0',o:[]},
+{i:'Return to privileged EXEC mode.',p:'S1(config-line)#',c:'end',h:'Type: end',ok:'Correct! SSH hardening complete.',no:'Type: end',o:[]}
+]},
+
+// 3 -- 3.2.8 Configure VLANs
+{title:'3.2.8 Configure VLANs on a Switch',
+done:'You created VLANs and assigned ports to them. VLANs segment a switch into multiple broadcast domains. Ports must be in access mode before assigning a VLAN.',
+steps:[
+{i:'Enter global configuration mode.',p:'S1#',c:'configure terminal',h:'Type: configure terminal',ok:'Correct!',no:'Type: configure terminal',o:[{t:'Enter configuration commands, one per line.  End with CNTL/Z.',c:'dim'}]},
+{i:'Create VLAN <code>10</code>.',p:'S1(config)#',c:'vlan 10',h:'Type: vlan 10',ok:'Correct! VLAN 10 created. The prompt changes to vlan config mode.',no:'Type: vlan 10',o:[]},
+{i:'Name VLAN 10 <code>Faculty</code>.',p:'S1(config-vlan)#',c:'name Faculty',h:'Type: name Faculty',ok:'Correct! Naming VLANs makes the network easier to manage.',no:'Type: name Faculty',o:[]},
+{i:'Create VLAN <code>20</code>.',p:'S1(config-vlan)#',c:'vlan 20',h:'Type: vlan 20',ok:'Correct! VLAN 20 created.',no:'Type: vlan 20',o:[]},
+{i:'Name VLAN 20 <code>Students</code>.',p:'S1(config-vlan)#',c:'name Students',h:'Type: name Students',ok:'Correct!',no:'Type: name Students',o:[]},
+{i:'Create VLAN <code>30</code>.',p:'S1(config-vlan)#',c:'vlan 30',h:'Type: vlan 30',ok:'Correct!',no:'Type: vlan 30',o:[]},
+{i:'Name VLAN 30 <code>Guest</code>.',p:'S1(config-vlan)#',c:'name Guest',h:'Type: name Guest',ok:'Correct!',no:'Type: name Guest',o:[]},
+{i:'Return to global configuration mode.',p:'S1(config-vlan)#',c:'exit',h:'Type: exit',ok:'Correct! Back in global config mode.',no:'Type: exit',o:[]},
+{i:'Enter interface FastEthernet 0/6.',p:'S1(config)#',c:'interface FastEthernet 0/6',h:'Type: interface FastEthernet 0/6',ok:'Correct! This port will be assigned to VLAN 10.',no:'Type: interface FastEthernet 0/6',o:[]},
+{i:'Set the port to access mode.',p:'S1(config-if)#',c:'switchport mode access',h:'Type: switchport mode access',ok:'Correct! Access mode is used for end devices -- one VLAN per port.',no:'Type: switchport mode access',o:[]},
+{i:'Assign port to VLAN 10.',p:'S1(config-if)#',c:'switchport access vlan 10',h:'Type: switchport access vlan 10',ok:'Correct! This port now belongs to the Faculty VLAN.',no:'Type: switchport access vlan 10',o:[]},
+{i:'Enter interface FastEthernet 0/11.',p:'S1(config-if)#',c:'interface FastEthernet 0/11',h:'Type: interface FastEthernet 0/11',ok:'Correct!',no:'Type: interface FastEthernet 0/11',o:[]},
+{i:'Set the port to access mode.',p:'S1(config-if)#',c:'switchport mode access',h:'Type: switchport mode access',ok:'Correct!',no:'Type: switchport mode access',o:[]},
+{i:'Assign port to VLAN 20.',p:'S1(config-if)#',c:'switchport access vlan 20',h:'Type: switchport access vlan 20',ok:'Correct! This port now belongs to the Students VLAN.',no:'Type: switchport access vlan 20',o:[]},
+{i:'Return to privileged EXEC and verify.',p:'S1(config-if)#',c:'end',h:'Type: end',ok:'Correct!',no:'Type: end',o:[]},
+{i:'Verify VLAN configuration with <code>show vlan brief</code>.',p:'S1#',c:'show vlan brief',h:'Type: show vlan brief',ok:'Correct! Shows all VLANs and their assigned ports.',no:'Type: show vlan brief',o:[{t:'VLAN Name                             Status    Ports',c:'info'},{t:'---- -------------------------------- --------- ------',c:'dim'},{t:'1    default                          active    Fa0/1-5,Fa0/7-10,Fa0/12-24',c:''},{t:'10   Faculty                          active    Fa0/6',c:'ok'},{t:'20   Students                         active    Fa0/11',c:'ok'},{t:'30   Guest                            active',c:'ok'}]}
+]},
+
+// 4 -- 3.3.12 Configure 802.1Q Trunk Links
+{title:'3.3.12 Configure 802.1Q Trunk Links',
+done:'You configured an 802.1Q trunk link. Trunks carry traffic from multiple VLANs between switches and between switches and routers. The native VLAN must match on both ends.',
+steps:[
+{i:'Enter global configuration mode.',p:'S1#',c:'configure terminal',h:'Type: configure terminal',ok:'Correct!',no:'Type: configure terminal',o:[{t:'Enter configuration commands, one per line.  End with CNTL/Z.',c:'dim'}]},
+{i:'Enter interface FastEthernet 0/1 -- the uplink port to the router.',p:'S1(config)#',c:'interface FastEthernet 0/1',h:'Type: interface FastEthernet 0/1',ok:'Correct! This port connects to the router for inter-VLAN routing.',no:'Type: interface FastEthernet 0/1',o:[]},
+{i:'Set this port to trunk mode.',p:'S1(config-if)#',c:'switchport mode trunk',h:'Type: switchport mode trunk',ok:'Correct! Trunk mode allows multiple VLANs on a single link.',no:'Type: switchport mode trunk',o:[{t:'%LINEPROTO-5-UPDOWN: Line protocol on Interface FastEthernet0/1, changed state to down',c:'warn'},{t:'%LINEPROTO-5-UPDOWN: Line protocol on Interface FastEthernet0/1, changed state to up',c:'ok'}]},
+{i:'Set the native VLAN to <code>99</code>.',p:'S1(config-if)#',c:'switchport trunk native vlan 99',h:'Type: switchport trunk native vlan 99',ok:'Correct! The native VLAN carries untagged traffic. Must match on both ends.',no:'Type: switchport trunk native vlan 99',o:[]},
+{i:'Allow only VLANs <code>10</code>, <code>20</code>, <code>30</code>, and <code>99</code> on this trunk.',p:'S1(config-if)#',c:'switchport trunk allowed vlan 10,20,30,99',h:'Type: switchport trunk allowed vlan 10,20,30,99',ok:'Correct! Best practice: only allow VLANs that need to traverse the trunk.',no:'Type: switchport trunk allowed vlan 10,20,30,99',o:[]},
+{i:'Return to privileged EXEC mode.',p:'S1(config-if)#',c:'end',h:'Type: end',ok:'Correct!',no:'Type: end',o:[]},
+{i:'Verify trunk configuration.',p:'S1#',c:'show interfaces FastEthernet 0/1 trunk',h:'Type: show interfaces FastEthernet 0/1 trunk',ok:'Correct! Shows trunking mode, native VLAN, and allowed VLANs.',no:'Type: show interfaces FastEthernet 0/1 trunk',o:[{t:'Port      Mode         Encapsulation  Status        Native vlan',c:'info'},{t:'Fa0/1     on           802.1q         trunking      99',c:''},{t:'',c:''},{t:'Port      Vlans allowed on trunk',c:'info'},{t:'Fa0/1     10,20,30,99',c:'ok'},{t:'',c:''},{t:'Port      Vlans in spanning tree forwarding state and not pruned',c:'dim'},{t:'Fa0/1     10,20,30,99',c:'ok'}]}
+]},
+
+// 5 -- 4.2.7 Router-on-a-Stick
+{title:'4.2.7 Router-on-a-Stick Inter-VLAN Routing',
+done:'You configured router-on-a-stick inter-VLAN routing using subinterfaces. Each subinterface handles one VLAN. The physical interface must be up with no IP address -- the subinterfaces carry the traffic.',
+steps:[
+{i:'Enter global configuration mode.',p:'R1#',c:'configure terminal',h:'Type: configure terminal',ok:'Correct!',no:'Type: configure terminal',o:[{t:'Enter configuration commands, one per line.  End with CNTL/Z.',c:'dim'}]},
+{i:'Enter subinterface <code>GigabitEthernet 0/0/0.10</code> for VLAN 10.',p:'R1(config)#',c:'interface GigabitEthernet 0/0/0.10',h:'Type: interface GigabitEthernet 0/0/0.10',ok:'Correct! The .10 extension creates subinterface 10 on G0/0/0.',no:'Type: interface GigabitEthernet 0/0/0.10',o:[]},
+{i:'Set encapsulation to dot1Q for VLAN <code>10</code>.',p:'R1(config-subif)#',c:'encapsulation dot1Q 10',h:'Type: encapsulation dot1Q 10',ok:'Correct! Tells the router to tag traffic on this subinterface with VLAN 10.',no:'Type: encapsulation dot1Q 10',o:[]},
+{i:'Assign IP <code>172.17.10.1</code> mask <code>255.255.255.0</code> -- this is the default gateway for VLAN 10 hosts.',p:'R1(config-subif)#',c:'ip address 172.17.10.1 255.255.255.0',h:'Type: ip address 172.17.10.1 255.255.255.0',ok:'Correct! Hosts in VLAN 10 use this as their default gateway.',no:'Type: ip address 172.17.10.1 255.255.255.0',o:[]},
+{i:'Enter subinterface <code>GigabitEthernet 0/0/0.20</code> for VLAN 20.',p:'R1(config-subif)#',c:'interface GigabitEthernet 0/0/0.20',h:'Type: interface GigabitEthernet 0/0/0.20',ok:'Correct!',no:'Type: interface GigabitEthernet 0/0/0.20',o:[]},
+{i:'Set encapsulation to dot1Q for VLAN <code>20</code>.',p:'R1(config-subif)#',c:'encapsulation dot1Q 20',h:'Type: encapsulation dot1Q 20',ok:'Correct!',no:'Type: encapsulation dot1Q 20',o:[]},
+{i:'Assign IP <code>172.17.20.1</code> mask <code>255.255.255.0</code>.',p:'R1(config-subif)#',c:'ip address 172.17.20.1 255.255.255.0',h:'Type: ip address 172.17.20.1 255.255.255.0',ok:'Correct! VLAN 20 hosts use this as their default gateway.',no:'Type: ip address 172.17.20.1 255.255.255.0',o:[]},
+{i:'Enter subinterface for VLAN 99 (native/management VLAN).',p:'R1(config-subif)#',c:'interface GigabitEthernet 0/0/0.99',h:'Type: interface GigabitEthernet 0/0/0.99',ok:'Correct!',no:'Type: interface GigabitEthernet 0/0/0.99',o:[]},
+{i:'Set encapsulation to dot1Q for VLAN <code>99</code> as native.',p:'R1(config-subif)#',c:'encapsulation dot1Q 99 native',h:'Type: encapsulation dot1Q 99 native',ok:'Correct! The native keyword marks this as the native VLAN -- must match the switch.',no:'Type: encapsulation dot1Q 99 native',o:[]},
+{i:'Assign IP <code>172.17.99.1</code> mask <code>255.255.255.0</code>.',p:'R1(config-subif)#',c:'ip address 172.17.99.1 255.255.255.0',h:'Type: ip address 172.17.99.1 255.255.255.0',ok:'Correct!',no:'Type: ip address 172.17.99.1 255.255.255.0',o:[]},
+{i:'Enable the physical interface (no IP on physical -- only subinterfaces have IPs).',p:'R1(config-subif)#',c:'interface GigabitEthernet 0/0/0',h:'Type: interface GigabitEthernet 0/0/0',ok:'Correct! Enter the physical interface to bring it up.',no:'Type: interface GigabitEthernet 0/0/0',o:[]},
+{i:'Enable the interface.',p:'R1(config-if)#',c:'no shutdown',h:'Type: no shutdown',ok:'Correct! All subinterfaces come up when the physical interface is up.',no:'Type: no shutdown',o:[{t:'%LINK-5-CHANGED: Interface GigabitEthernet0/0/0, changed state to up',c:'ok'},{t:'%LINK-5-CHANGED: Interface GigabitEthernet0/0/0.10, changed state to up',c:'ok'},{t:'%LINK-5-CHANGED: Interface GigabitEthernet0/0/0.20, changed state to up',c:'ok'},{t:'%LINK-5-CHANGED: Interface GigabitEthernet0/0/0.99, changed state to up',c:'ok'}]},
+{i:'Return to privileged EXEC and verify.',p:'R1(config-if)#',c:'end',h:'Type: end',ok:'Correct!',no:'Type: end',o:[]},
+{i:'Verify subinterfaces with <code>show ip interface brief</code>.',p:'R1#',c:'show ip interface brief',h:'Type: show ip interface brief',ok:'Correct! All three subinterfaces should show up/up.',no:'Type: show ip interface brief',o:[{t:'Interface                  IP-Address      OK? Method Status                Protocol',c:'info'},{t:'GigabitEthernet0/0/0       unassigned      YES unset  up                    up',c:''},{t:'GigabitEthernet0/0/0.10    172.17.10.1     YES manual up                    up',c:'ok'},{t:'GigabitEthernet0/0/0.20    172.17.20.1     YES manual up                    up',c:'ok'},{t:'GigabitEthernet0/0/0.99    172.17.99.1     YES manual up                    up',c:'ok'}]}
+]},
+
+// 6 -- 7.1.8 Configure DHCPv4
+{title:'7.1.8 Configure DHCPv4 on a Router',
+done:'You configured a DHCP server on a router. The excluded-address command reserves IPs for static devices. The pool defines what gets handed to clients. Always set network, default-router, and dns-server.',
+steps:[
+{i:'Enter global configuration mode.',p:'R1#',c:'configure terminal',h:'Type: configure terminal',ok:'Correct!',no:'Type: configure terminal',o:[{t:'Enter configuration commands, one per line.  End with CNTL/Z.',c:'dim'}]},
+{i:'Exclude addresses <code>192.168.10.1</code> through <code>192.168.10.9</code> from the DHCP pool.',p:'R1(config)#',c:'ip dhcp excluded-address 192.168.10.1 192.168.10.9',h:'Type: ip dhcp excluded-address 192.168.10.1 192.168.10.9',ok:'Correct! These addresses are reserved for routers, switches, servers, and printers.',no:'Type: ip dhcp excluded-address 192.168.10.1 192.168.10.9',o:[]},
+{i:'Create DHCP pool named <code>LAN-POOL-1</code>.',p:'R1(config)#',c:'ip dhcp pool LAN-POOL-1',h:'Type: ip dhcp pool LAN-POOL-1',ok:'Correct! DHCP pool configuration mode. The prompt changes to (config-dhcp)#.',no:'Type: ip dhcp pool LAN-POOL-1',o:[]},
+{i:'Define the network as <code>192.168.10.0</code> with mask <code>255.255.255.0</code>.',p:'R1(config-dhcp)#',c:'network 192.168.10.0 255.255.255.0',h:'Type: network 192.168.10.0 255.255.255.0',ok:'Correct! Defines the pool of addresses DHCP can assign.',no:'Type: network 192.168.10.0 255.255.255.0',o:[]},
+{i:'Set the default gateway to <code>192.168.10.1</code>.',p:'R1(config-dhcp)#',c:'default-router 192.168.10.1',h:'Type: default-router 192.168.10.1',ok:'Correct! Clients receive this as their default gateway.',no:'Type: default-router 192.168.10.1',o:[]},
+{i:'Set the DNS server to <code>192.168.10.1</code>.',p:'R1(config-dhcp)#',c:'dns-server 192.168.10.1',h:'Type: dns-server 192.168.10.1',ok:'Correct! Clients will use this for DNS resolution.',no:'Type: dns-server 192.168.10.1',o:[]},
+{i:'Set the domain name to <code>ccna-lab.com</code>.',p:'R1(config-dhcp)#',c:'domain-name ccna-lab.com',h:'Type: domain-name ccna-lab.com',ok:'Correct! Optional but useful for internal name resolution.',no:'Type: domain-name ccna-lab.com',o:[]},
+{i:'Return to privileged EXEC mode.',p:'R1(config-dhcp)#',c:'end',h:'Type: end',ok:'Correct! DHCP pool configured.',no:'Type: end',o:[]},
+{i:'Verify DHCP pool configuration.',p:'R1#',c:'show ip dhcp pool',h:'Type: show ip dhcp pool',ok:'Correct! Shows pool name, network, and number of leases.',no:'Type: show ip dhcp pool',o:[{t:'Pool LAN-POOL-1 :',c:'info'},{t:' Utilization mark (high/low)    : 100 / 0',c:'dim'},{t:' Subnet size (first/next)       : 0 / 0',c:'dim'},{t:' Total addresses                : 254',c:''},{t:' Leased addresses               : 0',c:''},{t:' Pending event                  : none',c:'dim'},{t:' 1 subnet is currently in the pool :',c:''},{t:' Current index        IP address range                    Leased addresses',c:'dim'},{t:' 192.168.10.10        192.168.10.1    - 192.168.10.254     0',c:'ok'}]}
+]},
+
+// 7 -- 7.2.5 Configure DHCP Relay
+{title:'7.2.5 Configure a DHCP Relay Agent',
+done:'You configured ip helper-address on a router interface. When clients send DHCP broadcasts, the router relays them as unicast to the DHCP server. This allows one DHCP server to serve multiple subnets.',
+steps:[
+{i:'Enter global configuration mode.',p:'R1#',c:'configure terminal',h:'Type: configure terminal',ok:'Correct!',no:'Type: configure terminal',o:[{t:'Enter configuration commands, one per line.  End with CNTL/Z.',c:'dim'}]},
+{i:'Enter interface GigabitEthernet 0/0/0 -- the interface facing the clients.',p:'R1(config)#',c:'interface GigabitEthernet 0/0/0',h:'Type: interface GigabitEthernet 0/0/0',ok:'Correct! This is the client-facing interface that will relay DHCP requests.',no:'Type: interface GigabitEthernet 0/0/0',o:[]},
+{i:'Configure the DHCP relay agent pointing to server at <code>192.168.11.5</code>.',p:'R1(config-if)#',c:'ip helper-address 192.168.11.5',h:'Type: ip helper-address 192.168.11.5',ok:'Correct! DHCP broadcasts from clients are now forwarded to 192.168.11.5.',no:'Type: ip helper-address 192.168.11.5',o:[]},
+{i:'Return to privileged EXEC mode.',p:'R1(config-if)#',c:'end',h:'Type: end',ok:'Correct! DHCP relay configured.',no:'Type: end',o:[]},
+{i:'Verify the helper address is configured.',p:'R1#',c:'show ip interface GigabitEthernet 0/0/0',h:'Type: show ip interface GigabitEthernet 0/0/0',ok:'Correct! Helper address appears in the detailed interface output.',no:'Type: show ip interface GigabitEthernet 0/0/0',o:[{t:'GigabitEthernet0/0/0 is up, line protocol is up',c:'ok'},{t:'  Internet address is 192.168.10.1/24',c:'info'},{t:'  Helper address is 192.168.11.5',c:'ok'},{t:'  Directed broadcast forwarding is disabled',c:'dim'}]}
+]},
+
+// 8 -- 8.2.6 Stateless DHCPv6
+{title:'8.2.6 Configure Stateless DHCPv6 (SLAAC + DHCPv6)',
+done:'You configured Stateless DHCPv6. Hosts use SLAAC to generate their own IPv6 address (from the router advertisement prefix + their MAC), then query the DHCPv6 server for DNS and domain info only.',
+steps:[
+{i:'Enter global configuration mode.',p:'R1#',c:'configure terminal',h:'Type: configure terminal',ok:'Correct!',no:'Type: configure terminal',o:[{t:'Enter configuration commands, one per line.  End with CNTL/Z.',c:'dim'}]},
+{i:'Enable IPv6 unicast routing.',p:'R1(config)#',c:'ipv6 unicast-routing',h:'Type: ipv6 unicast-routing',ok:'Correct! Must be enabled for the router to forward IPv6 packets.',no:'Type: ipv6 unicast-routing',o:[]},
+{i:'Create a DHCPv6 pool named <code>R1-STATELESS</code>.',p:'R1(config)#',c:'ipv6 dhcp pool R1-STATELESS',h:'Type: ipv6 dhcp pool R1-STATELESS',ok:'Correct! DHCPv6 pool configuration mode.',no:'Type: ipv6 dhcp pool R1-STATELESS',o:[]},
+{i:'Set the DNS server to <code>2001:db8:acad::254</code>.',p:'R1(config-dhcp)#',c:'dns-server 2001:db8:acad::254',h:'Type: dns-server 2001:db8:acad::254',ok:'Correct! In stateless mode, DHCPv6 provides DNS but not the address.',no:'Type: dns-server 2001:db8:acad::254',o:[]},
+{i:'Set the domain name to <code>stateless.com</code>.',p:'R1(config-dhcp)#',c:'domain-name stateless.com',h:'Type: domain-name stateless.com',ok:'Correct!',no:'Type: domain-name stateless.com',o:[]},
+{i:'Return to global configuration mode.',p:'R1(config-dhcp)#',c:'exit',h:'Type: exit',ok:'Correct!',no:'Type: exit',o:[]},
+{i:'Enter interface GigabitEthernet 0/0/0.',p:'R1(config)#',c:'interface GigabitEthernet 0/0/0',h:'Type: interface GigabitEthernet 0/0/0',ok:'Correct!',no:'Type: interface GigabitEthernet 0/0/0',o:[]},
+{i:'Assign IPv6 address <code>2001:db8:acad:1::1/64</code>.',p:'R1(config-if)#',c:'ipv6 address 2001:db8:acad:1::1/64',h:'Type: ipv6 address 2001:db8:acad:1::1/64',ok:'Correct! Router advertises this prefix so hosts can build their own addresses.',no:'Type: ipv6 address 2001:db8:acad:1::1/64',o:[]},
+{i:'Set the Other config flag -- tells hosts to get DNS from DHCPv6.',p:'R1(config-if)#',c:'ipv6 nd other-config-flag',h:'Type: ipv6 nd other-config-flag',ok:'Correct! The O-flag tells hosts: use SLAAC for address, but ask DHCPv6 for other info.',no:'Type: ipv6 nd other-config-flag',o:[]},
+{i:'Bind the DHCPv6 pool to this interface.',p:'R1(config-if)#',c:'ipv6 dhcp server R1-STATELESS',h:'Type: ipv6 dhcp server R1-STATELESS',ok:'Correct! This interface will answer DHCPv6 requests from clients.',no:'Type: ipv6 dhcp server R1-STATELESS',o:[]},
+{i:'Return to privileged EXEC mode.',p:'R1(config-if)#',c:'end',h:'Type: end',ok:'Correct! Stateless DHCPv6 configured.',no:'Type: end',o:[]}
+]},
+
+// 9 -- 8.3.7 Stateful DHCPv6
+{title:'8.3.7 Configure Stateful DHCPv6',
+done:'You configured Stateful DHCPv6. Unlike stateless, the DHCPv6 server assigns both the IPv6 address AND provides DNS/domain info. The router sends the M-flag in router advertisements to direct clients to DHCPv6.',
+steps:[
+{i:'Enter global configuration mode.',p:'R1#',c:'configure terminal',h:'Type: configure terminal',ok:'Correct!',no:'Type: configure terminal',o:[{t:'Enter configuration commands, one per line.  End with CNTL/Z.',c:'dim'}]},
+{i:'Enable IPv6 unicast routing.',p:'R1(config)#',c:'ipv6 unicast-routing',h:'Type: ipv6 unicast-routing',ok:'Correct!',no:'Type: ipv6 unicast-routing',o:[]},
+{i:'Create a DHCPv6 pool named <code>R1-STATEFUL</code>.',p:'R1(config)#',c:'ipv6 dhcp pool R1-STATEFUL',h:'Type: ipv6 dhcp pool R1-STATEFUL',ok:'Correct!',no:'Type: ipv6 dhcp pool R1-STATEFUL',o:[]},
+{i:'Define the address prefix for assignment: <code>2001:db8:acad:1::/64</code>.',p:'R1(config-dhcp)#',c:'address prefix 2001:db8:acad:1::/64',h:'Type: address prefix 2001:db8:acad:1::/64',ok:'Correct! DHCPv6 will assign addresses from this /64 prefix.',no:'Type: address prefix 2001:db8:acad:1::/64',o:[]},
+{i:'Set the DNS server to <code>2001:4860:4860::8888</code>.',p:'R1(config-dhcp)#',c:'dns-server 2001:4860:4860::8888',h:'Type: dns-server 2001:4860:4860::8888',ok:'Correct! This is Google\'s IPv6 DNS server.',no:'Type: dns-server 2001:4860:4860::8888',o:[]},
+{i:'Set domain name to <code>stateful.com</code>.',p:'R1(config-dhcp)#',c:'domain-name stateful.com',h:'Type: domain-name stateful.com',ok:'Correct!',no:'Type: domain-name stateful.com',o:[]},
+{i:'Return to global configuration mode.',p:'R1(config-dhcp)#',c:'exit',h:'Type: exit',ok:'Correct!',no:'Type: exit',o:[]},
+{i:'Enter interface GigabitEthernet 0/0/0.',p:'R1(config)#',c:'interface GigabitEthernet 0/0/0',h:'Type: interface GigabitEthernet 0/0/0',ok:'Correct!',no:'Type: interface GigabitEthernet 0/0/0',o:[]},
+{i:'Assign the IPv6 link address <code>2001:db8:acad:1::1/64</code>.',p:'R1(config-if)#',c:'ipv6 address 2001:db8:acad:1::1/64',h:'Type: ipv6 address 2001:db8:acad:1::1/64',ok:'Correct!',no:'Type: ipv6 address 2001:db8:acad:1::1/64',o:[]},
+{i:'Set the Managed config flag -- tells hosts to get their full address from DHCPv6.',p:'R1(config-if)#',c:'ipv6 nd managed-config-flag',h:'Type: ipv6 nd managed-config-flag',ok:'Correct! The M-flag tells hosts: get your full IPv6 address from DHCPv6.',no:'Type: ipv6 nd managed-config-flag',o:[]},
+{i:'Bind the DHCPv6 pool to this interface.',p:'R1(config-if)#',c:'ipv6 dhcp server R1-STATEFUL',h:'Type: ipv6 dhcp server R1-STATEFUL',ok:'Correct! Interface will now respond to DHCPv6 Solicit messages.',no:'Type: ipv6 dhcp server R1-STATEFUL',o:[]},
+{i:'Return to privileged EXEC mode.',p:'R1(config-if)#',c:'end',h:'Type: end',ok:'Correct! Stateful DHCPv6 configured.',no:'Type: end',o:[]}
+]},
+
+// 10 -- 11.1.10 Port Security
+{title:'11.1.10 Configure Port Security',
+done:'You configured port security on a switch port. Port security limits the number of valid MAC addresses on a port and defines what happens when a violation occurs -- restrict logs it, protect drops silently, shutdown disables the port.',
+steps:[
+{i:'Enter global configuration mode.',p:'S1#',c:'configure terminal',h:'Type: configure terminal',ok:'Correct!',no:'Type: configure terminal',o:[{t:'Enter configuration commands, one per line.  End with CNTL/Z.',c:'dim'}]},
+{i:'Enter interface FastEthernet 0/1.',p:'S1(config)#',c:'interface FastEthernet 0/1',h:'Type: interface FastEthernet 0/1',ok:'Correct!',no:'Type: interface FastEthernet 0/1',o:[]},
+{i:'Set the port to access mode. Port security requires access mode.',p:'S1(config-if)#',c:'switchport mode access',h:'Type: switchport mode access',ok:'Correct! Port security only works on access ports, not trunk ports.',no:'Type: switchport mode access',o:[]},
+{i:'Enable port security on this interface.',p:'S1(config-if)#',c:'switchport port-security',h:'Type: switchport port-security',ok:'Correct! Port security is now active with default settings (max 1 MAC).',no:'Type: switchport port-security',o:[]},
+{i:'Set the maximum number of allowed MAC addresses to <code>2</code>.',p:'S1(config-if)#',c:'switchport port-security maximum 2',h:'Type: switchport port-security maximum 2',ok:'Correct! Up to 2 different MAC addresses can use this port.',no:'Type: switchport port-security maximum 2',o:[]},
+{i:'Set the violation mode to <code>restrict</code>. This drops unauthorized traffic and logs violations.',p:'S1(config-if)#',c:'switchport port-security violation restrict',h:'Type: switchport port-security violation restrict',ok:'Correct! Restrict mode: drops bad traffic, increments violation counter, sends syslog.',no:'Type: switchport port-security violation restrict',o:[]},
+{i:'Configure port security to learn and remember MAC addresses automatically.',p:'S1(config-if)#',c:'switchport port-security mac-address sticky',h:'Type: switchport port-security mac-address sticky',ok:'Correct! Sticky learning remembers connected MAC addresses and saves them to config.',no:'Type: switchport port-security mac-address sticky',o:[]},
+{i:'Return to privileged EXEC mode.',p:'S1(config-if)#',c:'end',h:'Type: end',ok:'Correct!',no:'Type: end',o:[]},
+{i:'Verify port security configuration.',p:'S1#',c:'show port-security interface FastEthernet 0/1',h:'Type: show port-security interface FastEthernet 0/1',ok:'Correct! Shows security settings, violation mode, and learned MAC addresses.',no:'Type: show port-security interface FastEthernet 0/1',o:[{t:'Port Security              : Enabled',c:'ok'},{t:'Port Status               : Secure-up',c:'ok'},{t:'Violation Mode            : Restrict',c:'info'},{t:'Aging Time                : 0 mins',c:'dim'},{t:'Maximum MAC Addresses     : 2',c:'info'},{t:'Total MAC Addresses       : 0',c:''},{t:'Configured MAC Addresses  : 0',c:''},{t:'Sticky MAC Addresses      : 0',c:''},{t:'Last Source Address:Vlan  : 0000.0000.0000:0',c:'dim'},{t:'Security Violation Count  : 0',c:'ok'}]}
+]},
+
+// 11 -- 14.3.4 Basic Router Config Review
+{title:'14.3.4 Basic Router Configuration Review',
+done:'You completed the basic router configuration review. This covers the complete sequence for configuring a production router: security hardening, interface configuration, and saving the configuration.',
+steps:[
+{i:'Enter privileged EXEC mode.',p:'Router>',c:'enable',h:'Type: enable',ok:'Correct!',no:'Type: enable',o:[]},
+{i:'Enter global configuration mode.',p:'Router#',c:'configure terminal',h:'Type: configure terminal',ok:'Correct!',no:'Type: configure terminal',o:[{t:'Enter configuration commands, one per line.  End with CNTL/Z.',c:'dim'}]},
+{i:'Set the hostname to <code>R1</code>.',p:'Router(config)#',c:'hostname R1',h:'Type: hostname R1',ok:'Correct!',no:'Type: hostname R1',o:[]},
+{i:'Disable DNS lookup.',p:'R1(config)#',c:'no ip domain-lookup',h:'Type: no ip domain-lookup',ok:'Correct! Prevents long delays when mistyping commands.',no:'Type: no ip domain-lookup',o:[]},
+{i:'Set enable secret to <code>class</code>.',p:'R1(config)#',c:'enable secret class',h:'Type: enable secret class',ok:'Correct!',no:'Type: enable secret class',o:[]},
+{i:'Encrypt all plaintext passwords.',p:'R1(config)#',c:'service password-encryption',h:'Type: service password-encryption',ok:'Correct!',no:'Type: service password-encryption',o:[]},
+{i:'Set the MOTD banner with message <code>Authorized Access Only</code>.',p:'R1(config)#',c:'banner motd #Authorized Access Only#',h:'Type: banner motd #Authorized Access Only#',ok:'Correct!',no:'Type: banner motd #Authorized Access Only#',o:[]},
+{i:'Enter interface G0/0/0.',p:'R1(config)#',c:'interface GigabitEthernet 0/0/0',h:'Type: interface GigabitEthernet 0/0/0',ok:'Correct!',no:'Type: interface GigabitEthernet 0/0/0',o:[]},
+{i:'Assign IP <code>209.165.200.225</code> mask <code>255.255.255.252</code>.',p:'R1(config-if)#',c:'ip address 209.165.200.225 255.255.255.252',h:'Type: ip address 209.165.200.225 255.255.255.252',ok:'Correct! /30 mask -- used for point-to-point links.',no:'Type: ip address 209.165.200.225 255.255.255.252',o:[]},
+{i:'Add description <code>Link to ISP</code>.',p:'R1(config-if)#',c:'description Link to ISP',h:'Type: description Link to ISP',ok:'Correct!',no:'Type: description Link to ISP',o:[]},
+{i:'Enable the interface.',p:'R1(config-if)#',c:'no shutdown',h:'Type: no shutdown',ok:'Correct!',no:'Type: no shutdown',o:[{t:'%LINK-5-CHANGED: Interface GigabitEthernet0/0/0, changed state to up',c:'ok'}]},
+{i:'Return to privileged EXEC.',p:'R1(config-if)#',c:'end',h:'Type: end',ok:'Correct!',no:'Type: end',o:[]},
+{i:'Save the configuration.',p:'R1#',c:'copy running-config startup-config',h:'Type: copy running-config startup-config',ok:'Correct! Configuration saved to NVRAM.',no:'Type: copy running-config startup-config',o:[{t:'Destination filename [startup-config]? ',c:'dim'},{t:'Building configuration...',c:'dim'},{t:'[OK]',c:'ok'}]}
+]},
+
+// 12 -- 15.4.4 Configure IP Static Routes
+{title:'15.4.4 Configure IP Static Routes',
+done:'You configured static routes including a default route. Static routes are manually configured and do not update automatically. The default route (0.0.0.0/0) matches any destination -- the gateway of last resort.',
+steps:[
+{i:'Enter global configuration mode.',p:'R1#',c:'configure terminal',h:'Type: configure terminal',ok:'Correct!',no:'Type: configure terminal',o:[{t:'Enter configuration commands, one per line.  End with CNTL/Z.',c:'dim'}]},
+{i:'Add a static route to network <code>172.16.1.0/24</code> via next-hop <code>172.16.2.2</code>.',p:'R1(config)#',c:'ip route 172.16.1.0 255.255.255.0 172.16.2.2',h:'Type: ip route 172.16.1.0 255.255.255.0 172.16.2.2',ok:'Correct! Packets to 172.16.1.0/24 will be forwarded to 172.16.2.2.',no:'Type: ip route 172.16.1.0 255.255.255.0 172.16.2.2',o:[]},
+{i:'Add a static route to network <code>192.168.1.0/24</code> via next-hop <code>172.16.2.2</code>.',p:'R1(config)#',c:'ip route 192.168.1.0 255.255.255.0 172.16.2.2',h:'Type: ip route 192.168.1.0 255.255.255.0 172.16.2.2',ok:'Correct! Another static route added.',no:'Type: ip route 192.168.1.0 255.255.255.0 172.16.2.2',o:[]},
+{i:'Add a default static route (gateway of last resort) via <code>172.16.2.2</code>.',p:'R1(config)#',c:'ip route 0.0.0.0 0.0.0.0 172.16.2.2',h:'Type: ip route 0.0.0.0 0.0.0.0 172.16.2.2',ok:'Correct! The default route matches any destination not in the routing table.',no:'Type: ip route 0.0.0.0 0.0.0.0 172.16.2.2',o:[]},
+{i:'Return to privileged EXEC mode.',p:'R1(config)#',c:'end',h:'Type: end',ok:'Correct!',no:'Type: end',o:[]},
+{i:'Verify the routing table.',p:'R1#',c:'show ip route',h:'Type: show ip route',ok:'Correct! S entries are static routes. S* is the default route (candidate default).',no:'Type: show ip route',o:[{t:'Codes: C - connected, S - static, S* - default route',c:'dim'},{t:'',c:''},{t:'Gateway of last resort is 172.16.2.2 to network 0.0.0.0',c:'info'},{t:'',c:''},{t:'S*    0.0.0.0/0 [1/0] via 172.16.2.2',c:'ok'},{t:'      172.16.0.0/24 is subnetted, 2 subnets',c:''},{t:'C        172.16.2.0 is directly connected, GigabitEthernet0/0/1',c:''},{t:'S        172.16.1.0 [1/0] via 172.16.2.2',c:'ok'},{t:'S        192.168.1.0 [1/0] via 172.16.2.2',c:'ok'}]}
+]},
+
+// 13 -- 16.2.4 Floating Static Routes
+{title:'16.2.4 Configure Floating Static Routes',
+done:'You configured floating static routes. A floating static route has a higher administrative distance (AD) than the primary route. It stays hidden in the routing table until the primary route fails -- providing automatic failover.',
+steps:[
+{i:'Enter global configuration mode.',p:'R1#',c:'configure terminal',h:'Type: configure terminal',ok:'Correct!',no:'Type: configure terminal',o:[{t:'Enter configuration commands, one per line.  End with CNTL/Z.',c:'dim'}]},
+{i:'Add the primary default route via <code>172.16.2.2</code> (AD=1, the default).',p:'R1(config)#',c:'ip route 0.0.0.0 0.0.0.0 172.16.2.2',h:'Type: ip route 0.0.0.0 0.0.0.0 172.16.2.2',ok:'Correct! Primary default route via main ISP link. Default AD for static routes is 1.',no:'Type: ip route 0.0.0.0 0.0.0.0 172.16.2.2',o:[]},
+{i:'Add a floating (backup) default route via <code>10.10.10.2</code> with AD of <code>5</code>.',p:'R1(config)#',c:'ip route 0.0.0.0 0.0.0.0 10.10.10.2 5',h:'Type: ip route 0.0.0.0 0.0.0.0 10.10.10.2 5',ok:'Correct! AD=5 is higher than the primary AD=1, so this route is only used when primary fails.',no:'Type: ip route 0.0.0.0 0.0.0.0 10.10.10.2 5',o:[]},
+{i:'Add a primary static route to <code>192.168.10.0/24</code> via <code>172.16.2.2</code>.',p:'R1(config)#',c:'ip route 192.168.10.0 255.255.255.0 172.16.2.2',h:'Type: ip route 192.168.10.0 255.255.255.0 172.16.2.2',ok:'Correct! Primary route for 192.168.10.0/24.',no:'Type: ip route 192.168.10.0 255.255.255.0 172.16.2.2',o:[]},
+{i:'Add a floating backup route to <code>192.168.10.0/24</code> via <code>10.10.10.2</code> with AD <code>5</code>.',p:'R1(config)#',c:'ip route 192.168.10.0 255.255.255.0 10.10.10.2 5',h:'Type: ip route 192.168.10.0 255.255.255.0 10.10.10.2 5',ok:'Correct! Backup route will activate only if the primary fails.',no:'Type: ip route 192.168.10.0 255.255.255.0 10.10.10.2 5',o:[]},
+{i:'Return to privileged EXEC mode.',p:'R1(config)#',c:'end',h:'Type: end',ok:'Correct!',no:'Type: end',o:[]},
+{i:'Verify the routing table -- only primary routes (AD=1) appear.',p:'R1#',c:'show ip route',h:'Type: show ip route',ok:'Correct! Floating routes are hidden until the primary fails -- they do not appear here normally.',no:'Type: show ip route',o:[{t:'Gateway of last resort is 172.16.2.2 to network 0.0.0.0',c:'info'},{t:'',c:''},{t:'S*    0.0.0.0/0 [1/0] via 172.16.2.2',c:'ok'},{t:'S     192.168.10.0/24 [1/0] via 172.16.2.2',c:'ok'},{t:'',c:''},{t:'Note: Floating routes [AD=5] are installed but not shown -- they',c:'dim'},{t:'      activate automatically if the [1/0] routes disappear.',c:'dim'}]}
+]}
+
+]; // end LABS
+
+var lab=null,step=0;
+
+function loadLab(idx){
+  lab=LABS[parseInt(idx)];
+  step=0;
+  document.getElementById('term-out').innerHTML='';
+  document.getElementById('success').classList.remove('show');
+  document.querySelector('.terminal').style.display='';
+  document.getElementById('feedback').style.display='';
+  document.querySelector('.btn-row').style.display='';
+  document.getElementById('term-ttl').textContent=lab.title;
+  setFB('[>]','Type the command shown in the instruction, then press Enter.','');
+  render();
+  document.getElementById('cur-input').focus();
+}
+
+function render(){
+  var s=lab.steps[step],n=lab.steps.length;
+  document.getElementById('instr-text').innerHTML=s.i;
+  document.getElementById('cur-prompt').textContent=s.p+'\u00a0';
+  document.getElementById('cur-prompt').style.color=pc(s.p);
+  document.getElementById('prog-fill').style.width=Math.round(step/n*100)+'%';
+  document.getElementById('prog-lbl').textContent='Step '+step+'/'+n;
+  document.getElementById('cur-input').value='';
+}
+
+function submit(raw){
+  var typed=raw.trim();
+  if(!typed)return;
+  var s=lab.steps[step];
+  addRow(s.p,typed);
+  if(typed.toLowerCase()===s.c.toLowerCase()){
+    (s.o||[]).forEach(function(l){addOut(l.t,l.c);});
+    setFB('[+]',s.ok,'ok');
+    step++;
+    if(step>=lab.steps.length)finish();
+    else render();
+  }else{
+    setFB('[x]',s.no,'err');
+  }
+  document.getElementById('cur-input').value='';
+  scroll();
+}
+
+function finish(){
+  document.getElementById('prog-fill').style.width='100%';
+  document.getElementById('prog-lbl').textContent='Complete!';
+  document.getElementById('instr-text').innerHTML='<strong>All steps complete!</strong>';
+  document.querySelector('.terminal').style.display='none';
+  document.getElementById('feedback').style.display='none';
+  document.querySelector('.btn-row').style.display='none';
+  document.getElementById('s-msg').textContent=lab.done;
+  document.getElementById('success').classList.add('show');
+}
+
+function resetLab(){
+  document.querySelector('.terminal').style.display='';
+  document.getElementById('feedback').style.display='';
+  document.querySelector('.btn-row').style.display='';
+  document.getElementById('success').classList.remove('show');
+  loadLab(document.getElementById('lab-picker').value);
+}
+
+function pickAnother(){
+  document.getElementById('success').classList.remove('show');
+  document.querySelector('.terminal').style.display='';
+  document.getElementById('feedback').style.display='';
+  document.querySelector('.btn-row').style.display='';
+  // Scroll lab picker into view so user can select
+  var picker = document.getElementById('lab-picker');
+  picker.focus();
+  picker.scrollIntoView({behavior:'smooth', block:'center'});
+}
+
+function showHint(){setFB('[?]',lab.steps[step].h,'warn');}
+
+function setFB(icon,text,cls){
+  document.querySelector('.fb-icon').textContent=icon;
+  var el=document.getElementById('fb-text');
+  el.textContent=text;
+  el.className='fb-text'+(cls?' '+cls:'');
+}
+
+function addRow(p,cmd){
+  var out=document.getElementById('term-out');
+  var row=document.createElement('div');row.className='t-row';
+  var ps=document.createElement('span');ps.className='t-prompt';ps.style.color=pc(p);ps.textContent=p+' ';
+  var cs=document.createElement('span');cs.className='t-cmd';cs.textContent=cmd;
+  row.appendChild(ps);row.appendChild(cs);out.appendChild(row);
+}
+
+function addOut(text,cls){
+  var out=document.getElementById('term-out');
+  var d=document.createElement('span');d.className='t-out'+(cls?' '+cls:'');d.textContent=text;
+  out.appendChild(d);
+}
+
+function scroll(){var o=document.getElementById('term-out');o.scrollTop=o.scrollHeight;}
+
+document.getElementById('cur-input').addEventListener('keydown',function(e){
+  if(e.key==='Enter'){e.preventDefault();submit(this.value);}
+});
+document.querySelector('.terminal').addEventListener('click',function(){
+  document.getElementById('cur-input').focus();
+});
+
+(function(){
+  var m=window.location.search.match(/lab=([^&]+)/);
+  if(m){
+    var opts=document.getElementById('lab-picker').options;
+    for(var i=0;i<opts.length;i++){if(opts[i].text.indexOf(m[1])>=0){document.getElementById('lab-picker').value=i;break;}}
+  }
+  loadLab(document.getElementById('lab-picker').value);
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,841 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=2.0">
+<title>CCNA 3 Module 11: Network Design v2.2</title>
+<style>
+:root{
+  --blue:#1ba0d7;--dark:#005073;--green:#6cc24a;
+  --nd:#4a1942;--ndd:#e879f9;--nd2:#2d0f2a;
+  --bg:#f4f6f8;--card:#fff;--text:#1a1a2e;--muted:#5a6a7a;
+  --cbg:#0d1117;--ctxt:#c9d1d9;--r:12px;--sh:0 2px 12px rgba(0,0,0,.08);
+  --base-fs:16px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);font-size:var(--base-fs);line-height:1.7}
+
+.bc{background:#0d1117;padding:8px 16px;display:flex;align-items:center;flex-wrap:wrap;gap:4px;font-size:.75em;overflow-x:auto;white-space:nowrap;-webkit-overflow-scrolling:touch;border-bottom:1px solid #21262d}
+.bc a{color:#8b949e;text-decoration:none;font-weight:600;flex-shrink:0}
+.bc a:active{color:#c9d1d9}
+.bc .sep{color:#6e7681;flex-shrink:0}
+.bc .cur{color:var(--ndd);font-weight:700;flex-shrink:0;overflow:hidden;text-overflow:ellipsis;max-width:180px}
+
+.fs-bar{position:sticky;top:0;z-index:200;background:#1a1a2e;display:flex;align-items:center;justify-content:flex-end;padding:6px 14px;gap:6px;box-shadow:0 2px 8px rgba(0,0,0,.3)}
+.fs-label{color:#8b949e;font-size:.72em;font-weight:700;letter-spacing:.5px;text-transform:uppercase;margin-right:4px}
+.fs-btn{background:#30363d;color:#c9d1d9;border:2px solid transparent;border-radius:6px;padding:4px 12px;font-size:.75em;font-weight:700;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:all .2s;line-height:1.4}
+.fs-btn:active,.fs-btn.active{background:var(--nd);color:#fff;border-color:var(--ndd)}
+
+.hdr{background:linear-gradient(135deg,#0a0209,var(--nd2),var(--nd));color:#fff;padding:32px 20px 24px;text-align:center}
+.hdr .badge{display:inline-block;background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.4);border-radius:20px;padding:4px 14px;font-size:.81em;margin-bottom:12px}
+.hdr h1{font-size:1.625em;font-weight:700;margin-bottom:6px}
+.hdr p{font-size:.94em;opacity:.85}
+.hdr .obj{display:inline-block;background:rgba(255,255,255,.15);border-radius:8px;padding:7px 16px;margin-top:12px;font-size:.875em;font-style:italic}
+
+.pb-wrap{background:var(--card);padding:14px 16px;margin:16px 16px 0;border-radius:var(--r);box-shadow:var(--sh)}
+.pb-lbl{font-size:.81em;color:var(--muted);margin-bottom:6px;font-weight:600}
+.pb-track{background:#e0e7ef;border-radius:10px;height:8px;overflow:hidden}
+.pb-fill{background:linear-gradient(90deg,var(--nd),var(--ndd));height:100%;border-radius:10px;width:0;transition:width 1s ease}
+
+.toc{background:var(--card);margin:16px;border-radius:var(--r);box-shadow:var(--sh);overflow:hidden}
+.toch{background:var(--nd);color:#fff;padding:14px 18px;font-weight:700;font-size:.94em;display:flex;justify-content:space-between;align-items:center;cursor:pointer;user-select:none}
+.toch .arr{transition:transform .3s}
+.toch.open .arr{transform:rotate(180deg)}
+.tocb{display:none;padding:10px 0}
+.tocb.open{display:block}
+.tocg{font-size:.69em;font-weight:800;letter-spacing:.8px;color:var(--nd);text-transform:uppercase;padding:8px 20px 2px}
+.tocb a{display:block;padding:9px 20px 9px 28px;color:var(--text);text-decoration:none;font-size:.875em;border-left:3px solid transparent;transition:all .2s}
+.tocb a:hover,.tocb a:active{background:#fdf4ff;border-left-color:var(--ndd)}
+.tocb a .n{display:inline-block;background:var(--nd);color:#fff;border-radius:5px;padding:1px 8px;font-size:.75em;font-weight:700;margin-right:8px}
+
+.wrap{padding:0 16px 100px}
+
+.sec{background:var(--card);border-radius:var(--r);box-shadow:var(--sh);margin-bottom:16px;overflow:hidden}
+.sh{background:linear-gradient(90deg,#0a0209,var(--nd));color:#fff;padding:16px 18px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;user-select:none;-webkit-tap-highlight-color:transparent}
+.sh .ttl{font-weight:700;font-size:1em}
+.sh .nb{background:rgba(255,255,255,.25);border-radius:6px;padding:3px 10px;font-size:.81em;font-weight:700;margin-right:10px;white-space:nowrap}
+.sh .ch{font-size:1.125em;transition:transform .3s}
+.sh.open .ch{transform:rotate(180deg)}
+.sb{display:none;padding:18px}
+.sb.open{display:block}
+
+.sub{margin-bottom:24px}
+.sub:last-child{margin-bottom:0}
+.sub h3{font-size:.94em;font-weight:700;color:var(--nd);margin-bottom:10px;padding-bottom:6px;border-bottom:2px solid #fdf4ff;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.sub h3 .sn{background:var(--nd);color:#fff;border-radius:5px;padding:2px 8px;font-size:.75em;white-space:nowrap}
+.sub h4{font-size:.875em;font-weight:700;color:var(--nd);margin:14px 0 6px}
+.sub p{margin-bottom:10px;font-size:.94em}
+.sub ul,.sub ol{padding-left:20px;margin:8px 0;font-size:.94em}
+.sub li{margin-bottom:5px}
+
+.ca{border-radius:8px;padding:12px 14px;margin:12px 0;font-size:.875em;line-height:1.6;display:flex;gap:10px;align-items:flex-start}
+.ca .ic{font-size:1.125em;flex-shrink:0;margin-top:1px}
+.ca.warn  {background:#fff3cd;border-left:4px solid #b38600;color:#3d2c00}
+.ca.tip   {background:#d4edda;border-left:4px solid #28a745;color:#0d3318}
+.ca.danger{background:#f8d7da;border-left:4px solid #dc3545;color:#3d0010}
+.ca.info  {background:#fdf4ff;border-left:4px solid var(--nd);color:#2d0f2a}
+
+.et{background:linear-gradient(135deg,#1a1a2e,#0a0209);color:#fff;border-radius:10px;padding:14px 16px;margin:14px 0;font-size:.875em;line-height:1.6}
+.et .lbl{font-size:.69em;font-weight:800;letter-spacing:1px;color:var(--ndd);margin-bottom:6px}
+.et ul{padding-left:18px;margin-top:6px}
+.et li{margin-bottom:4px}
+
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:12px 0;border-radius:8px}
+table{width:100%;border-collapse:collapse;font-size:.875em}
+th{background:var(--nd);color:#fff;padding:10px 12px;text-align:left;font-weight:700;font-size:.81em}
+td{padding:9px 12px;border-bottom:1px solid #e8ecf0;vertical-align:top;color:#1a1a2e}
+tr:nth-child(even) td{background:#fdf4ff;color:#2d0f2a}
+tr:last-child td{border-bottom:none}
+p code,li code,td code,.ca code{background:#fdf4ff;color:#2d0f2a;border-radius:4px;padding:1px 5px;font-size:.81em;font-family:'Courier New',monospace;font-weight:600}
+
+/* Three-layer diagram */
+.layer-stack{display:flex;flex-direction:column;gap:8px;margin:12px 0}
+.layer-card{border-radius:10px;padding:14px 16px;border-left:6px solid}
+.layer-card.core{border-left-color:#7c0000;background:#fff5f5}
+.layer-card.dist{border-left-color:#1a3a5c;background:#e0f2fe}
+.layer-card.acc {border-left-color:#1a4731;background:#f0fdf4}
+.layer-card .lc-label{font-size:.69em;font-weight:800;letter-spacing:.8px;text-transform:uppercase;margin-bottom:4px}
+.layer-card.core .lc-label{color:#7c0000}
+.layer-card.dist .lc-label{color:#1a3a5c}
+.layer-card.acc  .lc-label{color:#1a4731}
+.layer-card .lc-title{font-weight:800;font-size:.875em;margin-bottom:6px}
+.layer-card.core .lc-title{color:#7c0000}
+.layer-card.dist .lc-title{color:#1a3a5c}
+.layer-card.acc  .lc-title{color:#1a4731}
+.layer-card ul{padding-left:16px;font-size:.81em;color:#1a1a2e;line-height:1.7}
+.layer-card li{margin-bottom:3px}
+
+/* Design principles */
+.principle-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:12px 0}
+@media(max-width:480px){.principle-grid{grid-template-columns:1fr}}
+.principle-card{border-radius:10px;padding:12px 14px;border:2px solid}
+.principle-card.h{border-color:#1a3a5c;background:#e0f2fe}
+.principle-card.m{border-color:#1a4731;background:#f0fdf4}
+.principle-card.r{border-color:#7c1e1e;background:#fff5f5}
+.principle-card.f{border-color:#5c3d00;background:#fffbeb}
+.principle-card .pc-icon{font-size:1.5em;margin-bottom:4px}
+.principle-card .pc-name{font-weight:800;font-size:.875em;margin-bottom:4px}
+.principle-card.h .pc-name{color:#1a3a5c}
+.principle-card.m .pc-name{color:#1a4731}
+.principle-card.r .pc-name{color:#7c1e1e}
+.principle-card.f .pc-name{color:#5c3d00}
+.principle-card p{font-size:.81em;color:#1a1a2e;line-height:1.6;margin:0}
+
+/* Three vs two tier */
+.tier-compare{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:12px 0}
+@media(max-width:480px){.tier-compare{grid-template-columns:1fr}}
+.tier-card{border-radius:10px;overflow:hidden}
+.tier-card .tc-hdr{padding:10px 14px;font-weight:800;font-size:.875em;color:#fff;text-align:center}
+.tier-card.three .tc-hdr{background:#1a3a5c}
+.tier-card.two   .tc-hdr{background:#1a4731}
+.tier-card .tc-body{padding:12px 14px;font-size:.81em;color:#1a1a2e;line-height:1.7;background:#f9fafb}
+.tier-card .tc-body ul{padding-left:16px}
+.tier-card .tc-body li{margin-bottom:4px}
+
+/* Scalability features */
+.scale-grid{display:grid;gap:8px;margin:12px 0}
+.scale-row{display:flex;gap:10px;align-items:flex-start;padding:10px 12px;border-radius:8px;font-size:.81em;line-height:1.6;border-left:4px solid}
+.scale-row.red{border-left-color:#1a3a5c;background:#e0f2fe}
+.scale-row.mul{border-left-color:#1a4731;background:#f0fdf4}
+.scale-row.rp {border-left-color:#5c3d00;background:#fffbeb}
+.scale-row.wl {border-left-color:#7b2d8b;background:#f3e8ff}
+.scale-row .sr-name{font-weight:800;min-width:130px;flex-shrink:0;color:#1a1a2e;line-height:1.5}
+.scale-row .sr-desc{color:#374151;line-height:1.6}
+
+/* Switch form factors */
+.form-grid{display:grid;gap:8px;margin:12px 0}
+.form-card{border-radius:8px;padding:10px 14px;font-size:.81em;border-left:4px solid;line-height:1.6}
+.form-card.fixed{border-left-color:#1a3a5c;background:#e0f2fe}
+.form-card.mod  {border-left-color:#1a4731;background:#f0fdf4}
+.form-card.stack{border-left-color:var(--nd);background:#fdf4ff}
+.form-card .fc-name{font-weight:800;margin-bottom:3px}
+.form-card.fixed .fc-name{color:#1a3a5c}
+.form-card.mod   .fc-name{color:#1a4731}
+.form-card.stack .fc-name{color:var(--nd)}
+
+/* Switch platform categories */
+.plat-grid{display:grid;gap:8px;margin:12px 0}
+.plat-row{display:flex;gap:10px;align-items:flex-start;padding:9px 12px;border-radius:8px;font-size:.81em;line-height:1.6;border-left:4px solid}
+.plat-row.campus {border-left-color:#1a3a5c;background:#e0f2fe}
+.plat-row.cloud  {border-left-color:#7b2d8b;background:#f3e8ff}
+.plat-row.dc     {border-left-color:#1a4731;background:#f0fdf4}
+.plat-row.sp     {border-left-color:#5c3d00;background:#fffbeb}
+.plat-row.virt   {border-left-color:#7c1e1e;background:#fff5f5}
+.plat-row .pr-cat{font-weight:800;min-width:110px;flex-shrink:0;color:#1a1a2e;line-height:1.5}
+.plat-row .pr-desc{color:#374151}
+
+/* Router categories */
+.router-grid{display:grid;gap:10px;margin:12px 0}
+.router-card{border-radius:10px;padding:13px 14px;border-left:5px solid}
+.router-card.branch{border-left-color:#1a3a5c;background:#e0f2fe}
+.router-card.edge  {border-left-color:#1a4731;background:#f0fdf4}
+.router-card.sp    {border-left-color:#5c3d00;background:#fffbeb}
+.router-card.ind   {border-left-color:#7c1e1e;background:#fff5f5}
+.router-card .rc-name{font-weight:800;font-size:.875em;margin-bottom:4px}
+.router-card.branch .rc-name{color:#1a3a5c}
+.router-card.edge   .rc-name{color:#1a4731}
+.router-card.sp     .rc-name{color:#5c3d00}
+.router-card.ind    .rc-name{color:#7c1e1e}
+.router-card .rc-series{font-size:.69em;font-weight:700;padding:2px 8px;border-radius:4px;color:#fff;display:inline-block;margin-bottom:6px}
+.router-card.branch .rc-series{background:#1a3a5c}
+.router-card.edge   .rc-series{background:#1a4731}
+.router-card.sp     .rc-series{background:#5c3d00}
+.router-card.ind    .rc-series{background:#7c1e1e}
+.router-card p{font-size:.81em;color:#1a1a2e;line-height:1.6;margin:0}
+
+/* Forwarding rate visual */
+.fw-box{background:#0d1117;border:2px solid var(--ndd);border-radius:10px;padding:14px;margin:12px 0}
+.fw-title{font-size:.75em;font-weight:800;letter-spacing:.8px;color:var(--ndd);text-transform:uppercase;margin-bottom:10px}
+.fw-row{display:flex;gap:10px;align-items:flex-start;padding:7px 0;border-bottom:1px solid #21262d;font-size:.81em;color:#c9d1d9;line-height:1.6}
+.fw-row:last-child{border-bottom:none}
+.fw-layer{font-weight:800;min-width:90px;flex-shrink:0}
+.fw-layer.acc{color:#4ade80}
+.fw-layer.dist{color:var(--ndd)}
+.fw-layer.core{color:#f87171}
+
+.tb-btn{position:fixed;bottom:80px;right:16px;background:var(--nd);color:#fff;border:none;border-radius:50%;width:44px;height:44px;font-size:1.25em;box-shadow:0 4px 14px rgba(0,0,0,.25);cursor:pointer;display:none;align-items:center;justify-content:center;z-index:100}
+.tb-btn.show{display:flex}
+.ft{text-align:center;padding:24px 16px;color:var(--muted);font-size:.81em}
+
+.mod-nav{position:fixed;bottom:0;left:0;right:0;z-index:300;background:#1a1a2e;border-top:1px solid #30363d;display:flex;align-items:center;height:52px;padding:0 8px;gap:6px}
+.mn-hub{background:var(--blue);color:#fff;border:none;border-radius:8px;padding:6px 12px;font-size:.75em;font-weight:700;cursor:pointer;text-decoration:none;display:flex;align-items:center;gap:4px;white-space:nowrap;-webkit-tap-highlight-color:transparent;flex-shrink:0}
+.mn-hub:active{opacity:.8}
+.mn-divider{width:1px;height:28px;background:#30363d;flex-shrink:0}
+.mn-label{flex:1;text-align:center;font-size:.69em;color:#8b949e;font-weight:600;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding:0 4px}
+.mn-prev,.mn-next{background:#30363d;color:#c9d1d9;border:none;border-radius:8px;padding:6px 10px;font-size:.875em;font-weight:700;cursor:pointer;text-decoration:none;display:flex;align-items:center;-webkit-tap-highlight-color:transparent;flex-shrink:0}
+.mn-prev:active,.mn-next:active{background:var(--nd);color:#fff}
+/* Study progress panel */
+.sp-wrap{background:var(--card);margin:16px 16px 0;border-radius:var(--r);box-shadow:var(--sh);overflow:hidden}
+.sp-hdr{background:var(--nt);color:#fff;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;user-select:none;-webkit-tap-highlight-color:transparent;gap:10px}
+.sp-hdr .sp-title{font-weight:700;font-size:.875em;flex-shrink:0}
+.sp-hdr .sp-arr{transition:transform .3s;flex-shrink:0}
+.sp-hdr.open .sp-arr{transform:rotate(180deg)}
+.sp-body{display:none;padding:12px 14px}
+.sp-body.open{display:block}
+.sp-row{display:flex;align-items:center;gap:10px;padding:6px 4px;border-bottom:1px solid #f0f4f8;font-size:.81em}
+.sp-row:last-child{border-bottom:none}
+.sp-row .sr-status{font-size:1em;flex-shrink:0;width:20px;text-align:center}
+.sp-row .sr-nb{font-weight:800;color:var(--nt);min-width:36px;flex-shrink:0;font-size:.875em}
+.sp-row .sr-ttl{color:var(--text);flex:1}
+.sp-row.done .sr-ttl{color:var(--muted);text-decoration:line-through}
+.sc-pills{display:flex;align-items:center;gap:4px;overflow-x:auto;-webkit-overflow-scrolling:touch;flex:1;padding:0 4px}
+.sc-pill{background:#30363d;color:#8b949e;border:2px solid transparent;border-radius:6px;padding:3px 8px;font-size:.72em;font-weight:700;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:all .15s;white-space:nowrap;flex-shrink:0;line-height:1.4;display:flex;align-items:center;gap:3px}
+.sc-pill.checked{background:var(--nt);color:#fff;border-color:var(--ntd)}
+.sc-pill .pill-check{font-size:.875em}
+
+/* v2.1 — In-section check button */
+.sh{position:relative}
+.sec-check{position:absolute;right:40px;top:50%;transform:translateY(-50%);background:rgba(255,255,255,.15);border:2px solid rgba(255,255,255,.4);border-radius:6px;padding:2px 10px;font-size:.72em;font-weight:800;color:#fff;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:all .2s;white-space:nowrap;z-index:10;line-height:1.5}
+.sec-check.checked{background:var(--ntd);border-color:var(--ntd);color:#052e1e}
+.sec-check:active{opacity:.75}
+/* Sections panel + tick colours (these pages never defined --nt/--ntd, so the panel header was invisible) */
+:root{--nt:var(--nd);--ntd:#4ade80}
+</style>
+</head>
+<body>
+
+<nav class="bc">
+  <a href="../../index.html">🏠 Home</a>
+  <span class="sep">›</span>
+  <a href="index.html">CCNA 3 — ENSA</a>
+  <span class="sep">›</span>
+  <span class="cur">M11: Network Design</span>
+</nav>
+
+<div class="fs-bar">
+  <div class="sc-pills" id="sc-pills">
+  <button class="sc-pill" id="pill-s1" onclick="toggleSection('s1',this)"><span class="pill-check">○</span>11.1</button>
+  <button class="sc-pill" id="pill-s2" onclick="toggleSection('s2',this)"><span class="pill-check">○</span>11.2</button>
+  <button class="sc-pill" id="pill-s3" onclick="toggleSection('s3',this)"><span class="pill-check">○</span>11.3</button>
+  <button class="sc-pill" id="pill-s4" onclick="toggleSection('s4',this)"><span class="pill-check">○</span>11.4</button>
+  <button class="sc-pill" id="pill-s-pt-11-5" onclick="toggleSection('s-pt-11-5',this)"><span class="pill-check">○</span>PT 11.5</button>
+  <button class="sc-pill" id="pill-s5" onclick="toggleSection('s5',this)"><span class="pill-check">○</span>🎯</button>
+  </div>
+  <span class="fs-label" style="flex-shrink:0;margin-left:6px">Size</span>
+  <button class="fs-btn" onclick="setFs('14px',this)">S</button>
+  <button class="fs-btn active" onclick="setFs('16px',this)">M</button>
+  <button class="fs-btn" onclick="setFs('18px',this)">L</button>
+  <button class="fs-btn" onclick="setFs('20px',this)">XL</button>
+</div>
+
+<div class="hdr">
+  <div class="badge">CCNA 3 — ENSA v7.02</div>
+  <h1>🏗️ Module 11: Network Design</h1>
+  <p>Enterprise Networking, Security &amp; Automation · NetAcad Study Guide</p>
+  <div class="obj">Module Objective: Explain the characteristics of scalable network architectures</div>
+</div>
+
+<div class="sp-wrap">
+  <div class="sp-hdr" id="sp-hdr" onclick="toggleStudyPanel()">
+    <span class="sp-title">📚 Sections</span>
+    <span class="sp-arr" id="sp-arr">▼</span>
+  </div>
+  <div class="sp-body" id="sp-body">
+    <div class="sp-row" id="row-s1"><span class="sr-status" id="st-s1">○</span><span class="sr-nb">11.1</span><span class="sr-ttl">Hierarchical Networks</span></div>
+    <div class="sp-row" id="row-s2"><span class="sr-status" id="st-s2">○</span><span class="sr-nb">11.2</span><span class="sr-ttl">Scalable Networks</span></div>
+    <div class="sp-row" id="row-s3"><span class="sr-status" id="st-s3">○</span><span class="sr-nb">11.3</span><span class="sr-ttl">Switch Hardware</span></div>
+    <div class="sp-row" id="row-s4"><span class="sr-status" id="st-s4">○</span><span class="sr-nb">11.4</span><span class="sr-ttl">Router Hardware</span></div>
+    <div class="sp-row" id="row-s-pt-11-5"><span class="sr-status" id="st-s-pt-11-5">○</span><span class="sr-nb">PT 11.5</span><span class="sr-ttl">Packet Tracer — Compare Layer 2 and Layer 3 Devices</span></div>
+    <div class="sp-row" id="row-s5"><span class="sr-status" id="st-s5">○</span><span class="sr-nb">🎯</span><span class="sr-ttl">Common Exam Traps — Module 11</span></div>
+  </div>
+</div>
+
+<div class="toc">
+  <div class="toch open" onclick="this.classList.toggle('open');document.getElementById('tocb').classList.toggle('open')">
+    📋 Table of Contents — Tap to expand <span class="arr">▼</span>
+  </div>
+  <div class="tocb open" id="tocb">
+    <div class="tocg">11.1 — Hierarchical Networks</div>
+    <a href="javascript:void(0)" onclick="goTo('s1')"><span class="n">11.1.2</span> The Need to Scale the Network</a>
+    <a href="javascript:void(0)" onclick="goTo('s1')"><span class="n">11.1.3</span> Cisco Borderless Switched Network</a>
+    <a href="javascript:void(0)" onclick="goTo('s1')"><span class="n">11.1.4</span> Four Hierarchical Design Principles</a>
+    <a href="javascript:void(0)" onclick="goTo('s1')"><span class="n">11.1.5</span> Access, Distribution, and Core Layer Functions</a>
+    <a href="javascript:void(0)" onclick="goTo('s1')"><span class="n">11.1.6</span> Three-Tier vs Two-Tier Design</a>
+    <div class="tocg">11.2 — Scalable Networks</div>
+    <a href="javascript:void(0)" onclick="goTo('s2')"><span class="n">11.2.1</span> Design for Scalability — Key Recommendations</a>
+    <a href="javascript:void(0)" onclick="goTo('s2')"><span class="n">11.2.2</span> Plan for Redundancy — STP and Layer 3</a>
+    <a href="javascript:void(0)" onclick="goTo('s2')"><span class="n">11.2.3</span> Reduce Failure Domain Size — Switch Blocks</a>
+    <a href="javascript:void(0)" onclick="goTo('s2')"><span class="n">11.2.4</span> Increase Bandwidth — EtherChannel</a>
+    <a href="javascript:void(0)" onclick="goTo('s2')"><span class="n">11.2.5</span> Expand the Access Layer — Wireless</a>
+    <a href="javascript:void(0)" onclick="goTo('s2')"><span class="n">11.2.6</span> Tune Routing Protocols — OSPF</a>
+    <div class="tocg">11.3 — Switch Hardware</div>
+    <a href="javascript:void(0)" onclick="goTo('s3')"><span class="n">11.3.1</span> Switch Platform Categories</a>
+    <a href="javascript:void(0)" onclick="goTo('s3')"><span class="n">11.3.2</span> Switch Form Factors — Fixed, Modular, Stackable</a>
+    <a href="javascript:void(0)" onclick="goTo('s3')"><span class="n">11.3.3</span> Port Density</a>
+    <a href="javascript:void(0)" onclick="goTo('s3')"><span class="n">11.3.4</span> Forwarding Rates and Wire Speed</a>
+    <a href="javascript:void(0)" onclick="goTo('s3')"><span class="n">11.3.5</span> Power over Ethernet (PoE)</a>
+    <a href="javascript:void(0)" onclick="goTo('s3')"><span class="n">11.3.6</span> Multilayer Switching</a>
+    <a href="javascript:void(0)" onclick="goTo('s3')"><span class="n">11.3.7</span> Business Considerations for Switch Selection</a>
+    <div class="tocg">11.4 — Router Hardware</div>
+    <a href="javascript:void(0)" onclick="goTo('s4')"><span class="n">11.4.1</span> Router Functions</a>
+    <a href="javascript:void(0)" onclick="goTo('s4')"><span class="n">11.4.2</span> Cisco Router Categories</a>
+    <a href="javascript:void(0)" onclick="goTo('s4')"><span class="n">11.4.3</span> Router Form Factors</a>
+    <div class="tocg">Reference</div>
+    <a href="javascript:void(0)" onclick="goTo('s5')"><span class="n">🎯</span> Common Exam Traps</a>
+  </div>
+</div>
+
+<div class="wrap">
+
+<!-- ══════════ 11.1 HIERARCHICAL NETWORKS ══════════ -->
+<div class="sec" id="s1">
+<div class="sh open" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">11.1</span><span class="ttl">Hierarchical Networks</span></span><button class="sec-check" id="sch-s1" onclick="event.stopPropagation();toggleSection('s1',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb open">
+
+  <div class="sub">
+  <h3><span class="sn">11.1.2</span> The Need to Scale the Network</h3>
+  <p>All enterprise networks must be able to:</p>
+  <ul>
+    <li>Support <strong>critical applications</strong> — mission-critical services with high availability</li>
+    <li>Support <strong>converged network traffic</strong> — data files, email, IP telephony, and video on one network</li>
+    <li>Support <strong>diverse business needs</strong> — multiple departments, branch offices, remote workers</li>
+    <li>Provide <strong>centralized administrative control</strong> — manage from one location or NMS</li>
+  </ul>
+  <div class="ca info">
+    <span class="ic">💡</span>
+    <div>A <strong>campus network</strong> interconnects a group of LANs spread over a small geographic area — from a single floor using one switch to large multi-building networks with thousands of connections. As businesses grow, the network must scale without losing availability or performance.</div>
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">11.1.3</span> Cisco Borderless Switched Network</h3>
+  <p>The <strong>Cisco Borderless Network</strong> architecture connects anyone, anywhere, anytime, on any device — securely, reliably, and seamlessly. It:</p>
+  <ul>
+    <li>Unifies <strong>wired and wireless</strong> access under one framework</li>
+    <li>Provides policy, access control, and performance management across diverse devices</li>
+    <li>Built on a <strong>hierarchical, scalable, and resilient</strong> hardware infrastructure</li>
+    <li>Delivers two primary service sets: <strong>network services</strong> + <strong>user and endpoint services</strong></li>
+  </ul>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">11.1.4</span> Four Hierarchical Design Principles</h3>
+  <div class="principle-grid">
+    <div class="principle-card h">
+      <div class="pc-icon">🏛️</div>
+      <div class="pc-name">Hierarchical</div>
+      <p>Each device has a clear role at every tier. Simplifies deployment, operation, and management. Reduces fault domains at each tier.</p>
+    </div>
+    <div class="principle-card m">
+      <div class="pc-icon">🧩</div>
+      <div class="pc-name">Modularity</div>
+      <p>Allows seamless network expansion and on-demand integrated service enablement. Layers can be added, upgraded, or modified independently.</p>
+    </div>
+    <div class="principle-card r">
+      <div class="pc-icon">🔄</div>
+      <div class="pc-name">Resiliency</div>
+      <p>Satisfies user expectations for keeping the network always on. Designed for minimal downtime through redundancy and failover.</p>
+    </div>
+    <div class="principle-card f">
+      <div class="pc-icon">⚡</div>
+      <div class="pc-name">Flexibility</div>
+      <p>Allows intelligent traffic load sharing using all available network resources. Supports changing business requirements.</p>
+    </div>
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">11.1.5</span> Access, Distribution, and Core Layer Functions</h3>
+  <div class="layer-stack">
+    <div class="layer-card core">
+      <div class="lc-label">Top Layer</div>
+      <div class="lc-title">🔴 Core Layer — The Backbone</div>
+      <ul>
+        <li>Aggregates all distribution layer devices</li>
+        <li>Ties the campus together with the rest of the network</li>
+        <li>Primary purpose: <strong>fault isolation</strong> and <strong>high-speed backbone connectivity</strong></li>
+        <li>Focus: speed and reliability — NOT policy enforcement or QoS</li>
+        <li>Design for fast convergence and minimal downtime</li>
+        <li>Failures here have the largest impact → invest in highest reliability equipment</li>
+      </ul>
+    </div>
+    <div class="layer-card dist">
+      <div class="lc-label">Middle Layer</div>
+      <div class="lc-title">🔵 Distribution Layer — Aggregation and Policy</div>
+      <ul>
+        <li>Interfaces between the access and core layers</li>
+        <li>Aggregates large-scale wiring closet networks</li>
+        <li>Aggregates <strong>Layer 2 broadcast domains</strong> and <strong>Layer 3 routing boundaries</strong></li>
+        <li>Provides intelligent switching, routing, and network access policy</li>
+        <li>Provides <strong>high availability</strong> through redundant distribution switches</li>
+        <li>Provides <strong>equal cost paths</strong> to the core</li>
+        <li>Provides differentiated services (QoS) to different traffic classes</li>
+        <li><strong>Best place to limit failure domain size</strong></li>
+      </ul>
+    </div>
+    <div class="layer-card acc">
+      <div class="lc-label">Bottom Layer</div>
+      <div class="lc-title">🟢 Access Layer — The Network Edge</div>
+      <ul>
+        <li>Represents the <strong>network edge</strong> — where traffic enters or exits the campus</li>
+        <li>Primary function: <strong>provide network access to end users and devices</strong></li>
+        <li>Connects to distribution layer switches</li>
+        <li>Modern access switches: PoE for IP phones and APs, QoS marking, wireless integration</li>
+        <li>Building intelligence into access switches improves application efficiency and security</li>
+      </ul>
+    </div>
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">11.1.6</span> Three-Tier vs Two-Tier Design</h3>
+  <div class="tier-compare">
+    <div class="tier-card three">
+      <div class="tc-hdr">🏢 Three-Tier Model</div>
+      <div class="tc-body">
+        <ul>
+          <li>Access, Distribution, and Core are <strong>physically separate layers</strong></li>
+          <li>Used for <strong>large campus environments</strong></li>
+          <li>Recommended physical topology: <strong>extended star</strong> from a centralized building to all others</li>
+          <li>Provides maximum scalability, flexibility, and fault isolation</li>
+          <li>More expensive to implement and manage</li>
+        </ul>
+      </div>
+    </div>
+    <div class="tier-card two">
+      <div class="tc-hdr">🏠 Two-Tier (Collapsed Core)</div>
+      <div class="tc-body">
+        <ul>
+          <li>Distribution and Core <strong>combined into one layer</strong></li>
+          <li>Used for <strong>smaller campuses</strong>, single buildings, or limited scalability needs</li>
+          <li>Also called: <strong>collapsed core network design</strong></li>
+          <li>Lower cost; fewer devices to manage</li>
+          <li>Not a compromise — correct design for the environment</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="et">
+    <div class="lbl">🎯 EXAM KEY — THREE-TIER TOPOLOGY RECOMMENDATION</div>
+    For a three-tier campus design, build an <strong>extended star</strong> from a centralized site to all other campus buildings.<br>
+    This is recommended for efficiency, scalability, and cost-effectiveness.<br>
+    A full mesh is much more expensive. Bus and dual ring are harder to troubleshoot.
+  </div>
+  </div>
+
+</div></div>
+
+<!-- ══════════ 11.2 SCALABLE NETWORKS ══════════ -->
+<div class="sec" id="s2">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">11.2</span><span class="ttl">Scalable Networks</span></span><button class="sec-check" id="sch-s2" onclick="event.stopPropagation();toggleSection('s2',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb">
+
+  <div class="sub">
+  <h3><span class="sn">11.2.1</span> Design for Scalability — Key Recommendations</h3>
+  <ol>
+    <li><strong>Use expandable, modular equipment or clustered devices</strong> — add modules to existing hardware; cluster devices to act as one for simpler management</li>
+    <li><strong>Design a hierarchical network with independent modules</strong> — each layer can expand without affecting others (e.g., add access switches without changing distribution/core)</li>
+    <li><strong>Create a hierarchical IP address strategy</strong> (IPv4 and IPv6) — careful address planning avoids re-addressing when users and services are added</li>
+    <li><strong>Use routers or multilayer switches to limit broadcasts</strong> — filter undesirable traffic; use Layer 3 to reduce traffic reaching the core</li>
+  </ol>
+  <div class="scale-grid">
+    <div class="scale-row red"><div class="sr-name">Redundant Links</div><div class="sr-desc">Implement between critical devices and between access and core layers. Prevents single points of failure.</div></div>
+    <div class="scale-row mul"><div class="sr-name">EtherChannel</div><div class="sr-desc">Aggregate multiple links into one logical link for increased bandwidth. Uses existing ports — no expensive upgrades.</div></div>
+    <div class="scale-row rp"><div class="sr-name">Scalable Routing Protocol</div><div class="sr-desc">Use features to isolate routing updates and minimize routing table size. OSPF is well-suited for large hierarchical networks.</div></div>
+    <div class="scale-row wl"><div class="sr-name">Wireless Connectivity</div><div class="sr-desc">Extends access layer for mobility. Consider device types, coverage, interference, and security.</div></div>
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">11.2.2</span> Plan for Redundancy</h3>
+  <p>Two methods of implementing redundancy:</p>
+  <ul>
+    <li><strong>Duplicate equipment</strong> — failover services for critical devices</li>
+    <li><strong>Redundant paths</strong> — alternate physical paths for data to traverse the network</li>
+  </ul>
+  <div class="ca warn">
+    <span class="ic">⚠️</span>
+    <div><strong>Redundant paths in switched networks create Layer 2 loops.</strong> STP (Spanning Tree Protocol) eliminates loops by blocking redundant paths logically — re-enabling them only when a failure occurs. STP is open standard and required in any redundant Layer 2 design.</div>
+  </div>
+  <div class="ca tip">
+    <span class="ic">✅</span>
+    <div><strong>Alternative to STP: use Layer 3 in the backbone.</strong> Layer 3 routing provides redundancy without needing STP — it naturally selects the best path and converges faster on failure. Layer 3 also provides broadcast containment.</div>
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">11.2.3</span> Reduce Failure Domain Size</h3>
+  <p>A <strong>failure domain</strong> = the area of a network impacted when a critical device or service fails.</p>
+  <ul>
+    <li>Smaller failure domains reduce impact on productivity and simplify troubleshooting</li>
+    <li>Core layer failures = large impact → focus redundancy investment here but keep design simple</li>
+    <li><strong>Distribution layer</strong> = easiest and least expensive place to control failure domain size</li>
+  </ul>
+  <div class="ca info">
+    <span class="ic">💡</span>
+    <div><strong>Switch block deployment:</strong> Routers or multilayer switches deployed in pairs, with access layer switches evenly divided between them. Each switch block acts independently. Failure of one entire switch block does not bring down users on other switch blocks — only those connected to that block are affected.</div>
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">11.2.4</span> Increase Bandwidth — EtherChannel</h3>
+  <p><strong>EtherChannel</strong> aggregates multiple physical Ethernet links into one logical link:</p>
+  <ul>
+    <li>Uses <strong>existing switch ports</strong> — no need to upgrade to faster, more expensive interfaces</li>
+    <li>Configuration done on the <strong>EtherChannel interface</strong> (not individual ports) — ensures consistency</li>
+    <li>Provides <strong>load balancing</strong> across member links</li>
+    <li>Prevents uplink bottlenecks where multiple access links converge onto one distribution uplink</li>
+    <li>Budget-friendly alternative when fiber runs or new interfaces are too expensive</li>
+  </ul>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">11.2.5</span> Expand the Access Layer — Wireless</h3>
+  <p>Wireless extends access layer connectivity to mobile users and areas without cable infrastructure:</p>
+  <ul>
+    <li>End devices require: wireless NIC (radio transmitter/receiver + driver)</li>
+    <li>Infrastructure requires: wireless router or AP</li>
+    <li>Key considerations: device types, coverage requirements, interference, security</li>
+    <li>Benefits: increased flexibility, reduced costs, adaptable to changing needs</li>
+  </ul>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">11.2.6</span> Tune Routing Protocols — OSPF</h3>
+  <p><strong>OSPF (Open Shortest Path First)</strong> is a link-state routing protocol well-suited for large hierarchical networks:</p>
+  <ul>
+    <li>Routers establish and maintain <strong>neighbor adjacencies</strong> with connected OSPF routers</li>
+    <li>Routers <strong>synchronize their link-state database</strong> to build a complete topology map</li>
+    <li>When a change occurs, <strong>link-state updates</strong> propagate → all routers recalculate best path</li>
+    <li><strong>Fast convergence</strong> — well-suited for large hierarchical networks</li>
+    <li>Scales efficiently in hierarchical designs using areas to limit update flooding</li>
+  </ul>
+  </div>
+
+</div></div>
+
+<!-- ══════════ 11.3 SWITCH HARDWARE ══════════ -->
+<div class="sec" id="s3">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">11.3</span><span class="ttl">Switch Hardware</span></span><button class="sec-check" id="sch-s3" onclick="event.stopPropagation();toggleSection('s3',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb">
+
+  <div class="sub">
+  <h3><span class="sn">11.3.1</span> Switch Platform Categories</h3>
+  <div class="plat-grid">
+    <div class="plat-row campus"><div class="pr-cat">Campus LAN</div><div class="pr-desc">Core, distribution, access, and compact switches for enterprise LANs. Cisco 2960, 3560, 3650, 3850, 4500, 6500, 6800 Series. Vary from 8-port fanless to 13-blade chassis with hundreds of ports.</div></div>
+    <div class="plat-row cloud"><div class="pr-cat">Cloud-Managed</div><div class="pr-desc">Virtual stacking — configure and monitor thousands of switch ports via web without onsite IT staff. Example: <strong>Cisco Meraki</strong>.</div></div>
+    <div class="plat-row dc"><div class="pr-cat">Data Center</div><div class="pr-desc">Promotes infrastructure scalability, operational continuity, and transport flexibility for data center environments. Example: <strong>Cisco Nexus Series</strong>.</div></div>
+    <div class="plat-row sp"><div class="pr-cat">Service Provider</div><div class="pr-desc">Two types: aggregation switches (carrier-grade, edge of network) and Ethernet access switches (application intelligence, unified services, virtualization).</div></div>
+    <div class="plat-row virt"><div class="pr-cat">Virtual Networking</div><div class="pr-desc">Secure multi-tenant services with virtualization intelligence for data center networks. Example: <strong>Cisco Nexus virtual networking</strong>.</div></div>
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">11.3.2</span> Switch Form Factors</h3>
+  <div class="form-grid">
+    <div class="form-card fixed">
+      <div class="fc-name">Fixed Configuration</div>
+      Features and ports are preset at purchase — cannot be changed. Examples: Cisco 2960, 3560. Suitable for access layer. Thickness typically expressed in rack units (1U = 1.75 inches).
+    </div>
+    <div class="form-card mod">
+      <div class="fc-name">Modular Configuration</div>
+      Chassis accepts field-replaceable line cards — highly flexible. Add or replace interface modules as needs change. Example: Cisco Catalyst 9400 (up to 384 switchport interfaces).
+    </div>
+    <div class="form-card stack">
+      <div class="fc-name">Stackable Configuration</div>
+      Special cables connect multiple switches so they appear and operate as one large logical switch. Simplifies management — one IP, one config for the entire stack.
+    </div>
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">11.3.3</span> Port Density</h3>
+  <p><strong>Port density</strong> = number of ports available on a single switch.</p>
+  <ul>
+    <li><strong>Fixed switches:</strong> typically 12, 24, or 48 ports (e.g., Cisco Catalyst 3850 in 12/24/48-port configs)</li>
+    <li><strong>Modular switches:</strong> very high density (e.g., Catalyst 9400 supports up to 384 switchport interfaces)</li>
+    <li>High-density modular switches save rack space and power vs many fixed switches</li>
+    <li><strong>Uplink bottleneck concern:</strong> Fixed switches consume additional ports for inter-switch aggregation; modular switches use the chassis backplane instead — not consuming user ports</li>
+  </ul>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">11.3.4</span> Forwarding Rates and Wire Speed</h3>
+  <p><strong>Forwarding rate</strong> = how much data the switch can process per second (processing capability).</p>
+  <p><strong>Wire speed</strong> = the maximum data rate each port can achieve (100 Mbps, 1 Gbps, 10 Gbps, 100 Gbps).</p>
+  <div class="fw-box">
+    <div class="fw-title">📊 Forwarding Rate by Layer — Design Principle</div>
+    <div class="fw-row"><div class="fw-layer acc">Access Layer</div><div>Can use lower forwarding rates — access switches are physically limited by their uplinks to distribution. Less expensive switches acceptable here.</div></div>
+    <div class="fw-row"><div class="fw-layer dist">Distribution Layer</div><div>Higher forwarding rates needed — all access layer traffic converges here. Performance at distribution directly impacts all users on attached access switches.</div></div>
+    <div class="fw-row"><div class="fw-layer core">Core Layer</div><div>Highest forwarding rates required — all campus traffic passes through the core. Forwarding rate has greatest network performance impact at this layer.</div></div>
+  </div>
+  <div class="ca info">
+    <span class="ic">💡</span>
+    <div><strong>Example:</strong> A 48-port gigabit switch at full wire speed generates 48 Gbps of traffic. If the switch only supports a 32 Gbps forwarding rate, it cannot run all ports at full speed simultaneously. At the access layer, this is usually acceptable because the uplinks are the actual bottleneck.</div>
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">11.3.5</span> Power over Ethernet (PoE)</h3>
+  <ul>
+    <li>Delivers electrical power to a device <strong>over existing Ethernet cabling</strong> — no separate power outlet needed</li>
+    <li>Use cases: <strong>IP phones, wireless access points</strong> — can be placed anywhere there's an Ethernet cable</li>
+    <li>PoE switches cost more — verify PoE is actually required before purchasing</li>
+    <li><strong>Cisco Catalyst 2960-C and 3560-C</strong> — support <strong>PoE pass-through</strong>: power connected PoE devices AND the switch itself from an upstream PoE port</li>
+    <li>Chassis-based switches may support redundant power supplies for higher availability</li>
+  </ul>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">11.3.6</span> Multilayer Switching</h3>
+  <ul>
+    <li>Deployed at <strong>distribution and core layers</strong></li>
+    <li>Can: build routing tables, support routing protocols, forward IP packets near Layer 2 speed</li>
+    <li>Use <strong>ASICs (Application-Specific Integrated Circuits)</strong> for hardware-accelerated IP forwarding independent of the CPU</li>
+    <li>Industry trend: <strong>pure Layer 3 switched environment</strong> — all switches will eventually incorporate routing</li>
+    <li><strong>Cisco Catalyst 2960 with IOS 15.x:</strong> supports <strong>multiple active SVIs</strong> (previously only one SVI was active) — can be remotely managed via multiple IPs on distinct networks</li>
+  </ul>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">11.3.7</span> Business Considerations for Switch Selection</h3>
+  <div class="tw"><table>
+    <tr><th>Consideration</th><th>Description</th></tr>
+    <tr><td><strong>Cost</strong></td><td>Depends on interface count and speed, supported features, and expansion capability</td></tr>
+    <tr><td><strong>Port density</strong></td><td>Must support the required number of network devices both now and in the future</td></tr>
+    <tr><td><strong>Power (PoE)</strong></td><td>IP phones, APs, and compact switches all may require PoE; chassis switches may need redundant power</td></tr>
+    <tr><td><strong>Reliability</strong></td><td>Provides continuous network access; enterprise switches offer higher MTBF than entry-level</td></tr>
+    <tr><td><strong>Port speed</strong></td><td>Critical to end users — 100Mbps vs 1Gbps vs 10Gbps access determines user experience</td></tr>
+    <tr><td><strong>Frame buffers</strong></td><td>Ability to store frames during congestion; important for ports connected to servers</td></tr>
+    <tr><td><strong>Scalability</strong></td><td>Number of users grows over time; switch must support future growth without complete replacement</td></tr>
+  </table></div>
+  </div>
+
+</div></div>
+
+<!-- ══════════ 11.4 ROUTER HARDWARE ══════════ -->
+<div class="sec" id="s4">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">11.4</span><span class="ttl">Router Hardware</span></span><button class="sec-check" id="sch-s4" onclick="event.stopPropagation();toggleSection('s4',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb">
+
+  <div class="sub">
+  <h3><span class="sn">11.4.1</span> Router Functions</h3>
+  <p>Routers use the <strong>network prefix of the destination IP address</strong> to route packets. All hosts specify the router interface as their <strong>default gateway</strong>.</p>
+  <p>Additional router functions:</p>
+  <ul>
+    <li><strong>Broadcast containment</strong> — limits broadcasts to the local network (unlike switches, which forward broadcasts to all ports)</li>
+    <li><strong>Interconnect geographically separated locations</strong> — WAN connectivity between sites</li>
+    <li><strong>Group users logically</strong> — by application or department, regardless of physical location</li>
+    <li><strong>Enhanced security</strong> — filter traffic using ACLs</li>
+    <li><strong>Protocol translation</strong> — accept Ethernet packets, re-encapsulate for serial WAN, etc.</li>
+    <li><strong>Select alternate paths</strong> — reroute traffic automatically when a link fails</li>
+  </ul>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">11.4.2</span> Cisco Router Categories</h3>
+  <div class="router-grid">
+    <div class="router-card branch">
+      <div class="rc-name">Branch Routers</div>
+      <div class="rc-series">Cisco ISR 4000 Series</div>
+      <p>Optimize branch services on a single platform — WAN connectivity, security, switching all in one. Designed for 24×7×365 uptime. Fast recovery from faults with minimal service impact. Maximizes availability at the branch.</p>
+    </div>
+    <div class="router-card edge">
+      <div class="rc-name">Network Edge Routers</div>
+      <div class="rc-series">Cisco ASR 9000 Series</div>
+      <p>High-performance, highly secure services uniting campus, data center, and branch networks. Enhanced QoS, video, and mobile capabilities. Deliver content anytime, anyplace, over any device.</p>
+    </div>
+    <div class="router-card sp">
+      <div class="rc-name">Service Provider Routers</div>
+      <div class="rc-series">Cisco NCS 6000 Series</div>
+      <p>End-to-end scalable solutions with subscriber-aware services. Simplify and enhance service-delivery networks. Help operators optimize operations, reduce expenses, and improve scalability for next-generation internet experiences.</p>
+    </div>
+    <div class="router-card ind">
+      <div class="rc-name">Industrial Routers</div>
+      <div class="rc-series">Cisco 1100 Series Industrial ISR</div>
+      <p>Enterprise-class features in rugged, harsh environments. Compact, modular, ruggedized design for mission-critical industrial applications. Temperature extremes, vibration, and dust resistant.</p>
+    </div>
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">11.4.3</span> Router Form Factors</h3>
+  <div class="tw"><table>
+    <tr><th>Form Factor</th><th>Series / Example</th><th>Use Case</th></tr>
+    <tr><td><strong>Small branch/SOHO</strong></td><td>Cisco 900 Series</td><td>WAN + switching + security + connectivity in compact fanless unit for small and medium businesses</td></tr>
+    <tr><td><strong>Large enterprise / SP edge</strong></td><td>Cisco ASR 9000 and 1000 Series</td><td>High density, resiliency, and programmability for scalable network edge</td></tr>
+    <tr><td><strong>Data center / SP WAN</strong></td><td>Cisco NCS 5500 Series</td><td>Scales efficiently between large data centers and SP WAN/aggregation networks</td></tr>
+    <tr><td><strong>Industrial / rugged</strong></td><td>Cisco 800 Series Industrial ISR</td><td>Compact, ruggedized for harsh environments</td></tr>
+  </table></div>
+  <div class="ca info">
+    <span class="ic">💡</span>
+    <div>Routers are also classified as <strong>fixed configuration</strong> (built-in interfaces, cannot change) or <strong>modular</strong> (multiple slots for swappable interface cards — Fast Ethernet, GigE, Serial, Fiber-Optic). Modular routers are more flexible but more expensive.</div>
+  </div>
+  </div>
+
+</div></div>
+
+<!-- ══════════ 11.5 EXAM TRAPS ══════════ -->
+
+<div class="sec" id="s-pt-11-5">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">11.5</span><span class="ttl">Packet Tracer — Compare Layer 2 and Layer 3 Devices</span></span><button class="sec-check" id="sch-s-pt-11-5" onclick="event.stopPropagation();toggleSection('s-pt-11-5',this)">○ Mark done</button>
+</div>
+<div class="sb">
+  <div style="padding:14px 16px;background:#0d1117;border:1px solid #30363d;border-left:3px solid #1f6feb;border-radius:6px">
+    <div style="font-size:.72em;font-weight:800;text-transform:uppercase;letter-spacing:.8px;color:#1f6feb;margin-bottom:10px">&#x1F4E6; Packet Tracer Activities</div>
+    <div style="font-size:.82em;color:#6e7681;margin-bottom:10px">Open in Cisco Packet Tracer via your NetAcad course.</div>
+      <div style="display:flex;align-items:baseline;gap:10px;padding:6px 0;border-bottom:1px solid #21262d"><span style="font-family:monospace;font-size:.85em;color:#79c0ff;white-space:nowrap;flex-shrink:0;min-width:52px">11.5.1</span><span style="font-size:.88em;color:#c9d1d9">Compare Layer 2 and Layer 3 Devices</span></div>
+    <div style="margin-top:12px;font-size:.78em;color:#6e7681">Full list: <a href="https://itexamanswers.net/ccna-3-packet-tracer-labs-answers-ensa-v7-02.html" target="_blank" rel="noopener" style="color:#58a6ff;word-break:break-all">https://itexamanswers.net/ccna-3-packet-tracer-labs-answers-ensa-v7-02.html</a></div>
+  </div>
+</div>
+</div>
+<div class="sec" id="s5">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">🎯</span><span class="ttl">Common Exam Traps — Module 11</span></span><button class="sec-check" id="sch-s5" onclick="event.stopPropagation();toggleSection('s5',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb">
+
+  <div class="ca danger"><span class="ic">❌</span><div><strong>Trap 1: Know what each layer does — Access, Distribution, Core.</strong><br>Access = user edge (provides network access, PoE, wireless). Distribution = aggregation + routing + policy (broadcast domain boundaries, QoS, redundant uplinks). Core = high-speed backbone (fault isolation, speed — no policy). Exam questions describe a function and ask which layer performs it.</div></div>
+
+  <div class="ca danger"><span class="ic">❌</span><div><strong>Trap 2: Three-tier campus topology = extended star, NOT mesh.</strong><br>Building an extended star from a centralized site to all other campus buildings is recommended for efficiency, scalability, and cost-effectiveness. A full mesh topology is much more expensive. Bus and dual ring are harder to troubleshoot and maintain.</div></div>
+
+  <div class="ca danger"><span class="ic">❌</span><div><strong>Trap 3: Two-tier model = collapsed core — Distribution and Core combined.</strong><br>Not a "downgraded" design — it's the correct architecture for smaller environments (single building, fewer users, limited scalability needed). The term "collapsed core" identifies this design on the exam.</div></div>
+
+  <div class="ca danger"><span class="ic">❌</span><div><strong>Trap 4: Redundant paths in Layer 2 networks require STP.</strong><br>Redundant physical links between switches create Layer 2 loops. STP eliminates loops by blocking redundant paths until needed. Alternatively, use Layer 3 in the backbone — routing naturally eliminates Layer 2 loops and provides faster convergence.</div></div>
+
+  <div class="ca danger"><span class="ic">❌</span><div><strong>Trap 5: Distribution layer = best place to control failure domain size.</strong><br>Core failures impact everyone. Access failures impact only one segment. Distribution limits failures to a switch block — affecting only users connected to that block. The distribution layer is the most cost-effective place to invest in failure domain management.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 6: EtherChannel — configure on the EtherChannel interface, NOT individual ports.</strong><br>EtherChannel creates one logical link from multiple physical links. Configuration consistency is maintained by configuring the bundle interface. Most settings on individual ports just need to match (speed, duplex, VLAN) for the bundle to form.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 7: Access layer switches don't need full wire-speed forwarding rate.</strong><br>Access switches are physically limited by their uplinks to distribution. Their forwarding rate doesn't need to match the sum of all access port speeds. Distribution and core switches need higher forwarding rates because all traffic converges there.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 8: PoE pass-through = Catalyst 2960-C and 3560-C only.</strong><br>These compact switches can be powered by an upstream PoE port AND simultaneously supply PoE to connected devices. Not all PoE switches support pass-through. Standard PoE switches require their own separate power supply.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 9: Multilayer switches route AND switch — deployed at distribution and core.</strong><br>Multilayer switches (Layer 3 switches) can build routing tables, run routing protocols, and forward IP packets at near-Layer 2 speeds using ASICs. They are NOT just switches — they perform both Layer 2 switching and Layer 3 routing. Do not deploy at the access layer (unless required for specific applications).</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 10: Know the Cisco router categories and their series numbers.</strong><br>Branch = ISR 4000 (optimize branch, 24×7 uptime). Edge = ASR 9000 (high-performance, campus+DC+branch). Service Provider = NCS 6000 (subscriber-aware, scalable). Industrial = 1100 Industrial ISR (rugged environments). These appear in classification questions on the exam.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 11: Cisco Meraki = cloud-managed switches. Cisco Nexus = data center switches.</strong><br>Campus LAN switches (2960, 3560, 3850 etc.) are the most commonly tested. Meraki is unique for cloud management without onsite IT. Nexus is specific to data center environments. Virtual networking (Nexus virtual) = multi-tenant services.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 12: Cisco Catalyst 2960 with IOS 15.x supports multiple active SVIs.</strong><br>Before IOS 15.x, the 2960 only supported one active SVI. With IOS 15.x, multiple SVIs are active — allowing the switch to be managed via multiple IP addresses on different VLANs. This is part of the trend toward a pure Layer 3 switched environment.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 13: Four design principles — Hierarchical, Modular, Resiliency, Flexibility.</strong><br>All four together define the Cisco Borderless Switched Network design principles. Don't confuse the "Hierarchical" principle (all four together create hierarchy) with the three-tier hierarchy model (which is just the physical structure). They are related but different concepts.</div></div>
+
+  <div class="ca tip"><span class="ic">✅</span><div><strong>Module 11 quick-reference summary:</strong><br><br>
+  <strong>Enterprise network requirements:</strong> Critical apps · Converged traffic · Diverse business needs · Centralized control<br>
+  <strong>Design principles:</strong> Hierarchical · Modular · Resiliency · Flexibility<br>
+  <strong>Core layer:</strong> Backbone · High-speed · Fault isolation · NO policy/QoS<br>
+  <strong>Distribution layer:</strong> Aggregation · Routing boundaries · QoS/Policy · Redundant uplinks · Best for failure domain control<br>
+  <strong>Access layer:</strong> User edge · Network access · PoE · Wireless · QoS marking<br>
+  <strong>Three-tier:</strong> Large campus · All layers separate · Extended star topology<br>
+  <strong>Two-tier (collapsed core):</strong> Small campus / single building · Distribution + Core combined<br>
+  <strong>Redundancy:</strong> Duplicate equipment OR redundant paths (STP required at L2, or use L3 backbone)<br>
+  <strong>Failure domains:</strong> Limit at distribution layer · Switch blocks (router pair + evenly divided access switches)<br>
+  <strong>EtherChannel:</strong> Multiple physical → one logical · Uses existing ports · Configure on bundle interface<br>
+  <strong>Switch platforms:</strong> Campus LAN (2960/3560/3850/4500/6500) · Cloud=Meraki · DC=Nexus · Cloud-managed · SP<br>
+  <strong>Form factors:</strong> Fixed · Modular · Stackable · Thickness in rack units<br>
+  <strong>Forwarding rate:</strong> Access=lower OK · Distribution/Core=higher needed · Wire speed=max port rate<br>
+  <strong>PoE:</strong> Power over Ethernet for phones/APs · 2960-C/3560-C support PoE pass-through<br>
+  <strong>Multilayer:</strong> Distribution/Core · Routes AND switches · ASICs for speed · Trend=pure L3 environment<br>
+  <strong>Router categories:</strong> Branch=ISR4000 · Edge=ASR9000 · SP=NCS6000 · Industrial=1100 Industrial ISR<br>
+  <strong>Router types:</strong> Fixed config (built-in) vs Modular (swappable interface cards)</div></div>
+
+</div></div>
+
+</div><!-- end .wrap -->
+
+<div class="ft">
+  CCNA 3 ENSA v7.02 — Module 11: Network Design v2.2<br>
+  Based on Cisco NetAcad curriculum · Study guide for personal use
+</div>
+
+<button class="tb-btn" id="topb" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+
+<div class="mod-nav">
+  <a class="mn-hub" href="index.html">🏠 Hub</a>
+  <div class="mn-divider"></div>
+  <a class="mn-prev" href="ccna3_module10_network_management_v2.2.html">‹</a>
+  <span class="mn-label">M11 of 14</span>
+  <a class="mn-next" href="ccna3_module12_network_troubleshooting_v2.2.html">›</a>
+</div>
+
+<script>
+var MOD_KEY="ccna3-module11-network-design";
+var SECS=["s1","s2","s3","s4","s-pt-11-5","s5"];
+var checked={};
+function loadState(){
+  try{var s=localStorage.getItem(MOD_KEY);if(s)checked=JSON.parse(s);}catch(e){}
+  SECS.forEach(function(id){
+    var pill=document.getElementById('pill-'+id);
+    var row=document.getElementById('row-'+id);
+    var st=document.getElementById('st-'+id);
+    var sch=document.getElementById('sch-'+id);
+    if(checked[id]){
+      if(pill){pill.classList.add('checked');pill.querySelector('.pill-check').textContent='✓';}
+      if(row)row.classList.add('done');
+      if(st)st.textContent='✓';
+      if(sch){sch.classList.add('checked');sch.textContent='✓ Done';}
+    } else {
+      if(pill){pill.classList.remove('checked');pill.querySelector('.pill-check').textContent='○';}
+      if(row)row.classList.remove('done');
+      if(st)st.textContent='○';
+      if(sch){sch.classList.remove('checked');sch.textContent='○ Mark done';}
+    }
+  });
+}
+function toggleSection(id,btn){checked[id]=!checked[id];try{localStorage.setItem(MOD_KEY,JSON.stringify(checked));}catch(e){}loadState();}
+function toggleStudyPanel(){
+  var hdr=document.getElementById('sp-hdr');
+  var body=document.getElementById('sp-body');
+  var arr=document.getElementById('sp-arr');
+  hdr.classList.toggle('open');body.classList.toggle('open');
+  if(arr)arr.textContent=body.classList.contains('open')?'▲':'▼';
+}
+function goTo(id){var el=document.getElementById(id);if(!el)return;var h=el.querySelector('.sh,.section-header'),b=el.querySelector('.sb,.section-body');if(h&&b&&!b.classList.contains('open')){h.classList.add('open');b.classList.add('open');}setTimeout(function(){window.scrollTo({top:el.getBoundingClientRect().top+window.pageYOffset-60,behavior:'smooth'});},50);}
+function setFs(size,btn){document.documentElement.style.setProperty('--base-fs',size);document.querySelectorAll('.fs-btn').forEach(function(b){b.classList.remove('active');});btn.classList.add('active');try{localStorage.setItem('ccna-fs',size);}catch(e){}}
+(function(){try{var s=localStorage.getItem('ccna-fs');if(s){document.documentElement.style.setProperty('--base-fs',s);document.querySelectorAll('.fs-btn').forEach(function(b){b.classList.remove('active');if((b.textContent==='S'&&s==='14px')||(b.textContent==='M'&&s==='16px')||(b.textContent==='L'&&s==='18px')||(b.textContent==='XL'&&s==='20px'))b.classList.add('active');});}}catch(e){}loadState();})();
+function copyCode(b){var t=b.closest('.cw').querySelector('pre').innerText;if(navigator.clipboard){navigator.clipboard.writeText(t).then(function(){b.textContent='Copied!';setTimeout(function(){b.textContent='Copy';},1500);}).catch(function(){fb(t,b);});}else{fb(t,b);}}
+function fb(t,b){var a=document.createElement('textarea');a.value=t;a.style.position='fixed';a.style.opacity='0';document.body.appendChild(a);a.focus();a.select();document.execCommand('copy');document.body.removeChild(a);b.textContent='Copied!';setTimeout(function(){b.textContent='Copy';},1500);}
+</script>
+<script src="../../site-config.js"></script>
+</body>
+</html>

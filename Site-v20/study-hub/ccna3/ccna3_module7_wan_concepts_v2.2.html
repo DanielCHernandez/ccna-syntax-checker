@@ -1,0 +1,939 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=2.0">
+<title>CCNA 3 Module 7: WAN Concepts v2.2</title>
+<style>
+:root{
+  --blue:#1ba0d7;--dark:#005073;--green:#6cc24a;
+  --wan:#1a3a5c;--wand:#38bdf8;--wan2:#0e2440;
+  --bg:#f4f6f8;--card:#fff;--text:#1a1a2e;--muted:#5a6a7a;
+  --cbg:#0d1117;--ctxt:#c9d1d9;--r:12px;--sh:0 2px 12px rgba(0,0,0,.08);
+  --base-fs:16px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);font-size:var(--base-fs);line-height:1.7}
+
+/* Breadcrumb */
+.bc{background:#0d1117;padding:8px 16px;display:flex;align-items:center;flex-wrap:wrap;gap:4px;font-size:.75em;overflow-x:auto;white-space:nowrap;-webkit-overflow-scrolling:touch;border-bottom:1px solid #21262d}
+.bc a{color:#8b949e;text-decoration:none;font-weight:600;flex-shrink:0}
+.bc a:active{color:#c9d1d9}
+.bc .sep{color:#6e7681;flex-shrink:0}
+.bc .cur{color:var(--wand);font-weight:700;flex-shrink:0;overflow:hidden;text-overflow:ellipsis;max-width:180px}
+
+.fs-bar{position:sticky;top:0;z-index:200;background:#1a1a2e;display:flex;align-items:center;justify-content:flex-end;padding:6px 14px;gap:6px;box-shadow:0 2px 8px rgba(0,0,0,.3)}
+.fs-label{color:#8b949e;font-size:.72em;font-weight:700;letter-spacing:.5px;text-transform:uppercase;margin-right:4px}
+.fs-btn{background:#30363d;color:#c9d1d9;border:2px solid transparent;border-radius:6px;padding:4px 12px;font-size:.75em;font-weight:700;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:all .2s;line-height:1.4}
+.fs-btn:active,.fs-btn.active{background:var(--wan);color:#fff;border-color:var(--wan)}
+
+.hdr{background:linear-gradient(135deg,#040e1a,var(--wan2),var(--wan));color:#fff;padding:32px 20px 24px;text-align:center}
+.hdr .badge{display:inline-block;background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.4);border-radius:20px;padding:4px 14px;font-size:.81em;margin-bottom:12px}
+.hdr h1{font-size:1.625em;font-weight:700;margin-bottom:6px}
+.hdr p{font-size:.94em;opacity:.85}
+.hdr .obj{display:inline-block;background:rgba(255,255,255,.15);border-radius:8px;padding:7px 16px;margin-top:12px;font-size:.875em;font-style:italic}
+
+.pb-wrap{background:var(--card);padding:14px 16px;margin:16px 16px 0;border-radius:var(--r);box-shadow:var(--sh)}
+.pb-lbl{font-size:.81em;color:var(--muted);margin-bottom:6px;font-weight:600}
+.pb-track{background:#e0e7ef;border-radius:10px;height:8px;overflow:hidden}
+.pb-fill{background:linear-gradient(90deg,var(--wan),var(--wand));height:100%;border-radius:10px;width:0;transition:width 1s ease}
+
+.toc{background:var(--card);margin:16px;border-radius:var(--r);box-shadow:var(--sh);overflow:hidden}
+.toch{background:var(--wan);color:#fff;padding:14px 18px;font-weight:700;font-size:.94em;display:flex;justify-content:space-between;align-items:center;cursor:pointer;user-select:none}
+.toch .arr{transition:transform .3s}
+.toch.open .arr{transform:rotate(180deg)}
+.tocb{display:none;padding:10px 0}
+.tocb.open{display:block}
+.tocg{font-size:.69em;font-weight:800;letter-spacing:.8px;color:var(--wan);text-transform:uppercase;padding:8px 20px 2px}
+.tocb a{display:block;padding:9px 20px 9px 28px;color:var(--text);text-decoration:none;font-size:.875em;border-left:3px solid transparent;transition:all .2s}
+.tocb a:hover,.tocb a:active{background:#e0f2fe;border-left-color:var(--wand)}
+.tocb a .n{display:inline-block;background:var(--wan);color:#fff;border-radius:5px;padding:1px 8px;font-size:.75em;font-weight:700;margin-right:8px}
+
+.wrap{padding:0 16px 100px}
+
+.sec{background:var(--card);border-radius:var(--r);box-shadow:var(--sh);margin-bottom:16px;overflow:hidden}
+.sh{background:linear-gradient(90deg,#040e1a,var(--wan));color:#fff;padding:16px 18px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;user-select:none;-webkit-tap-highlight-color:transparent}
+.sh .ttl{font-weight:700;font-size:1em}
+.sh .nb{background:rgba(255,255,255,.25);border-radius:6px;padding:3px 10px;font-size:.81em;font-weight:700;margin-right:10px;white-space:nowrap}
+.sh .ch{font-size:1.125em;transition:transform .3s}
+.sh.open .ch{transform:rotate(180deg)}
+.sb{display:none;padding:18px}
+.sb.open{display:block}
+
+.sub{margin-bottom:24px}
+.sub:last-child{margin-bottom:0}
+.sub h3{font-size:.94em;font-weight:700;color:var(--wan);margin-bottom:10px;padding-bottom:6px;border-bottom:2px solid #e0f2fe;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.sub h3 .sn{background:var(--wan);color:#fff;border-radius:5px;padding:2px 8px;font-size:.75em;white-space:nowrap}
+.sub h4{font-size:.875em;font-weight:700;color:var(--wan);margin:14px 0 6px}
+.sub p{margin-bottom:10px;font-size:.94em}
+.sub ul,.sub ol{padding-left:20px;margin:8px 0;font-size:.94em}
+.sub li{margin-bottom:5px}
+
+.ca{border-radius:8px;padding:12px 14px;margin:12px 0;font-size:.875em;line-height:1.6;display:flex;gap:10px;align-items:flex-start}
+.ca .ic{font-size:1.125em;flex-shrink:0;margin-top:1px}
+.ca.warn  {background:#fff3cd;border-left:4px solid #b38600;color:#3d2c00}
+.ca.tip   {background:#d4edda;border-left:4px solid #28a745;color:#0d3318}
+.ca.danger{background:#f8d7da;border-left:4px solid #dc3545;color:#3d0010}
+.ca.info  {background:#e0f2fe;border-left:4px solid var(--wan);color:#0e2440}
+
+.et{background:linear-gradient(135deg,#1a1a2e,#040e1a);color:#fff;border-radius:10px;padding:14px 16px;margin:14px 0;font-size:.875em;line-height:1.6}
+.et .lbl{font-size:.69em;font-weight:800;letter-spacing:1px;color:var(--wand);margin-bottom:6px}
+.et ul{padding-left:18px;margin-top:6px}
+.et li{margin-bottom:4px}
+
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:12px 0;border-radius:8px}
+table{width:100%;border-collapse:collapse;font-size:.875em}
+th{background:var(--wan);color:#fff;padding:10px 12px;text-align:left;font-weight:700;font-size:.81em}
+td{padding:9px 12px;border-bottom:1px solid #e8ecf0;vertical-align:top;color:#1a1a2e}
+tr:nth-child(even) td{background:#e0f2fe;color:#0e2440}
+tr:last-child td{border-bottom:none}
+
+p code,li code,td code,.ca code{background:#e0f2fe;color:#0e2440;border-radius:4px;padding:1px 5px;font-size:.81em;font-family:'Courier New',monospace;font-weight:600}
+
+/* Topology cards */
+.topo-grid{display:grid;gap:10px;margin:12px 0}
+.topo-card{border-radius:10px;padding:13px 14px;border-left:5px solid;display:flex;gap:12px;align-items:flex-start}
+.topo-card.ptp  {border-left-color:#1a3a5c;background:#e0f2fe}
+.topo-card.hub  {border-left-color:#7b2d8b;background:#f3e8ff}
+.topo-card.dual {border-left-color:#27ae60;background:#f0fdf4}
+.topo-card.full {border-left-color:#e07b00;background:#fff8f0}
+.topo-card.part {border-left-color:#4b5563;background:#f9fafb}
+.topo-card .tc-icon{font-size:1.5em;flex-shrink:0;margin-top:2px}
+.topo-card .tc-name{font-weight:800;font-size:.875em;margin-bottom:3px}
+.topo-card.ptp  .tc-name{color:#1a3a5c}
+.topo-card.hub  .tc-name{color:#7b2d8b}
+.topo-card.dual .tc-name{color:#1a472a}
+.topo-card.full .tc-name{color:#c87800}
+.topo-card.part .tc-name{color:#374151}
+.topo-card p{font-size:.81em;color:#1a1a2e;line-height:1.6;margin:0}
+
+/* WAN terminology dark box */
+.term-box{background:#0d1117;border:2px solid var(--wand);border-radius:10px;padding:14px;margin:12px 0}
+.tb-title{font-size:.75em;font-weight:800;letter-spacing:.8px;color:var(--wand);text-transform:uppercase;margin-bottom:10px}
+.tb-row{display:flex;gap:10px;align-items:flex-start;padding:7px 0;border-bottom:1px solid #21262d;font-size:.81em;color:#c9d1d9;line-height:1.6}
+.tb-row:last-child{border-bottom:none}
+.tb-term{font-family:'Courier New',monospace;font-weight:700;color:var(--wand);min-width:110px;flex-shrink:0;line-height:1.4;margin-top:1px}
+
+/* Circuit vs Packet cards */
+.comm-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:12px 0}
+@media(max-width:480px){.comm-grid{grid-template-columns:1fr}}
+.comm-card{border-radius:10px;overflow:hidden}
+.comm-card .cc-hdr{padding:9px 12px;font-size:.81em;font-weight:800;color:#fff;text-align:center}
+.comm-card.circuit .cc-hdr{background:#7b2d8b}
+.comm-card.packet  .cc-hdr{background:var(--wan)}
+.comm-card .cc-body{padding:12px;font-size:.81em;color:#1a1a2e;line-height:1.7;background:#f9fafb}
+.comm-card .cc-body ul{padding-left:16px}
+.comm-card .cc-body li{margin-bottom:4px}
+.comm-card .cc-tag{font-size:.69em;font-weight:700;padding:2px 8px;border-radius:4px;display:inline-block;margin-bottom:6px;color:#fff}
+.comm-card.circuit .cc-tag{background:#7b2d8b}
+.comm-card.packet  .cc-tag{background:var(--wan)}
+
+/* WAN technology timeline */
+.tech-grid{display:grid;gap:8px;margin:12px 0}
+.tech-row{display:flex;gap:10px;align-items:flex-start;padding:9px 12px;border-radius:8px;font-size:.81em;line-height:1.6}
+.tech-row.legacy  {background:#fff5f5;border-left:4px solid #dc3545}
+.tech-row.less    {background:#fff8f0;border-left:4px solid #e07b00}
+.tech-row.current {background:#f0fdf4;border-left:4px solid #27ae60}
+.tech-row .tr-badge{font-size:.69em;font-weight:700;padding:2px 7px;border-radius:4px;flex-shrink:0;color:#fff;margin-top:2px}
+.tech-row.legacy  .tr-badge{background:#dc3545}
+.tech-row.less    .tr-badge{background:#e07b00}
+.tech-row.current .tr-badge{background:#27ae60}
+.tech-row .tr-content{flex:1;color:#1a1a2e}
+.tech-row .tr-name{font-weight:800;display:block;margin-bottom:2px}
+
+/* MPLS role cards */
+.mpls-grid{display:grid;gap:8px;margin:12px 0}
+.mpls-card{display:flex;gap:10px;align-items:flex-start;padding:10px 12px;border-radius:8px;font-size:.81em;line-height:1.6}
+.mpls-card.ce {background:#e0f2fe;border-left:4px solid var(--wan)}
+.mpls-card.pe {background:#f0fdf4;border-left:4px solid #27ae60}
+.mpls-card.p  {background:#f3e8ff;border-left:4px solid #7b2d8b}
+.mpls-card .mc-role{font-family:'Courier New',monospace;font-weight:900;font-size:1em;min-width:36px;text-align:center;flex-shrink:0}
+.mpls-card.ce .mc-role{color:var(--wan)}
+.mpls-card.pe .mc-role{color:#1a472a}
+.mpls-card.p  .mc-role{color:#7b2d8b}
+.mpls-card .mc-name{font-weight:700;display:block;margin-bottom:2px}
+
+/* Broadband comparison */
+.broad-grid{display:grid;gap:8px;margin:12px 0}
+.broad-row{display:flex;gap:10px;align-items:flex-start;padding:9px 12px;border-radius:8px;font-size:.81em;border-left:4px solid}
+.broad-row.dsl  {border-left-color:var(--wan);background:#e0f2fe}
+.broad-row.cable{border-left-color:#e07b00;background:#fff8f0}
+.broad-row.fiber{border-left-color:#27ae60;background:#f0fdf4}
+.broad-row.cell {border-left-color:#7b2d8b;background:#f3e8ff}
+.broad-row.sat  {border-left-color:#4b5563;background:#f9fafb}
+.broad-row.wifi {border-left-color:#b38600;background:#fffbeb}
+.broad-row .br-name{font-weight:800;min-width:90px;flex-shrink:0;color:#1a1a2e;line-height:1.5}
+.broad-row .br-limit{color:#374151;line-height:1.6}
+
+/* ISP connectivity cards */
+.isp-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:12px 0}
+@media(max-width:480px){.isp-grid{grid-template-columns:1fr}}
+.isp-card{border-radius:10px;padding:12px 14px;text-align:center;border:2px solid}
+.isp-card.sh{border-color:#4b5563;background:#f9fafb}
+.isp-card.dh{border-color:var(--wan);background:#e0f2fe}
+.isp-card.mh{border-color:#27ae60;background:#f0fdf4}
+.isp-card.dmh{border-color:#e07b00;background:#fff8f0}
+.isp-card .ic-icon{font-size:1.5em;margin-bottom:6px}
+.isp-card .ic-name{font-weight:800;font-size:.875em;margin-bottom:3px}
+.isp-card.sh  .ic-name{color:#374151}
+.isp-card.dh  .ic-name{color:var(--wan)}
+.isp-card.mh  .ic-name{color:#1a472a}
+.isp-card.dmh .ic-name{color:#c87800}
+.isp-card .ic-links{font-size:.75em;font-weight:700;color:var(--muted);margin-bottom:4px}
+.isp-card p{font-size:.75em;color:#374151;line-height:1.5}
+
+/* FTTx cards */
+.fttx-grid{display:grid;gap:8px;margin:12px 0}
+.fttx-card{border-radius:8px;padding:10px 13px;border-left:4px solid;display:flex;gap:10px;align-items:flex-start;font-size:.81em}
+.fttx-card.ftth{border-left-color:#27ae60;background:#f0fdf4}
+.fttx-card.fttb{border-left-color:var(--wan);background:#e0f2fe}
+.fttx-card.fttn{border-left-color:#7b2d8b;background:#f3e8ff}
+.fttx-card .fx-abbr{font-family:'Courier New',monospace;font-weight:900;font-size:.875em;min-width:46px;flex-shrink:0;margin-top:2px}
+.fttx-card.ftth .fx-abbr{color:#1a472a}
+.fttx-card.fttb .fx-abbr{color:var(--wan)}
+.fttx-card.fttn .fx-abbr{color:#7b2d8b}
+
+/* Serial vs Parallel */
+.sp-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:12px 0}
+@media(max-width:480px){.sp-grid{grid-template-columns:1fr}}
+.sp-card{border-radius:10px;overflow:hidden}
+.sp-card .sp-hdr{padding:8px 12px;font-size:.81em;font-weight:800;color:#fff;text-align:center}
+.sp-card.ser .sp-hdr{background:var(--wan)}
+.sp-card.par .sp-hdr{background:#7b2d8b}
+.sp-card .sp-body{padding:12px;font-size:.81em;color:#1a1a2e;line-height:1.7;background:#f9fafb}
+.sp-card .sp-body ul{padding-left:16px}
+.sp-card .sp-body li{margin-bottom:4px}
+
+/* SONET/SDH/DWDM */
+.fiber-box{background:#0d1117;border:2px solid #27ae60;border-radius:10px;padding:14px;margin:12px 0}
+.fb2-title{font-size:.75em;font-weight:800;letter-spacing:.8px;color:#4ade80;text-transform:uppercase;margin-bottom:10px}
+.fb2-row{display:flex;gap:10px;align-items:flex-start;padding:7px 0;border-bottom:1px solid #21262d;font-size:.81em;color:#c9d1d9;line-height:1.6}
+.fb2-row:last-child{border-bottom:none}
+.fb2-name{font-family:'Courier New',monospace;font-weight:700;color:#4ade80;min-width:80px;flex-shrink:0}
+
+.tb-btn{position:fixed;bottom:80px;right:16px;background:var(--wan);color:#fff;border:none;border-radius:50%;width:44px;height:44px;font-size:1.25em;box-shadow:0 4px 14px rgba(0,0,0,.25);cursor:pointer;display:none;align-items:center;justify-content:center;z-index:100}
+.tb-btn.show{display:flex}
+.ft{text-align:center;padding:24px 16px;color:var(--muted);font-size:.81em}
+
+.mod-nav{position:fixed;bottom:0;left:0;right:0;z-index:300;background:#1a1a2e;border-top:1px solid #30363d;display:flex;align-items:center;height:52px;padding:0 8px;gap:6px}
+.mn-hub{background:var(--blue);color:#fff;border:none;border-radius:8px;padding:6px 12px;font-size:.75em;font-weight:700;cursor:pointer;text-decoration:none;display:flex;align-items:center;gap:4px;white-space:nowrap;-webkit-tap-highlight-color:transparent;flex-shrink:0}
+.mn-hub:active{opacity:.8}
+.mn-divider{width:1px;height:28px;background:#30363d;flex-shrink:0}
+.mn-label{flex:1;text-align:center;font-size:.69em;color:#8b949e;font-weight:600;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding:0 4px}
+.mn-prev,.mn-next{background:#30363d;color:#c9d1d9;border:none;border-radius:8px;padding:6px 10px;font-size:.875em;font-weight:700;cursor:pointer;text-decoration:none;display:flex;align-items:center;-webkit-tap-highlight-color:transparent;flex-shrink:0}
+.mn-prev:active,.mn-next:active{background:var(--wan);color:#fff}
+/* Study progress panel */
+.sp-wrap{background:var(--card);margin:16px 16px 0;border-radius:var(--r);box-shadow:var(--sh);overflow:hidden}
+.sp-hdr{background:var(--nt);color:#fff;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;user-select:none;-webkit-tap-highlight-color:transparent;gap:10px}
+.sp-hdr .sp-title{font-weight:700;font-size:.875em;flex-shrink:0}
+.sp-hdr .sp-arr{transition:transform .3s;flex-shrink:0}
+.sp-hdr.open .sp-arr{transform:rotate(180deg)}
+.sp-body{display:none;padding:12px 14px}
+.sp-body.open{display:block}
+.sp-row{display:flex;align-items:center;gap:10px;padding:6px 4px;border-bottom:1px solid #f0f4f8;font-size:.81em}
+.sp-row:last-child{border-bottom:none}
+.sp-row .sr-status{font-size:1em;flex-shrink:0;width:20px;text-align:center}
+.sp-row .sr-nb{font-weight:800;color:var(--nt);min-width:36px;flex-shrink:0;font-size:.875em}
+.sp-row .sr-ttl{color:var(--text);flex:1}
+.sp-row.done .sr-ttl{color:var(--muted);text-decoration:line-through}
+.sc-pills{display:flex;align-items:center;gap:4px;overflow-x:auto;-webkit-overflow-scrolling:touch;flex:1;padding:0 4px}
+.sc-pill{background:#30363d;color:#8b949e;border:2px solid transparent;border-radius:6px;padding:3px 8px;font-size:.72em;font-weight:700;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:all .15s;white-space:nowrap;flex-shrink:0;line-height:1.4;display:flex;align-items:center;gap:3px}
+.sc-pill.checked{background:var(--nt);color:#fff;border-color:var(--ntd)}
+.sc-pill .pill-check{font-size:.875em}
+
+/* v2.1 — In-section check button */
+.sh{position:relative}
+.sec-check{position:absolute;right:40px;top:50%;transform:translateY(-50%);background:rgba(255,255,255,.15);border:2px solid rgba(255,255,255,.4);border-radius:6px;padding:2px 10px;font-size:.72em;font-weight:800;color:#fff;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:all .2s;white-space:nowrap;z-index:10;line-height:1.5}
+.sec-check.checked{background:var(--ntd);border-color:var(--ntd);color:#052e1e}
+.sec-check:active{opacity:.75}
+/* Sections panel + tick colours (these pages never defined --nt/--ntd, so the panel header was invisible) */
+:root{--nt:var(--wan);--ntd:#4ade80}
+</style>
+</head>
+<body>
+
+<nav class="bc">
+  <a href="../../index.html">🏠 Home</a>
+  <span class="sep">›</span>
+  <a href="index.html">CCNA 3 — ENSA</a>
+  <span class="sep">›</span>
+  <span class="cur">M7: WAN Concepts</span>
+</nav>
+
+<div class="fs-bar">
+  <div class="sc-pills" id="sc-pills">
+  <button class="sc-pill" id="pill-s1" onclick="toggleSection('s1',this)"><span class="pill-check">○</span>7.1</button>
+  <button class="sc-pill" id="pill-s2" onclick="toggleSection('s2',this)"><span class="pill-check">○</span>7.2</button>
+  <button class="sc-pill" id="pill-s3" onclick="toggleSection('s3',this)"><span class="pill-check">○</span>7.3</button>
+  <button class="sc-pill" id="pill-s4" onclick="toggleSection('s4',this)"><span class="pill-check">○</span>7.4</button>
+  <button class="sc-pill" id="pill-s5" onclick="toggleSection('s5',this)"><span class="pill-check">○</span>7.5</button>
+  <button class="sc-pill" id="pill-s-pt-7-6" onclick="toggleSection('s-pt-7-6',this)"><span class="pill-check">○</span>PT 7.6</button>
+  <button class="sc-pill" id="pill-s6" onclick="toggleSection('s6',this)"><span class="pill-check">○</span>🎯</button>
+  </div>
+  <span class="fs-label" style="flex-shrink:0;margin-left:6px">Size</span>
+  <button class="fs-btn" onclick="setFs('14px',this)">S</button>
+  <button class="fs-btn active" onclick="setFs('16px',this)">M</button>
+  <button class="fs-btn" onclick="setFs('18px',this)">L</button>
+  <button class="fs-btn" onclick="setFs('20px',this)">XL</button>
+</div>
+
+<div class="hdr">
+  <div class="badge">CCNA 3 — ENSA v7.02</div>
+  <h1>🌐 Module 7: WAN Concepts</h1>
+  <p>Enterprise Networking, Security &amp; Automation · NetAcad Study Guide</p>
+  <div class="obj">Module Objective: Explain how WAN access technologies can be used to satisfy business requirements</div>
+</div>
+
+<div class="sp-wrap">
+  <div class="sp-hdr" id="sp-hdr" onclick="toggleStudyPanel()">
+    <span class="sp-title">📚 Sections</span>
+    <span class="sp-arr" id="sp-arr">▼</span>
+  </div>
+  <div class="sp-body" id="sp-body">
+    <div class="sp-row" id="row-s1"><span class="sr-status" id="st-s1">○</span><span class="sr-nb">7.1</span><span class="sr-ttl">Purpose of WANs</span></div>
+    <div class="sp-row" id="row-s2"><span class="sr-status" id="st-s2">○</span><span class="sr-nb">7.2</span><span class="sr-ttl">WAN Operations</span></div>
+    <div class="sp-row" id="row-s3"><span class="sr-status" id="st-s3">○</span><span class="sr-nb">7.3</span><span class="sr-ttl">Traditional WAN Connectivity</span></div>
+    <div class="sp-row" id="row-s4"><span class="sr-status" id="st-s4">○</span><span class="sr-nb">7.4</span><span class="sr-ttl">Modern WAN Connectivity</span></div>
+    <div class="sp-row" id="row-s5"><span class="sr-status" id="st-s5">○</span><span class="sr-nb">7.5</span><span class="sr-ttl">Internet-Based Connectivity</span></div>
+    <div class="sp-row" id="row-s-pt-7-6"><span class="sr-status" id="st-s-pt-7-6">○</span><span class="sr-nb">PT 7.6</span><span class="sr-ttl">Packet Tracer — WAN Concepts</span></div>
+    <div class="sp-row" id="row-s6"><span class="sr-status" id="st-s6">○</span><span class="sr-nb">🎯</span><span class="sr-ttl">Common Exam Traps — Module 7</span></div>
+  </div>
+</div>
+
+<div class="toc">
+  <div class="toch open" onclick="this.classList.toggle('open');document.getElementById('tocb').classList.toggle('open')">
+    📋 Table of Contents — Tap to expand <span class="arr">▼</span>
+  </div>
+  <div class="tocb open" id="tocb">
+    <div class="tocg">7.1 — Purpose of WANs</div>
+    <a href="javascript:void(0)" onclick="goTo('s1')"><span class="n">7.1.1</span> LANs vs WANs</a>
+    <a href="javascript:void(0)" onclick="goTo('s1')"><span class="n">7.1.2</span> Private vs Public WANs</a>
+    <a href="javascript:void(0)" onclick="goTo('s1')"><span class="n">7.1.3</span> WAN Topologies</a>
+    <a href="javascript:void(0)" onclick="goTo('s1')"><span class="n">7.1.4</span> Carrier Connections — SLA, Single vs Dual</a>
+    <a href="javascript:void(0)" onclick="goTo('s1')"><span class="n">7.1.5</span> Evolving Networks — SPAN Engineering</a>
+    <div class="tocg">7.2 — WAN Operations</div>
+    <a href="javascript:void(0)" onclick="goTo('s2')"><span class="n">7.2.2</span> WANs in the OSI Model — L1 and L2</a>
+    <a href="javascript:void(0)" onclick="goTo('s2')"><span class="n">7.2.3</span> WAN Terminology — DTE, DCE, CPE, Local Loop</a>
+    <a href="javascript:void(0)" onclick="goTo('s2')"><span class="n">7.2.4</span> WAN Devices</a>
+    <a href="javascript:void(0)" onclick="goTo('s2')"><span class="n">7.2.5</span> Serial vs Parallel Communication</a>
+    <a href="javascript:void(0)" onclick="goTo('s2')"><span class="n">7.2.6</span> Circuit-Switched vs Packet-Switched</a>
+    <a href="javascript:void(0)" onclick="goTo('s2')"><span class="n">7.2.8</span> SDH, SONET, and DWDM</a>
+    <div class="tocg">7.3 — Traditional WAN Connectivity</div>
+    <a href="javascript:void(0)" onclick="goTo('s3')"><span class="n">7.3.2</span> Leased Lines — T/E Carriers</a>
+    <a href="javascript:void(0)" onclick="goTo('s3')"><span class="n">7.3.3</span> Circuit-Switched — PSTN and ISDN</a>
+    <a href="javascript:void(0)" onclick="goTo('s3')"><span class="n">7.3.4</span> Packet-Switched — Frame Relay and ATM</a>
+    <div class="tocg">7.4 — Modern WAN Connectivity</div>
+    <a href="javascript:void(0)" onclick="goTo('s4')"><span class="n">7.4.2</span> Modern WAN Options Overview</a>
+    <a href="javascript:void(0)" onclick="goTo('s4')"><span class="n">7.4.3</span> Ethernet WAN (Metro Ethernet)</a>
+    <a href="javascript:void(0)" onclick="goTo('s4')"><span class="n">7.4.4</span> MPLS — Roles and Operation</a>
+    <div class="tocg">7.5 — Internet-Based Connectivity</div>
+    <a href="javascript:void(0)" onclick="goTo('s5')"><span class="n">7.5.2</span> DSL Technology — ADSL vs SDSL</a>
+    <a href="javascript:void(0)" onclick="goTo('s5')"><span class="n">7.5.3</span> DSL Connections and DSLAM</a>
+    <a href="javascript:void(0)" onclick="goTo('s5')"><span class="n">7.5.4</span> DSL and PPPoE</a>
+    <a href="javascript:void(0)" onclick="goTo('s5')"><span class="n">7.5.5</span> Cable Technology — HFC and DOCSIS</a>
+    <a href="javascript:void(0)" onclick="goTo('s5')"><span class="n">7.5.6</span> Optical Fiber — FTTx</a>
+    <a href="javascript:void(0)" onclick="goTo('s5')"><span class="n">7.5.7</span> Wireless Broadband</a>
+    <a href="javascript:void(0)" onclick="goTo('s5')"><span class="n">7.5.8</span> VPN Technology</a>
+    <a href="javascript:void(0)" onclick="goTo('s5')"><span class="n">7.5.9</span> ISP Connectivity Options</a>
+    <a href="javascript:void(0)" onclick="goTo('s5')"><span class="n">7.5.10</span> Broadband Solution Comparison</a>
+    <div class="tocg">Reference</div>
+    <a href="javascript:void(0)" onclick="goTo('s6')"><span class="n">🎯</span> Common Exam Traps</a>
+  </div>
+</div>
+
+<div class="wrap">
+
+<!-- ═══════════ SECTION 7.1 — PURPOSE OF WANs ═══════════ -->
+<div class="sec" id="s1">
+<div class="sh open" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">7.1</span><span class="ttl">Purpose of WANs</span></span><button class="sec-check" id="sch-s1" onclick="event.stopPropagation();toggleSection('s1',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb open">
+
+  <div class="sub">
+  <h3><span class="sn">7.1.1</span> LANs vs WANs</h3>
+  <div class="tw"><table>
+    <tr><th>Feature</th><th>LAN</th><th>WAN</th></tr>
+    <tr><td><strong>Geographic scope</strong></td><td>Small — home, office, campus</td><td>Large — cities, countries, continents</td></tr>
+    <tr><td><strong>Purpose</strong></td><td>Interconnect local devices and users</td><td>Interconnect remote users, networks, and sites</td></tr>
+    <tr><td><strong>Ownership</strong></td><td>One organization or home user</td><td>ISPs, telecom, cable, satellite providers</td></tr>
+    <tr><td><strong>Cost</strong></td><td>No usage fee (infrastructure only)</td><td>Provided for a fee / subscription</td></tr>
+    <tr><td><strong>Speed</strong></td><td>High bandwidth (Ethernet, Wi-Fi)</td><td>Low to high; varies over long distances</td></tr>
+  </table></div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">7.1.2</span> Private vs Public WANs</h3>
+  <div class="comm-grid">
+    <div class="comm-card circuit">
+      <div class="cc-hdr">🔒 Private WAN</div>
+      <div class="cc-body">
+        <div class="cc-tag">Dedicated to one customer</div>
+        <ul>
+          <li>Guaranteed service level (SLA)</li>
+          <li>Consistent, dedicated bandwidth</li>
+          <li>Security — not shared with others</li>
+          <li>Examples: leased lines, MPLS, Metro Ethernet</li>
+        </ul>
+      </div>
+    </div>
+    <div class="comm-card packet">
+      <div class="cc-hdr">🌐 Public WAN</div>
+      <div class="cc-body">
+        <div class="cc-tag">Shared — via ISP / internet</div>
+        <ul>
+          <li>Service levels and bandwidth may vary</li>
+          <li>Shared connections — no guaranteed security</li>
+          <li>Lower cost than private WAN</li>
+          <li>Examples: DSL, cable, cellular, satellite</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">7.1.3</span> WAN Logical Topologies</h3>
+  <p>Physical WAN topology is complex and hidden from users. <strong>Logical topologies</strong> describe the virtual connections:</p>
+  <div class="topo-grid">
+    <div class="topo-card ptp"><div class="tc-icon">⟷</div><div><div class="tc-name">Point-to-Point</div><p>Dedicated circuit between exactly two endpoints. Appears as a direct physical link to the customer. Expensive when many sites are required.</p></div></div>
+    <div class="topo-card hub"><div class="tc-icon">🕸️</div><div><div class="tc-name">Hub-and-Spoke</div><p>One hub router shared by all spokes. All spoke-to-spoke traffic must traverse the hub. <strong>Single point of failure at the hub.</strong></p></div></div>
+    <div class="topo-card dual"><div class="tc-icon">🔄</div><div><div class="tc-name">Dual-homed</div><p>Two hub routers connected to spokes. Provides redundancy and load balancing. More expensive and complex to configure than hub-and-spoke.</p></div></div>
+    <div class="topo-card full"><div class="tc-icon">🔗</div><div><div class="tc-name">Fully Meshed</div><p>Every site connected to every other site via virtual circuits. <strong>Most fault-tolerant</strong> of all topologies. Most expensive.</p></div></div>
+    <div class="topo-card part"><div class="tc-icon">⚬</div><div><div class="tc-name">Partially Meshed</div><p>Some — but not all — sites are directly interconnected. Balances cost vs redundancy. Some sites must route through others to communicate.</p></div></div>
+  </div>
+  <div class="ca info"><span class="ic">💡</span><div>Large networks typically deploy a <strong>combination</strong> of these topologies — e.g., fully meshed core with hub-and-spoke branches.</div></div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">7.1.4</span> Carrier Connections — SLA and Redundancy</h3>
+  <p>Organizations sign a <strong>SLA (Service Level Agreement)</strong> with a service provider outlining expected reliability and availability. The <strong>carrier</strong> owns and maintains the physical connection.</p>
+  <div class="tw"><table>
+    <tr><th>Type</th><th>Links</th><th>Providers</th><th>Result</th></tr>
+    <tr><td><strong>Single-carrier</strong></td><td>1 link</td><td>1 provider</td><td>Carrier link AND provider = both single points of failure. Cheapest.</td></tr>
+    <tr><td><strong>Dual-carrier</strong></td><td>2 links</td><td>2 providers (diff. carriers)</td><td>Redundancy + load balancing. Loses internet if ISP (not just link) fails. More expensive.</td></tr>
+  </table></div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">7.1.5</span> Evolving Networks — SPAN Engineering</h3>
+  <div class="tw"><table>
+    <tr><th>Stage</th><th>Network Type</th><th>WAN Solution</th></tr>
+    <tr><td><strong>Small office</strong> (15 employees)</td><td>Single LAN + wireless router</td><td>DSL broadband from telephone provider</td></tr>
+    <tr><td><strong>Campus</strong> (multi-floor building)</td><td>Campus Area Network (CAN)</td><td>Dedicated servers, firewall, in-house IT staff</td></tr>
+    <tr><td><strong>Branch expansion</strong> (multi-city)</td><td>Metropolitan Area Network (MAN)</td><td>Private dedicated lines to nearby branches; WAN/internet for distant sites</td></tr>
+    <tr><td><strong>Global enterprise</strong> (distributed)</td><td>Distributed network</td><td>Site-to-site and remote-access VPNs over internet; web conferencing and e-learning</td></tr>
+  </table></div>
+  </div>
+
+</div></div>
+
+<!-- ═══════════ SECTION 7.2 — WAN OPERATIONS ═══════════ -->
+<div class="sec" id="s2">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">7.2</span><span class="ttl">WAN Operations</span></span><button class="sec-check" id="sch-s2" onclick="event.stopPropagation();toggleSection('s2',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb">
+
+  <div class="sub">
+  <h3><span class="sn">7.2.2</span> WANs in the OSI Model</h3>
+  <p>Most WAN standards operate at <strong>OSI Layer 1 (Physical)</strong> and <strong>Layer 2 (Data Link)</strong> — not Layer 3.</p>
+  <h4>Layer 1 — Physical (fiber standards)</h4>
+  <div class="fiber-box">
+    <div class="fb2-title">⚡ Fiber-Optic WAN Standards</div>
+    <div class="fb2-row"><div class="fb2-name">SDH</div><div>Synchronous Digital Hierarchy — <strong>global standard</strong> for transporting data over fiber-optic cable</div></div>
+    <div class="fb2-row"><div class="fb2-name">SONET</div><div>Synchronous Optical Networking — <strong>North American</strong> equivalent of SDH. Functionally identical; often written as SONET/SDH</div></div>
+    <div class="fb2-row"><div class="fb2-name">DWDM</div><div>Dense Wavelength Division Multiplexing — multiplexes <strong>80+ channels</strong> onto one fiber using different wavelengths of light. Each channel = up to <strong>10 Gbps</strong>. Dramatically boosts SDH/SONET capacity without new fiber.</div></div>
+  </div>
+  <div class="ca info"><span class="ic">💡</span><div>SDH/SONET use a <strong>ring topology</strong> with redundant fiber paths — traffic can flow in both directions for resilience. DWDM is used in long-haul and submarine cable systems.</div></div>
+
+  <h4>Layer 2 — Data Link (encapsulation protocols)</h4>
+  <div class="tech-grid">
+    <div class="tech-row current"><div class="tr-badge">Current</div><div class="tr-content"><span class="tr-name">Broadband (DSL / Cable) · Wireless · Ethernet WAN (Metro E) · MPLS</span>Modern protocols in widespread use today</div></div>
+    <div class="tech-row less"><div class="tr-badge">Less used</div><div class="tr-content"><span class="tr-name">PPP (Point-to-Point Protocol) · HDLC (High-Level Data Link Control)</span>Still encountered; often seen on serial links</div></div>
+    <div class="tech-row legacy"><div class="tr-badge">Legacy</div><div class="tr-content"><span class="tr-name">Frame Relay · ATM (Asynchronous Transfer Mode)</span>Largely replaced by Ethernet WAN and internet-based solutions</div></div>
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">7.2.3</span> WAN Terminology</h3>
+  <p>Specific terms describe the connection between a subscriber (customer) and the WAN service provider:</p>
+  <div class="term-box">
+    <div class="tb-title">📡 WAN Physical Layer Terminology</div>
+    <div class="tb-row"><div class="tb-term">DTE</div><div>Data Terminal Equipment — customer's router or host that connects the subscriber LAN to the WAN (via the DCE). Generates and terminates data.</div></div>
+    <div class="tb-row"><div class="tb-term">DCE</div><div>Data Communications Equipment — modem, CSU/DSU, or optical converter. Provides the interface between the subscriber and the WAN cloud. Provides clocking on serial links.</div></div>
+    <div class="tb-row"><div class="tb-term">CPE</div><div>Customer Premises Equipment — all DTE and DCE devices at the customer site. Owned or leased from the service provider.</div></div>
+    <div class="tb-row"><div class="tb-term">POP</div><div>Point of Presence — where the subscriber physically connects to the service provider network.</div></div>
+    <div class="tb-row"><div class="tb-term">Demarcation</div><div>Physical location separating CPE from provider equipment. Defines the responsibility boundary: inside = customer; outside = provider.</div></div>
+    <div class="tb-row"><div class="tb-term">Local Loop</div><div>Also called the "last mile." Copper or fiber from the CPE to the Central Office (CO). Where most WAN bottlenecks and failures occur.</div></div>
+    <div class="tb-row"><div class="tb-term">CO</div><div>Central Office — local service provider facility connecting CPE to the provider backbone.</div></div>
+    <div class="tb-row"><div class="tb-term">Toll network</div><div>High-speed fiber, switches, and routers inside the WAN provider backbone.</div></div>
+    <div class="tb-row"><div class="tb-term">Backbone</div><div>Large high-capacity networks interconnecting service providers. Tier-1 providers own the backbone. Also connected to internet service providers.</div></div>
+  </div>
+  <div class="et">
+    <div class="lbl">🎯 WAN DATA PATH — KNOW THIS ORDER</div>
+    Source <strong>DTE</strong> → <strong>DCE</strong> → WAN cloud → <strong>DCE</strong> → Destination <strong>DTE</strong><br><br>
+    The DTE is always the customer device (router). The DCE is always the service provider interface device (modem, CSU/DSU). The demarcation point sits between the CPE and the provider's DCE.
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">7.2.4</span> WAN Devices</h3>
+  <div class="tw"><table>
+    <tr><th>Device</th><th>Description</th></tr>
+    <tr><td><strong>Voiceband Modem</strong></td><td>Legacy dial-up; converts digital ↔ analog; uses telephone lines; max ~56 kbps</td></tr>
+    <tr><td><strong>DSL Modem / Cable Modem</strong></td><td>Broadband modems; connect to DTE (router) via Ethernet; DSL uses phone lines, cable uses coaxial</td></tr>
+    <tr><td><strong>CSU/DSU</strong></td><td>Required for digital leased lines (T1/T3); provides signal integrity, error correction, frame conversion; can be a separate device or a router interface card</td></tr>
+    <tr><td><strong>Optical Converter</strong></td><td>Converts fiber-optic signals ↔ electrical pulses (optical fiber to copper media)</td></tr>
+    <tr><td><strong>Wireless Router / AP</strong></td><td>Provides wireless WAN connectivity; can include cellular modems</td></tr>
+    <tr><td><strong>WAN Core Devices</strong></td><td>High-speed routers and Layer 3 switches forming the WAN backbone; must support multiple high-speed telecom interfaces</td></tr>
+  </table></div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">7.2.5</span> Serial vs Parallel Communication</h3>
+  <div class="sp-grid">
+    <div class="sp-card ser">
+      <div class="sp-hdr">Serial Communication ✅ WAN</div>
+      <div class="sp-body">
+        <ul>
+          <li>Bits transmitted sequentially on <strong>one channel</strong></li>
+          <li>Works over long distances</li>
+          <li>No synchronization timing issues</li>
+          <li>Standard method for all WAN communication</li>
+        </ul>
+      </div>
+    </div>
+    <div class="sp-card par">
+      <div class="sp-hdr">Parallel Communication ❌ Not WAN</div>
+      <div class="sp-body">
+        <ul>
+          <li>Multiple bits on <strong>multiple wires simultaneously</strong></li>
+          <li>Theoretically 8× faster than serial</li>
+          <li>Synchronization degrades with distance</li>
+          <li>Limited to &lt;8 meters — not viable for WAN</li>
+          <li>Used in data centers (short distances)</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">7.2.6–7.2.7</span> Circuit-Switched vs Packet-Switched</h3>
+  <div class="comm-grid">
+    <div class="comm-card circuit">
+      <div class="cc-hdr">🔁 Circuit-Switched</div>
+      <div class="cc-body">
+        <div class="cc-tag">Dedicated path before communication</div>
+        <ul>
+          <li>Dedicated circuit established <strong>before</strong> any data flows</li>
+          <li>Entire fixed capacity held throughout session</li>
+          <li>Wasteful — capacity used even when idle</li>
+          <li><strong>Not suited for data</strong> due to inefficiency</li>
+          <li>All communication uses the <strong>same path</strong></li>
+          <li>Examples: <strong>PSTN</strong> (analog), <strong>ISDN</strong> (digital)</li>
+        </ul>
+      </div>
+    </div>
+    <div class="comm-card packet">
+      <div class="cc-hdr">📦 Packet-Switched</div>
+      <div class="cc-body">
+        <div class="cc-tag">Shared network — no dedicated path</div>
+        <ul>
+          <li>Traffic segmented into <strong>packets</strong> routed over shared network</li>
+          <li>No circuit establishment required</li>
+          <li>Many pairs of nodes share the same channel</li>
+          <li>Less expensive and more <strong>flexible</strong></li>
+          <li>Susceptible to <strong>latency</strong> (delay) and <strong>jitter</strong></li>
+          <li>Examples: <strong>Ethernet WAN, MPLS</strong>, legacy Frame Relay, ATM</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  </div>
+
+</div></div>
+
+<!-- ═══════════ SECTION 7.3 — TRADITIONAL WAN ═══════════ -->
+<div class="sec" id="s3">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">7.3</span><span class="ttl">Traditional WAN Connectivity</span></span><button class="sec-check" id="sch-s3" onclick="event.stopPropagation();toggleSection('s3',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb">
+
+  <div class="sub">
+  <h3><span class="sn">7.3.2</span> Leased Lines (Dedicated Point-to-Point)</h3>
+  <p>Pre-established copper WAN path; customer pays a monthly lease fee for dedicated bandwidth:</p>
+  <div class="tw"><table>
+    <tr><th>System</th><th>Region</th><th>T1 / E1 Speed</th><th>T3 / E3 Speed</th></tr>
+    <tr><td><strong>T-carrier</strong></td><td>North America</td><td>T1 = <strong>1.544 Mbps</strong></td><td>T3 = <strong>43.7 Mbps</strong></td></tr>
+    <tr><td><strong>E-carrier</strong></td><td>Europe</td><td>E1 = <strong>2.048 Mbps</strong></td><td>E3 = <strong>34.368 Mbps</strong></td></tr>
+  </table></div>
+  <h4>Leased Line Advantages</h4>
+  <ul>
+    <li><strong>Simple</strong> — minimal expertise to install and maintain</li>
+    <li><strong>Quality</strong> — dedicated capacity; no latency or jitter; ideal for VoIP and Video over IP</li>
+    <li><strong>Availability</strong> — always-on permanent connection</li>
+  </ul>
+  <h4>Leased Line Disadvantages</h4>
+  <ul>
+    <li><strong>Most expensive</strong> WAN option — cost grows with distance and number of sites</li>
+    <li><strong>Limited flexibility</strong> — fixed bandwidth rarely matches actual needs; capacity changes require ISP site visit</li>
+  </ul>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">7.3.3</span> Circuit-Switched Options (Legacy)</h3>
+  <div class="tech-grid">
+    <div class="tech-row legacy"><div class="tr-badge">Legacy</div><div class="tr-content"><span class="tr-name">PSTN — Public Switched Telephone Network</span>Uses voiceband modem; converts digital ↔ analog over telephone lines. Maximum <strong>56 kbps</strong>. Last resort when no other WAN option exists.</div></div>
+    <div class="tech-row legacy"><div class="tr-badge">Legacy</div><div class="tr-content"><span class="tr-name">ISDN — Integrated Services Digital Network</span>Digital circuit-switching over PSTN local loop. <strong>45 kbps to 2.048 Mbps</strong> — higher than dialup. Most providers have discontinued this service.</div></div>
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">7.3.4</span> Packet-Switched Options (Legacy)</h3>
+  <div class="tech-grid">
+    <div class="tech-row legacy">
+      <div class="tr-badge">Legacy</div>
+      <div class="tr-content">
+        <span class="tr-name">Frame Relay</span>
+        Layer 2 <strong>NBMA (Non-Broadcast Multi-Access)</strong> WAN. Single router interface connects to multiple sites via <strong>PVCs (Permanent Virtual Circuits)</strong>. PVCs identified by <strong>DLCI (Data-Link Connection Identifier)</strong>. Up to 4 Mbps. Replaced by Metro Ethernet and internet-based solutions.
+      </div>
+    </div>
+    <div class="tech-row legacy">
+      <div class="tr-badge">Legacy</div>
+      <div class="tr-content">
+        <span class="tr-name">ATM — Asynchronous Transfer Mode</span>
+        Fixed <strong>53-byte cells</strong> (5-byte header + 48-byte payload). Small fixed cells suit voice/video — not delayed waiting for large packets. ~<strong>20% more overhead</strong> than Frame Relay. Cell-based architecture. Replaced by Metro Ethernet and internet-based solutions.
+      </div>
+    </div>
+  </div>
+  <div class="ca warn">
+    <span class="ic">⚠️</span>
+    <div><strong>Frame Relay and ATM are legacy/deprecated.</strong> Both have been largely replaced by faster Metro Ethernet and internet-based VPN solutions. Know their key characteristics for the exam — but don't expect to configure them.</div>
+  </div>
+  </div>
+
+</div></div>
+
+<!-- ═══════════ SECTION 7.4 — MODERN WAN ═══════════ -->
+<div class="sec" id="s4">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">7.4</span><span class="ttl">Modern WAN Connectivity</span></span><button class="sec-check" id="sch-s4" onclick="event.stopPropagation();toggleSection('s4',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb">
+
+  <div class="sub">
+  <h3><span class="sn">7.4.2</span> Modern WAN Options Overview</h3>
+  <div class="tw"><table>
+    <tr><th>Category</th><th>Technologies</th><th>Key Feature</th></tr>
+    <tr><td><strong>Dedicated Broadband</strong></td><td>Dark fiber (unlit fiber)</td><td>Most expensive but maximum flexibility, control, speed, security</td></tr>
+    <tr><td><strong>Packet-Switched</strong></td><td>Metro Ethernet, MPLS</td><td>Current standard for enterprise WAN; replacing legacy Frame Relay/ATM</td></tr>
+    <tr><td><strong>Internet-Based Broadband</strong></td><td>DSL, Cable, Wireless, Fiber</td><td>Combined with VPN for security; most cost-effective</td></tr>
+  </table></div>
+  <div class="ca info">
+    <span class="ic">💡</span>
+    <div><strong>Dark fiber</strong> = fiber-optic cable that is installed but not yet "lit" (not in use). Can be leased or purchased from suppliers. Gives the organization full control of the physical layer but is typically more expensive than any other WAN option.</div>
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">7.4.3</span> Ethernet WAN (Metro Ethernet)</h3>
+  <p>Ethernet WAN uses <strong>fiber-optic cables</strong> to extend Ethernet well beyond LAN distances:</p>
+  <ul>
+    <li>IEEE 1000BASE-LX — up to <strong>5 km</strong></li>
+    <li>IEEE 1000BASE-ZX — up to <strong>70 km</strong></li>
+  </ul>
+  <p><strong>Service names:</strong> Metropolitan Ethernet (Metro E) · Ethernet over MPLS (EoMPLS) · Virtual Private LAN Service (VPLS)</p>
+  <div class="tw"><table>
+    <tr><th>Benefit</th><th>Detail</th></tr>
+    <tr><td><strong>Reduced expenses</strong></td><td>One infrastructure for data, voice, and video — eliminates expensive protocol conversion from TDM/Frame Relay</td></tr>
+    <tr><td><strong>Easy integration</strong></td><td>Connects directly to existing Ethernet LANs — no new protocols needed at the customer edge</td></tr>
+    <tr><td><strong>Enhanced productivity</strong></td><td>Supports VoIP, video streaming, and hosted IP applications</td></tr>
+  </table></div>
+  <div class="ca tip"><span class="ic">✅</span><div>Ethernet WAN is now the primary replacement for legacy TDM, Frame Relay, and ATM links in metropolitan areas.</div></div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">7.4.4</span> MPLS — Multiprotocol Label Switching</h3>
+  <p>MPLS is a high-performance <strong>provider WAN routing technology</strong> that transports any protocol as payload — IPv4, IPv6, Ethernet, DSL, Cable, Frame Relay — without regard to access method.</p>
+
+  <h4>MPLS Router Roles</h4>
+  <div class="mpls-grid">
+    <div class="mpls-card ce"><div class="mc-role">CE</div><div><span class="mc-name">Customer Edge</span>Customer's router. Connects to the PE router. Unaware of MPLS labels — just sends/receives IP packets normally.</div></div>
+    <div class="mpls-card pe"><div class="mc-role">PE</div><div><span class="mc-name">Provider Edge</span>At the edge of the MPLS network. <strong>Adds labels</strong> to incoming packets from the CE (ingress). <strong>Removes labels</strong> from outgoing packets to the CE (egress).</div></div>
+    <div class="mpls-card p"><div class="mc-role">P</div><div><span class="mc-name">Provider (Internal)</span>Internal MPLS router. <strong>Never looks at the IP header</strong> — forwards based on label only. Very fast forwarding. Also called LSR (Label Switched Router).</div></div>
+  </div>
+
+  <div class="et">
+    <div class="lbl">🎯 MPLS LABEL OPERATION — KNOW THE FLOW</div>
+    CE sends IP packet → ingress <strong>PE adds MPLS label</strong> between frame header and IP header →<br>
+    <strong>P routers forward by label only</strong> (never check IP header) →<br>
+    egress <strong>PE removes label</strong> → delivers normal IP packet to destination CE<br><br>
+    MPLS also provides: <strong>QoS support · Traffic engineering · Redundancy · VPN services</strong>
+  </div>
+  </div>
+
+</div></div>
+
+<!-- ═══════════ SECTION 7.5 — INTERNET-BASED CONNECTIVITY ═══════════ -->
+<div class="sec" id="s5">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">7.5</span><span class="ttl">Internet-Based Connectivity</span></span><button class="sec-check" id="sch-s5" onclick="event.stopPropagation();toggleSection('s5',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb">
+
+  <div class="sub">
+  <h3><span class="sn">7.5.2–7.5.3</span> DSL Technology and Connections</h3>
+  <p>High-speed, <strong>always-on</strong> connection using existing twisted-pair telephone lines. Popular for home users and enterprise teleworkers.</p>
+  <div class="tw"><table>
+    <tr><th>Type</th><th>Asymmetric (ADSL)</th><th>Symmetric (SDSL)</th></tr>
+    <tr><td><strong>Upload vs download</strong></td><td>Download &gt; Upload (typical home use)</td><td>Equal speed both ways (business use)</td></tr>
+    <tr><td><strong>Include</strong></td><td>ADSL, ADSL2+</td><td>SDSL</td></tr>
+    <tr><td><strong>Best for</strong></td><td>General internet browsing, streaming</td><td>Businesses hosting servers</td></tr>
+  </table></div>
+  <div class="ca info">
+    <span class="ic">💡</span>
+    <div><strong>Key DSL components:</strong> DSL modem converts Ethernet signals (from customer devices) to DSL signals → transmitted to <strong>DSLAM (DSL Access Multiplexer)</strong> at the provider CO → DSLAM concentrates multiple DSL subscribers into one uplink. DSL loop must be &lt; <strong>5.46 km</strong> (3.39 miles) from the CO for guaranteed quality.</div>
+  </div>
+  <div class="ca tip">
+    <span class="ic">✅</span>
+    <div><strong>DSL is NOT a shared medium</strong> — each subscriber has a direct connection to the DSLAM. Adding users does NOT degrade performance (unless the DSLAM's uplink saturates). This is a key advantage over cable.</div>
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">7.5.4</span> DSL and PPPoE</h3>
+  <p>ISPs use <strong>PPP (Point-to-Point Protocol)</strong> for DSL because it provides authentication, public IP assignment, and link-quality management. Since Ethernet doesn't natively support PPP, <strong>PPPoE (PPP over Ethernet)</strong> is used:</p>
+  <div class="tw"><table>
+    <tr><th>Method</th><th>Who Runs PPPoE?</th><th>Users</th><th>Inside Protection</th></tr>
+    <tr><td><strong>Host PPPoE client</strong></td><td>Individual host device</td><td>One device only</td><td>No router — no inside network protection</td></tr>
+    <tr><td><strong>Router PPPoE client</strong></td><td>Edge router</td><td>Multiple internal devices share connection</td><td>Yes — router protects the inside network</td></tr>
+  </table></div>
+  <div class="ca danger"><span class="ic">🚨</span><div><strong>Router PPPoE client is the production-correct method.</strong> The host PPPoE client is legacy/simple — no protection for the inside network. When a router acts as PPPoE client, all internal hosts share the connection and are protected by the router's security features.</div></div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">7.5.5</span> Cable Technology — HFC and DOCSIS</h3>
+  <p>High-speed, always-on connection using <strong>coaxial cable</strong> from the cable company:</p>
+  <ul>
+    <li><strong>HFC (Hybrid Fiber-Coaxial)</strong> — fiber from provider headend to neighborhood optical node; coax from node to customer</li>
+    <li><strong>DOCSIS</strong> — international standard for high-bandwidth data over cable systems</li>
+    <li><strong>CMTS (Cable Modem Termination System)</strong> — at the provider headend; communicates with all cable modems</li>
+    <li><strong>Optical node</strong> — converts optical signals (fiber) to RF signals (coax) at the neighborhood junction</li>
+  </ul>
+  <div class="ca warn">
+    <span class="ic">⚠️</span>
+    <div><strong>Cable is a shared medium.</strong> All subscribers on the same coaxial segment share available bandwidth. During peak hours (evening), speeds can degrade significantly as more users are active. This is a key disadvantage compared to DSL.</div>
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">7.5.6</span> Optical Fiber — FTTx</h3>
+  <p><strong>FTTx (Fiber to the x)</strong> — describes how far fiber extends before switching to copper or coax:</p>
+  <div class="fttx-grid">
+    <div class="fttx-card ftth"><div class="fx-abbr">FTTH</div><div><strong>Fiber to the Home</strong> — fiber reaches the residence boundary. Highest bandwidth of all FTTx options. Uses PON or point-to-point Ethernet directly from provider CO.</div></div>
+    <div class="fttx-card fttb"><div class="fx-abbr">FTTB</div><div><strong>Fiber to the Building</strong> — fiber reaches the building boundary (e.g., basement). Final connection to individual units via copper, coax, or wireless inside the building.</div></div>
+    <div class="fttx-card fttn"><div class="fx-abbr">FTTN</div><div><strong>Fiber to the Node/Neighborhood</strong> — fiber reaches a neighborhood optical node. Final segment to the premise uses twisted pair or coaxial cable.</div></div>
+  </div>
+  <div class="ca tip"><span class="ic">✅</span><div><strong>FTTx delivers the highest bandwidth of all broadband options.</strong> FTTH provides the best performance since fiber reaches all the way to the home with no copper last segment.</div></div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">7.5.7</span> Wireless Internet-Based Broadband</h3>
+  <div class="tw"><table>
+    <tr><th>Technology</th><th>Key Details</th></tr>
+    <tr><td><strong>Municipal Wi-Fi</strong></td><td>City-deployed wireless mesh; free or low-cost; may need directional antenna; not available in most cities</td></tr>
+    <tr><td><strong>Cellular (3G/4G/5G)</strong></td><td>Mobile data via cell towers; 4G LTE up to 450 Mbps down / 100 Mbps up; 5G = 100 Mbps–10 Gbps+; widely available</td></tr>
+    <tr><td><strong>Satellite</strong></td><td>Geosynchronous orbit at 35,786 km; 5–25 Mbps download; <strong>very high latency</strong> (~250–600ms RTT); used in rural/remote areas; requires clear sky view toward equator</td></tr>
+    <tr><td><strong>WiMAX (IEEE 802.16)</strong></td><td>City-wide wireless up to 30-mile range; largely <strong>replaced by LTE</strong> for mobile and DSL/cable for fixed</td></tr>
+  </table></div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">7.5.8</span> VPN Technology</h3>
+  <p>A <strong>VPN (Virtual Private Network)</strong> creates encrypted connections over the public internet — replacing dedicated leased lines with <strong>VPN tunnels</strong>:</p>
+  <div class="tw"><table>
+    <tr><th>VPN Benefit</th><th>Detail</th></tr>
+    <tr><td><strong>Cost savings</strong></td><td>Eliminates expensive dedicated WAN links and modem banks; uses existing internet infrastructure</td></tr>
+    <tr><td><strong>Security</strong></td><td>Advanced encryption and authentication protocols protect data from unauthorized access</td></tr>
+    <tr><td><strong>Scalability</strong></td><td>Easy to add users without significant infrastructure investment</td></tr>
+    <tr><td><strong>Broadband compatible</strong></td><td>Works over DSL, cable, wireless — takes advantage of home high-speed internet</td></tr>
+  </table></div>
+  <div class="tw"><table>
+    <tr><th>VPN Type</th><th>Who Sets It Up</th><th>Client Awareness</th></tr>
+    <tr><td><strong>Site-to-site VPN</strong></td><td>Configured on routers at both sites</td><td>Clients are unaware — transparent encryption</td></tr>
+    <tr><td><strong>Remote Access VPN</strong></td><td>User-initiated from a host</td><td>User runs VPN client software or uses HTTPS browser to connect</td></tr>
+  </table></div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">7.5.9</span> ISP Connectivity Options</h3>
+  <div class="isp-grid">
+    <div class="isp-card sh">
+      <div class="ic-icon">🔌</div>
+      <div class="ic-name">Single-homed</div>
+      <div class="ic-links">1 link · 1 ISP</div>
+      <p>No redundancy. Both link and ISP are single points of failure. Cheapest option.</p>
+    </div>
+    <div class="isp-card dh">
+      <div class="ic-icon">🔁</div>
+      <div class="ic-name">Dual-homed</div>
+      <div class="ic-links">2 links · Same ISP</div>
+      <p>Link redundancy and load balancing. Still loses internet if the ISP itself goes down.</p>
+    </div>
+    <div class="isp-card mh">
+      <div class="ic-icon">🔀</div>
+      <div class="ic-name">Multihomed</div>
+      <div class="ic-links">1 link per ISP · 2 ISPs</div>
+      <p>Redundancy against ISP failure. Load balancing possible. More expensive.</p>
+    </div>
+    <div class="isp-card dmh">
+      <div class="ic-icon">🌐</div>
+      <div class="ic-name">Dual-multihomed</div>
+      <div class="ic-links">2 links per ISP · 2 ISPs</div>
+      <p>Maximum resilience. Redundant links AND redundant ISPs. Most expensive option.</p>
+    </div>
+  </div>
+  <div class="ca info"><span class="ic">💡</span><div>For mission-critical internet access, use at minimum <strong>multihomed</strong> (two different ISPs). Dual-homed to the same ISP protects against link failure — but not ISP failure.</div></div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">7.5.10</span> Broadband Solution Comparison</h3>
+  <div class="broad-grid">
+    <div class="broad-row dsl"><div class="br-name">DSL</div><div class="br-limit">Distance-sensitive — degrades &gt;5.46 km from CO. Asymmetric upload/download. Not shared — adding users doesn't degrade speed.</div></div>
+    <div class="broad-row cable"><div class="br-name">Cable</div><div class="br-limit"><strong>Shared medium</strong> — speeds degrade during peak hours when many users are active on the same coaxial segment.</div></div>
+    <div class="broad-row fiber"><div class="br-name">FTTH / FTTx</div><div class="br-limit">Highest bandwidth of all broadband options. Requires fiber installation to the home — not universally available.</div></div>
+    <div class="broad-row cell"><div class="br-name">Cellular</div><div class="br-limit">Coverage issues in some areas. Bandwidth varies by generation (3G/4G/5G) and number of users on the cell tower.</div></div>
+    <div class="broad-row wifi"><div class="br-name">Municipal Wi-Fi</div><div class="br-limit">Not deployed in most cities. When available, it's a viable low-cost option. May need directional antenna.</div></div>
+    <div class="broad-row sat"><div class="br-name">Satellite</div><div class="br-limit">Expensive. Limited capacity per subscriber. <strong>Very high latency</strong> due to 35,786 km orbit altitude. Last resort — use only when no other option exists.</div></div>
+  </div>
+  </div>
+
+</div></div>
+
+<!-- ═══════════ SECTION 7.6 — EXAM TRAPS ═══════════ -->
+
+<div class="sec" id="s-pt-7-6">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">7.6</span><span class="ttl">Packet Tracer — WAN Concepts</span></span><button class="sec-check" id="sch-s-pt-7-6" onclick="event.stopPropagation();toggleSection('s-pt-7-6',this)">○ Mark done</button>
+</div>
+<div class="sb">
+  <div style="padding:14px 16px;background:#0d1117;border:1px solid #30363d;border-left:3px solid #1f6feb;border-radius:6px">
+    <div style="font-size:.72em;font-weight:800;text-transform:uppercase;letter-spacing:.8px;color:#1f6feb;margin-bottom:10px">&#x1F4E6; Packet Tracer Activities</div>
+    <div style="font-size:.82em;color:#6e7681;margin-bottom:10px">Open in Cisco Packet Tracer via your NetAcad course.</div>
+      <div style="display:flex;align-items:baseline;gap:10px;padding:6px 0;border-bottom:1px solid #21262d"><span style="font-family:monospace;font-size:.85em;color:#79c0ff;white-space:nowrap;flex-shrink:0;min-width:52px">7.6.1</span><span style="font-size:.88em;color:#c9d1d9">WAN Concepts</span></div>
+    <div style="margin-top:12px;font-size:.78em;color:#6e7681">Full list: <a href="https://itexamanswers.net/ccna-3-packet-tracer-labs-answers-ensa-v7-02.html" target="_blank" rel="noopener" style="color:#58a6ff;word-break:break-all">https://itexamanswers.net/ccna-3-packet-tracer-labs-answers-ensa-v7-02.html</a></div>
+  </div>
+</div>
+</div>
+<div class="sec" id="s6">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">🎯</span><span class="ttl">Common Exam Traps — Module 7</span></span><button class="sec-check" id="sch-s6" onclick="event.stopPropagation();toggleSection('s6',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb">
+
+  <div class="ca danger"><span class="ic">❌</span><div><strong>Trap 1: WAN standards = Layer 1 and Layer 2 — NOT Layer 3.</strong><br>DSL, Frame Relay, MPLS, Ethernet WAN are Layer 1/2 technologies. IP routing is Layer 3 — but that is handled above the WAN technology, not defined by it.</div></div>
+
+  <div class="ca danger"><span class="ic">❌</span><div><strong>Trap 2: DTE = customer's router. DCE = modem/CSU/DSU (provider interface).</strong><br>DTE (Data Terminal Equipment) is the customer device generating data. DCE (Data Communications Equipment) provides the WAN interface to the provider cloud and provides clocking on serial links. Data path: Source DTE → DCE → WAN cloud → DCE → Destination DTE.</div></div>
+
+  <div class="ca danger"><span class="ic">❌</span><div><strong>Trap 3: Demarcation point = where customer responsibility ends and provider responsibility begins.</strong><br>Critical for troubleshooting. Problems inside the demarcation = customer's problem. Problems outside = provider's problem. It's typically a cabling junction box at the customer premises.</div></div>
+
+  <div class="ca danger"><span class="ic">❌</span><div><strong>Trap 4: DSL is NOT a shared medium — Cable IS a shared medium.</strong><br>Each DSL subscriber has a dedicated direct connection to the DSLAM. Cable subscribers share coaxial bandwidth on the same neighborhood segment — speeds drop during peak hours. This is the most common DSL vs cable comparison question.</div></div>
+
+  <div class="ca danger"><span class="ic">❌</span><div><strong>Trap 5: Frame Relay PVCs are identified by DLCIs.</strong><br>Frame Relay creates PVCs (Permanent Virtual Circuits) that carry voice and data. Each PVC is uniquely identified by a DLCI (Data-Link Connection Identifier). One physical interface can carry multiple PVCs to different remote sites.</div></div>
+
+  <div class="ca danger"><span class="ic">❌</span><div><strong>Trap 6: ATM uses fixed 53-byte cells (5 header + 48 payload).</strong><br>Small fixed cells make ATM suited for delay-sensitive voice/video traffic — no large packets can delay a voice cell. But the 5-byte header = ~20% more overhead than Frame Relay. ATM and Frame Relay are both legacy — replaced by Metro Ethernet.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 7: MPLS P routers never look at the IP header — they use labels only.</strong><br>CE (customer edge) → PE (adds label) → P routers (switch by label only) → PE (removes label) → CE. P routers are extremely fast because they never do IP routing lookups. Only PE routers need to understand IP addressing.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 8: DWDM multiplexes 80+ channels onto ONE fiber — each up to 10 Gbps.</strong><br>Each wavelength of light carries a separate 10 Gbps channel. DWDM dramatically increases fiber capacity without installing new cable. Used in long-haul and submarine systems. Supports SDH and SONET standards.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 9: DSL distance limit = 5.46 km (3.39 miles) from the CO.</strong><br>Beyond this distance, signal quality cannot be guaranteed. Rural customers far from the CO may not qualify for DSL, or may receive very low speeds. This is why cable or satellite may be the only option in some areas.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 10: Satellite has very high latency — 35,786 km to geosynchronous orbit.</strong><br>Signal must travel ~35,786 km up and back down. Round-trip latency is approximately 250–600ms — far too high for real-time applications like VoIP or online gaming. Satellite is a last-resort option, used only when no terrestrial broadband is available.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 11: Hub-and-spoke has a single point of failure at the hub router.</strong><br>All spoke-to-spoke traffic must traverse the hub. If the hub fails, all inter-spoke communication fails. Dual-homed topology adds a second hub for redundancy. Know which topologies provide redundancy: dual-homed, fully meshed, partially meshed (partial).</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 12: Dual-homed ISP = same ISP, two links. Multihomed = two DIFFERENT ISPs.</strong><br>Dual-homed to the same ISP protects against link failure but not ISP failure. Multihomed uses two different ISPs — if one ISP goes completely down, the other still provides internet access. For maximum resilience: dual-multihomed (two links to each of two ISPs).</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 13: FTTx — the "x" tells you where the fiber stops.</strong><br>FTTH = fiber to the Home (best — no copper last segment). FTTB = fiber to the Building (copper/coax inside). FTTN = fiber to the Node/Neighborhood (copper/coax from node to the premise). More fiber = higher bandwidth and less signal degradation.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 14: PPPoE is needed because Ethernet doesn't natively support PPP.</strong><br>ISPs use PPP for DSL to authenticate subscribers and assign public IPs. DSL modems connect to the DTE (router) via Ethernet. Since Ethernet has no built-in PPP support, PPPoE encapsulates PPP inside Ethernet frames. Router PPPoE client = multiple devices share; host PPPoE client = one device only.</div></div>
+
+  <div class="ca tip"><span class="ic">✅</span><div><strong>Module 7 quick-reference summary:</strong><br><br>
+  <strong>WAN operates at:</strong> OSI Layer 1 (Physical) and Layer 2 (Data Link)<br>
+  <strong>WAN data path:</strong> DTE → DCE → WAN cloud → DCE → DTE<br>
+  <strong>Key terms:</strong> DTE=customer router · DCE=modem/CSU/DSU · CPE=all customer gear · Local loop=last mile · CO=Central Office · Demarcation=responsibility boundary<br>
+  <strong>Circuit-switched:</strong> Dedicated path, wasteful, PSTN/ISDN (legacy)<br>
+  <strong>Packet-switched:</strong> Shared, flexible, Ethernet WAN / MPLS (current) · Frame Relay / ATM (legacy)<br>
+  <strong>MPLS roles:</strong> CE (customer edge) → PE (adds/removes labels) → P (label switching only, no IP lookup)<br>
+  <strong>Ethernet WAN:</strong> Metro E · EoMPLS · VPLS — replacing Frame Relay/ATM<br>
+  <strong>DSL:</strong> Not shared · ADSL=asymmetric · SDSL=symmetric · DSLAM at CO · 5.46 km max · PPPoE for auth<br>
+  <strong>Cable:</strong> Shared medium · HFC · DOCSIS · CMTS at headend · Peak-hour congestion<br>
+  <strong>FTTx:</strong> FTTH (best) &gt; FTTB &gt; FTTN<br>
+  <strong>Satellite:</strong> High latency (35,786 km orbit) · Last resort<br>
+  <strong>ISP options:</strong> Single-homed &lt; Dual-homed &lt; Multihomed &lt; Dual-multihomed (most resilient)<br>
+  <strong>WAN topologies:</strong> P2P · Hub-and-spoke (SPOF at hub) · Dual-homed · Fully meshed (most fault-tolerant) · Partially meshed</div></div>
+
+</div></div>
+
+</div><!-- end .wrap -->
+
+<div class="ft">
+  CCNA 3 ENSA v7.02 — Module 7: WAN Concepts v2.2<br>
+  Based on Cisco NetAcad curriculum · Study guide for personal use
+</div>
+
+<button class="tb-btn" id="topb" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+
+<div class="mod-nav">
+  <a class="mn-hub" href="index.html">🏠 Hub</a>
+  <div class="mn-divider"></div>
+  <a class="mn-prev" href="ccna3_module6_nat_for_ipv4_v2.2.html">‹</a>
+  <span class="mn-label">M7 of 14</span>
+  <a class="mn-next" href="ccna3_module8_vpn_ipsec_concepts_v2.2.html">›</a>
+</div>
+
+<script>
+var MOD_KEY="ccna3-module7-wan-concepts";
+var SECS=["s1","s2","s3","s4","s5","s-pt-7-6","s6"];
+var checked={};
+function loadState(){
+  try{var s=localStorage.getItem(MOD_KEY);if(s)checked=JSON.parse(s);}catch(e){}
+  SECS.forEach(function(id){
+    var pill=document.getElementById('pill-'+id);
+    var row=document.getElementById('row-'+id);
+    var st=document.getElementById('st-'+id);
+    var sch=document.getElementById('sch-'+id);
+    if(checked[id]){
+      if(pill){pill.classList.add('checked');pill.querySelector('.pill-check').textContent='✓';}
+      if(row)row.classList.add('done');
+      if(st)st.textContent='✓';
+      if(sch){sch.classList.add('checked');sch.textContent='✓ Done';}
+    } else {
+      if(pill){pill.classList.remove('checked');pill.querySelector('.pill-check').textContent='○';}
+      if(row)row.classList.remove('done');
+      if(st)st.textContent='○';
+      if(sch){sch.classList.remove('checked');sch.textContent='○ Mark done';}
+    }
+  });
+}
+function toggleSection(id,btn){checked[id]=!checked[id];try{localStorage.setItem(MOD_KEY,JSON.stringify(checked));}catch(e){}loadState();}
+function toggleStudyPanel(){
+  var hdr=document.getElementById('sp-hdr');
+  var body=document.getElementById('sp-body');
+  var arr=document.getElementById('sp-arr');
+  hdr.classList.toggle('open');body.classList.toggle('open');
+  if(arr)arr.textContent=body.classList.contains('open')?'▲':'▼';
+}
+function goTo(id){var el=document.getElementById(id);if(!el)return;var h=el.querySelector('.sh,.section-header'),b=el.querySelector('.sb,.section-body');if(h&&b&&!b.classList.contains('open')){h.classList.add('open');b.classList.add('open');}setTimeout(function(){window.scrollTo({top:el.getBoundingClientRect().top+window.pageYOffset-60,behavior:'smooth'});},50);}
+function setFs(size,btn){document.documentElement.style.setProperty('--base-fs',size);document.querySelectorAll('.fs-btn').forEach(function(b){b.classList.remove('active');});btn.classList.add('active');try{localStorage.setItem('ccna-fs',size);}catch(e){}}
+(function(){try{var s=localStorage.getItem('ccna-fs');if(s){document.documentElement.style.setProperty('--base-fs',s);document.querySelectorAll('.fs-btn').forEach(function(b){b.classList.remove('active');if((b.textContent==='S'&&s==='14px')||(b.textContent==='M'&&s==='16px')||(b.textContent==='L'&&s==='18px')||(b.textContent==='XL'&&s==='20px'))b.classList.add('active');});}}catch(e){}loadState();})();
+function copyCode(b){var t=b.closest('.cw').querySelector('pre').innerText;if(navigator.clipboard){navigator.clipboard.writeText(t).then(function(){b.textContent='Copied!';setTimeout(function(){b.textContent='Copy';},1500);}).catch(function(){fb(t,b);});}else{fb(t,b);}}
+function fb(t,b){var a=document.createElement('textarea');a.value=t;a.style.position='fixed';a.style.opacity='0';document.body.appendChild(a);a.focus();a.select();document.execCommand('copy');document.body.removeChild(a);b.textContent='Copied!';setTimeout(function(){b.textContent='Copy';},1500);}
+</script>
+<script src="../../site-config.js"></script>
+</body>
+</html>

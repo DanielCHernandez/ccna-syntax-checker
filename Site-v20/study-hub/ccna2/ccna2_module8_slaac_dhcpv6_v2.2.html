@@ -1,0 +1,1075 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=2.0">
+<title>CCNA 2 Module 8: SLAAC and DHCPv6 v2.2</title>
+<style>
+:root{
+  --blue:#1ba0d7;--dark:#005073;--green:#6cc24a;
+  --bg:#f4f6f8;--card:#fff;--text:#1a1a2e;--muted:#5a6a7a;
+  --cbg:#0d1117;--ctxt:#c9d1d9;--r:12px;--sh:0 2px 12px rgba(0,0,0,.08);
+  --base-fs:16px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);font-size:var(--base-fs);line-height:1.7}
+
+/* ── Font size toggle ── */
+.fs-bar{position:sticky;top:0;z-index:200;background:#1a1a2e;display:flex;align-items:center;justify-content:flex-end;padding:6px 14px;gap:6px;box-shadow:0 2px 8px rgba(0,0,0,.3)}
+.fs-label{color:#8b949e;font-size:.72em;font-weight:700;letter-spacing:.5px;text-transform:uppercase;margin-right:4px}
+.fs-btn{background:#30363d;color:#c9d1d9;border:2px solid transparent;border-radius:6px;padding:4px 12px;font-size:.75em;font-weight:700;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:all .2s;line-height:1.4}
+.fs-btn:active,.fs-btn.active{background:var(--blue);color:#fff;border-color:var(--blue)}
+
+/* ── Header ── */
+.hdr{background:linear-gradient(135deg,var(--dark),var(--blue));color:#fff;padding:32px 20px 24px;text-align:center}
+.hdr .badge{display:inline-block;background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.4);border-radius:20px;padding:4px 14px;font-size:.81em;margin-bottom:12px}
+.hdr h1{font-size:1.625em;font-weight:700;margin-bottom:6px}
+.hdr p{font-size:.94em;opacity:.85}
+.hdr .obj{display:inline-block;background:rgba(255,255,255,.15);border-radius:8px;padding:7px 16px;margin-top:12px;font-size:.875em;font-style:italic}
+
+/* ── Progress bar ── */
+.pb{background:var(--card);padding:14px 16px;margin:16px 16px 0;border-radius:var(--r);box-shadow:var(--sh)}
+.pbl{font-size:.81em;color:var(--muted);margin-bottom:6px;font-weight:600}
+.pbt{background:#e0e7ef;border-radius:10px;height:8px;overflow:hidden}
+.pbf{background:linear-gradient(90deg,var(--blue),var(--green));height:100%;border-radius:10px;width:0;transition:width 1s ease}
+
+/* ── TOC ── */
+.toc{background:var(--card);margin:16px;border-radius:var(--r);box-shadow:var(--sh);overflow:hidden}
+.toch{background:var(--dark);color:#fff;padding:14px 18px;font-weight:700;font-size:.94em;display:flex;justify-content:space-between;align-items:center;cursor:pointer;user-select:none}
+.toch .arr{transition:transform .3s}
+.toch.open .arr{transform:rotate(180deg)}
+.tocb{display:none;padding:10px 0}
+.tocb.open{display:block}
+.tocg{font-size:.69em;font-weight:800;letter-spacing:.8px;color:var(--dark);text-transform:uppercase;padding:8px 20px 2px}
+.tocb a{display:block;padding:9px 20px 9px 28px;color:var(--dark);text-decoration:none;font-size:.875em;border-left:3px solid transparent;transition:all .2s}
+.tocb a:hover,.tocb a:active{background:#d0e8f5;border-left-color:var(--blue)}
+.tocb a .n{display:inline-block;background:var(--blue);color:#fff;border-radius:5px;padding:1px 8px;font-size:.75em;font-weight:700;margin-right:8px}
+
+/* ── Main wrap ── */
+.wrap{padding:0 16px 100px}
+
+/* ── Section cards ── */
+.sec{background:var(--card);border-radius:var(--r);box-shadow:var(--sh);margin-bottom:16px;overflow:hidden}
+.sh{background:linear-gradient(90deg,var(--dark),var(--blue));color:#fff;padding:16px 18px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;user-select:none;-webkit-tap-highlight-color:transparent}
+.sh .ttl{font-weight:700;font-size:1em}
+.sh .nb{background:rgba(255,255,255,.25);border-radius:6px;padding:3px 10px;font-size:.81em;font-weight:700;margin-right:10px;white-space:nowrap}
+.sh .ch{font-size:1.125em;transition:transform .3s}
+.sh.open .ch{transform:rotate(180deg)}
+.sb{display:none;padding:18px}
+.sb.open{display:block}
+
+/* ── Subsections ── */
+.sub{margin-bottom:24px}
+.sub:last-child{margin-bottom:0}
+.sub h3{font-size:.94em;font-weight:700;color:var(--dark);margin-bottom:10px;padding-bottom:6px;border-bottom:2px solid #d0e8f5;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.sub h3 .sn{background:var(--blue);color:#fff;border-radius:5px;padding:2px 8px;font-size:.75em;white-space:nowrap}
+.sub h4{font-size:.875em;font-weight:700;color:var(--dark);margin:14px 0 6px}
+.sub p{margin-bottom:10px;font-size:.94em}
+.sub ul,.sub ol{padding-left:20px;margin:8px 0;font-size:.94em}
+.sub li{margin-bottom:5px}
+
+/* ── Code blocks ── */
+.cw{background:var(--cbg);border-radius:10px;margin:12px 0;overflow:hidden}
+.cl{background:#21262d;color:#c9d1d9;font-size:.78em;font-weight:700;padding:6px 14px;letter-spacing:.5px;text-transform:uppercase;display:flex;justify-content:space-between;align-items:center}
+.cpb{background:#30363d;color:#c9d1d9;border:none;border-radius:5px;padding:3px 10px;font-size:.69em;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.cpb:active{background:var(--blue);color:#fff}
+pre{margin:0;padding:14px;overflow-x:auto;-webkit-overflow-scrolling:touch}
+code{font-family:'Courier New',monospace;font-size:.81em;color:var(--ctxt);line-height:1.6}
+p code,li code,td code,h3 code,h4 code,.ca code,.cc-body code{background:#c2d9ea;color:#002233;border-radius:4px;padding:1px 5px;font-size:.81em;font-family:'Courier New',monospace;font-weight:600}
+
+/* ── Callout boxes ── */
+.ca{border-radius:8px;padding:12px 14px;margin:12px 0;font-size:.875em;line-height:1.6;display:flex;gap:10px;align-items:flex-start}
+.ca .ic{font-size:1.125em;flex-shrink:0;margin-top:1px}
+.ca.warn  {background:#fff3cd;border-left:4px solid #b38600;color:#3d2c00}
+.ca.tip   {background:#d4edda;border-left:4px solid #28a745;color:#0d3318}
+.ca.danger{background:#f8d7da;border-left:4px solid #dc3545;color:#3d0010}
+.ca.info  {background:#d0e8f5;border-left:4px solid var(--blue);color:#002d44}
+
+/* ── Exam tip dark box ── */
+.et{background:linear-gradient(135deg,#1a1a2e,var(--dark));color:#fff;border-radius:10px;padding:14px 16px;margin:14px 0;font-size:.875em;line-height:1.6}
+.et .lbl{font-size:.69em;font-weight:800;letter-spacing:1px;color:var(--green);margin-bottom:6px}
+.et ol,.et ul{padding-left:18px;margin-top:6px}
+.et li{margin-bottom:5px}
+
+/* ── Tables ── */
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:12px 0;border-radius:8px}
+table{width:100%;border-collapse:collapse;font-size:.875em}
+th{background:var(--dark);color:#fff;padding:10px 12px;text-align:left;font-weight:700;font-size:.81em}
+td{padding:9px 12px;border-bottom:1px solid #e8ecf0;vertical-align:top;color:#1a1a2e}
+tr:nth-child(even) td{background:#d0e8f5;color:#002d44}
+tr:last-child td{border-bottom:none}
+
+/* ── Numbered steps ── */
+.steps{counter-reset:step;list-style:none;padding:0;margin:12px 0}
+.steps li{counter-increment:step;display:flex;gap:12px;align-items:flex-start;padding:10px 0;border-bottom:1px solid #eef0f3;font-size:.875em;line-height:1.6}
+.steps li:last-child{border-bottom:none}
+.steps li::before{content:counter(step);background:var(--blue);color:#fff;border-radius:50%;min-width:26px;height:26px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.81em;flex-shrink:0;margin-top:2px}
+
+/* ── Diagram box ── */
+.dg{background:#0d1117;border-radius:10px;padding:14px;margin:12px 0;overflow-x:auto;-webkit-overflow-scrolling:touch}
+.dg pre{color:#58a6ff;font-family:'Courier New',monospace;font-size:.75em;line-height:1.6}
+
+/* ── Scenario box ── */
+.sc{background:#1a1a2e;color:#c9d1d9;border-radius:8px;padding:14px;margin:12px 0;font-size:.875em;line-height:1.6}
+.sc .scl{font-size:.69em;font-weight:800;letter-spacing:.8px;color:var(--green);margin-bottom:8px}
+
+/* ── Flag cards ── */
+.flag-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:12px 0}
+@media(max-width:480px){.flag-grid{grid-template-columns:1fr}}
+.flag-card{border-radius:10px;padding:12px;text-align:center;border:2px solid}
+.flag-card.a{border-color:#28a745;background:#d4edda}
+.flag-card.o{border-color:var(--blue);background:#d0e8f5}
+.flag-card.m{border-color:#e07b00;background:#fff3cd}
+.flag-card .fc-letter{font-size:1.5em;font-weight:900;margin-bottom:4px}
+.flag-card.a .fc-letter{color:#28a745}
+.flag-card.o .fc-letter{color:var(--dark)}
+.flag-card.m .fc-letter{color:#c45200}
+.flag-card .fc-name{font-size:.69em;font-weight:700;margin-bottom:6px;color:#1a1a2e}
+.flag-card .fc-desc{font-size:.75em;color:#1a1a2e;line-height:1.5}
+
+/* ── Method comparison cards ── */
+.method-grid{display:grid;gap:10px;margin:12px 0}
+.method-card{border-radius:10px;padding:14px;border-left:5px solid}
+.method-card.slaac{border-left-color:var(--green);background:#f0fff4}
+.method-card.stateless{border-left-color:var(--blue);background:#e8f4fb}
+.method-card.stateful{border-left-color:#e07b00;background:#fff8f0}
+.method-card .mc-title{font-size:.875em;font-weight:800;margin-bottom:6px}
+.method-card.slaac .mc-title{color:#0d3318}
+.method-card.stateless .mc-title{color:var(--dark)}
+.method-card.stateful .mc-title{color:#c45200}
+.method-card .mc-flags{font-family:'Courier New',monospace;font-size:.81em;font-weight:700;background:rgba(0,0,0,.08);padding:2px 8px;border-radius:4px;display:inline-block;margin-bottom:6px;color:#1a1a2e}
+.method-card ul{padding-left:18px;font-size:.81em;color:#1a1a2e;line-height:1.8}
+
+/* ── DHCPv6 step flow ── */
+.dhcp-flow{background:#0d1117;border:2px solid var(--blue);border-radius:10px;padding:16px;margin:14px 0}
+.dhcp-flow .df-title{font-size:.75em;font-weight:800;letter-spacing:.8px;color:var(--blue);text-transform:uppercase;margin-bottom:10px}
+.dhcp-step{display:flex;gap:12px;align-items:flex-start;padding:8px 0;border-bottom:1px solid #21262d;font-size:.81em;color:#c9d1d9;line-height:1.6}
+.dhcp-step:last-child{border-bottom:none}
+.dhcp-step .ds-num{color:#fff;border-radius:50%;min-width:22px;height:22px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.75em;flex-shrink:0;margin-top:2px}
+.dhcp-step .ds-num.client{background:var(--blue)}
+.dhcp-step .ds-num.router{background:#28a745}
+.dhcp-step .ds-num.server{background:#e07b00}
+
+/* ── Side-by-side comparison ── */
+.compare-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:12px 0}
+@media(max-width:520px){.compare-grid{grid-template-columns:1fr}}
+.compare-card{border-radius:10px;overflow:hidden}
+.compare-card .cc-hdr{padding:10px 12px;font-size:.81em;font-weight:800;color:#fff;text-align:center}
+.compare-card.stateless .cc-hdr{background:var(--dark)}
+.compare-card.stateful .cc-hdr{background:#c45200}
+.compare-card .cc-body{padding:12px;font-size:.81em;line-height:1.7;background:#f8f9fa;color:#1a1a2e}
+.compare-card .cc-body strong{color:var(--dark)}
+
+/* ── Result box ── */
+.result-box{background:#0d1117;border-radius:10px;padding:14px;margin:12px 0}
+.result-box .rb-title{font-size:.69em;font-weight:800;letter-spacing:.8px;margin-bottom:8px;text-transform:uppercase}
+.result-box.stateless .rb-title{color:var(--blue)}
+.result-box.stateful .rb-title{color:#e07b00}
+.result-row{display:flex;gap:8px;padding:4px 0;font-size:.81em;border-bottom:1px solid #21262d}
+.result-row:last-child{border-bottom:none}
+.result-row .rr-key{color:#8b949e;min-width:110px;flex-shrink:0}
+.result-row .rr-val{color:#c9d1d9}
+.result-row .rr-src{color:var(--green);font-size:.75em;margin-left:4px}
+
+
+/* ── Module navigation bar ── */
+.mod-nav{position:fixed;bottom:0;left:0;right:0;z-index:300;background:#1a1a2e;border-top:1px solid #30363d;display:flex;align-items:center;height:52px;padding:0 8px;gap:6px}
+.mn-hub{background:#1ba0d7;color:#fff;border:none;border-radius:8px;padding:6px 12px;font-size:.75em;font-weight:700;cursor:pointer;text-decoration:none;display:flex;align-items:center;gap:4px;white-space:nowrap;-webkit-tap-highlight-color:transparent;flex-shrink:0}
+.mn-hub:active{opacity:.8}
+.mn-divider{width:1px;height:28px;background:#30363d;flex-shrink:0}
+.mn-label{flex:1;text-align:center;font-size:.69em;color:#8b949e;font-weight:600;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding:0 4px}
+.mn-prev,.mn-next{background:#30363d;color:#c9d1d9;border:none;border-radius:8px;padding:6px 10px;font-size:.875em;font-weight:700;cursor:pointer;text-decoration:none;display:flex;align-items:center;-webkit-tap-highlight-color:transparent;flex-shrink:0}
+.mn-prev:active,.mn-next:active{background:#1ba0d7;color:#fff}
+.mn-prev.disabled,.mn-next.disabled{opacity:.3;pointer-events:none}
+
+/* ── Scroll to top ── */
+.tb{position:fixed;bottom:80px;right:16px;background:var(--blue);color:#fff;border:none;border-radius:50%;width:44px;height:44px;font-size:1.25em;box-shadow:0 4px 14px rgba(0,0,0,.25);cursor:pointer;display:none;align-items:center;justify-content:center;z-index:100}
+.tb.show{display:flex}
+.ft{text-align:center;padding:24px 16px;color:var(--muted);font-size:.81em}
+/* Study progress panel */
+.sp-wrap{background:var(--card);margin:16px 16px 0;border-radius:var(--r);box-shadow:var(--sh);overflow:hidden}
+.sp-hdr{background:var(--nt);color:#fff;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;user-select:none;-webkit-tap-highlight-color:transparent;gap:10px}
+.sp-hdr .sp-title{font-weight:700;font-size:.875em;flex-shrink:0}
+.sp-hdr .sp-arr{transition:transform .3s;flex-shrink:0}
+.sp-hdr.open .sp-arr{transform:rotate(180deg)}
+.sp-body{display:none;padding:12px 14px}
+.sp-body.open{display:block}
+.sp-row{display:flex;align-items:center;gap:10px;padding:6px 4px;border-bottom:1px solid #f0f4f8;font-size:.81em}
+.sp-row:last-child{border-bottom:none}
+.sp-row .sr-status{font-size:1em;flex-shrink:0;width:20px;text-align:center}
+.sp-row .sr-nb{font-weight:800;color:var(--nt);min-width:36px;flex-shrink:0;font-size:.875em}
+.sp-row .sr-ttl{color:var(--text);flex:1}
+.sp-row.done .sr-ttl{color:var(--muted);text-decoration:line-through}
+.sc-pills{display:flex;align-items:center;gap:4px;overflow-x:auto;-webkit-overflow-scrolling:touch;flex:1;padding:0 4px}
+.sc-pill{background:#30363d;color:#8b949e;border:2px solid transparent;border-radius:6px;padding:3px 8px;font-size:.72em;font-weight:700;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:all .15s;white-space:nowrap;flex-shrink:0;line-height:1.4;display:flex;align-items:center;gap:3px}
+.sc-pill.checked{background:var(--nt);color:#fff;border-color:var(--ntd)}
+.sc-pill .pill-check{font-size:.875em}
+
+/* v2.1 — In-section check button */
+.sh{position:relative}
+.sec-check{position:absolute;right:40px;top:50%;transform:translateY(-50%);background:rgba(255,255,255,.15);border:2px solid rgba(255,255,255,.4);border-radius:6px;padding:2px 10px;font-size:.72em;font-weight:800;color:#fff;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:all .2s;white-space:nowrap;z-index:10;line-height:1.5}
+.sec-check.checked{background:var(--ntd);border-color:var(--ntd);color:#052e1e}
+.sec-check:active{opacity:.75}
+/* Sections panel + tick colours (these pages never defined --nt/--ntd, so the panel header was invisible) */
+:root{--nt:var(--dark);--ntd:#4ade80}
+</style>
+<style>.bc{background:#0d1117;padding:8px 16px;display:flex;align-items:center;flex-wrap:wrap;gap:4px;font-size:.75em;overflow-x:auto;white-space:nowrap;-webkit-overflow-scrolling:touch;border-bottom:1px solid #21262d}.bc a{color:#8b949e;text-decoration:none;font-weight:600;flex-shrink:0}.bc a:active{color:#c9d1d9}.bc .sep{color:#6e7681;flex-shrink:0}.bc .cur{color:#1ba0d7;font-weight:700;flex-shrink:0}</style>
+</head>
+<body>
+<nav class="bc"><a href="../../index.html">🏠 Home</a><span class="sep">›</span><a href="index.html">CCNA 2 — SRWE</a><span class="sep">›</span><span class="cur">M8: SLAAC/DHCPv6</span></nav>
+
+<!-- FONT SIZE TOGGLE -->
+<div class="fs-bar">
+  <div class="sc-pills" id="sc-pills">
+  <button class="sc-pill" id="pill-s1" onclick="toggleSection('s1',this)"><span class="pill-check">○</span>8.1</button>
+  <button class="sc-pill" id="pill-s2" onclick="toggleSection('s2',this)"><span class="pill-check">○</span>8.2</button>
+  <button class="sc-pill" id="pill-s3" onclick="toggleSection('s3',this)"><span class="pill-check">○</span>8.3</button>
+  <button class="sc-pill" id="pill-s4" onclick="toggleSection('s4',this)"><span class="pill-check">○</span>8.4</button>
+  <button class="sc-pill" id="pill-s5" onclick="toggleSection('s5',this)"><span class="pill-check">○</span>CMD</button>
+  <button class="sc-pill" id="pill-s6" onclick="toggleSection('s6',this)"><span class="pill-check">○</span>🎯</button>
+  </div>
+  <span class="fs-label" style="flex-shrink:0;margin-left:6px">Size</span>
+  <button class="fs-btn" onclick="setFs('14px',this)">S</button>
+  <button class="fs-btn active" onclick="setFs('16px',this)">M</button>
+  <button class="fs-btn" onclick="setFs('18px',this)">L</button>
+  <button class="fs-btn" onclick="setFs('20px',this)">XL</button>
+</div>
+
+<!-- HEADER -->
+<div class="hdr">
+  <div class="badge">CCNA 2 — SRWE v7.02</div>
+  <h1>🌐 Module 8: SLAAC and DHCPv6</h1>
+  <p>Switching, Routing &amp; Wireless Essentials · NetAcad Study Guide</p>
+  <div class="obj">Module Objective: Configure dynamic address allocation in IPv6 networks</div>
+</div>
+
+<div class="sp-wrap">
+  <div class="sp-hdr" id="sp-hdr" onclick="toggleStudyPanel()">
+    <span class="sp-title">📚 Sections</span>
+    <span class="sp-arr" id="sp-arr">▼</span>
+  </div>
+  <div class="sp-body" id="sp-body">
+    <div class="sp-row" id="row-s1"><span class="sr-status" id="st-s1">○</span><span class="sr-nb">8.1</span><span class="sr-ttl">IPv6 GUA Assignment</span></div>
+    <div class="sp-row" id="row-s2"><span class="sr-status" id="st-s2">○</span><span class="sr-nb">8.2</span><span class="sr-ttl">SLAAC</span></div>
+    <div class="sp-row" id="row-s3"><span class="sr-status" id="st-s3">○</span><span class="sr-nb">8.3</span><span class="sr-ttl">DHCPv6 Concepts</span></div>
+    <div class="sp-row" id="row-s4"><span class="sr-status" id="st-s4">○</span><span class="sr-nb">8.4</span><span class="sr-ttl">Configure DHCPv6 Server</span></div>
+    <div class="sp-row" id="row-s5"><span class="sr-status" id="st-s5">○</span><span class="sr-nb">CMD</span><span class="sr-ttl">Quick Reference — All Module 8 Commands</span></div>
+    <div class="sp-row" id="row-s6"><span class="sr-status" id="st-s6">○</span><span class="sr-nb">🎯</span><span class="sr-ttl">Common Exam Traps — Module 8</span></div>
+  </div>
+</div>
+
+<!-- TABLE OF CONTENTS -->
+<div class="toc">
+  <div class="toch open" onclick="this.classList.toggle('open');document.getElementById('tocb').classList.toggle('open')">
+    📋 Table of Contents — Tap to expand <span class="arr">▼</span>
+  </div>
+  <div class="tocb open" id="tocb">
+    <div class="tocg">8.1 — IPv6 GUA Assignment</div>
+    <a href="javascript:void(0)" onclick="goTo('s1')"><span class="n">8.1.1</span> IPv6 Host Configuration</a>
+    <a href="javascript:void(0)" onclick="goTo('s1')"><span class="n">8.1.2</span> IPv6 Host Link-Local Address</a>
+    <a href="javascript:void(0)" onclick="goTo('s1')"><span class="n">8.1.3</span> IPv6 GUA Assignment Methods</a>
+    <a href="javascript:void(0)" onclick="goTo('s1')"><span class="n">8.1.4</span> Three RA Message Flags</a>
+    <div class="tocg">8.2 — SLAAC</div>
+    <a href="javascript:void(0)" onclick="goTo('s2')"><span class="n">8.2.1</span> SLAAC Overview</a>
+    <a href="javascript:void(0)" onclick="goTo('s2')"><span class="n">8.2.2</span> Enabling SLAAC</a>
+    <a href="javascript:void(0)" onclick="goTo('s2')"><span class="n">8.2.3</span> SLAAC Only Method</a>
+    <a href="javascript:void(0)" onclick="goTo('s2')"><span class="n">8.2.4</span> ICMPv6 RS and RA Messages</a>
+    <a href="javascript:void(0)" onclick="goTo('s2')"><span class="n">8.2.5</span> Host Process to Generate Interface ID</a>
+    <a href="javascript:void(0)" onclick="goTo('s2')"><span class="n">8.2.6</span> Duplicate Address Detection (DAD)</a>
+    <div class="tocg">8.3 — DHCPv6</div>
+    <a href="javascript:void(0)" onclick="goTo('s3')"><span class="n">8.3.1</span> DHCPv6 Six-Step Process</a>
+    <a href="javascript:void(0)" onclick="goTo('s3')"><span class="n">8.3.2</span> Stateless DHCPv6 Operation</a>
+    <a href="javascript:void(0)" onclick="goTo('s3')"><span class="n">8.3.3</span> Stateful DHCPv6 Operation</a>
+    <a href="javascript:void(0)" onclick="goTo('s3')"><span class="n">CMP</span> Stateless vs Stateful — Full Comparison</a>
+    <div class="tocg">8.4 — Configure DHCPv6 Server</div>
+    <a href="javascript:void(0)" onclick="goTo('s4')"><span class="n">8.4.1</span> DHCPv6 Router Roles</a>
+    <a href="javascript:void(0)" onclick="goTo('s4')"><span class="n">8.4.2</span> Configure Stateless DHCPv6 Server</a>
+    <a href="javascript:void(0)" onclick="goTo('s4')"><span class="n">8.4.3</span> Configure Stateless DHCPv6 Client</a>
+    <a href="javascript:void(0)" onclick="goTo('s4')"><span class="n">8.4.4</span> Configure Stateful DHCPv6 Server</a>
+    <a href="javascript:void(0)" onclick="goTo('s4')"><span class="n">8.4.5</span> Configure Stateful DHCPv6 Client</a>
+    <a href="javascript:void(0)" onclick="goTo('s4')"><span class="n">8.4.6</span> DHCPv6 Verification Commands</a>
+    <a href="javascript:void(0)" onclick="goTo('s4')"><span class="n">8.4.7</span> Configure DHCPv6 Relay Agent</a>
+    <div class="tocg">Reference</div>
+    <a href="javascript:void(0)" onclick="goTo('s5')"><span class="n">CMD</span> All Module 8 Commands</a>
+    <a href="javascript:void(0)" onclick="goTo('s6')"><span class="n">🎯</span> Common Exam Traps</a>
+  </div>
+</div>
+
+<div class="wrap">
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- SECTION 8.1 — IPv6 GUA ASSIGNMENT -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div class="sec" id="s1">
+<div class="sh open" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">8.1</span><span class="ttl">IPv6 GUA Assignment</span></span><button class="sec-check" id="sch-s1" onclick="event.stopPropagation();toggleSection('s1',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb open">
+
+  <div class="sub">
+  <h3><span class="sn">8.1.1</span> IPv6 Host Configuration</h3>
+  <p>IPv6 addresses can be assigned manually or dynamically. Manual configuration on a Cisco router interface:</p>
+  <div class="cw"><div class="cl">Manual IPv6 GUA configuration <button class="cpb" onclick="copyCode(this)">Copy</button></div>
+  <pre><code>Router(config-if)# ipv6 address 2001:db8:acad:1::1/64</code></pre></div>
+  <p>Dynamic assignment is preferred for most hosts. When a host is set to auto-configure, it relies on <strong>ICMPv6 Router Advertisement (RA)</strong> messages from a router on the same link. Every IPv6-enabled host also automatically generates a <strong>link-local address (LLA)</strong> — starting with <strong>fe80::</strong> — the moment its interface activates.</p>
+  <div class="ca danger">
+    <span class="ic">🚨</span>
+    <div><strong>The default gateway is ALWAYS the router's LLA — never its GUA, and never provided by a DHCPv6 server.</strong> Only RA messages provide the default gateway. This is true for SLAAC only, stateless DHCPv6, and stateful DHCPv6 — without exception.</div>
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">8.1.2</span> IPv6 Host Link-Local Address</h3>
+  <p>A host auto-creates its LLA when the interface activates — even without a router or GUA:</p>
+  <div class="cw"><div class="cl">ipconfig — LLA present, no GUA yet (no router on segment) <button class="cpb" onclick="copyCode(this)">Copy</button></div>
+  <pre><code>C:\PC1> ipconfig
+   IPv6 Address. . . . . . . : (blank — no GUA yet)
+   Link-local IPv6 Address . : fe80::fb:1d54:839f:f595%21
+   IPv4 Address. . . . . . . : 169.254.202.140</code></pre></div>
+  <div class="ca info">
+    <span class="ic">💡</span>
+    <div>The <code>%21</code> appended to the LLA is a <strong>Zone ID / Scope ID</strong> — used by the OS to identify which network interface the LLA belongs to. It is display-only and is not part of the actual IPv6 address.</div>
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">8.1.3</span> IPv6 GUA Assignment Methods</h3>
+  <div class="tw"><table>
+    <tr><th>Method</th><th>Who Creates the IP?</th><th>What Does DHCPv6 Provide?</th></tr>
+    <tr><td><strong>SLAAC only</strong></td><td>Host creates its own GUA from RA prefix + self-generated interface ID</td><td>Nothing — no DHCPv6 involved</td></tr>
+    <tr><td><strong>SLAAC + Stateless DHCPv6</strong></td><td>Host creates GUA using SLAAC</td><td>DNS server + domain name only</td></tr>
+    <tr><td><strong>Stateful DHCPv6</strong></td><td>DHCPv6 server assigns the complete GUA</td><td>GUA + DNS + domain name + lease</td></tr>
+  </table></div>
+  <p>The method used depends entirely on the <strong>A, O, and M flags</strong> in the RA message sent by the router.</p>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">8.1.4</span> Three RA Message Flags</h3>
+  <div class="flag-grid">
+    <div class="flag-card a">
+      <div class="fc-letter">A</div>
+      <div class="fc-name">Address Autoconfiguration</div>
+      <div class="fc-desc">When set to 1 — use <strong>SLAAC</strong> to create your own GUA from the RA prefix</div>
+    </div>
+    <div class="flag-card o">
+      <div class="fc-letter">O</div>
+      <div class="fc-name">Other Configuration</div>
+      <div class="fc-desc">When set to 1 — get <strong>DNS and domain name</strong> from a stateless DHCPv6 server</div>
+    </div>
+    <div class="flag-card m">
+      <div class="fc-letter">M</div>
+      <div class="fc-name">Managed Address Configuration</div>
+      <div class="fc-desc">When set to 1 — get <strong>GUA and all parameters</strong> from a stateful DHCPv6 server</div>
+    </div>
+  </div>
+  <div class="tw"><table>
+    <tr><th>A flag</th><th>O flag</th><th>M flag</th><th>Method Used</th></tr>
+    <tr><td>1</td><td>0</td><td>0</td><td><strong>SLAAC only</strong> — RA provides everything, no DHCPv6 (default)</td></tr>
+    <tr><td>1</td><td>1</td><td>0</td><td><strong>SLAAC + Stateless DHCPv6</strong> — SLAAC for IP, DHCPv6 for DNS/domain</td></tr>
+    <tr><td>0</td><td>0</td><td>1</td><td><strong>Stateful DHCPv6</strong> — DHCPv6 provides GUA and all parameters</td></tr>
+  </table></div>
+  <div class="ca warn">
+    <span class="ic">⚠️</span>
+    <div><strong>Default flag state:</strong> When <code>ipv6 unicast-routing</code> is enabled, routers send RAs with A=1, O=0, M=0 (SLAAC only) by default. Administrators must manually set O=1 or M=1 to enable DHCPv6.</div>
+  </div>
+  </div>
+
+</div></div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- SECTION 8.2 — SLAAC -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div class="sec" id="s2">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">8.2</span><span class="ttl">SLAAC</span></span><button class="sec-check" id="sch-s2" onclick="event.stopPropagation();toggleSection('s2',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb">
+
+  <div class="sub">
+  <h3><span class="sn">8.2.1</span> SLAAC Overview</h3>
+  <p><strong>SLAAC (Stateless Address Autoconfiguration)</strong> allows a host to create its own IPv6 GUA without any DHCP server. No server tracks which addresses have been assigned — it is entirely stateless.</p>
+  <ul>
+    <li>Enabled by default when <code>ipv6 unicast-routing</code> is configured on a router</li>
+    <li>Routers send RA messages every <strong>200 seconds</strong> automatically</li>
+    <li>Hosts can trigger an immediate RA by sending a <strong>Router Solicitation (RS)</strong></li>
+    <li>The RA provides: prefix, prefix length, default gateway (LLA), MTU, DNS (SLAAC-only)</li>
+    <li>The host generates its own <strong>64-bit Interface ID</strong> to complete the address</li>
+  </ul>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">8.2.2</span> Enabling SLAAC</h3>
+  <div class="cw"><div class="cl">Enable IPv6 routing — required for SLAAC <button class="cpb" onclick="copyCode(this)">Copy</button></div>
+  <pre><code>R1(config)# ipv6 unicast-routing
+
+! Verify router joined all-routers multicast group (ff02::2):
+R1# show ipv6 interface G0/0/1 | section Joined
+  Joined group address(es):
+    FF02::1    ← all-nodes (RAs sent to this address)
+    FF02::2    ← all-routers (joined when ipv6 unicast-routing enabled)
+    FF02::1:FF00:1</code></pre></div>
+  <div class="ca danger">
+    <span class="ic">🚨</span>
+    <div>Without <code>ipv6 unicast-routing</code>, the router has IPv6 addresses but does <strong>NOT send RAs</strong>. Hosts on connected segments cannot use SLAAC. This is the single most common missing configuration step.</div>
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">8.2.3</span> SLAAC Only Method (A=1, O=0, M=0)</h3>
+  <p>This is the default. The RA contains everything the host needs:</p>
+  <div class="cw"><div class="cl">Verify SLAAC is active — show ipv6 interface <button class="cpb" onclick="copyCode(this)">Copy</button></div>
+  <pre><code>R1# show ipv6 interface g0/0/1 | begin ND
+  Hosts use stateless autoconfig for addresses.   ← A=1 confirmed, no DHCPv6
+
+C:\PC1> ipconfig
+   IPv6 Address. . . . : 2001:db8:acad:1:1de9:c69:73ee:ca8c  ← self-created
+   Link-local IPv6 Address : fe80::fb:1d54:839f:f595%21
+   Default Gateway . . . . : fe80::1%6    ← R1's LLA — always LLA, never GUA</code></pre></div>
+  <p>The host creates its GUA by combining the prefix from the RA (2001:db8:acad:1::/64) with a self-generated 64-bit Interface ID.</p>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">8.2.4</span> ICMPv6 RS and RA Messages</h3>
+  <p>Hosts do not wait 200 seconds for the next scheduled RA — they can request one immediately:</p>
+  <div class="dg"><pre>
+  Host connects to network
+    ↓
+  Host sends RS (Router Solicitation) to ff02::2 (all-routers multicast)
+  "Any routers out there? Please respond immediately."
+    ↓
+  Router receives RS → immediately sends RA to ff02::1 (all-nodes multicast)
+    ↓
+  Host receives RA → reads A/O/M flags → begins address configuration</pre></div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">8.2.5</span> Host Process to Generate Interface ID</h3>
+  <div class="tw"><table>
+    <tr><th>Method</th><th>How It Works</th><th>Default On</th></tr>
+    <tr><td><strong>Randomly generated</strong></td><td>OS generates a random 64-bit value — MAC address is never exposed</td><td>Windows 10+ (privacy preference)</td></tr>
+    <tr><td><strong>EUI-64</strong></td><td>Takes 48-bit MAC, splits at the middle, inserts <strong>FFFE</strong>, flips the 7th (U/L) bit</td><td>Older OS, Cisco router interfaces</td></tr>
+  </table></div>
+  <div class="cw"><div class="cl">EUI-64 worked example <button class="cpb" onclick="copyCode(this)">Copy</button></div>
+  <pre><code>MAC address:           00:05:9A:3C:7A:00
+Split at middle:       00:05:9A  |  3C:7A:00
+Insert FFFE:           00:05:9A:FF:FE:3C:7A:00
+Flip 7th bit (U/L):    02:05:9A:FF:FE:3C:7A:00
+Interface ID:          0205:9AFF:FE3C:7A00
+Full GUA:              2001:db8:acad:1:0205:9AFF:FE3C:7A00</code></pre></div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">8.2.6</span> Duplicate Address Detection (DAD)</h3>
+  <p>After generating a GUA, the host runs <strong>DAD</strong> to verify the address is unique before using it. Recommended for all IPv6 unicast addresses regardless of how they were obtained.</p>
+  <div class="dg"><pre>
+  Host generates candidate GUA: 2001:db8:acad:1:1de9:c69:73ee:ca8c
+    ↓
+  Host sends ICMPv6 Neighbor Solicitation (NS) to solicited-node multicast:
+  FF02::1:FF:73ee:ca8c  (FF02::1:FF + last 24 bits of candidate address)
+  "Is anyone already using 2001:db8:acad:1:1de9:c69:73ee:ca8c?"
+    ↓
+  No NA reply → address is unique → host starts using it
+  NA reply received → address conflict → host generates a new Interface ID</pre></div>
+  <div class="ca info">
+    <span class="ic">💡</span>
+    <div>DAD uses the same ICMPv6 NS/NA mechanism as IPv6 Neighbor Discovery — the IPv6 equivalent of ARP. The solicited-node multicast address is FF02::1:FF + the last 24 bits of the candidate address.</div>
+  </div>
+  </div>
+
+  <!-- SYNTAX CHECKER: 8.2.6 -->
+  <div style="margin:20px 0 6px;padding:16px;background:#0d1117;border:1px solid #30363d;border-left:3px solid #bc8cff;border-radius:8px">
+    <div style="font-size:.7em;font-weight:800;text-transform:uppercase;letter-spacing:.8px;color:#bc8cff;margin-bottom:6px">&#x1F5A5; Syntax Checker &mdash; 8.2.6</div>
+    <div style="font-size:.92em;font-weight:600;color:#e6edf3;margin-bottom:12px">Configure Stateless DHCPv6</div>
+    <div style="font-size:.82em;color:#8b949e;margin-bottom:14px">Type each command exactly as shown. Press Enter to submit. The checker validates your syntax step by step.</div>
+    <div class="tool-links" style="display:flex;flex-wrap:wrap;gap:14px">
+      <div style="flex:1 1 220px;min-width:0">
+        <a href="../../syntax-checker-simple/ccna2_syntax_checker.html?lab=8.2.6" target="_blank" rel="noopener" title="Quick, guided drill: type the exact commands for this NetAcad lab, step by step. Opens straight to lab 8.2.6." style="display:inline-flex;align-items:center;gap:8px;color:#fff;text-decoration:none;padding:8px 18px;border-radius:6px;font-size:.85em;font-weight:700;background:#238636;border:1px solid #2ea043">&#x25B6; Open Syntax Checker</a>
+        <div style="font-size:.75em;color:#8b949e;margin-top:6px">Quick, guided drill: type the exact commands for this NetAcad lab, step by step. Opens straight to lab 8.2.6.</div>
+      </div>
+      <div style="flex:1 1 220px;min-width:0">
+        <a class="cli-engine-link" href="../../cli-engine/ccna-cli-engine.html" target="_blank" rel="noopener" title="Full simulated Cisco IOS terminal: Tab completion, device state, Free Practice, Home Labs and Subnetting. In its exercise menu, pick “Course 2 · 8.2 — Configure Stateless DHCPv6”." style="display:inline-flex;align-items:center;gap:8px;color:#fff;text-decoration:none;padding:8px 18px;border-radius:6px;font-size:.85em;font-weight:700;background:#1f6feb;border:1px solid #388bfd">&#x1F4BB; Open CLI Engine</a>
+        <div style="font-size:.75em;color:#8b949e;margin-top:6px">Full simulated Cisco IOS terminal: Tab completion, device state, Free Practice, Home Labs and Subnetting. In its exercise menu, pick “Course 2 · 8.2 — Configure Stateless DHCPv6”.</div>
+      </div>
+    </div>
+    <div style="margin-top:12px;font-size:.75em"><a href="../../index.html" style="color:#58a6ff;text-decoration:none">&#x1F3E0; All study tools (home)</a></div>
+  </div>
+
+</div></div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- SECTION 8.3 — DHCPv6 CONCEPTS -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div class="sec" id="s3">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">8.3</span><span class="ttl">DHCPv6 Concepts</span></span><button class="sec-check" id="sch-s3" onclick="event.stopPropagation();toggleSection('s3',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb">
+
+  <div class="sub">
+  <h3><span class="sn">8.3.1</span> DHCPv6 Operation — The Full Six-Step Process</h3>
+  <p>The DHCPv6 process begins with an RS/RA exchange — the RA is what tells the client <em>which type</em> of DHCPv6 to use. The process then splits at Step 5 depending on the flags in the RA.</p>
+
+  <div class="dhcp-flow">
+    <div class="df-title">📡 DHCPv6 Six-Step Process — Both Paths</div>
+    <div class="dhcp-step"><div class="ds-num client">1</div><div><strong style="color:#58a6ff">Client → Router:</strong> RS sent to <strong>ff02::2</strong> (all-routers multicast) — "Any routers out there? Respond immediately."</div></div>
+    <div class="dhcp-step"><div class="ds-num router">2</div><div><strong style="color:#6cc24a">Router → Client:</strong> RA sent to <strong>ff02::1</strong> (all-nodes multicast) — carries A/O/M flags. The RA <strong>source LLA becomes the client's default gateway</strong>.</div></div>
+    <div class="dhcp-step"><div class="ds-num client">3</div><div><strong style="color:#58a6ff">Client → DHCPv6 Server:</strong> SOLICIT sent to <strong>ff02::1:2</strong> (all-DHCPv6-servers — link-local scope, not forwarded by routers) — "Any DHCPv6 servers on this link?"</div></div>
+    <div class="dhcp-step"><div class="ds-num server">4</div><div><strong style="color:#e07b00">Server → Client:</strong> ADVERTISE sent as <strong>unicast</strong> to client's LLA — "I am available to serve you."</div></div>
+    <div class="dhcp-step"><div class="ds-num client">5</div><div><strong style="color:#58a6ff">Client → Server:</strong> PATH SPLITS HERE based on RA flags:<br>
+    &nbsp;&nbsp;• <strong>O=1 (Stateless):</strong> INFORMATION-REQUEST — "Just give me DNS and domain name, I have my IP from SLAAC"<br>
+    &nbsp;&nbsp;• <strong>M=1 (Stateful):</strong> REQUEST — "Give me a full IP address, DNS, domain, and lease"</div></div>
+    <div class="dhcp-step"><div class="ds-num server">6</div><div><strong style="color:#e07b00">Server → Client:</strong> REPLY sent as <strong>unicast</strong>:<br>
+    &nbsp;&nbsp;• <strong>Stateless REPLY:</strong> DNS server + domain name only — no IP assigned<br>
+    &nbsp;&nbsp;• <strong>Stateful REPLY:</strong> GUA + prefix + DNS + domain + lease timers (preferred/valid lifetime)<br>
+    &nbsp;&nbsp;• <strong>Default gateway: NEVER included in either reply</strong> — always from RA source LLA</div></div>
+  </div>
+
+  <div class="ca danger">
+    <span class="ic">🚨</span>
+    <div><strong>ff02::1:2 has link-local scope — routers do NOT forward it.</strong> This is exactly why a DHCPv6 relay agent is needed when the server is on a different subnet — the same fundamental problem as DHCPv4 broadcasts not crossing routers.</div>
+  </div>
+
+  <div class="sub">
+  <h4>DHCPv4 vs DHCPv6 Message Comparison</h4>
+  <div class="tw"><table>
+    <tr><th>DHCPv4</th><th>DHCPv6 Stateless</th><th>DHCPv6 Stateful</th></tr>
+    <tr><td>DISCOVER (broadcast)</td><td>SOLICIT (ff02::1:2)</td><td>SOLICIT (ff02::1:2)</td></tr>
+    <tr><td>OFFER (unicast)</td><td>ADVERTISE (unicast)</td><td>ADVERTISE (unicast)</td></tr>
+    <tr><td>REQUEST (broadcast)</td><td>INFORMATION-REQUEST (unicast)</td><td>REQUEST (unicast)</td></tr>
+    <tr><td>ACK (unicast)</td><td>REPLY (unicast)</td><td>REPLY (unicast)</td></tr>
+    <tr><td>Ports 67 / 68</td><td>Ports 546 / 547</td><td>Ports 546 / 547</td></tr>
+    <tr><td>Server assigns IP</td><td>Host creates IP via SLAAC</td><td>Server assigns IP</td></tr>
+    <tr><td>Server provides gateway</td><td>RA provides gateway</td><td>RA provides gateway</td></tr>
+  </table></div>
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">8.3.2</span> Stateless DHCPv6 Operation (A=1, O=1, M=0)</h3>
+  <p>The host uses <strong>SLAAC for its GUA</strong> but contacts a DHCPv6 server for DNS and domain name only. The server does <strong>NOT assign IP addresses</strong> and keeps no binding database — it is "stateless."</p>
+  <div class="dg"><pre>
+  RA flags: A=1, O=1, M=0
+
+  Client reads RA:
+    "Create your own GUA using SLAAC" (A=1)
+    "Contact a DHCPv6 server for DNS and domain name" (O=1)
+    ↓
+  Client creates GUA using SLAAC prefix + self-generated interface ID
+  Client sends DHCPv6 INFORMATION-REQUEST to ff02::1:2
+  Server replies with DNS server address + domain name only
+    ↓
+  Client has:  GUA (self-created via SLAAC)
+               Default Gateway (from RA source LLA)
+               DNS + Domain (from stateless DHCPv6)</pre></div>
+  <div class="cw"><div class="cl">Enable stateless DHCPv6 on the router interface — sets O flag = 1 <button class="cpb" onclick="copyCode(this)">Copy</button></div>
+  <pre><code>R1(config-if)# ipv6 nd other-config-flag
+
+R1# show ipv6 interface g0/0/1 | begin ND
+  Hosts use stateless autoconfig for addresses.   ← A=1 (SLAAC still active)
+  Hosts use DHCP to obtain other configuration.   ← O=1 (stateless DHCPv6 active)</code></pre></div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">8.3.3</span> Stateful DHCPv6 Operation (A=0, O=0, M=1)</h3>
+  <p>The DHCPv6 server provides <strong>everything</strong> — GUA, DNS, domain, and lease. The server <strong>IS stateful</strong> because it maintains a binding database of assigned addresses, just like DHCPv4.</p>
+  <div class="dg"><pre>
+  RA flags: A=0, O=0, M=1
+
+  Client reads RA:
+    "Do NOT use SLAAC to create your own IP" (A=0)
+    "Get everything from a stateful DHCPv6 server" (M=1)
+    ↓
+  Client sends SOLICIT → Server sends ADVERTISE
+  Client sends REQUEST → Server sends REPLY with GUA + DNS + lease
+    ↓
+  Client has:  GUA (assigned by DHCPv6 server)
+               Default Gateway (from RA source LLA — NOT from DHCPv6)
+               DNS + Domain (from stateful DHCPv6)
+               Lease timers (preferred lifetime / valid lifetime)</pre></div>
+  <div class="cw"><div class="cl">Enable stateful DHCPv6 on the router interface — sets M flag = 1 <button class="cpb" onclick="copyCode(this)">Copy</button></div>
+  <pre><code>R1(config-if)# ipv6 nd managed-config-flag
+
+R1# show ipv6 interface g0/0/1 | begin ND
+  Hosts use DHCP to obtain routable addresses.   ← M=1 (stateful DHCPv6 active)</code></pre></div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">CMP</span> Stateless vs Stateful — Full Comparison</h3>
+  <div class="tw"><table>
+    <tr><th></th><th>Stateless DHCPv6</th><th>Stateful DHCPv6</th></tr>
+    <tr><td><strong>RA flags</strong></td><td>A=1, O=1, M=0</td><td>A=0, O=0, M=1</td></tr>
+    <tr><td><strong>Who creates the GUA?</strong></td><td>The client (SLAAC)</td><td>The DHCPv6 server</td></tr>
+    <tr><td><strong>Server assigns IPs?</strong></td><td>❌ No</td><td>✅ Yes</td></tr>
+    <tr><td><strong>Server tracks clients?</strong></td><td>❌ No — no binding database</td><td>✅ Yes — full binding database</td></tr>
+    <tr><td><strong>What DHCPv6 provides</strong></td><td>DNS + domain name only</td><td>GUA + prefix + DNS + domain + lease</td></tr>
+    <tr><td><strong>What RA provides</strong></td><td>Prefix for SLAAC + default gateway</td><td>Default gateway only</td></tr>
+    <tr><td><strong>Default gateway source</strong></td><td>RA source LLA</td><td>RA source LLA</td></tr>
+    <tr><td><strong>show ipv6 dhcp binding has entries?</strong></td><td>❌ Empty — nothing to track</td><td>✅ Shows IP-to-client mappings</td></tr>
+    <tr><td><strong>Pool uses address prefix?</strong></td><td>❌ No</td><td>✅ Yes — required</td></tr>
+    <tr><td><strong>Router O/M flag command</strong></td><td><code>ipv6 nd other-config-flag</code></td><td><code>ipv6 nd managed-config-flag</code></td></tr>
+    <tr><td><strong>Client Step 5 message</strong></td><td>INFORMATION-REQUEST</td><td>REQUEST</td></tr>
+  </table></div>
+
+  <div class="compare-grid">
+    <div class="compare-card stateless">
+      <div class="cc-hdr">Stateless DHCPv6 Config (Server)</div>
+      <div class="cc-body">
+        <code>ipv6 dhcp pool IPV6-STATELESS</code><br>
+        <code>&nbsp;dns-server 2001:db8::254</code><br>
+        <code>&nbsp;domain-name example.com</code><br>
+        <strong>NO address prefix</strong><br><br>
+        On interface:<br>
+        <code>ipv6 nd other-config-flag</code> ← O=1<br>
+        <code>ipv6 dhcp server IPV6-STATELESS</code>
+      </div>
+    </div>
+    <div class="compare-card stateful">
+      <div class="cc-hdr">Stateful DHCPv6 Config (Server)</div>
+      <div class="cc-body">
+        <code>ipv6 dhcp pool IPV6-STATEFUL</code><br>
+        <code>&nbsp;address prefix 2001:db8:acad:1::/64</code><br>
+        <code>&nbsp;dns-server 2001:4860:4860::8888</code><br>
+        <code>&nbsp;domain-name example.com</code><br><br>
+        On interface:<br>
+        <code>ipv6 nd managed-config-flag</code> ← M=1<br>
+        <code>ipv6 nd prefix default no-autoconfig</code> ← A=0<br>
+        <code>ipv6 dhcp server IPV6-STATEFUL</code>
+      </div>
+    </div>
+  </div>
+
+  <div class="result-box stateless">
+    <div class="rb-title">📋 What the Stateless DHCPv6 Client Receives</div>
+    <div class="result-row"><span class="rr-key">GUA:</span><span class="rr-val">2001:db8:acad:1:1de9:c69:73ee:ca8c</span><span class="rr-src">← SELF-CREATED via SLAAC</span></div>
+    <div class="result-row"><span class="rr-key">Default GW:</span><span class="rr-val">fe80::1</span><span class="rr-src">← from RA (router's LLA)</span></div>
+    <div class="result-row"><span class="rr-key">DNS Server:</span><span class="rr-val">2001:db8:acad:1::254</span><span class="rr-src">← from stateless DHCPv6</span></div>
+    <div class="result-row"><span class="rr-key">Domain:</span><span class="rr-val">example.com</span><span class="rr-src">← from stateless DHCPv6</span></div>
+    <div class="result-row"><span class="rr-key">Lease:</span><span class="rr-val">None — address is self-managed</span><span class="rr-src"></span></div>
+  </div>
+
+  <div class="result-box stateful">
+    <div class="rb-title">📋 What the Stateful DHCPv6 Client Receives</div>
+    <div class="result-row"><span class="rr-key">GUA:</span><span class="rr-val">2001:db8:acad:1:a43c:fd28:9d79:9e42</span><span class="rr-src">← ASSIGNED by DHCPv6 server</span></div>
+    <div class="result-row"><span class="rr-key">Default GW:</span><span class="rr-val">fe80::1</span><span class="rr-src">← from RA (router's LLA)</span></div>
+    <div class="result-row"><span class="rr-key">DNS Server:</span><span class="rr-val">2001:4860:4860::8888</span><span class="rr-src">← from stateful DHCPv6</span></div>
+    <div class="result-row"><span class="rr-key">Domain:</span><span class="rr-val">example.com</span><span class="rr-src">← from stateful DHCPv6</span></div>
+    <div class="result-row"><span class="rr-key">Lease:</span><span class="rr-val">172800 seconds (2 days)</span><span class="rr-src">← server-managed</span></div>
+  </div>
+
+  <div class="ca tip">
+    <span class="ic">✅</span>
+    <div><strong>Default gateway is fe80::1 in BOTH cases.</strong> In both stateless and stateful DHCPv6, the default gateway always comes from the RA source address — the router's LLA. The DHCPv6 server never provides the default gateway under any circumstances.</div>
+  </div>
+
+  <div class="sub">
+  <h4>Understanding the "Stateless" Naming</h4>
+  <div class="tw"><table>
+    <tr><th>Term</th><th>Does the Server Track Clients?</th><th>What the Server Provides</th></tr>
+    <tr><td><strong>SLAAC</strong></td><td>N/A — no server involved</td><td>Nothing</td></tr>
+    <tr><td><strong>Stateless DHCPv6</strong></td><td>❌ No binding database — never assigned any IPs</td><td>DNS + domain only</td></tr>
+    <tr><td><strong>Stateful DHCPv6</strong></td><td>✅ Full binding database — knows which client has which IP</td><td>GUA + DNS + domain + lease</td></tr>
+  </table></div>
+  <div class="ca info">
+    <span class="ic">💡</span>
+    <div><strong>Simple mental model:</strong> SLAAC alone = no server, client does everything. Stateless DHCPv6 = client creates its own IP, server just hands out DNS. Stateful DHCPv6 = server does everything, client just accepts what it's given.</div>
+  </div>
+  </div>
+
+  <div class="sub">
+  <h4>Client Router Commands — The Two Most Confused</h4>
+  <div class="cw"><div class="cl">Stateless vs stateful client router configuration <button class="cpb" onclick="copyCode(this)">Copy</button></div>
+  <pre><code>! Stateless client — SLAAC + get DNS from stateless DHCPv6 server:
+R3(config-if)# ipv6 address autoconfig
+
+! Stateful client — get full GUA + DNS from stateful DHCPv6 server:
+R3(config-if)# ipv6 address dhcp
+
+! These two commands are completely different — cannot be substituted:
+! autoconfig → SLAAC process → self-creates GUA
+! dhcp       → sends SOLICIT → requests GUA from stateful DHCPv6 server</code></pre></div>
+  </div>
+  </div>
+
+  <!-- SYNTAX CHECKER: 8.3.7 -->
+  <div style="margin:20px 0 6px;padding:16px;background:#0d1117;border:1px solid #30363d;border-left:3px solid #bc8cff;border-radius:8px">
+    <div style="font-size:.7em;font-weight:800;text-transform:uppercase;letter-spacing:.8px;color:#bc8cff;margin-bottom:6px">&#x1F5A5; Syntax Checker &mdash; 8.3.7</div>
+    <div style="font-size:.92em;font-weight:600;color:#e6edf3;margin-bottom:12px">Configure Stateful DHCPv6</div>
+    <div style="font-size:.82em;color:#8b949e;margin-bottom:14px">Type each command exactly as shown. Press Enter to submit. The checker validates your syntax step by step.</div>
+    <div class="tool-links" style="display:flex;flex-wrap:wrap;gap:14px">
+      <div style="flex:1 1 220px;min-width:0">
+        <a href="../../syntax-checker-simple/ccna2_syntax_checker.html?lab=8.3.7" target="_blank" rel="noopener" title="Quick, guided drill: type the exact commands for this NetAcad lab, step by step. Opens straight to lab 8.3.7." style="display:inline-flex;align-items:center;gap:8px;color:#fff;text-decoration:none;padding:8px 18px;border-radius:6px;font-size:.85em;font-weight:700;background:#238636;border:1px solid #2ea043">&#x25B6; Open Syntax Checker</a>
+        <div style="font-size:.75em;color:#8b949e;margin-top:6px">Quick, guided drill: type the exact commands for this NetAcad lab, step by step. Opens straight to lab 8.3.7.</div>
+      </div>
+      <div style="flex:1 1 220px;min-width:0">
+        <a class="cli-engine-link" href="../../cli-engine/ccna-cli-engine.html" target="_blank" rel="noopener" title="Full simulated Cisco IOS terminal: Tab completion, device state, Free Practice, Home Labs and Subnetting. In its exercise menu, pick “Course 2 · 8.3 — Configure Stateful DHCPv6”." style="display:inline-flex;align-items:center;gap:8px;color:#fff;text-decoration:none;padding:8px 18px;border-radius:6px;font-size:.85em;font-weight:700;background:#1f6feb;border:1px solid #388bfd">&#x1F4BB; Open CLI Engine</a>
+        <div style="font-size:.75em;color:#8b949e;margin-top:6px">Full simulated Cisco IOS terminal: Tab completion, device state, Free Practice, Home Labs and Subnetting. In its exercise menu, pick “Course 2 · 8.3 — Configure Stateful DHCPv6”.</div>
+      </div>
+    </div>
+    <div style="margin-top:12px;font-size:.75em"><a href="../../index.html" style="color:#58a6ff;text-decoration:none">&#x1F3E0; All study tools (home)</a></div>
+  </div>
+
+</div></div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- SECTION 8.4 — CONFIGURE DHCPv6 SERVER -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div class="sec" id="s4">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">8.4</span><span class="ttl">Configure DHCPv6 Server</span></span><button class="sec-check" id="sch-s4" onclick="event.stopPropagation();toggleSection('s4',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb">
+
+  <div class="sub">
+  <h3><span class="sn">8.4.1</span> DHCPv6 Router Roles</h3>
+  <p>A Cisco IOS router can serve three DHCPv6 roles simultaneously on different interfaces:</p>
+  <div class="tw"><table>
+    <tr><th>Role</th><th>Description</th><th>Key Commands</th></tr>
+    <tr><td><strong>DHCPv6 Server</strong></td><td>Provides stateless or stateful DHCPv6 services to clients</td><td><code>ipv6 dhcp pool</code> + <code>ipv6 dhcp server</code></td></tr>
+    <tr><td><strong>DHCPv6 Client</strong></td><td>Interface obtains its IPv6 configuration from a DHCPv6 server</td><td><code>ipv6 address autoconfig</code> or <code>ipv6 address dhcp</code></td></tr>
+    <tr><td><strong>DHCPv6 Relay Agent</strong></td><td>Forwards DHCPv6 messages between clients and server on different networks</td><td><code>ipv6 dhcp relay destination</code></td></tr>
+  </table></div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">8.4.2</span> Configure a Stateless DHCPv6 Server (Five Steps)</h3>
+  <div class="cw"><div class="cl">R1 — Complete stateless DHCPv6 server configuration <button class="cpb" onclick="copyCode(this)">Copy</button></div>
+  <pre><code>! Step 1: Enable IPv6 routing (required to send RAs)
+R1(config)# ipv6 unicast-routing
+
+! Step 2: Create the DHCPv6 pool (enters dhcpv6 config mode)
+R1(config)# ipv6 dhcp pool IPV6-STATELESS
+R1(config-dhcpv6)#
+
+! Step 3: Configure pool — DNS and domain ONLY, NO address prefix
+R1(config-dhcpv6)# dns-server 2001:db8:acad:1::254
+R1(config-dhcpv6)# domain-name example.com
+R1(config-dhcpv6)# exit
+
+! Step 4: Bind pool to interface and set O flag = 1
+R1(config)# interface GigabitEthernet0/0/1
+R1(config-if)# ipv6 address fe80::1 link-local
+R1(config-if)# ipv6 address 2001:db8:acad:1::1/64
+R1(config-if)# ipv6 nd other-config-flag       ! Sets O flag = 1
+R1(config-if)# ipv6 dhcp server IPV6-STATELESS ! Bind pool to interface
+R1(config-if)# no shutdown
+R1(config-if)# end
+
+! Step 5: Verify on Windows client (ipconfig /all)
+C:\PC1> ipconfig /all
+   IPv6 Address. . . . . : 2001:db8:acad:1:1dd:a2ea:66e7 (SLAAC-created)
+   Default Gateway . . . : fe80::1%6            ← R1's LLA — always LLA
+   DNS Servers . . . . . : 2001:db8:acad:1::254 ← from stateless DHCPv6
+   Connection-specific DNS Suffix: example.com  ← from stateless DHCPv6</code></pre></div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">8.4.3</span> Configure a Stateless DHCPv6 Client (Router)</h3>
+  <div class="cw"><div class="cl">R3 — Configure as stateless DHCPv6 client (SLAAC + DNS from server) <button class="cpb" onclick="copyCode(this)">Copy</button></div>
+  <pre><code>R3(config)# ipv6 unicast-routing
+R3(config)# interface g0/0/1
+R3(config-if)# ipv6 enable               ! Creates LLA without needing a GUA
+R3(config-if)# ipv6 address autoconfig   ! SLAAC + contact stateless DHCPv6
+R3(config-if)# end
+
+! Verify GUA created via SLAAC:
+R3# show ipv6 interface brief
+GigabitEthernet0/0/1   [up/up]
+    FE80::2FC:BAFF:FE94:29B1           ← LLA (auto-created)
+    2001:DB8:ACAD:1:2FC:BAFF:FE94:29B1 ← GUA (SLAAC-created)
+
+! Verify DNS learned from stateless DHCPv6 server:
+R3# show ipv6 dhcp interface g0/0/1
+    DNS server: 2001:DB8:ACAD:1::254
+    Domain name: example.com</code></pre></div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">8.4.4</span> Configure a Stateful DHCPv6 Server (Five Steps)</h3>
+  <div class="cw"><div class="cl">R1 — Complete stateful DHCPv6 server configuration <button class="cpb" onclick="copyCode(this)">Copy</button></div>
+  <pre><code>! Step 1: Enable IPv6 routing
+R1(config)# ipv6 unicast-routing
+
+! Step 2: Create the DHCPv6 pool
+R1(config)# ipv6 dhcp pool IPV6-STATEFUL
+R1(config-dhcpv6)#
+
+! Step 3: Configure pool — includes address prefix (server assigns GUAs)
+R1(config-dhcpv6)# address prefix 2001:db8:acad:1::/64
+R1(config-dhcpv6)# dns-server 2001:4860:4860::8888
+R1(config-dhcpv6)# domain-name example.com
+R1(config-dhcpv6)# exit
+
+! Step 4: Bind pool to interface, set M flag = 1, disable SLAAC (A = 0)
+R1(config)# interface GigabitEthernet0/0/1
+R1(config-if)# ipv6 address fe80::1 link-local
+R1(config-if)# ipv6 address 2001:db8:acad:1::1/64
+R1(config-if)# ipv6 nd managed-config-flag            ! M flag = 1
+R1(config-if)# ipv6 nd prefix default no-autoconfig   ! A flag = 0 (disables SLAAC)
+R1(config-if)# ipv6 dhcp server IPV6-STATEFUL
+R1(config-if)# no shutdown
+R1(config-if)# end
+
+! Step 5: Verify on Windows client
+C:\PC1> ipconfig /all
+   IPv6 Address. . . . . : 2001:db8:acad:1a43c:fd28:9d79:9e42 (from server)
+   Lease Obtained. . . . : Sep 27 2019 10:45:30 AM
+   Lease Expires . . . . : Sep 29 2019 10:05:04 AM
+   Default Gateway . . . : fe80::1%6     ← still R1's LLA — NOT from DHCPv6
+   DNS Servers . . . . . : 2001:4860:4860::8888</code></pre></div>
+  <div class="ca warn">
+    <span class="ic">⚠️</span>
+    <div><strong>Why `ipv6 nd prefix default no-autoconfig` matters:</strong> If A=1 is left active during stateful DHCPv6, Windows clients create a GUA via SLAAC AND request another from the DHCPv6 server — ending up with two GUAs simultaneously. Setting A=0 prevents SLAAC so the client only receives one GUA from the server.</div>
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">8.4.5</span> Configure a Stateful DHCPv6 Client (Router)</h3>
+  <div class="cw"><div class="cl">R3 — Configure as stateful DHCPv6 client (full GUA from server) <button class="cpb" onclick="copyCode(this)">Copy</button></div>
+  <pre><code>R3(config)# ipv6 unicast-routing
+R3(config)# interface g0/0/1
+R3(config-if)# ipv6 enable            ! Creates LLA
+R3(config-if)# ipv6 address dhcp      ! Request GUA from stateful DHCPv6 server
+R3(config-if)# end
+
+! Verify GUA assigned by DHCPv6 server:
+R3# show ipv6 interface brief
+GigabitEthernet0/0/1   [up/up]
+    FE80::2FC:BAFF:FE94:29B1
+    2001:DB8:ACAD:1:B4CB:25FA:3C9:747C   ← GUA assigned by DHCPv6 server
+
+! Verify lease and DNS:
+R3# show ipv6 dhcp interface g0/0/1
+    Address State is OPEN
+    Address: 2001:DB8:ACAD:1:B4CB:25FA:3C9:747C/128
+    DNS server: 2001:4860:4860::8888
+    Domain name: example.com</code></pre></div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">8.4.6</span> DHCPv6 Server Verification Commands</h3>
+  <div class="cw"><div class="cl">show ipv6 dhcp pool — pool details and active client count <button class="cpb" onclick="copyCode(this)">Copy</button></div>
+  <pre><code>R1# show ipv6 dhcp pool
+DHCPv6 pool: IPV6-STATEFUL
+  Address allocation prefix: 2001:DB8:ACAD:1::/64
+    valid 172800 preferred 86400 (2 in use, 0 conflicts)
+  DNS server: 2001:4860:4860::8888
+  Domain name: example.com
+  Active clients: 2</code></pre></div>
+  <div class="cw"><div class="cl">show ipv6 dhcp binding — client LLA to assigned GUA mappings (stateful only) <button class="cpb" onclick="copyCode(this)">Copy</button></div>
+  <pre><code>R1# show ipv6 dhcp binding
+Client: FE80::192F:6FBC:9DB:B749     ← client's LLA
+  DUID: 0001000125148183005056B327D6
+  IA NA: IA ID 0x03000C29, T1 43200, T2 69120
+    Address: 2001:DB8:ACAD:1:A43C:FD28:9D79:9E42  ← assigned GUA
+    preferred lifetime 86400, valid lifetime 172800
+    expires at Sep 29 2019
+
+! NOTE: This command shows nothing on a STATELESS DHCPv6 server
+! because no addresses were assigned — there is nothing to track</code></pre></div>
+  <div class="tw"><table>
+    <tr><th>Command</th><th>What It Shows</th></tr>
+    <tr><td><code>show ipv6 dhcp pool</code></td><td>Pool name, config, address prefix, active client count</td></tr>
+    <tr><td><code>show ipv6 dhcp binding</code></td><td>Client LLA → assigned GUA mappings — stateful DHCPv6 only</td></tr>
+    <tr><td><code>show ipv6 dhcp interface [int]</code></td><td>Whether interface is in server, client, or relay mode</td></tr>
+    <tr><td><code>show ipv6 interface [int]</code></td><td>RA flags (A, O, M), LLA, GUA, multicast groups joined</td></tr>
+    <tr><td><code>show ipv6 interface brief</code></td><td>All interfaces and their IPv6 addresses — quick summary</td></tr>
+    <tr><td><code>ipconfig /all</code> (Windows)</td><td>Client-side — GUA, gateway, DNS, lease info</td></tr>
+  </table></div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">8.4.7</span> Configure a DHCPv6 Relay Agent</h3>
+  <p>When the DHCPv6 server is on a different network than clients, configure the router as a relay agent — directly analogous to IPv4's <code>ip helper-address</code>.</p>
+  <div class="cw"><div class="cl">R1 — Configure as DHCPv6 relay agent (client-facing interface) <button class="cpb" onclick="copyCode(this)">Copy</button></div>
+  <pre><code>! Topology:
+! PC1 (2001:db8:acad:2::/64) ──G0/0/1──[R1]──G0/0/0──[R3 = DHCPv6 Server]
+!                                                      (2001:db8:acad:1::2)
+
+! Configure relay on the client-facing interface:
+R1(config)# interface GigabitEthernet0/0/1      ! Client-facing interface
+R1(config-if)# ipv6 dhcp relay destination 2001:db8:acad:1::2 G0/0/0
+! Syntax: ipv6 dhcp relay destination [server-address] [egress-interface]
+! Egress interface is REQUIRED when the next-hop to the server is an LLA</code></pre></div>
+  <div class="cw"><div class="cl">Verify the DHCPv6 relay agent <button class="cpb" onclick="copyCode(this)">Copy</button></div>
+  <pre><code>R1# show ipv6 dhcp interface
+GigabitEthernet0/0/1 is in relay mode
+  Relay destinations:
+    2001:DB8:ACAD:1::2
+    2001:DB8:ACAD:1::2 via GigabitEthernet0/0/0
+
+! On the DHCPv6 server (R3), verify binding was created:
+R3# show ipv6 dhcp binding
+Client: FE80::5C43:EE7C:2959:DA68
+  Address: 2001:DB8:ACAD:2:9C3C:64DE:AADA:7857   ← PC1's assigned GUA
+
+! On PC1 — confirm DHCP assignment:
+C:\PC1> ipconfig /all
+   IPv6 Address. . . . : 2001:db8:acad:2:9c3c:64de:aada:7857
+   Default Gateway . . : fe80::1%6   ← from RA — never from DHCPv6
+   DNS Servers . . . . : 2001:4860:4860::8888</code></pre></div>
+  <div class="ca info">
+    <span class="ic">💡</span>
+    <div><code>ipv6 dhcp relay destination</code> is the IPv6 equivalent of <code>ip helper-address</code>. Both solve the same problem: DHCP multicast/broadcast messages cannot cross routers, so the relay agent intercepts them on the client-facing interface and forwards them as unicast to the DHCP server.</div>
+  </div>
+  </div>
+
+</div></div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- SECTION 8.5 — COMMANDS -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div class="sec" id="s5">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">CMD</span><span class="ttl">Quick Reference — All Module 8 Commands</span></span><button class="sec-check" id="sch-s5" onclick="event.stopPropagation();toggleSection('s5',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb">
+
+  <p style="font-weight:700;color:var(--dark);margin-bottom:8px;">SLAAC and RA Flag Configuration</p>
+  <div class="tw"><table>
+    <tr><th>Command</th><th>Mode</th><th>What It Does</th></tr>
+    <tr><td><code>ipv6 unicast-routing</code></td><td>Global</td><td>Enable IPv6 routing AND RA transmission — required for SLAAC</td></tr>
+    <tr><td><code>ipv6 nd other-config-flag</code></td><td>Interface</td><td>Set O flag = 1 — enable stateless DHCPv6 (DNS only from server)</td></tr>
+    <tr><td><code>ipv6 nd managed-config-flag</code></td><td>Interface</td><td>Set M flag = 1 — enable stateful DHCPv6 (server assigns GUA)</td></tr>
+    <tr><td><code>ipv6 nd prefix default no-autoconfig</code></td><td>Interface</td><td>Set A flag = 0 — disable SLAAC (use with stateful DHCPv6)</td></tr>
+  </table></div>
+
+  <p style="font-weight:700;color:var(--dark);margin:18px 0 8px;">DHCPv6 Server Configuration</p>
+  <div class="tw"><table>
+    <tr><th>Command</th><th>Mode</th><th>What It Does</th></tr>
+    <tr><td><code>ipv6 dhcp pool [name]</code></td><td>Global</td><td>Create DHCPv6 pool — enters dhcpv6 config mode</td></tr>
+    <tr><td><code>address prefix [prefix/len]</code></td><td>DHCPv6 config</td><td>Address range to assign — <strong>stateful only</strong></td></tr>
+    <tr><td><code>dns-server [ipv6-address]</code></td><td>DHCPv6 config</td><td>DNS server address given to clients</td></tr>
+    <tr><td><code>domain-name [name]</code></td><td>DHCPv6 config</td><td>Domain name given to clients</td></tr>
+    <tr><td><code>ipv6 dhcp server [pool-name]</code></td><td>Interface</td><td>Bind pool to interface — activate DHCPv6 server on this interface</td></tr>
+  </table></div>
+
+  <p style="font-weight:700;color:var(--dark);margin:18px 0 8px;">DHCPv6 Client Configuration (Router Interface)</p>
+  <div class="tw"><table>
+    <tr><th>Command</th><th>What It Does</th></tr>
+    <tr><td><code>ipv6 enable</code></td><td>Enable IPv6 on interface — creates LLA without needing a configured GUA</td></tr>
+    <tr><td><code>ipv6 address autoconfig</code></td><td>Configure as <strong>stateless</strong> DHCPv6 client — uses SLAAC for GUA, gets DNS from server</td></tr>
+    <tr><td><code>ipv6 address dhcp</code></td><td>Configure as <strong>stateful</strong> DHCPv6 client — requests full GUA from DHCPv6 server</td></tr>
+  </table></div>
+
+  <p style="font-weight:700;color:var(--dark);margin:18px 0 8px;">DHCPv6 Relay</p>
+  <div class="tw"><table>
+    <tr><th>Command</th><th>What It Does</th></tr>
+    <tr><td><code>ipv6 dhcp relay destination [addr] [int]</code></td><td>Configure DHCPv6 relay on client-facing interface — IPv6 equivalent of <code>ip helper-address</code></td></tr>
+  </table></div>
+
+  <p style="font-weight:700;color:var(--dark);margin:18px 0 8px;">DHCPv6 Verification</p>
+  <div class="tw"><table>
+    <tr><th>Command</th><th>What It Shows</th></tr>
+    <tr><td><code>show ipv6 interface [int]</code></td><td>RA flags (A, O, M), LLA, GUA, multicast groups joined</td></tr>
+    <tr><td><code>show ipv6 interface brief</code></td><td>All interfaces and their IPv6 addresses — quick overview</td></tr>
+    <tr><td><code>show ipv6 dhcp pool</code></td><td>Pool configuration, address prefix, active client count</td></tr>
+    <tr><td><code>show ipv6 dhcp binding</code></td><td>Client LLA to assigned GUA — stateful DHCPv6 only (empty for stateless)</td></tr>
+    <tr><td><code>show ipv6 dhcp interface [int]</code></td><td>Interface mode — server, client, or relay</td></tr>
+    <tr><td><code>ipconfig /all</code> (Windows)</td><td>Client-side — GUA, gateway, DNS, lease info</td></tr>
+  </table></div>
+
+  <div class="et">
+    <div class="lbl">🎯 DHCPv6 PORTS TO MEMORIZE</div>
+    <strong>Client → Server: UDP port 547</strong><br>
+    <strong>Server → Client: UDP port 546</strong><br><br>
+    Compare to DHCPv4: Server=67, Client=68<br>
+    DHCPv6 direction is swapped from what students expect — 547 is the larger number but it is the CLIENT sending to the server.
+  </div>
+
+</div></div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- SECTION 8.6 — EXAM TRAPS -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div class="sec" id="s6">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">🎯</span><span class="ttl">Common Exam Traps — Module 8</span></span><button class="sec-check" id="sch-s6" onclick="event.stopPropagation();toggleSection('s6',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb">
+
+  <div class="ca danger"><span class="ic">❌</span><div><strong>Trap 1: The default gateway is ALWAYS the router's LLA — never from DHCPv6.</strong><br>Both stateless and stateful DHCPv6 servers never provide default gateway information. It comes exclusively from the RA source address — the router's LLA. This is the most fundamental difference from DHCPv4.</div></div>
+
+  <div class="ca danger"><span class="ic">❌</span><div><strong>Trap 2: A=1, O=0, M=0 = SLAAC only. A=1, O=1, M=0 = stateless DHCPv6. A=0, M=1 = stateful DHCPv6.</strong><br>Memorize these three flag combinations. The exam gives a scenario and asks which method is in use or which flags to configure.</div></div>
+
+  <div class="ca danger"><span class="ic">❌</span><div><strong>Trap 3: `ipv6 unicast-routing` is required for the router to send RAs.</strong><br>Without it, the router has IPv6 addresses but does NOT transmit RAs. Hosts cannot use SLAAC. This is the single most common missing configuration step in labs and exam scenarios.</div></div>
+
+  <div class="ca danger"><span class="ic">❌</span><div><strong>Trap 4: Stateless DHCPv6 does NOT assign IP addresses — ever.</strong><br>It only provides DNS and domain name. The server keeps no binding database. Students constantly confuse stateless DHCPv6 (DNS only) with stateful DHCPv6 (full IP assignment) because both involve a DHCPv6 server.</div></div>
+
+  <div class="ca danger"><span class="ic">❌</span><div><strong>Trap 5: Stateful DHCPv6 pool uses `address prefix` — not `network`.</strong><br>The IPv4 DHCP command is <code>network</code>. The IPv6 DHCPv6 command is <code>address prefix</code>. Using the wrong command is a very common lab configuration error. Without <code>address prefix</code>, the stateful server has no addresses to assign.</div></div>
+
+  <div class="ca danger"><span class="ic">❌</span><div><strong>Trap 6: `ipv6 nd other-config-flag` = O flag = stateless. `ipv6 nd managed-config-flag` = M flag = stateful.</strong><br>These are mixed up constantly. Memory aid: "other" = other configuration = stateless (DNS only). "managed" = managed addresses = stateful (full IP assignment).</div></div>
+
+  <div class="ca danger"><span class="ic">❌</span><div><strong>Trap 7: DHCPv6 SOLICIT goes to ff02::1:2 — NOT a broadcast.</strong><br>DHCPv6 uses the all-DHCPv6-servers multicast ff02::1:2 with link-local scope. Routers do not forward it — which is exactly why a relay agent is needed when the server is on a different subnet.</div></div>
+
+  <div class="ca danger"><span class="ic">❌</span><div><strong>Trap 8: DHCPv6 ports — 547 = client to server, 546 = server to client.</strong><br>DHCPv4 uses 67 (server) and 68 (client). DHCPv6 uses 547 (client to server) and 546 (server to client). The direction is the opposite of what most students expect.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 9: Stateless client router uses `ipv6 address autoconfig`. Stateful uses `ipv6 address dhcp`.</strong><br>Two completely different commands — not interchangeable. Wrong command = wrong behavior. <code>autoconfig</code> triggers SLAAC. <code>dhcp</code> sends a SOLICIT requesting a GUA from a stateful server.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 10: When A=1 and M=1 simultaneously, Windows clients create two GUAs.</strong><br>One via SLAAC, one from the stateful DHCPv6 server. Best practice when using stateful DHCPv6: always set A=0 using <code>ipv6 nd prefix default no-autoconfig</code> to prevent SLAAC from also running.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 11: DHCPv6 relay uses `ipv6 dhcp relay destination` — not `ip helper-address`.</strong><br><code>ip helper-address</code> is IPv4 only. The IPv6 equivalent is <code>ipv6 dhcp relay destination [server-address] [egress-interface]</code>. The egress interface parameter is required when the next-hop to the server is a link-local address.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 12: `show ipv6 dhcp binding` is empty for stateless DHCPv6.</strong><br>Stateless servers keep no state — they never assigned any addresses so there is nothing to display. Only stateful DHCPv6 servers maintain a binding database. Running this on a stateless server returns no output.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 13: RA messages sent every 200 seconds — or immediately in response to an RS.</strong><br>Hosts do not wait 200 seconds at boot. They send an RS to ff02::2, which triggers an immediate RA response. This is how hosts quickly get their IPv6 configuration when they connect.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 14: DAD uses Neighbor Solicitation to the solicited-node multicast address.</strong><br>Solicited-node multicast = FF02::1:FF + last 24 bits of the candidate address. No Neighbor Advertisement reply = address is unique and safe to use. NA reply = conflict — generate a new interface ID.</div></div>
+
+  <div class="ca tip"><span class="ic">✅</span><div><strong>Quick module summary — the three methods:</strong><br><br>
+  <strong>SLAAC only (A=1, O=0, M=0):</strong> No server. Client builds everything from RA.<br>
+  <strong>Stateless DHCPv6 (A=1, O=1, M=0):</strong> Client creates IP via SLAAC. Server provides DNS only. No bindings.<br>
+  <strong>Stateful DHCPv6 (A=0, O=0, M=1):</strong> Server assigns IP, DNS, lease. Client gets everything from server.<br><br>
+  <strong>In ALL three cases:</strong> Default gateway = router's LLA from RA. Never from DHCPv6.</div></div>
+
+</div></div>
+
+</div><!-- end .wrap -->
+
+<div class="ft">
+  CCNA 2 SRWE v7.02 — Module 8: SLAAC and DHCPv6 v1.4<br>
+  Based on Cisco NetAcad curriculum · Study guide for personal use
+</div>
+
+<button class="tb" id="topb" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+
+<script>
+var MOD_KEY="ccna2-module8-slaac-dhcpv6";
+var SECS=["s1","s2","s3","s4","s5","s6"];
+var checked={};
+function loadState(){
+  try{var s=localStorage.getItem(MOD_KEY);if(s)checked=JSON.parse(s);}catch(e){}
+  SECS.forEach(function(id){
+    var pill=document.getElementById('pill-'+id);
+    var row=document.getElementById('row-'+id);
+    var st=document.getElementById('st-'+id);
+    var sch=document.getElementById('sch-'+id);
+    if(checked[id]){
+      if(pill){pill.classList.add('checked');pill.querySelector('.pill-check').textContent='✓';}
+      if(row)row.classList.add('done');
+      if(st)st.textContent='✓';
+      if(sch){sch.classList.add('checked');sch.textContent='✓ Done';}
+    } else {
+      if(pill){pill.classList.remove('checked');pill.querySelector('.pill-check').textContent='○';}
+      if(row)row.classList.remove('done');
+      if(st)st.textContent='○';
+      if(sch){sch.classList.remove('checked');sch.textContent='○ Mark done';}
+    }
+  });
+}
+function toggleSection(id,btn){checked[id]=!checked[id];try{localStorage.setItem(MOD_KEY,JSON.stringify(checked));}catch(e){}loadState();}
+function toggleStudyPanel(){
+  var hdr=document.getElementById('sp-hdr');
+  var body=document.getElementById('sp-body');
+  var arr=document.getElementById('sp-arr');
+  hdr.classList.toggle('open');body.classList.toggle('open');
+  if(arr)arr.textContent=body.classList.contains('open')?'▲':'▼';
+}
+function goTo(id){var el=document.getElementById(id);if(!el)return;var h=el.querySelector('.sh,.section-header'),b=el.querySelector('.sb,.section-body');if(h&&b&&!b.classList.contains('open')){h.classList.add('open');b.classList.add('open');}setTimeout(function(){window.scrollTo({top:el.getBoundingClientRect().top+window.pageYOffset-60,behavior:'smooth'});},50);}
+function setFs(size,btn){document.documentElement.style.setProperty('--base-fs',size);document.querySelectorAll('.fs-btn').forEach(function(b){b.classList.remove('active');});btn.classList.add('active');try{localStorage.setItem('ccna-fs',size);}catch(e){}}
+(function(){try{var s=localStorage.getItem('ccna-fs');if(s){document.documentElement.style.setProperty('--base-fs',s);document.querySelectorAll('.fs-btn').forEach(function(b){b.classList.remove('active');if((b.textContent==='S'&&s==='14px')||(b.textContent==='M'&&s==='16px')||(b.textContent==='L'&&s==='18px')||(b.textContent==='XL'&&s==='20px'))b.classList.add('active');});}}catch(e){}loadState();})();
+function copyCode(b){var t=b.closest('.cw').querySelector('pre').innerText;if(navigator.clipboard){navigator.clipboard.writeText(t).then(function(){b.textContent='Copied!';setTimeout(function(){b.textContent='Copy';},1500);}).catch(function(){fb(t,b);});}else{fb(t,b);}}
+function fb(t,b){var a=document.createElement('textarea');a.value=t;a.style.position='fixed';a.style.opacity='0';document.body.appendChild(a);a.focus();a.select();document.execCommand('copy');document.body.removeChild(a);b.textContent='Copied!';setTimeout(function(){b.textContent='Copy';},1500);}
+</script>
+<script src="../../site-config.js"></script>
+</body>
+</html>

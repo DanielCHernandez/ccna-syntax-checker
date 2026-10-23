@@ -1,0 +1,994 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=2.0">
+<title>CCNA 2 Module 7: DHCPv4 v2.2</title>
+<style>
+:root{
+  --blue:#1ba0d7;--dark:#005073;--green:#6cc24a;
+  --bg:#f4f6f8;--card:#fff;--text:#1a1a2e;--muted:#5a6a7a;
+  --cbg:#0d1117;--ctxt:#c9d1d9;--r:12px;--sh:0 2px 12px rgba(0,0,0,.08);
+  --base-fs:16px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);font-size:var(--base-fs);line-height:1.7}
+
+/* ── Font size toggle ── */
+.fs-bar{position:sticky;top:0;z-index:200;background:#1a1a2e;display:flex;align-items:center;justify-content:flex-end;padding:6px 14px;gap:6px;box-shadow:0 2px 8px rgba(0,0,0,.3)}
+.fs-label{color:#8b949e;font-size:.72em;font-weight:700;letter-spacing:.5px;text-transform:uppercase;margin-right:4px}
+.fs-btn{background:#30363d;color:#c9d1d9;border:2px solid transparent;border-radius:6px;padding:4px 12px;font-size:.75em;font-weight:700;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:all .2s;line-height:1.4}
+.fs-btn:active,.fs-btn.active{background:var(--blue);color:#fff;border-color:var(--blue)}
+
+/* ── Header ── */
+.hdr{background:linear-gradient(135deg,var(--dark),var(--blue));color:#fff;padding:32px 20px 24px;text-align:center}
+.hdr .badge{display:inline-block;background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.4);border-radius:20px;padding:4px 14px;font-size:.81em;margin-bottom:12px}
+.hdr h1{font-size:1.625em;font-weight:700;margin-bottom:6px}
+.hdr p{font-size:.94em;opacity:.85}
+.hdr .obj{display:inline-block;background:rgba(255,255,255,.15);border-radius:8px;padding:7px 16px;margin-top:12px;font-size:.875em;font-style:italic}
+
+/* ── Progress bar ── */
+.pb{background:var(--card);padding:14px 16px;margin:16px 16px 0;border-radius:var(--r);box-shadow:var(--sh)}
+.pbl{font-size:.81em;color:var(--muted);margin-bottom:6px;font-weight:600}
+.pbt{background:#e0e7ef;border-radius:10px;height:8px;overflow:hidden}
+.pbf{background:linear-gradient(90deg,var(--blue),var(--green));height:100%;border-radius:10px;width:0;transition:width 1s ease}
+
+/* ── TOC ── */
+.toc{background:var(--card);margin:16px;border-radius:var(--r);box-shadow:var(--sh);overflow:hidden}
+.toch{background:var(--dark);color:#fff;padding:14px 18px;font-weight:700;font-size:.94em;display:flex;justify-content:space-between;align-items:center;cursor:pointer;user-select:none}
+.toch .arr{transition:transform .3s}
+.toch.open .arr{transform:rotate(180deg)}
+.tocb{display:none;padding:10px 0}
+.tocb.open{display:block}
+.tocg{font-size:.69em;font-weight:800;letter-spacing:.8px;color:var(--dark);text-transform:uppercase;padding:8px 20px 2px}
+.tocb a{display:block;padding:9px 20px 9px 28px;color:var(--dark);text-decoration:none;font-size:.875em;border-left:3px solid transparent;transition:all .2s}
+.tocb a:hover,.tocb a:active{background:#d0e8f5;border-left-color:var(--blue)}
+.tocb a .n{display:inline-block;background:var(--blue);color:#fff;border-radius:5px;padding:1px 8px;font-size:.75em;font-weight:700;margin-right:8px}
+
+/* ── Main wrap ── */
+.wrap{padding:0 16px 100px}
+
+/* ── Section cards ── */
+.sec{background:var(--card);border-radius:var(--r);box-shadow:var(--sh);margin-bottom:16px;overflow:hidden}
+.sh{background:linear-gradient(90deg,var(--dark),var(--blue));color:#fff;padding:16px 18px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;user-select:none;-webkit-tap-highlight-color:transparent}
+.sh .ttl{font-weight:700;font-size:1em}
+.sh .nb{background:rgba(255,255,255,.25);border-radius:6px;padding:3px 10px;font-size:.81em;font-weight:700;margin-right:10px;white-space:nowrap}
+.sh .ch{font-size:1.125em;transition:transform .3s}
+.sh.open .ch{transform:rotate(180deg)}
+.sb{display:none;padding:18px}
+.sb.open{display:block}
+
+/* ── Subsections ── */
+.sub{margin-bottom:24px}
+.sub:last-child{margin-bottom:0}
+.sub h3{font-size:.94em;font-weight:700;color:var(--dark);margin-bottom:10px;padding-bottom:6px;border-bottom:2px solid #d0e8f5;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.sub h3 .sn{background:var(--blue);color:#fff;border-radius:5px;padding:2px 8px;font-size:.75em;white-space:nowrap}
+.sub p{margin-bottom:10px;font-size:.94em}
+.sub ul,.sub ol{padding-left:20px;margin:8px 0;font-size:.94em}
+.sub li{margin-bottom:5px}
+
+/* ── Code blocks ── */
+.cw{background:var(--cbg);border-radius:10px;margin:12px 0;overflow:hidden}
+.cl{background:#21262d;color:#c9d1d9;font-size:.78em;font-weight:700;padding:6px 14px;letter-spacing:.5px;text-transform:uppercase;display:flex;justify-content:space-between;align-items:center}
+.cpb{background:#30363d;color:#c9d1d9;border:none;border-radius:5px;padding:3px 10px;font-size:.69em;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.cpb:active{background:var(--blue);color:#fff}
+pre{margin:0;padding:14px;overflow-x:auto;-webkit-overflow-scrolling:touch}
+code{font-family:'Courier New',monospace;font-size:.81em;color:var(--ctxt);line-height:1.6}
+p code,li code,td code,h3 code,.ca code,.cs-body code{background:#c2d9ea;color:#002233;border-radius:4px;padding:1px 5px;font-size:.81em;font-family:'Courier New',monospace;font-weight:600}
+
+/* ── Callout boxes ── */
+.ca{border-radius:8px;padding:12px 14px;margin:12px 0;font-size:.875em;line-height:1.6;display:flex;gap:10px;align-items:flex-start}
+.ca .ic{font-size:1.125em;flex-shrink:0;margin-top:1px}
+.ca.warn  {background:#fff3cd;border-left:4px solid #b38600;color:#3d2c00}
+.ca.tip   {background:#d4edda;border-left:4px solid #28a745;color:#0d3318}
+.ca.danger{background:#f8d7da;border-left:4px solid #dc3545;color:#3d0010}
+.ca.info  {background:#d0e8f5;border-left:4px solid var(--blue);color:#002d44}
+
+/* ── Exam tip dark box ── */
+.et{background:linear-gradient(135deg,#1a1a2e,var(--dark));color:#fff;border-radius:10px;padding:14px 16px;margin:14px 0;font-size:.875em;line-height:1.6}
+.et .lbl{font-size:.69em;font-weight:800;letter-spacing:1px;color:var(--green);margin-bottom:6px}
+.et ol,.et ul{padding-left:18px;margin-top:6px}
+.et li{margin-bottom:5px}
+
+/* ── Tables ── */
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:12px 0;border-radius:8px}
+table{width:100%;border-collapse:collapse;font-size:.875em}
+th{background:var(--dark);color:#fff;padding:10px 12px;text-align:left;font-weight:700;font-size:.81em}
+td{padding:9px 12px;border-bottom:1px solid #e8ecf0;vertical-align:top;color:#1a1a2e}
+tr:nth-child(even) td{background:#d0e8f5;color:#002d44}
+tr:last-child td{border-bottom:none}
+
+/* ── Numbered steps ── */
+.steps{counter-reset:step;list-style:none;padding:0;margin:12px 0}
+.steps li{counter-increment:step;display:flex;gap:12px;align-items:flex-start;padding:10px 0;border-bottom:1px solid #eef0f3;font-size:.875em;line-height:1.6}
+.steps li:last-child{border-bottom:none}
+.steps li::before{content:counter(step);background:var(--blue);color:#fff;border-radius:50%;min-width:26px;height:26px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.81em;flex-shrink:0;margin-top:2px}
+
+/* ── Diagram box ── */
+.dg{background:#0d1117;border-radius:10px;padding:14px;margin:12px 0;overflow-x:auto;-webkit-overflow-scrolling:touch}
+.dg pre{color:#58a6ff;font-family:'Courier New',monospace;font-size:.75em;line-height:1.6}
+
+/* ── Scenario / troubleshoot box ── */
+.sc{background:#1a1a2e;color:#c9d1d9;border-radius:8px;padding:14px;margin:12px 0;font-size:.875em;line-height:1.6}
+.sc .scl{font-size:.69em;font-weight:800;letter-spacing:.8px;color:var(--green);margin-bottom:8px}
+
+/* ── DORA step cards ── */
+.dora-grid{display:grid;gap:10px;margin:14px 0}
+.dora-card{border-radius:10px;padding:14px;border-left:5px solid}
+.dora-card.client{border-left-color:var(--blue);background:#e8f4fb}
+.dora-card.server{border-left-color:#28a745;background:#d4edda}
+.dora-card .dc-step{font-size:.69em;font-weight:800;letter-spacing:.8px;text-transform:uppercase;margin-bottom:4px}
+.dora-card.client .dc-step{color:var(--dark)}
+.dora-card.server .dc-step{color:#0d3318}
+.dora-card .dc-title{font-weight:700;font-size:.94em;margin-bottom:6px;color:#1a1a2e}
+.dora-card .dc-body{font-size:.875em;color:#1a1a2e;line-height:1.6}
+.dora-card ul{padding-left:18px;margin-top:6px;font-size:.875em;color:#1a1a2e}
+.dora-card li{margin-bottom:3px}
+
+/* ── Config step cards ── */
+.cfg-step{border-left:4px solid var(--blue);background:#e8f4fb;border-radius:0 10px 10px 0;padding:12px 14px;margin:8px 0}
+.cfg-step .cs-num{font-size:.69em;font-weight:800;letter-spacing:.8px;color:var(--dark);text-transform:uppercase;margin-bottom:4px}
+.cfg-step .cs-title{font-weight:700;font-size:.94em;color:var(--dark);margin-bottom:4px}
+.cfg-step .cs-body{font-size:.875em;color:#1a1a2e}
+
+/* ── Relay flow box ── */
+.relay-flow{background:#0d1117;border:2px solid var(--blue);border-radius:10px;padding:16px;margin:14px 0}
+.relay-flow .rf-title{font-size:.75em;font-weight:800;letter-spacing:.8px;color:var(--blue);text-transform:uppercase;margin-bottom:10px}
+.relay-step{display:flex;gap:12px;align-items:flex-start;padding:8px 0;border-bottom:1px solid #21262d;font-size:.81em;color:#c9d1d9;line-height:1.6}
+.relay-step:last-child{border-bottom:none}
+.relay-step .rs-num{background:var(--blue);color:#fff;border-radius:50%;min-width:22px;height:22px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.75em;flex-shrink:0;margin-top:2px}
+
+
+/* ── Module navigation bar ── */
+.mod-nav{position:fixed;bottom:0;left:0;right:0;z-index:300;background:#1a1a2e;border-top:1px solid #30363d;display:flex;align-items:center;height:52px;padding:0 8px;gap:6px}
+.mn-hub{background:#1ba0d7;color:#fff;border:none;border-radius:8px;padding:6px 12px;font-size:.75em;font-weight:700;cursor:pointer;text-decoration:none;display:flex;align-items:center;gap:4px;white-space:nowrap;-webkit-tap-highlight-color:transparent;flex-shrink:0}
+.mn-hub:active{opacity:.8}
+.mn-divider{width:1px;height:28px;background:#30363d;flex-shrink:0}
+.mn-label{flex:1;text-align:center;font-size:.69em;color:#8b949e;font-weight:600;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding:0 4px}
+.mn-prev,.mn-next{background:#30363d;color:#c9d1d9;border:none;border-radius:8px;padding:6px 10px;font-size:.875em;font-weight:700;cursor:pointer;text-decoration:none;display:flex;align-items:center;-webkit-tap-highlight-color:transparent;flex-shrink:0}
+.mn-prev:active,.mn-next:active{background:#1ba0d7;color:#fff}
+.mn-prev.disabled,.mn-next.disabled{opacity:.3;pointer-events:none}
+
+/* ── Scroll to top ── */
+.tb{position:fixed;bottom:80px;right:16px;background:var(--blue);color:#fff;border:none;border-radius:50%;width:44px;height:44px;font-size:1.25em;box-shadow:0 4px 14px rgba(0,0,0,.25);cursor:pointer;display:none;align-items:center;justify-content:center;z-index:100}
+.tb.show{display:flex}
+.ft{text-align:center;padding:24px 16px;color:var(--muted);font-size:.81em}
+/* Study progress panel */
+.sp-wrap{background:var(--card);margin:16px 16px 0;border-radius:var(--r);box-shadow:var(--sh);overflow:hidden}
+.sp-hdr{background:var(--nt);color:#fff;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;user-select:none;-webkit-tap-highlight-color:transparent;gap:10px}
+.sp-hdr .sp-title{font-weight:700;font-size:.875em;flex-shrink:0}
+.sp-hdr .sp-arr{transition:transform .3s;flex-shrink:0}
+.sp-hdr.open .sp-arr{transform:rotate(180deg)}
+.sp-body{display:none;padding:12px 14px}
+.sp-body.open{display:block}
+.sp-row{display:flex;align-items:center;gap:10px;padding:6px 4px;border-bottom:1px solid #f0f4f8;font-size:.81em}
+.sp-row:last-child{border-bottom:none}
+.sp-row .sr-status{font-size:1em;flex-shrink:0;width:20px;text-align:center}
+.sp-row .sr-nb{font-weight:800;color:var(--nt);min-width:36px;flex-shrink:0;font-size:.875em}
+.sp-row .sr-ttl{color:var(--text);flex:1}
+.sp-row.done .sr-ttl{color:var(--muted);text-decoration:line-through}
+.sc-pills{display:flex;align-items:center;gap:4px;overflow-x:auto;-webkit-overflow-scrolling:touch;flex:1;padding:0 4px}
+.sc-pill{background:#30363d;color:#8b949e;border:2px solid transparent;border-radius:6px;padding:3px 8px;font-size:.72em;font-weight:700;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:all .15s;white-space:nowrap;flex-shrink:0;line-height:1.4;display:flex;align-items:center;gap:3px}
+.sc-pill.checked{background:var(--nt);color:#fff;border-color:var(--ntd)}
+.sc-pill .pill-check{font-size:.875em}
+
+/* v2.1 — In-section check button */
+.sh{position:relative}
+.sec-check{position:absolute;right:40px;top:50%;transform:translateY(-50%);background:rgba(255,255,255,.15);border:2px solid rgba(255,255,255,.4);border-radius:6px;padding:2px 10px;font-size:.72em;font-weight:800;color:#fff;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:all .2s;white-space:nowrap;z-index:10;line-height:1.5}
+.sec-check.checked{background:var(--ntd);border-color:var(--ntd);color:#052e1e}
+.sec-check:active{opacity:.75}
+/* Sections panel + tick colours (these pages never defined --nt/--ntd, so the panel header was invisible) */
+:root{--nt:var(--dark);--ntd:#4ade80}
+</style>
+<style>.bc{background:#0d1117;padding:8px 16px;display:flex;align-items:center;flex-wrap:wrap;gap:4px;font-size:.75em;overflow-x:auto;white-space:nowrap;-webkit-overflow-scrolling:touch;border-bottom:1px solid #21262d}.bc a{color:#8b949e;text-decoration:none;font-weight:600;flex-shrink:0}.bc a:active{color:#c9d1d9}.bc .sep{color:#6e7681;flex-shrink:0}.bc .cur{color:#1ba0d7;font-weight:700;flex-shrink:0}</style>
+</head>
+<body>
+<nav class="bc"><a href="../../index.html">🏠 Home</a><span class="sep">›</span><a href="index.html">CCNA 2 — SRWE</a><span class="sep">›</span><span class="cur">M7: DHCPv4</span></nav>
+
+<!-- FONT SIZE TOGGLE -->
+<div class="fs-bar">
+  <div class="sc-pills" id="sc-pills">
+  <button class="sc-pill" id="pill-s1" onclick="toggleSection('s1',this)"><span class="pill-check">○</span>7.1</button>
+  <button class="sc-pill" id="pill-s2" onclick="toggleSection('s2',this)"><span class="pill-check">○</span>7.2</button>
+  <button class="sc-pill" id="pill-s3" onclick="toggleSection('s3',this)"><span class="pill-check">○</span>7.3</button>
+  <button class="sc-pill" id="pill-s-pt-7-4" onclick="toggleSection('s-pt-7-4',this)"><span class="pill-check">○</span>PT 7.4</button>
+  <button class="sc-pill" id="pill-s4" onclick="toggleSection('s4',this)"><span class="pill-check">○</span>CMD</button>
+  <button class="sc-pill" id="pill-s5" onclick="toggleSection('s5',this)"><span class="pill-check">○</span>🎯</button>
+  </div>
+  <span class="fs-label" style="flex-shrink:0;margin-left:6px">Size</span>
+  <button class="fs-btn" onclick="setFs('14px',this)">S</button>
+  <button class="fs-btn active" onclick="setFs('16px',this)">M</button>
+  <button class="fs-btn" onclick="setFs('18px',this)">L</button>
+  <button class="fs-btn" onclick="setFs('20px',this)">XL</button>
+</div>
+
+<!-- HEADER -->
+<div class="hdr">
+  <div class="badge">CCNA 2 — SRWE v7.02</div>
+  <h1>📡 Module 7: DHCPv4</h1>
+  <p>Switching, Routing &amp; Wireless Essentials · NetAcad Study Guide</p>
+  <div class="obj">Module Objective: Implement DHCPv4 to operate across multiple LANs</div>
+</div>
+
+<div class="sp-wrap">
+  <div class="sp-hdr" id="sp-hdr" onclick="toggleStudyPanel()">
+    <span class="sp-title">📚 Sections</span>
+    <span class="sp-arr" id="sp-arr">▼</span>
+  </div>
+  <div class="sp-body" id="sp-body">
+    <div class="sp-row" id="row-s1"><span class="sr-status" id="st-s1">○</span><span class="sr-nb">7.1</span><span class="sr-ttl">DHCPv4 Concepts</span></div>
+    <div class="sp-row" id="row-s2"><span class="sr-status" id="st-s2">○</span><span class="sr-nb">7.2</span><span class="sr-ttl">Configure a Cisco IOS DHCPv4 Server</span></div>
+    <div class="sp-row" id="row-s3"><span class="sr-status" id="st-s3">○</span><span class="sr-nb">7.3</span><span class="sr-ttl">Configure a DHCPv4 Client</span></div>
+    <div class="sp-row" id="row-s-pt-7-4"><span class="sr-status" id="st-s-pt-7-4">○</span><span class="sr-nb">PT 7.4</span><span class="sr-ttl">Packet Tracer — Implement DHCPv4</span></div>
+    <div class="sp-row" id="row-s4"><span class="sr-status" id="st-s4">○</span><span class="sr-nb">CMD</span><span class="sr-ttl">Quick Reference — All Module 7 Commands</span></div>
+    <div class="sp-row" id="row-s5"><span class="sr-status" id="st-s5">○</span><span class="sr-nb">🎯</span><span class="sr-ttl">Common Exam Traps — Module 7</span></div>
+  </div>
+</div>
+
+<!-- TABLE OF CONTENTS -->
+<div class="toc">
+  <div class="toch open" onclick="this.classList.toggle('open');document.getElementById('tocb').classList.toggle('open')">
+    📋 Table of Contents — Tap to expand <span class="arr">▼</span>
+  </div>
+  <div class="tocb open" id="tocb">
+    <div class="tocg">7.1 — DHCPv4 Concepts</div>
+    <a href="javascript:void(0)" onclick="goTo('s1')"><span class="n">7.1.1</span> DHCPv4 Server and Client</a>
+    <a href="javascript:void(0)" onclick="goTo('s1')"><span class="n">7.1.2</span> DHCPv4 Operation</a>
+    <a href="javascript:void(0)" onclick="goTo('s1')"><span class="n">7.1.3</span> Steps to Obtain a Lease — DORA</a>
+    <a href="javascript:void(0)" onclick="goTo('s1')"><span class="n">7.1.4</span> Steps to Renew a Lease</a>
+    <div class="tocg">7.2 — Configure a Cisco IOS DHCPv4 Server</div>
+    <a href="javascript:void(0)" onclick="goTo('s2')"><span class="n">7.2.1</span> Cisco IOS DHCPv4 Server</a>
+    <a href="javascript:void(0)" onclick="goTo('s2')"><span class="n">7.2.2</span> Steps to Configure a DHCPv4 Server</a>
+    <a href="javascript:void(0)" onclick="goTo('s2')"><span class="n">7.2.3</span> Configuration Example</a>
+    <a href="javascript:void(0)" onclick="goTo('s2')"><span class="n">7.2.4</span> DHCPv4 Verification Commands</a>
+    <a href="javascript:void(0)" onclick="goTo('s2')"><span class="n">7.2.7</span> Disable the DHCPv4 Server</a>
+    <a href="javascript:void(0)" onclick="goTo('s2')"><span class="n">7.2.8</span> DHCPv4 Relay — Deep Dive</a>
+    <a href="javascript:void(0)" onclick="goTo('s2')"><span class="n">7.2.9</span> Other Services Relayed</a>
+    <div class="tocg">7.3 — Configure a DHCPv4 Client</div>
+    <a href="javascript:void(0)" onclick="goTo('s3')"><span class="n">7.3.1</span> Cisco Router as a DHCPv4 Client</a>
+    <a href="javascript:void(0)" onclick="goTo('s3')"><span class="n">7.3.2</span> Configuration Example</a>
+    <a href="javascript:void(0)" onclick="goTo('s3')"><span class="n">7.3.3</span> Home Router as a DHCPv4 Client</a>
+    <div class="tocg">Reference</div>
+    <a href="javascript:void(0)" onclick="goTo('s4')"><span class="n">CMD</span> All Module 7 Commands</a>
+    <a href="javascript:void(0)" onclick="goTo('s5')"><span class="n">🎯</span> Common Exam Traps</a>
+  </div>
+</div>
+
+<div class="wrap">
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- SECTION 7.1 — DHCPV4 CONCEPTS -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div class="sec" id="s1">
+<div class="sh open" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">7.1</span><span class="ttl">DHCPv4 Concepts</span></span><button class="sec-check" id="sch-s1" onclick="event.stopPropagation();toggleSection('s1',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb open">
+
+  <div class="sub">
+  <h3><span class="sn">7.1.1</span> DHCPv4 Server and Client</h3>
+  <p><strong>DHCPv4 (Dynamic Host Configuration Protocol version 4)</strong> automatically assigns IPv4 addresses and network configuration to clients — eliminating manual configuration of every device on the network.</p>
+  <div class="tw"><table>
+    <tr><th>Without DHCP</th><th>With DHCP</th></tr>
+    <tr><td>Manually configure IP on every PC, phone, printer</td><td>Devices automatically receive their IP when they connect</td></tr>
+    <tr><td>Manually update when devices move or are replaced</td><td>Addresses are managed automatically by the server</td></tr>
+    <tr><td>Track used addresses manually to prevent duplicates</td><td>Server tracks all leases — no duplicate assignments</td></tr>
+  </table></div>
+  <p><strong>How leasing works:</strong></p>
+  <ul>
+    <li>DHCP server assigns an IP for a limited time called a <strong>lease</strong></li>
+    <li>Typical lease duration: <strong>24 hours to one week</strong> (configurable — default is 1 day)</li>
+    <li>Client must renew before expiration — usually gets the same address back</li>
+    <li>If a device powers off, the lease expires and the address returns to the pool</li>
+  </ul>
+  <div class="tw"><table>
+    <tr><th>Deployment Option</th><th>When Used</th></tr>
+    <tr><td><strong>Dedicated DHCP server</strong></td><td>Large enterprise networks — scalable, centrally managed</td></tr>
+    <tr><td><strong>Cisco IOS router as DHCP server</strong></td><td>Small branch, SOHO — no dedicated server needed</td></tr>
+  </table></div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">7.1.2</span> DHCPv4 Operation</h3>
+  <p>DHCPv4 works in a <strong>client/server model</strong>. The server maintains a pool of available addresses and leases them to clients on request. The lease mechanism ensures that addresses are reclaimed when devices leave the network — clients that power off without releasing their address have their leases expire naturally.</p>
+  <div class="dg"><pre>
+  DHCP Server maintains address pool: 192.168.10.10 – 192.168.10.253
+  
+  PC1 connects → requests address → leased 192.168.10.10 for 1 day
+  PC2 connects → requests address → leased 192.168.10.11 for 1 day
+  
+  PC1 powers off without releasing:
+  → Lease for 192.168.10.10 expires after 1 day
+  → Address returns to pool → available for the next device</pre></div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">7.1.3</span> Steps to Obtain a Lease — The DORA Process</h3>
+  <p>When a device joins the network with no IP address, it goes through four steps — commonly called <strong>DORA</strong>: Discover, Offer, Request, Acknowledge.</p>
+
+  <div class="dg"><pre>
+  Client                                              DHCP Server
+    |                                                      |
+    |── DHCPDISCOVER (BROADCAST) ─────────────────────>  |  Step 1
+    |   src: 0.0.0.0    dst: 255.255.255.255               |
+    |   MAC dst: FF:FF:FF:FF:FF:FF                          |
+    |   "Is there a DHCP server out there?"                 |
+    |                                                      |
+    |<──────────────────────── DHCPOFFER (unicast) ──────|  Step 2
+    |   "Here is an offer: IP, mask, gateway, DNS, lease"  |
+    |                                                      |
+    |── DHCPREQUEST (BROADCAST) ──────────────────────>  |  Step 3
+    |   "I accept your offer — all other servers, release" |
+    |   Still broadcast — notifies ALL DHCP servers        |
+    |                                                      |
+    |<────────────────────────── DHCPACK (unicast) ──────|  Step 4
+    |   "Confirmed — the address is yours"                 |
+    |   Client binds the IP and starts using it            |</pre></div>
+
+  <div class="dora-grid">
+    <div class="dora-card client">
+      <div class="dc-step">Step 1 — CLIENT sends</div>
+      <div class="dc-title">DHCPDISCOVER (Broadcast)</div>
+      <div class="dc-body">Client has no IP yet — sends Layer 2 and Layer 3 broadcast.
+        <ul>
+          <li>Source IP: <strong>0.0.0.0</strong> (no IP assigned yet)</li>
+          <li>Destination IP: <strong>255.255.255.255</strong></li>
+          <li>Destination MAC: <strong>FF:FF:FF:FF:FF:FF</strong></li>
+          <li>"I need a DHCP server — is anyone out there?"</li>
+        </ul>
+      </div>
+    </div>
+    <div class="dora-card server">
+      <div class="dc-step">Step 2 — SERVER sends</div>
+      <div class="dc-title">DHCPOFFER (Unicast)</div>
+      <div class="dc-body">Server receives Discover, reserves an IP for the client, creates an ARP entry, and sends an offer back.
+        <ul>
+          <li>Includes: IP address, subnet mask, default gateway, DNS, lease duration</li>
+          <li>Multiple DHCP servers may each send an offer</li>
+        </ul>
+      </div>
+    </div>
+    <div class="dora-card client">
+      <div class="dc-step">Step 3 — CLIENT sends</div>
+      <div class="dc-title">DHCPREQUEST (Broadcast)</div>
+      <div class="dc-body">Client accepts one offer and sends DHCPREQUEST as a <strong>broadcast</strong> — critical because there may be multiple DHCP servers.
+        <ul>
+          <li>Broadcast notifies ALL servers which offer was accepted</li>
+          <li>Other servers release their reserved addresses back to their pools</li>
+          <li>If unicast were used, other servers would never know — their reserved addresses would be wasted</li>
+        </ul>
+      </div>
+    </div>
+    <div class="dora-card server">
+      <div class="dc-step">Step 4 — SERVER sends</div>
+      <div class="dc-title">DHCPACK (Unicast)</div>
+      <div class="dc-body">Server confirms the lease and sends DHCPACK.
+        <ul>
+          <li>May send an ICMP ping to the address first to check for conflicts</li>
+          <li>Creates a new ARP entry for the client</li>
+          <li>Client receives DHCPACK, does an ARP lookup for the IP — if no reply, starts using it</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="et">
+    <div class="lbl">🎯 DORA MEMORY TRICK</div>
+    <strong>D</strong>iscover → <strong>O</strong>ffer → <strong>R</strong>equest → <strong>A</strong>cknowledge<br><br>
+    Steps 1 and 3 = sent by the <strong>CLIENT</strong> (both odd numbers)<br>
+    Steps 2 and 4 = sent by the <strong>SERVER</strong> (both even numbers)<br><br>
+    Steps 1 and 3 = <strong>BROADCASTS</strong> &nbsp;|&nbsp; Steps 2 and 4 = <strong>UNICASTS</strong>
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">7.1.4</span> Steps to Renew a Lease</h3>
+  <p>Before the lease expires, the client goes through a simpler <strong>two-step renewal process</strong>:</p>
+  <ol class="steps">
+    <li><strong>DHCPREQUEST (unicast)</strong> — Client sends directly to the original DHCP server using unicast. "I would like to renew my current lease." If no DHCPACK is received, the client broadcasts a DHCPREQUEST to find any available server.</li>
+    <li><strong>DHCPACK (unicast)</strong> — Server verifies the lease and sends DHCPACK. Lease timer resets. Client keeps the same IP address.</li>
+  </ol>
+  <div class="tw"><table>
+    <tr><th></th><th>Initial Lease (DORA)</th><th>Lease Renewal</th></tr>
+    <tr><td><strong>Number of steps</strong></td><td>4</td><td>2</td></tr>
+    <tr><td><strong>Starts with</strong></td><td>DHCPDISCOVER (broadcast)</td><td>DHCPREQUEST (unicast)</td></tr>
+    <tr><td><strong>DHCPREQUEST sent as</strong></td><td>Broadcast</td><td>Unicast (to known server)</td></tr>
+    <tr><td><strong>Why?</strong></td><td>Client has no IP, doesn't know server address</td><td>Client already knows the server's IP from the original lease</td></tr>
+  </table></div>
+  <div class="ca info">
+    <span class="ic">💡</span>
+    <div><strong>Key exam comparison:</strong> Renewal uses <strong>unicast</strong> because the client already knows the DHCP server's IP. Initial lease uses <strong>broadcast</strong> because the client has no IP and doesn't know where the server is. This distinction is a direct exam question.</div>
+  </div>
+  </div>
+
+</div></div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- SECTION 7.2 — CONFIGURE DHCPV4 SERVER -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div class="sec" id="s2">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">7.2</span><span class="ttl">Configure a Cisco IOS DHCPv4 Server</span></span><button class="sec-check" id="sch-s2" onclick="event.stopPropagation();toggleSection('s2',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb">
+
+  <div class="sub">
+  <h3><span class="sn">7.2.1</span> Cisco IOS DHCPv4 Server</h3>
+  <p>A Cisco router running IOS can be configured as a full-featured DHCPv4 server — assigning and managing IP addresses from configured address pools. Common in small branch offices and SOHO environments where a dedicated DHCP server is not justified.</p>
+  <div class="dg"><pre>
+  Topology:
+  PC1 ──────┐
+  PC2 ──────┤──── G0/0/0 [R1]     R1 = DHCP server
+  PC3 ──────┘                      for 192.168.10.0/24
+     192.168.10.0/24</pre></div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">7.2.2</span> Steps to Configure a Cisco IOS DHCPv4 Server</h3>
+  <p>Always follow these three steps in this exact order:</p>
+  <div class="cfg-step">
+    <div class="cs-num">Step 1</div>
+    <div class="cs-title">Exclude IPv4 Addresses</div>
+    <div class="cs-body">Before creating the pool, exclude addresses reserved for routers, servers, printers, and other statically configured devices. Must be done at global config mode BEFORE the pool is created.</div>
+  </div>
+  <div class="cfg-step">
+    <div class="cs-num">Step 2</div>
+    <div class="cs-title">Define the DHCPv4 Pool Name</div>
+    <div class="cs-body">Create a named pool with <code>ip dhcp pool [name]</code>. IOS enters dhcp-config mode — prompt changes to <code>Router(dhcp-config)#</code>.</div>
+  </div>
+  <div class="cfg-step">
+    <div class="cs-num">Step 3</div>
+    <div class="cs-title">Configure the DHCPv4 Pool</div>
+    <div class="cs-body">From dhcp-config mode, set the network, gateway, DNS, domain name, and lease. Network and default-router are required; everything else is optional.</div>
+  </div>
+  <div class="tw"><table>
+    <tr><th>Pool Command</th><th>What It Configures</th><th>Required?</th></tr>
+    <tr><td><code>network [net] [mask]</code></td><td>Subnet of addresses to lease out</td><td>✅ Required</td></tr>
+    <tr><td><code>default-router [ip]</code></td><td>Default gateway for clients — up to 8 addresses</td><td>✅ Required</td></tr>
+    <tr><td><code>dns-server [ip]</code></td><td>DNS server address — up to 8 addresses</td><td>Optional</td></tr>
+    <tr><td><code>domain-name [name]</code></td><td>Domain suffix given to clients</td><td>Optional</td></tr>
+    <tr><td><code>lease [days] [hours] [minutes]</code></td><td>Lease duration — default is <strong>1 day</strong></td><td>Optional</td></tr>
+    <tr><td><code>netbios-name-server [ip]</code></td><td>NetBIOS WINS server (legacy)</td><td>Optional</td></tr>
+  </table></div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">7.2.3</span> Configuration Example</h3>
+  <div class="cw">
+    <div class="cl">R1 — Complete DHCPv4 Server Configuration for 192.168.10.0/24 <button class="cpb" onclick="copyCode(this)">Copy</button></div>
+    <pre><code>! STEP 1: Exclude static addresses BEFORE creating pool
+R1(config)# ip dhcp excluded-address 192.168.10.1 192.168.10.9
+R1(config)# ip dhcp excluded-address 192.168.10.254
+
+! STEP 2: Create the pool (enters dhcp-config mode)
+R1(config)# ip dhcp pool LAN-POOL-1
+
+! STEP 3: Configure pool parameters
+R1(dhcp-config)# network 192.168.10.0 255.255.255.0
+R1(dhcp-config)# default-router 192.168.10.1
+R1(dhcp-config)# dns-server 192.168.11.5
+R1(dhcp-config)# domain-name example.com
+R1(dhcp-config)# end</code></pre>
+  </div>
+  <div class="ca info">
+    <span class="ic">💡</span>
+    <div><strong>What clients receive from this pool:</strong><br>
+    IP address from <strong>192.168.10.10 to 192.168.10.253</strong> (pool minus excluded .1–.9 and .254)<br>
+    Subnet mask: 255.255.255.0 &nbsp;|&nbsp; Default gateway: 192.168.10.1<br>
+    DNS: 192.168.11.5 &nbsp;|&nbsp; Domain: example.com &nbsp;|&nbsp; Lease: 1 day</div>
+  </div>
+  <div class="ca danger">
+    <span class="ic">🚨</span>
+    <div><strong>Exclude addresses BEFORE creating the pool.</strong> If you create the pool first and forget to exclude the router's own IP (192.168.10.1), DHCP may assign it to a client — creating an IP conflict and breaking network connectivity for both the router and the client.</div>
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">7.2.4–7.2.5</span> DHCPv4 Verification Commands</h3>
+  <div class="cw">
+    <div class="cl">show running-config | section dhcp — full DHCP configuration view <button class="cpb" onclick="copyCode(this)">Copy</button></div>
+    <pre><code>R1# show running-config | section dhcp
+ip dhcp excluded-address 192.168.10.1 192.168.10.9
+ip dhcp excluded-address 192.168.10.254
+ip dhcp pool LAN-POOL-1
+ network 192.168.10.0 255.255.255.0
+ default-router 192.168.10.1
+ dns-server 192.168.11.5
+ domain-name example.com</code></pre>
+  </div>
+  <div class="cw">
+    <div class="cl">show ip dhcp binding — active leases (IP to MAC mappings) <button class="cpb" onclick="copyCode(this)">Copy</button></div>
+    <pre><code>R1# show ip dhcp binding
+IP address      Client-ID/Hardware address    Lease expiration        Type
+192.168.10.10   0100.5056.b3ed.d8             Sep 15 2019 8:42 AM    Automatic
+192.168.10.11   0100.5056.b3ed.e9             Sep 15 2019 9:15 AM    Automatic
+
+! Shows which IP was leased to which MAC address and when the lease expires
+! This is the most important verification command -- confirms clients got addresses</code></pre>
+  </div>
+  <div class="cw">
+    <div class="cl">show ip dhcp server statistics — message counters <button class="cpb" onclick="copyCode(this)">Copy</button></div>
+    <pre><code>R1# show ip dhcp server statistics
+Address pools        1
+Automatic bindings   2
+Message              Received
+DHCPDISCOVER         4
+DHCPREQUEST          2
+DHCPACK              2
+
+! If DHCPDISCOVER count is rising but DHCPACK is 0 -- pool config problem
+! If DHCPDISCOVER is 0 -- clients aren't reaching the server (check relay)</code></pre>
+  </div>
+  <div class="cw">
+    <div class="cl">ipconfig /all — client-side verification (Windows PC) <button class="cpb" onclick="copyCode(this)">Copy</button></div>
+    <pre><code>C:\> ipconfig /all
+   DHCP Enabled. . . . . . : Yes
+   IPv4 Address. . . . . . : 192.168.10.10
+   Subnet Mask . . . . . . : 255.255.255.0
+   Default Gateway . . . . : 192.168.10.1
+   DHCP Server . . . . . . : 192.168.10.1    ← confirms R1 is the DHCP server
+   DNS Servers . . . . . . : 192.168.11.5
+   Lease Obtained  . . . . : Sep 14 2019 8:42:22 AM
+   Lease Expires . . . . . : Sep 15 2019 8:42:22 AM</code></pre>
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">7.2.7</span> Disable the Cisco IOS DHCPv4 Server</h3>
+  <p>DHCP is <strong>enabled by default</strong> on Cisco IOS routers — even without any pool configured.</p>
+  <div class="cw">
+    <div class="cl">Disable and re-enable the DHCP service <button class="cpb" onclick="copyCode(this)">Copy</button></div>
+    <pre><code>R1(config)# no service dhcp    ! Disable DHCP service
+R1(config)# service dhcp       ! Re-enable DHCP service</code></pre>
+  </div>
+  <div class="ca warn">
+    <span class="ic">⚠️</span>
+    <div>Stopping and restarting the DHCP service or clearing bindings can result in <strong>duplicate IP addresses</strong> being temporarily assigned on the network. Perform this only during a maintenance window.</div>
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">7.2.8</span> DHCPv4 Relay — Deep Dive</h3>
+
+  <p style="font-weight:700;color:var(--dark);margin:10px 0 6px;">The Core Problem</p>
+  <p>In enterprise networks, DHCP servers are centralized but clients are spread across many subnets. This creates a fundamental problem: <strong>DHCP relies on broadcasts, and routers do not forward broadcasts.</strong></p>
+  <div class="dg"><pre>
+  WITHOUT ip helper-address:
+  
+  PC1 (192.168.10.0/24) ──G0/0/0──[R1]──G0/0/1──── DHCP Server (192.168.11.6)
+  
+  1. PC1 sends DHCPDISCOVER broadcast (src: 0.0.0.0, dst: 255.255.255.255)
+  2. R1 receives the broadcast on G0/0/0
+  3. R1 DROPS IT -- routers do not forward broadcasts
+  4. DHCP server never sees the request
+  5. PC1 times out -- falls back to APIPA (169.254.x.x)
+     No real network access</pre></div>
+
+  <p style="font-weight:700;color:var(--dark);margin:14px 0 6px;">The Solution — ip helper-address</p>
+  <p>The <code>ip helper-address</code> command converts the DHCP broadcast into a <strong>directed unicast</strong> and forwards it to the DHCP server. The router becomes a <strong>DHCP relay agent</strong>.</p>
+  <div class="cw">
+    <div class="cl">Configure ip helper-address on the client-facing interface <button class="cpb" onclick="copyCode(this)">Copy</button></div>
+    <pre><code>R1(config)# interface GigabitEthernet0/0/0    ! Client-facing interface
+R1(config-if)# ip helper-address 192.168.11.6 ! Address of the DHCP server
+R1(config-if)# end</code></pre>
+  </div>
+
+  <p style="font-weight:700;color:var(--dark);margin:14px 0 6px;">What Happens to the Packet — Step by Step</p>
+  <div class="relay-flow">
+    <div class="rf-title">📦 Packet flow with ip helper-address configured</div>
+    <div class="relay-step"><div class="rs-num">1</div><div>PC1 sends DHCPDISCOVER broadcast: src=0.0.0.0, dst=255.255.255.255</div></div>
+    <div class="relay-step"><div class="rs-num">2</div><div>R1 receives it on G0/0/0 — sees ip helper-address is configured on this interface</div></div>
+    <div class="relay-step"><div class="rs-num">3</div><div>R1 modifies the packet: changes src to 192.168.10.1 (R1's own G0/0/0 IP), changes dst to 192.168.11.6 (server — now unicast), fills the <strong>giaddr field</strong> with 192.168.10.1</div></div>
+    <div class="relay-step"><div class="rs-num">4</div><div>R1 forwards the modified packet as <strong>unicast</strong> out G0/0/1 toward the DHCP server</div></div>
+    <div class="relay-step"><div class="rs-num">5</div><div>DHCP server reads giaddr=192.168.10.1 → "This client is on the 192.168.10.0/24 subnet" → selects the correct pool → sends DHCPOFFER back to 192.168.10.1 (R1)</div></div>
+    <div class="relay-step"><div class="rs-num">6</div><div>R1 receives the DHCPOFFER and forwards it to PC1</div></div>
+    <div class="relay-step"><div class="rs-num">7</div><div>PC1 completes DORA normally and receives an IP address</div></div>
+  </div>
+
+  <div class="ca info">
+    <span class="ic">💡</span>
+    <div><strong>The giaddr field is critical — and often overlooked.</strong> When R1 relays a DHCPDISCOVER, it automatically inserts its own client-facing interface IP address into the <strong>giaddr (Gateway IP Address) field</strong> of the DHCP packet. The DHCP server reads this field to determine which subnet the client is on, then selects the matching pool. Without giaddr, the server would not know which subnet the client belongs to and could not make the correct assignment. This is the entire mechanism that allows one server to serve many subnets simultaneously.</div>
+  </div>
+
+  <p style="font-weight:700;color:var(--dark);margin:14px 0 6px;">Where Exactly Does ip helper-address Go?</p>
+  <div class="ca danger">
+    <span class="ic">❌</span>
+    <div><strong>The #1 ip helper-address exam trap.</strong> The command goes on the <strong>interface FACING the clients</strong> — the one that receives the DHCP broadcast. NOT on the interface facing the server.</div>
+  </div>
+  <div class="cw">
+    <div class="cl">Correct vs incorrect placement <button class="cpb" onclick="copyCode(this)">Copy</button></div>
+    <pre><code>Topology: [Clients 192.168.10.0/24] ──G0/0/0──[R1]──G0/0/1──[DHCP Server]
+
+! CORRECT -- on the client-facing interface
+R1(config)# interface GigabitEthernet0/0/0
+R1(config-if)# ip helper-address 192.168.11.6
+
+! WRONG -- on the server-facing interface (does nothing useful)
+R1(config)# interface GigabitEthernet0/0/1
+R1(config-if)# ip helper-address 192.168.11.6
+! Broadcasts arrive on G0/0/0 and are dropped BEFORE reaching G0/0/1
+! The command on G0/0/1 never gets triggered</code></pre>
+  </div>
+
+  <p style="font-weight:700;color:var(--dark);margin:14px 0 6px;">Multiple Subnets — One Central DHCP Server</p>
+  <p>In enterprise networks one central DHCP server often serves many client subnets simultaneously. Each client-facing interface needs its own <code>ip helper-address</code> command.</p>
+  <div class="cw">
+    <div class="cl">R1 — Three client VLANs, one central DHCP server <button class="cpb" onclick="copyCode(this)">Copy</button></div>
+    <pre><code>! Topology:
+! [VLAN 10 - 192.168.10.0/24] ──G0/0/0──┐
+! [VLAN 20 - 192.168.20.0/24] ──G0/0/1──┤ [R1] ──G0/0/3──── DHCP Server (10.0.0.10)
+! [VLAN 30 - 192.168.30.0/24] ──G0/0/2──┘
+
+R1(config)# interface GigabitEthernet0/0/0
+R1(config-if)# ip helper-address 10.0.0.10
+
+R1(config)# interface GigabitEthernet0/0/1
+R1(config-if)# ip helper-address 10.0.0.10
+
+R1(config)# interface GigabitEthernet0/0/2
+R1(config-if)# ip helper-address 10.0.0.10
+
+! VLAN 10 Discover relayed with giaddr=192.168.10.1 → server assigns from VLAN10 pool
+! VLAN 20 Discover relayed with giaddr=192.168.20.1 → server assigns from VLAN20 pool
+! VLAN 30 Discover relayed with giaddr=192.168.30.1 → server assigns from VLAN30 pool
+! One server, three subnets, all working simultaneously</code></pre>
+  </div>
+  <div class="ca warn">
+    <span class="ic">⚠️</span>
+    <div>The DHCP server must have a <strong>matching pool for every giaddr subnet</strong>. If the server has a pool for 192.168.10.0/24 but not 192.168.20.0/24, VLAN 20 clients still won't get addresses — even if the relay is perfectly configured.</div>
+  </div>
+
+  <p style="font-weight:700;color:var(--dark);margin:14px 0 6px;">Verify the Relay is Configured</p>
+  <div class="cw">
+    <div class="cl">show ip interface — confirms relay is active <button class="cpb" onclick="copyCode(this)">Copy</button></div>
+    <pre><code>R1# show ip interface GigabitEthernet0/0/0
+GigabitEthernet0/0/0 is up, line protocol is up
+  Internet address is 192.168.10.1/24
+  Broadcast address is 255.255.255.255
+  Helper address is 192.168.11.6      ← confirms relay is active on this interface
+(output omitted)</code></pre>
+  </div>
+
+  <p style="font-weight:700;color:var(--dark);margin:14px 0 6px;">Troubleshoot DHCP Relay — Step by Step</p>
+  <div class="sc">
+    <div class="scl">🔍 TROUBLESHOOT SCENARIO</div>
+    PC1 on 192.168.10.0/24 cannot get a DHCP address. DHCP server is at 192.168.11.6. Follow these steps in order:
+  </div>
+  <ol class="steps">
+    <li><strong>Verify R1 can reach the DHCP server:</strong>
+      <div class="cw" style="margin-top:8px"><div class="cl">ping test from R1 to DHCP server <button class="cpb" onclick="copyCode(this)">Copy</button></div>
+      <pre><code>R1# ping 192.168.11.6
+!!!!!
+! If this fails, fix routing FIRST -- relay cannot forward if no route exists</code></pre></div>
+    </li>
+    <li><strong>Verify ip helper-address is on the correct interface:</strong>
+      <div class="cw" style="margin-top:8px"><div class="cl">show ip interface — check for Helper address line <button class="cpb" onclick="copyCode(this)">Copy</button></div>
+      <pre><code>R1# show ip interface GigabitEthernet0/0/0
+  Internet address is 192.168.10.1/24
+  Helper address is 192.168.11.6     ← must appear here
+! If missing: add ip helper-address 192.168.11.6 on this interface</code></pre></div>
+    </li>
+    <li><strong>Verify the DHCP server has a pool matching the relay subnet:</strong>
+      <div class="cw" style="margin-top:8px"><div class="cl">show running-config | section dhcp — on the DHCP server <button class="cpb" onclick="copyCode(this)">Copy</button></div>
+      <pre><code>DHCP-SVR# show running-config | section dhcp
+ip dhcp pool VLAN10
+ network 192.168.10.0 255.255.255.0    ← must match the giaddr subnet
+ default-router 192.168.10.1
+! If pool is missing or network statement doesn't match, create the correct pool</code></pre></div>
+    </li>
+    <li><strong>Verify bindings are being created on the DHCP server:</strong>
+      <div class="cw" style="margin-top:8px"><div class="cl">show ip dhcp binding <button class="cpb" onclick="copyCode(this)">Copy</button></div>
+      <pre><code>DHCP-SVR# show ip dhcp binding
+IP address      Client-ID/Hardware address    Lease expiration
+192.168.10.10   0100.5056.b3ed.d8             Sep 15 2019 8:42 AM
+! If no bindings appear but relay and pool are correct, check if DHCP is disabled</code></pre></div>
+    </li>
+    <li><strong>Check DHCP message flow with statistics:</strong>
+      <div class="cw" style="margin-top:8px"><div class="cl">show ip dhcp server statistics — diagnose message flow <button class="cpb" onclick="copyCode(this)">Copy</button></div>
+      <pre><code>DHCP-SVR# show ip dhcp server statistics
+DHCPDISCOVER     4    ← server IS receiving relayed Discovers
+DHCPOFFER        4    ← server IS sending Offers
+DHCPREQUEST      0    ← client never sent a Request back
+! Discovers arriving but no Requests = client receives Offer but doesn't respond
+! Check client VLAN assignment, firewall, or whether Offer is actually reaching client</code></pre></div>
+    </li>
+  </ol>
+
+  <p style="font-weight:700;color:var(--dark);margin:14px 0 8px;">Common ip helper-address Mistakes:</p>
+  <div class="tw"><table>
+    <tr><th>Mistake</th><th>Symptom</th><th>Fix</th></tr>
+    <tr><td><code>ip helper-address</code> on server-facing interface</td><td>Broadcasts dropped — relay never triggers</td><td>Move to client-facing interface</td></tr>
+    <tr><td>No route from R1 to DHCP server</td><td>Relay sends unicast but undeliverable</td><td>Add route to DHCP server subnet</td></tr>
+    <tr><td>DHCP server has no pool for relay subnet</td><td>Server receives Discover but has no matching pool</td><td>Create pool with correct <code>network</code> statement</td></tr>
+    <tr><td>DHCP service disabled on server</td><td>Server ignores all requests</td><td><code>service dhcp</code> on the server</td></tr>
+    <tr><td>Excluded range covers entire pool</td><td>Server has no free addresses</td><td>Review excluded address ranges</td></tr>
+    <tr><td><code>ip helper-address</code> pointing to wrong IP</td><td>Unicast sent to wrong destination</td><td>Correct the server IP in the command</td></tr>
+  </table></div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">7.2.9</span> Other Service Broadcasts Relayed</h3>
+  <p><code>ip helper-address</code> does not just relay DHCP — by default it relays <strong>eight UDP services</strong>:</p>
+  <div class="tw"><table>
+    <tr><th>Port</th><th>Service</th><th>Note</th></tr>
+    <tr><td>37</td><td>Time</td><td></td></tr>
+    <tr><td>49</td><td>TACACS</td><td></td></tr>
+    <tr><td><strong>53</strong></td><td><strong>DNS</strong></td><td>Domain name resolution</td></tr>
+    <tr><td><strong>67</strong></td><td><strong>DHCP/BOOTP server</strong></td><td>Key DHCP port</td></tr>
+    <tr><td><strong>68</strong></td><td><strong>DHCP/BOOTP client</strong></td><td>Key DHCP port</td></tr>
+    <tr><td><strong>69</strong></td><td><strong>TFTP</strong></td><td>Trivial File Transfer Protocol</td></tr>
+    <tr><td>137</td><td>NetBIOS name service</td><td></td></tr>
+    <tr><td>138</td><td>NetBIOS datagram service</td><td></td></tr>
+  </table></div>
+  <div class="et">
+    <div class="lbl">🎯 EXAM TIP</div>
+    The exam asks directly: <strong>"How many services does ip helper-address relay by default?"</strong><br><br>
+    Answer: <strong>Eight UDP services</strong> — ports 37, 49, 53, 67, 68, 69, 137, 138.<br><br>
+    DHCP uses ports <strong>67</strong> (server) and <strong>68</strong> (client). The fact that ip helper-address also relays DNS (port 53) and TFTP (port 69) surprises many students — it relays much more than just DHCP.
+  </div>
+  </div>
+
+  <!-- SYNTAX CHECKER: 7.2.5 -->
+  <div style="margin:20px 0 6px;padding:16px;background:#0d1117;border:1px solid #30363d;border-left:3px solid #bc8cff;border-radius:8px">
+    <div style="font-size:.7em;font-weight:800;text-transform:uppercase;letter-spacing:.8px;color:#bc8cff;margin-bottom:6px">&#x1F5A5; Syntax Checker &mdash; 7.2.5</div>
+    <div style="font-size:.92em;font-weight:600;color:#e6edf3;margin-bottom:12px">Configure a DHCP Relay Agent</div>
+    <div style="font-size:.82em;color:#8b949e;margin-bottom:14px">Type each command exactly as shown. Press Enter to submit. The checker validates your syntax step by step.</div>
+    <div class="tool-links" style="display:flex;flex-wrap:wrap;gap:14px">
+      <div style="flex:1 1 220px;min-width:0">
+        <a href="../../syntax-checker-simple/ccna2_syntax_checker.html?lab=7.2.5" target="_blank" rel="noopener" title="Quick, guided drill: type the exact commands for this NetAcad lab, step by step. Opens straight to lab 7.2.5." style="display:inline-flex;align-items:center;gap:8px;color:#fff;text-decoration:none;padding:8px 18px;border-radius:6px;font-size:.85em;font-weight:700;background:#238636;border:1px solid #2ea043">&#x25B6; Open Syntax Checker</a>
+        <div style="font-size:.75em;color:#8b949e;margin-top:6px">Quick, guided drill: type the exact commands for this NetAcad lab, step by step. Opens straight to lab 7.2.5.</div>
+      </div>
+      <div style="flex:1 1 220px;min-width:0">
+        <a class="cli-engine-link" href="../../cli-engine/ccna-cli-engine.html" target="_blank" rel="noopener" title="Full simulated Cisco IOS terminal: Tab completion, device state, Free Practice, Home Labs and Subnetting. In its exercise menu, pick “Course 2 · 7.2 — Configure a DHCP Relay Agent”." style="display:inline-flex;align-items:center;gap:8px;color:#fff;text-decoration:none;padding:8px 18px;border-radius:6px;font-size:.85em;font-weight:700;background:#1f6feb;border:1px solid #388bfd">&#x1F4BB; Open CLI Engine</a>
+        <div style="font-size:.75em;color:#8b949e;margin-top:6px">Full simulated Cisco IOS terminal: Tab completion, device state, Free Practice, Home Labs and Subnetting. In its exercise menu, pick “Course 2 · 7.2 — Configure a DHCP Relay Agent”.</div>
+      </div>
+    </div>
+    <div style="margin-top:12px;font-size:.75em"><a href="../../index.html" style="color:#58a6ff;text-decoration:none">&#x1F3E0; All study tools (home)</a></div>
+  </div>
+
+  <!-- SYNTAX CHECKER: 7.1.8 -->
+  <div style="margin:20px 0 6px;padding:16px;background:#0d1117;border:1px solid #30363d;border-left:3px solid #bc8cff;border-radius:8px">
+    <div style="font-size:.7em;font-weight:800;text-transform:uppercase;letter-spacing:.8px;color:#bc8cff;margin-bottom:6px">&#x1F5A5; Syntax Checker &mdash; 7.1.8</div>
+    <div style="font-size:.92em;font-weight:600;color:#e6edf3;margin-bottom:12px">Configure DHCPv4 on a Router</div>
+    <div style="font-size:.82em;color:#8b949e;margin-bottom:14px">Type each command exactly as shown. Press Enter to submit. The checker validates your syntax step by step.</div>
+    <div class="tool-links" style="display:flex;flex-wrap:wrap;gap:14px">
+      <div style="flex:1 1 220px;min-width:0">
+        <a href="../../syntax-checker-simple/ccna2_syntax_checker.html?lab=7.1.8" target="_blank" rel="noopener" title="Quick, guided drill: type the exact commands for this NetAcad lab, step by step. Opens straight to lab 7.1.8." style="display:inline-flex;align-items:center;gap:8px;color:#fff;text-decoration:none;padding:8px 18px;border-radius:6px;font-size:.85em;font-weight:700;background:#238636;border:1px solid #2ea043">&#x25B6; Open Syntax Checker</a>
+        <div style="font-size:.75em;color:#8b949e;margin-top:6px">Quick, guided drill: type the exact commands for this NetAcad lab, step by step. Opens straight to lab 7.1.8.</div>
+      </div>
+      <div style="flex:1 1 220px;min-width:0">
+        <a class="cli-engine-link" href="../../cli-engine/ccna-cli-engine.html" target="_blank" rel="noopener" title="Full simulated Cisco IOS terminal: Tab completion, device state, Free Practice, Home Labs and Subnetting. In its exercise menu, pick “Course 2 · 7.1 — Configure DHCPv4”." style="display:inline-flex;align-items:center;gap:8px;color:#fff;text-decoration:none;padding:8px 18px;border-radius:6px;font-size:.85em;font-weight:700;background:#1f6feb;border:1px solid #388bfd">&#x1F4BB; Open CLI Engine</a>
+        <div style="font-size:.75em;color:#8b949e;margin-top:6px">Full simulated Cisco IOS terminal: Tab completion, device state, Free Practice, Home Labs and Subnetting. In its exercise menu, pick “Course 2 · 7.1 — Configure DHCPv4”.</div>
+      </div>
+    </div>
+    <div style="margin-top:12px;font-size:.75em"><a href="../../index.html" style="color:#58a6ff;text-decoration:none">&#x1F3E0; All study tools (home)</a></div>
+  </div>
+
+  <!-- PT INLINE -->
+  <div style="margin:20px 0 6px;padding:14px 16px;background:#0d1117;border:1px solid #30363d;border-left:3px solid #1f6feb;border-radius:6px">
+    <div style="font-size:.72em;font-weight:800;text-transform:uppercase;letter-spacing:.8px;color:#1f6feb;margin-bottom:10px">&#x1F4E6; Packet Tracer Activities</div>
+  <div style="display:flex;align-items:baseline;gap:10px;padding:6px 0;border-bottom:1px solid #21262d"><span style="font-family:monospace;font-size:.85em;color:#79c0ff;white-space:nowrap;flex-shrink:0;min-width:52px">7.2.10</span><span style="font-size:.88em;color:#c9d1d9">Configure DHCPv4</span></div>
+    <div style="margin-top:10px;font-size:.78em;color:#6e7681">Full list: <a href="https://itexamanswers.net/ccna-2-packet-tracer-labs-answers-srwe-v7-02.html" target="_blank" rel="noopener" style="color:#58a6ff;word-break:break-all">https://itexamanswers.net/ccna-2-packet-tracer-labs-answers-srwe-v7-02.html</a></div>
+  </div>
+
+</div></div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- SECTION 7.3 — CONFIGURE DHCPV4 CLIENT -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div class="sec" id="s3">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">7.3</span><span class="ttl">Configure a DHCPv4 Client</span></span><button class="sec-check" id="sch-s3" onclick="event.stopPropagation();toggleSection('s3',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb">
+
+  <div class="sub">
+  <h3><span class="sn">7.3.1</span> Cisco Router as a DHCPv4 Client</h3>
+  <p>A Cisco router can act as a DHCP client on one interface while simultaneously acting as a DHCP server on another — common in SOHO environments where the WAN interface gets an IP from the ISP dynamically while the LAN interface serves local clients.</p>
+  <div class="dg"><pre>
+  ISP Network ──── G0/0/1 [SOHO Router] G0/0/0 ──── LAN Clients
+                  ip address dhcp          ip dhcp pool LAN-POOL
+                  (DHCP client)            (DHCP server)
+  
+  WAN side: gets IP from ISP via DHCP (ip address dhcp)
+  LAN side: serves IP to local clients (ip dhcp pool)</pre></div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">7.3.2</span> Configuration and Verification</h3>
+  <div class="cw">
+    <div class="cl">Configure router interface as DHCP client <button class="cpb" onclick="copyCode(this)">Copy</button></div>
+    <pre><code>SOHO(config)# interface GigabitEthernet0/0/1
+SOHO(config-if)# ip address dhcp
+SOHO(config-if)# no shutdown
+
+! IOS confirms the assignment with a console message:
+%DHCP-6-ADDRESS_ASSIGN: Interface GigabitEthernet0/0/1 assigned DHCP address
+209.165.201.12, mask 255.255.255.224, hostname SOHO</code></pre>
+  </div>
+  <div class="cw">
+    <div class="cl">show ip interface — verify DHCP assigned the address <button class="cpb" onclick="copyCode(this)">Copy</button></div>
+    <pre><code>SOHO# show ip interface GigabitEthernet0/0/1
+GigabitEthernet0/0/1 is up, line protocol is up
+  Internet address is 209.165.201.12/27
+  Broadcast address is 255.255.255.255
+  Address determined by DHCP        ← key phrase confirming DHCP assignment
+(output omitted)</code></pre>
+  </div>
+  <div class="ca info">
+    <span class="ic">💡</span>
+    <div><strong>"Address determined by DHCP"</strong> is the key phrase in <code>show ip interface</code> output confirming the address came from a DHCP server. If the output shows <strong>"Address determined by setup command"</strong> the address was manually configured — not from DHCP. This distinction is a direct exam question.</div>
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">7.3.3</span> Home Router as a DHCPv4 Client</h3>
+  <p>Home routers (wireless routers) are pre-configured to obtain their WAN IP from the ISP via DHCP by default. The WAN setup page typically shows <strong>"Automatic Configuration – DHCP"</strong> as the internet connection type. This is how residential customers automatically receive an internet-routable IP from their ISP without any manual configuration.</p>
+  <div class="ca tip">
+    <span class="ic">✅</span>
+    <div>Home routers are simultaneously DHCP clients (WAN side — gets IP from ISP) and DHCP servers (LAN side — assigns IPs to home devices like phones, laptops, TVs). This dual role is the same as the SOHO router scenario above.</div>
+  </div>
+  </div>
+
+</div></div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- SECTION 7.4 — COMMANDS -->
+<!-- ═══════════════════════════════════════════════════════ -->
+
+<div class="sec" id="s-pt-7-4">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">7.4</span><span class="ttl">Packet Tracer — Implement DHCPv4</span></span><button class="sec-check" id="sch-s-pt-7-4" onclick="event.stopPropagation();toggleSection('s-pt-7-4',this)">○ Mark done</button>
+</div>
+<div class="sb">
+  <div style="padding:14px 16px;background:#0d1117;border:1px solid #30363d;border-left:3px solid #1f6feb;border-radius:6px">
+    <div style="font-size:.72em;font-weight:800;text-transform:uppercase;letter-spacing:.8px;color:#1f6feb;margin-bottom:10px">&#x1F4E6; Packet Tracer Activities</div>
+    <div style="font-size:.82em;color:#6e7681;margin-bottom:10px">Open in Cisco Packet Tracer via your NetAcad course.</div>
+      <div style="display:flex;align-items:baseline;gap:10px;padding:6px 0;border-bottom:1px solid #21262d"><span style="font-family:monospace;font-size:.85em;color:#79c0ff;white-space:nowrap;flex-shrink:0;min-width:52px">7.4.1</span><span style="font-size:.88em;color:#c9d1d9">Implement DHCPv4</span></div>
+    <div style="margin-top:12px;font-size:.78em;color:#6e7681">Full list: <a href="https://itexamanswers.net/ccna-2-packet-tracer-labs-answers-srwe-v7-02.html" target="_blank" rel="noopener" style="color:#58a6ff;word-break:break-all">https://itexamanswers.net/ccna-2-packet-tracer-labs-answers-srwe-v7-02.html</a></div>
+  </div>
+</div>
+</div>
+<div class="sec" id="s4">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">CMD</span><span class="ttl">Quick Reference — All Module 7 Commands</span></span><button class="sec-check" id="sch-s4" onclick="event.stopPropagation();toggleSection('s4',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb">
+
+  <p style="font-weight:700;color:var(--dark);margin-bottom:10px;">DHCP Server Configuration</p>
+  <div class="tw"><table>
+    <tr><th>Command</th><th>What It Does</th></tr>
+    <tr><td><code>ip dhcp excluded-address [low] [high]</code></td><td>Exclude one address or a range from DHCP pools — enter BEFORE creating pool</td></tr>
+    <tr><td><code>ip dhcp pool [name]</code></td><td>Create named DHCP pool — enters dhcp-config mode</td></tr>
+    <tr><td><code>network [net] [mask]</code></td><td>Define subnet of addresses to lease (in dhcp-config mode)</td></tr>
+    <tr><td><code>default-router [ip]</code></td><td>Default gateway given to clients (in dhcp-config mode)</td></tr>
+    <tr><td><code>dns-server [ip]</code></td><td>DNS server address given to clients (in dhcp-config mode)</td></tr>
+    <tr><td><code>domain-name [name]</code></td><td>Domain suffix given to clients (in dhcp-config mode)</td></tr>
+    <tr><td><code>lease [days] [hours] [minutes]</code></td><td>Lease duration — default is 1 day (in dhcp-config mode)</td></tr>
+    <tr><td><code>no service dhcp</code></td><td>Disable the DHCP server service</td></tr>
+    <tr><td><code>service dhcp</code></td><td>Re-enable the DHCP server service</td></tr>
+  </table></div>
+
+  <p style="font-weight:700;color:var(--dark);margin:20px 0 10px;">DHCP Relay</p>
+  <div class="tw"><table>
+    <tr><th>Command</th><th>What It Does</th></tr>
+    <tr><td><code>ip helper-address [server-ip]</code></td><td>Configure DHCP relay on the client-facing interface — converts DHCP broadcasts to unicast</td></tr>
+    <tr><td><code>show ip interface [int]</code></td><td>Verify relay — shows "Helper address is [ip]" when configured</td></tr>
+  </table></div>
+
+  <p style="font-weight:700;color:var(--dark);margin:20px 0 10px;">DHCP Client (Cisco Router)</p>
+  <div class="tw"><table>
+    <tr><th>Command</th><th>What It Does</th></tr>
+    <tr><td><code>ip address dhcp</code></td><td>Configure interface to obtain IP address from DHCP server</td></tr>
+    <tr><td><code>show ip interface [int]</code></td><td>Verify — shows "Address determined by DHCP" when IP came from DHCP</td></tr>
+  </table></div>
+
+  <p style="font-weight:700;color:var(--dark);margin:20px 0 10px;">DHCP Verification</p>
+  <div class="tw"><table>
+    <tr><th>Command</th><th>What It Shows</th></tr>
+    <tr><td><code>show running-config | section dhcp</code></td><td>All DHCP configuration — pools, exclusions</td></tr>
+    <tr><td><code>show ip dhcp binding</code></td><td>All active leases — IP to MAC address mappings with expiration times</td></tr>
+    <tr><td><code>show ip dhcp server statistics</code></td><td>DHCP message counters — Discovers, Offers, Requests, Acks received/sent</td></tr>
+    <tr><td><code>ipconfig /all</code> (Windows)</td><td>Client-side — shows DHCP server IP, lease dates, all assigned settings</td></tr>
+    <tr><td><code>ipconfig /release</code> (Windows)</td><td>Release current DHCP lease — IP goes back to server pool</td></tr>
+    <tr><td><code>ipconfig /renew</code> (Windows)</td><td>Request a new DHCP lease — triggers DHCPDISCOVER</td></tr>
+  </table></div>
+
+</div></div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- SECTION 7.5 — EXAM TRAPS -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div class="sec" id="s5">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">🎯</span><span class="ttl">Common Exam Traps — Module 7</span></span><button class="sec-check" id="sch-s5" onclick="event.stopPropagation();toggleSection('s5',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb">
+
+  <div class="ca danger"><span class="ic">❌</span><div><strong>Trap 1: DORA — Steps 1 and 3 are from the CLIENT. Steps 2 and 4 are from the SERVER.</strong><br>Discover (client broadcast) → Offer (server unicast) → Request (client broadcast) → Acknowledge (server unicast). Students regularly reverse these on exams.</div></div>
+
+  <div class="ca danger"><span class="ic">❌</span><div><strong>Trap 2: Step 3 (DHCPREQUEST) is a BROADCAST — not unicast.</strong><br>Even though the client already received an offer, the DHCPREQUEST is broadcast so ALL DHCP servers know which offer was accepted. This lets other servers release their reserved addresses. If it were unicast, only the selected server would know — others would hold reserved addresses unnecessarily.</div></div>
+
+  <div class="ca danger"><span class="ic">❌</span><div><strong>Trap 3: Lease renewal DHCPREQUEST is UNICAST. Initial DHCPREQUEST is BROADCAST.</strong><br>During renewal the client already knows the server's IP and sends directly (unicast). During the initial lease the client has no IP and no knowledge of the server's location — it must broadcast. This comparison is a direct exam question.</div></div>
+
+  <div class="ca danger"><span class="ic">❌</span><div><strong>Trap 4: Exclude addresses BEFORE creating the pool.</strong><br><code>ip dhcp excluded-address</code> is global config and must come before <code>ip dhcp pool</code>. Forgetting to exclude the router's own IP means DHCP may assign it to a client, causing an IP conflict and network outage for both the client and the router.</div></div>
+
+  <div class="ca danger"><span class="ic">❌</span><div><strong>Trap 5: ip helper-address goes on the interface FACING the clients — not the server.</strong><br>DHCP broadcasts arrive on the client-facing interface. Placing <code>ip helper-address</code> on the server-facing interface accomplishes nothing — the broadcast was already dropped before ever reaching that interface.</div></div>
+
+  <div class="ca danger"><span class="ic">❌</span><div><strong>Trap 6: The giaddr field tells the DHCP server which subnet the client is on.</strong><br>When R1 relays a DHCPDISCOVER, it inserts its own client-facing interface IP into the giaddr field. The server reads this to select the matching pool. Without giaddr the server cannot determine the correct subnet — which is why the relay must be on the correct interface (its IP becomes the giaddr).</div></div>
+
+  <div class="ca danger"><span class="ic">❌</span><div><strong>Trap 7: ip helper-address relays EIGHT UDP services — not just DHCP.</strong><br>Ports 37, 49, 53, 67, 68, 69, 137, and 138. DHCP is ports 67 and 68. DNS (53) and TFTP (69) are also relayed. The exam asks "how many services" directly — the answer is eight.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 8: The DHCP server must have a pool matching every relayed subnet's giaddr.</strong><br>A perfectly configured relay still fails if the DHCP server has no pool for that subnet. One server can serve many subnets only if it has a correctly configured pool for each one.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 9: DHCP service is ENABLED by default on Cisco IOS.</strong><br>Use <code>no service dhcp</code> to disable it. Deleting the pool does NOT disable the service — the DHCP service keeps running. This distinction matters when troubleshooting.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 10: show ip dhcp binding is the most important verification command.</strong><br>It shows IP-to-MAC mappings for all active leases — this is how you confirm a specific client received an address and identify which device holds a specific IP. Use this before anything else when a client says "I'm not getting a DHCP address."</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 11: Default lease duration is 1 DAY (24 hours).</strong><br>Not 8 hours, not 1 week. Exactly 1 day. Change with the <code>lease</code> command in dhcp-config mode. <code>lease infinite</code> is possible but not recommended in production.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 12: A router can be both DHCP server and DHCP client simultaneously on different interfaces.</strong><br>The WAN interface uses <code>ip address dhcp</code> to get an IP from the ISP. The LAN interface uses <code>ip dhcp pool</code> to serve local clients. These are independent operations on separate interfaces.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 13: "Address determined by DHCP" confirms DHCP client operation.</strong><br>This phrase appears in <code>show ip interface</code> output when the address was assigned by a DHCP server. "Address determined by setup command" means it was manually configured. This is how you verify a Cisco router interface got its IP via DHCP.</div></div>
+
+  <div class="ca danger"><span class="ic">❌</span><div><strong>Trap 14: APIPA (169.254.x.x) means DHCP failed completely.</strong><br>When a Windows client cannot reach a DHCP server at all, it self-assigns a 169.254.x.x address (Automatic Private IP Addressing). If you see this on a client, DHCP failed entirely — check relay configuration and connectivity to the DHCP server first.</div></div>
+
+  <div class="ca tip"><span class="ic">✅</span><div><strong>Quick DORA summary to memorize:</strong><br><br>
+  <strong>D</strong>iscover — Client → Broadcast (0.0.0.0 → 255.255.255.255) "Any DHCP servers?"<br>
+  <strong>O</strong>ffer — Server → Unicast "Here's an IP offer"<br>
+  <strong>R</strong>equest — Client → <strong>Broadcast</strong> "I accept — everyone else release" ← most tested<br>
+  <strong>A</strong>cknowledge — Server → Unicast "Confirmed — it's yours"<br><br>
+  <strong>Renewal:</strong> Client unicasts DHCPREQUEST directly to known server → Server unicasts DHCPACK back. Only 2 steps, both unicast.</div></div>
+
+</div></div>
+
+</div><!-- end .wrap -->
+
+<div class="ft">
+  CCNA 2 SRWE v7.02 — Module 7: DHCPv4 v1.4<br>
+  Based on Cisco NetAcad curriculum · Study guide for personal use
+</div>
+
+<button class="tb" id="topb" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+
+<script>
+var MOD_KEY="ccna2-module7-dhcpv4";
+var SECS=["s1","s2","s3","s-pt-7-4","s4","s5"];
+var checked={};
+function loadState(){
+  try{var s=localStorage.getItem(MOD_KEY);if(s)checked=JSON.parse(s);}catch(e){}
+  SECS.forEach(function(id){
+    var pill=document.getElementById('pill-'+id);
+    var row=document.getElementById('row-'+id);
+    var st=document.getElementById('st-'+id);
+    var sch=document.getElementById('sch-'+id);
+    if(checked[id]){
+      if(pill){pill.classList.add('checked');pill.querySelector('.pill-check').textContent='✓';}
+      if(row)row.classList.add('done');
+      if(st)st.textContent='✓';
+      if(sch){sch.classList.add('checked');sch.textContent='✓ Done';}
+    } else {
+      if(pill){pill.classList.remove('checked');pill.querySelector('.pill-check').textContent='○';}
+      if(row)row.classList.remove('done');
+      if(st)st.textContent='○';
+      if(sch){sch.classList.remove('checked');sch.textContent='○ Mark done';}
+    }
+  });
+}
+function toggleSection(id,btn){checked[id]=!checked[id];try{localStorage.setItem(MOD_KEY,JSON.stringify(checked));}catch(e){}loadState();}
+function toggleStudyPanel(){
+  var hdr=document.getElementById('sp-hdr');
+  var body=document.getElementById('sp-body');
+  var arr=document.getElementById('sp-arr');
+  hdr.classList.toggle('open');body.classList.toggle('open');
+  if(arr)arr.textContent=body.classList.contains('open')?'▲':'▼';
+}
+function goTo(id){var el=document.getElementById(id);if(!el)return;var h=el.querySelector('.sh,.section-header'),b=el.querySelector('.sb,.section-body');if(h&&b&&!b.classList.contains('open')){h.classList.add('open');b.classList.add('open');}setTimeout(function(){window.scrollTo({top:el.getBoundingClientRect().top+window.pageYOffset-60,behavior:'smooth'});},50);}
+function setFs(size,btn){document.documentElement.style.setProperty('--base-fs',size);document.querySelectorAll('.fs-btn').forEach(function(b){b.classList.remove('active');});btn.classList.add('active');try{localStorage.setItem('ccna-fs',size);}catch(e){}}
+(function(){try{var s=localStorage.getItem('ccna-fs');if(s){document.documentElement.style.setProperty('--base-fs',s);document.querySelectorAll('.fs-btn').forEach(function(b){b.classList.remove('active');if((b.textContent==='S'&&s==='14px')||(b.textContent==='M'&&s==='16px')||(b.textContent==='L'&&s==='18px')||(b.textContent==='XL'&&s==='20px'))b.classList.add('active');});}}catch(e){}loadState();})();
+function copyCode(b){var t=b.closest('.cw').querySelector('pre').innerText;if(navigator.clipboard){navigator.clipboard.writeText(t).then(function(){b.textContent='Copied!';setTimeout(function(){b.textContent='Copy';},1500);}).catch(function(){fb(t,b);});}else{fb(t,b);}}
+function fb(t,b){var a=document.createElement('textarea');a.value=t;a.style.position='fixed';a.style.opacity='0';document.body.appendChild(a);a.focus();a.select();document.execCommand('copy');document.body.removeChild(a);b.textContent='Copied!';setTimeout(function(){b.textContent='Copy';},1500);}
+</script>
+<script src="../../site-config.js"></script>
+</body>
+</html>

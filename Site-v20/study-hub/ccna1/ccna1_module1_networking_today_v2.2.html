@@ -1,0 +1,906 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=2.0">
+<title>CCNA 1 Module 1: Networking Today v2.2</title>
+<style>
+:root{
+  --blue:#1ba0d7;--dark:#005073;--green:#6cc24a;
+  --nt:#0a6e4e;--ntd:#4ade80;--nt2:#052e1e;--nt3:#021710;
+  --bg:#f4f6f8;--card:#fff;--text:#1a1a2e;--muted:#5a6a7a;
+  --cbg:#0d1117;--ctxt:#c9d1d9;--r:12px;--sh:0 2px 12px rgba(0,0,0,.08);
+  --base-fs:20px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);font-size:var(--base-fs);line-height:1.7}
+.bc{background:#0d1117;padding:8px 16px;display:flex;align-items:center;flex-wrap:wrap;gap:4px;font-size:.75em;overflow-x:auto;white-space:nowrap;-webkit-overflow-scrolling:touch;border-bottom:1px solid #21262d}
+.bc a{color:#8b949e;text-decoration:none;font-weight:600;flex-shrink:0}
+.bc .sep{color:#6e7681;flex-shrink:0}
+.bc .cur{color:var(--ntd);font-weight:700;flex-shrink:0}
+.fs-bar{position:sticky;top:0;z-index:200;background:#1a1a2e;display:flex;align-items:center;justify-content:flex-end;padding:6px 14px;gap:6px;box-shadow:0 2px 8px rgba(0,0,0,.3)}
+.fs-label{color:#8b949e;font-size:.72em;font-weight:700;letter-spacing:.5px;text-transform:uppercase;margin-right:4px}
+.fs-btn{background:#30363d;color:#c9d1d9;border:2px solid transparent;border-radius:6px;padding:4px 12px;font-size:.75em;font-weight:700;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:all .2s;line-height:1.4}
+.fs-btn:active,.fs-btn.active{background:var(--nt);color:#fff;border-color:var(--ntd)}
+.hdr{background:linear-gradient(135deg,var(--nt3),var(--nt2),var(--nt));color:#fff;padding:32px 20px 24px;text-align:center}
+.hdr .badge{display:inline-block;background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.4);border-radius:20px;padding:4px 14px;font-size:.81em;margin-bottom:12px}
+.hdr h1{font-size:1.625em;font-weight:700;margin-bottom:6px}
+.hdr p{font-size:.94em;opacity:.85}
+.hdr .obj{display:inline-block;background:rgba(255,255,255,.15);border-radius:8px;padding:7px 16px;margin-top:12px;font-size:.875em;font-style:italic}
+/* Study progress panel */
+.sp-wrap{background:var(--card);margin:16px 16px 0;border-radius:var(--r);box-shadow:var(--sh);overflow:hidden}
+.sp-hdr{background:var(--nt);color:#fff;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;user-select:none;-webkit-tap-highlight-color:transparent;gap:10px}
+.sp-hdr .sp-title{font-weight:700;font-size:.875em;flex-shrink:0}
+.sp-hdr .sp-arr{transition:transform .3s;flex-shrink:0}
+.sp-hdr.open .sp-arr{transform:rotate(180deg)}
+.sp-body{display:none;padding:12px 14px}
+.sp-body.open{display:block}
+.sp-row{display:flex;align-items:center;gap:10px;padding:6px 4px;border-bottom:1px solid #f0f4f8;font-size:.81em}
+.sp-row:last-child{border-bottom:none}
+.sp-row .sr-status{font-size:1em;flex-shrink:0;width:20px;text-align:center}
+.sp-row .sr-nb{font-weight:800;color:var(--nt);min-width:36px;flex-shrink:0;font-size:.875em}
+.sp-row .sr-ttl{color:var(--text);flex:1}
+.sp-row.done .sr-ttl{color:var(--muted);text-decoration:line-through}
+/* Section check pills in fs-bar */
+.sc-pills{display:flex;align-items:center;gap:4px;overflow-x:auto;-webkit-overflow-scrolling:touch;flex:1;padding:0 4px}
+.sc-pill{background:#30363d;color:#8b949e;border:2px solid transparent;border-radius:6px;padding:3px 8px;font-size:.72em;font-weight:700;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:all .15s;white-space:nowrap;flex-shrink:0;line-height:1.4;display:flex;align-items:center;gap:3px}
+.sc-pill.checked{background:var(--nt);color:#fff;border-color:var(--ntd)}
+.sc-pill .pill-check{font-size:.875em}
+.toc{background:var(--card);margin:16px;border-radius:var(--r);box-shadow:var(--sh);overflow:hidden}
+.toch{background:var(--nt);color:#fff;padding:14px 18px;font-weight:700;font-size:.94em;display:flex;justify-content:space-between;align-items:center;cursor:pointer;user-select:none}
+.toch .arr{transition:transform .3s}
+.toch.open .arr{transform:rotate(180deg)}
+.tocb{display:none;padding:10px 0}
+.tocb.open{display:block}
+.tocg{font-size:.69em;font-weight:800;letter-spacing:.8px;color:var(--nt);text-transform:uppercase;padding:8px 20px 2px}
+.tocb a{display:block;padding:9px 20px 9px 28px;color:var(--text);text-decoration:none;font-size:.875em;border-left:3px solid transparent;transition:all .2s}
+.tocb a:active{background:#f0fdf4;border-left-color:var(--ntd)}
+.tocb a .n{display:inline-block;background:var(--nt);color:#fff;border-radius:5px;padding:1px 8px;font-size:.75em;font-weight:700;margin-right:8px}
+.wrap{padding:0 16px 100px}
+.sec{background:var(--card);border-radius:var(--r);box-shadow:var(--sh);margin-bottom:16px;overflow:hidden}
+.sh{background:linear-gradient(90deg,var(--nt3),var(--nt));color:#fff;padding:16px 18px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;user-select:none;-webkit-tap-highlight-color:transparent}
+.sh .ttl{font-weight:700;font-size:1em}
+.sh .nb{background:rgba(255,255,255,.25);border-radius:6px;padding:3px 10px;font-size:.81em;font-weight:700;margin-right:10px;white-space:nowrap}
+.sh .ch{font-size:1.125em;transition:transform .3s}
+.sh.open .ch{transform:rotate(180deg)}
+.sb{display:none;padding:18px}
+.sb.open{display:block}
+.sub{margin-bottom:24px}
+.sub:last-child{margin-bottom:0}
+.sub h3{font-size:.94em;font-weight:700;color:var(--nt);margin-bottom:10px;padding-bottom:6px;border-bottom:2px solid #f0fdf4;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.sub h3 .sn{background:var(--nt);color:#fff;border-radius:5px;padding:2px 8px;font-size:.75em;white-space:nowrap}
+.sub h4{font-size:.875em;font-weight:700;color:var(--nt);margin:14px 0 6px}
+.sub p{margin-bottom:10px;font-size:.94em}
+.sub ul,.sub ol{padding-left:20px;margin:8px 0;font-size:.94em}
+.sub li{margin-bottom:5px}
+.ca{border-radius:8px;padding:12px 14px;margin:12px 0;font-size:.875em;line-height:1.6;display:flex;gap:10px;align-items:flex-start}
+.ca .ic{font-size:1.125em;flex-shrink:0;margin-top:1px}
+.ca.warn  {background:#fff3cd;border-left:4px solid #b38600;color:#3d2c00}
+.ca.tip   {background:#d4edda;border-left:4px solid #28a745;color:#0d3318}
+.ca.danger{background:#f8d7da;border-left:4px solid #dc3545;color:#3d0010}
+.ca.info  {background:#f0fdf4;border-left:4px solid var(--nt);color:#052e1e}
+.ca code{color:inherit!important;background:rgba(0,0,0,.1)!important;border:1px solid rgba(0,0,0,.15)}
+.et{background:linear-gradient(135deg,#1a1a2e,var(--nt3));color:#fff;border-radius:10px;padding:14px 16px;margin:14px 0;font-size:.875em;line-height:1.6}
+.et .lbl{font-size:.69em;font-weight:800;letter-spacing:1px;color:var(--ntd);margin-bottom:6px}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:12px 0;border-radius:8px}
+table{width:100%;border-collapse:collapse;font-size:.875em}
+th{background:var(--nt);color:#fff;padding:10px 12px;text-align:left;font-weight:700;font-size:.81em}
+td{padding:9px 12px;border-bottom:1px solid #e8ecf0;vertical-align:top;color:#1a1a2e}
+tr:nth-child(even) td{background:#f0fdf4;color:#052e1e}
+tr:last-child td{border-bottom:none}
+p code,li code,td code,.ca code{background:#f0fdf4;color:#052e1e;border-radius:4px;padding:1px 5px;font-size:.81em;font-family:'Courier New',monospace;font-weight:600}
+
+/* Network component cards */
+.comp-grid{display:grid;gap:10px;margin:12px 0}
+.comp-card{border-radius:10px;overflow:hidden}
+.comp-card .cc-hdr{padding:9px 14px;font-weight:800;font-size:.875em;color:#fff}
+.comp-card.host{background:linear-gradient(90deg,var(--nt3),var(--nt))}
+.comp-card.host .cc-hdr{background:transparent}
+.comp-card .cc-body{padding:12px 14px;font-size:.81em;line-height:1.7;background:#f9fafb}
+.comp-card .cc-body ul{padding-left:16px}
+.comp-card .cc-body li{margin-bottom:3px}
+
+/* Media types */
+.media-grid{display:grid;gap:8px;margin:12px 0}
+.media-card{border-radius:8px;padding:10px 14px;font-size:.81em;line-height:1.6;border-left:4px solid;display:flex;gap:10px;align-items:flex-start}
+.media-card.copper  {border-left-color:#c87800;background:#fffbeb}
+.media-card.fiber   {border-left-color:#1a3a5c;background:#e0f2fe}
+.media-card.wireless{border-left-color:var(--nt);background:#f0fdf4}
+.media-card .mc-icon{font-size:1.5em;flex-shrink:0}
+.media-card .mc-name{font-weight:800;margin-bottom:3px}
+.media-card.copper   .mc-name{color:#c87800}
+.media-card.fiber    .mc-name{color:#1a3a5c}
+.media-card.wireless .mc-name{color:var(--nt)}
+
+/* P2P pros/cons */
+.p2p-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:12px 0}
+@media(max-width:480px){.p2p-grid{grid-template-columns:1fr}}
+.p2p-card{border-radius:8px;padding:11px 14px;font-size:.81em;line-height:1.7}
+.p2p-card.pros{background:#f0fdf4;border:2px solid var(--nt)}
+.p2p-card.cons{background:#fff5f5;border:2px solid #dc3545}
+.p2p-card .pc-title{font-weight:800;margin-bottom:6px}
+.p2p-card.pros .pc-title{color:var(--nt)}
+.p2p-card.cons .pc-title{color:#dc3545}
+.p2p-card ul{padding-left:16px}
+.p2p-card li{margin-bottom:3px}
+
+/* Network sizes */
+.size-grid{display:grid;gap:6px;margin:12px 0}
+.size-row{display:flex;gap:10px;align-items:flex-start;padding:9px 12px;border-radius:8px;font-size:.81em;line-height:1.6;border-left:4px solid}
+.size-row.home {border-left-color:var(--nt);background:#f0fdf4}
+.size-row.soho {border-left-color:#1a3a5c;background:#e0f2fe}
+.size-row.corp {border-left-color:#5c3d00;background:#fffbeb}
+.size-row.inet {border-left-color:#7c1e1e;background:#fff5f5}
+.size-row .sr-label{font-weight:800;min-width:80px;flex-shrink:0;color:#1a1a2e;line-height:1.5}
+
+/* Internet connections */
+.conn-grid{display:grid;gap:6px;margin:12px 0}
+.conn-row{display:flex;gap:8px;align-items:flex-start;padding:8px 12px;border-radius:8px;font-size:.81em;line-height:1.6;border-left:3px solid}
+.conn-row.cable   {border-left-color:#5c3d00;background:#fffbeb}
+.conn-row.dsl     {border-left-color:var(--nt);background:#f0fdf4}
+.conn-row.cell    {border-left-color:#7b2d8b;background:#f3e8ff}
+.conn-row.sat     {border-left-color:#1a3a5c;background:#e0f2fe}
+.conn-row.dial    {border-left-color:#374151;background:#f9fafb}
+.conn-row.lease   {border-left-color:#7c1e1e;background:#fff5f5}
+.conn-row.metro   {border-left-color:#1a4731;background:#f0fdf4}
+.conn-row .cr-name{font-weight:800;min-width:110px;flex-shrink:0;color:#1a1a2e}
+
+/* Network architecture 4 pillars */
+.arch-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:12px 0}
+@media(max-width:480px){.arch-grid{grid-template-columns:1fr}}
+.arch-card{border-radius:10px;padding:13px 14px;border-left:5px solid}
+.arch-card.fault{border-left-color:#1a3a5c;background:#e0f2fe}
+.arch-card.scale{border-left-color:var(--nt);background:#f0fdf4}
+.arch-card.qos  {border-left-color:#5c3d00;background:#fffbeb}
+.arch-card.sec  {border-left-color:#7c1e1e;background:#fff5f5}
+.arch-card .ac-name{font-weight:800;font-size:.875em;margin-bottom:4px}
+.arch-card.fault .ac-name{color:#1a3a5c}
+.arch-card.scale .ac-name{color:var(--nt)}
+.arch-card.qos   .ac-name{color:#5c3d00}
+.arch-card.sec   .ac-name{color:#7c1e1e}
+.arch-card p{font-size:.81em;color:#1a1a2e;line-height:1.6;margin:0}
+
+/* CIA triad */
+.cia-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:12px 0}
+@media(max-width:480px){.cia-grid{grid-template-columns:1fr}}
+.cia-card{border-radius:10px;padding:12px 14px;text-align:center;font-size:.81em}
+.cia-card.conf{background:#e0f2fe;border:2px solid #1a3a5c}
+.cia-card.intg{background:#f0fdf4;border:2px solid var(--nt)}
+.cia-card.avai{background:#fff3cd;border:2px solid #b38600}
+.cia-card .ci-icon{font-size:1.75em;margin-bottom:6px}
+.cia-card .ci-name{font-weight:800;margin-bottom:4px}
+.cia-card.conf .ci-name{color:#1a3a5c}
+.cia-card.intg .ci-name{color:var(--nt)}
+.cia-card.avai .ci-name{color:#b38600}
+.cia-card p{color:#1a1a2e;line-height:1.5;font-size:.875em}
+
+/* Security threats grid */
+.threat-grid{display:grid;gap:6px;margin:12px 0}
+.threat-row{display:flex;gap:8px;align-items:flex-start;padding:8px 12px;border-radius:8px;font-size:.81em;line-height:1.6;background:#fff5f5;border-left:3px solid #dc3545}
+.threat-row .tr-name{font-weight:800;min-width:160px;flex-shrink:0;color:#7c1e1e}
+
+/* Security solutions */
+.sol-grid{display:grid;gap:8px;margin:12px 0}
+.sol-card{border-radius:8px;padding:10px 14px;font-size:.81em;border-left:4px solid;line-height:1.6}
+.sol-card.home{border-left-color:var(--nt);background:#f0fdf4}
+.sol-card.corp{border-left-color:#1a3a5c;background:#e0f2fe}
+.sol-card .sc-title{font-weight:800;margin-bottom:4px}
+.sol-card.home .sc-title{color:var(--nt)}
+.sol-card.corp .sc-title{color:#1a3a5c}
+.sol-card ul{padding-left:16px}
+.sol-card li{margin-bottom:3px}
+
+/* Trend cards */
+.trend-grid{display:grid;gap:8px;margin:12px 0}
+.trend-card{border-radius:8px;padding:10px 14px;font-size:.81em;border-left:4px solid;line-height:1.6}
+.trend-card.byod  {border-left-color:var(--nt);background:#f0fdf4}
+.trend-card.collab{border-left-color:#1a3a5c;background:#e0f2fe}
+.trend-card.video {border-left-color:#7b2d8b;background:#f3e8ff}
+.trend-card.cloud {border-left-color:#5c3d00;background:#fffbeb}
+.trend-card.smart {border-left-color:#374151;background:#f9fafb}
+.trend-card.power {border-left-color:#c87800;background:#fffde7}
+.trend-card.wisp  {border-left-color:#1a3a5c;background:#e0f2fe}
+.trend-card .tc-name{font-weight:800;margin-bottom:3px}
+.trend-card.byod   .tc-name{color:var(--nt)}
+.trend-card.collab .tc-name{color:#1a3a5c}
+.trend-card.video  .tc-name{color:#7b2d8b}
+.trend-card.cloud  .tc-name{color:#5c3d00}
+.trend-card.smart  .tc-name{color:#374151}
+.trend-card.power  .tc-name{color:#c87800}
+.trend-card.wisp   .tc-name{color:#1a3a5c}
+
+.tb-btn{position:fixed;bottom:80px;right:16px;background:var(--nt);color:#fff;border:none;border-radius:50%;width:44px;height:44px;font-size:1.25em;box-shadow:0 4px 14px rgba(0,0,0,.25);cursor:pointer;display:none;align-items:center;justify-content:center;z-index:100}
+.tb-btn.show{display:flex}
+.ft{text-align:center;padding:24px 16px;color:var(--muted);font-size:.81em}
+.mod-nav{position:fixed;bottom:0;left:0;right:0;z-index:300;background:#1a1a2e;border-top:1px solid #30363d;display:flex;align-items:center;height:52px;padding:0 8px;gap:6px}
+.mn-hub{background:var(--blue);color:#fff;border:none;border-radius:8px;padding:6px 12px;font-size:.75em;font-weight:700;cursor:pointer;text-decoration:none;display:flex;align-items:center;gap:4px;white-space:nowrap;-webkit-tap-highlight-color:transparent;flex-shrink:0}
+.mn-hub:active{opacity:.8}
+.mn-divider{width:1px;height:28px;background:#30363d;flex-shrink:0}
+.mn-label{flex:1;text-align:center;font-size:.69em;color:#8b949e;font-weight:600;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding:0 4px}
+.mn-prev,.mn-next{background:#30363d;color:#c9d1d9;border:none;border-radius:8px;padding:6px 10px;font-size:.875em;font-weight:700;cursor:pointer;text-decoration:none;display:flex;align-items:center;-webkit-tap-highlight-color:transparent;flex-shrink:0}
+.mn-prev:active,.mn-next:active{background:var(--nt);color:#fff}
+
+/* v2.1 — In-section check button */
+.sh{position:relative}
+.sec-check{position:absolute;right:40px;top:50%;transform:translateY(-50%);background:rgba(255,255,255,.15);border:2px solid rgba(255,255,255,.4);border-radius:6px;padding:2px 10px;font-size:.72em;font-weight:800;color:#fff;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:all .2s;white-space:nowrap;z-index:10;line-height:1.5}
+.sec-check.checked{background:var(--ntd);border-color:var(--ntd);color:#052e1e}
+.sec-check:active{opacity:.75}
+</style>
+</head>
+<body>
+<nav class="bc">
+  <a href="../../index.html">🏠 Home</a><span class="sep">›</span>
+  <a href="index.html">CCNA 1 — ITN</a><span class="sep">›</span>
+  <span class="cur">M1: Networking Today</span>
+</nav>
+<div class="fs-bar">
+  <div class="sc-pills" id="sc-pills">
+  <button class="sc-pill" id="pill-s-pt-1-0" onclick="toggleSection('s-pt-1-0',this)"><span class="pill-check">○</span>PT 1.0</button>
+  <button class="sc-pill" id="pill-s1" onclick="toggleSection('s1',this)"><span class="pill-check">○</span>1.1</button>
+  <button class="sc-pill" id="pill-s2" onclick="toggleSection('s2',this)"><span class="pill-check">○</span>1.2</button>
+  <button class="sc-pill" id="pill-s3" onclick="toggleSection('s3',this)"><span class="pill-check">○</span>1.3</button>
+  <button class="sc-pill" id="pill-s4" onclick="toggleSection('s4',this)"><span class="pill-check">○</span>1.4</button>
+  <button class="sc-pill" id="pill-s5" onclick="toggleSection('s5',this)"><span class="pill-check">○</span>1.5</button>
+  <button class="sc-pill" id="pill-s6" onclick="toggleSection('s6',this)"><span class="pill-check">○</span>1.6</button>
+  <button class="sc-pill" id="pill-s7" onclick="toggleSection('s7',this)"><span class="pill-check">○</span>1.7</button>
+  <button class="sc-pill" id="pill-s8" onclick="toggleSection('s8',this)"><span class="pill-check">○</span>1.8</button>
+  <button class="sc-pill" id="pill-s9" onclick="toggleSection('s9',this)"><span class="pill-check">○</span>1.9</button>
+  <button class="sc-pill" id="pill-s10" onclick="toggleSection('s10',this)"><span class="pill-check">○</span>🎯</button>
+  </div>
+  <span class="fs-label" style="flex-shrink:0;margin-left:6px">Size</span>
+  <button class="fs-btn" onclick="setFs('14px',this)">S</button>
+  <button class="fs-btn" onclick="setFs('16px',this)">M</button>
+  <button class="fs-btn" onclick="setFs('18px',this)">L</button>
+  <button class="fs-btn active" onclick="setFs('20px',this)">XL</button>
+</div>
+<div class="hdr">
+  <div class="badge">CCNA 1 — ITN v7.02 · Module 1</div>
+  <h1>🌐 Networking Today</h1>
+  <p>Introduction to Networks · NetAcad Study Guide</p>
+  <div class="obj">Module Objective: Explain the advances in modern network technologies</div>
+</div>
+<div class="sp-wrap">
+  <div class="sp-hdr" id="sp-hdr" onclick="toggleStudyPanel()">
+    <span class="sp-title">📚 Sections</span>
+    <span class="sp-arr" id="sp-arr">▼</span>
+  </div>
+  <div class="sp-body" id="sp-body">
+    <div class="sp-row" id="row-s-pt-1-0"><span class="sr-status" id="st-s-pt-1-0">○</span><span class="sr-nb">PT 1.0</span><span class="sr-ttl">Packet Tracer — Getting Started</span></div>
+    <div class="sp-row" id="row-s1"><span class="sr-status" id="st-s1">○</span><span class="sr-nb">1.1</span><span class="sr-ttl">Networks Affect our Lives</span></div>
+    <div class="sp-row" id="row-s2"><span class="sr-status" id="st-s2">○</span><span class="sr-nb">1.2</span><span class="sr-ttl">Network Components</span></div>
+    <div class="sp-row" id="row-s3"><span class="sr-status" id="st-s3">○</span><span class="sr-nb">1.3</span><span class="sr-ttl">Network Representations and Topologies</span></div>
+    <div class="sp-row" id="row-s4"><span class="sr-status" id="st-s4">○</span><span class="sr-nb">1.4</span><span class="sr-ttl">Common Types of Networks</span></div>
+    <div class="sp-row" id="row-s5"><span class="sr-status" id="st-s5">○</span><span class="sr-nb">1.5</span><span class="sr-ttl">Internet Connections</span></div>
+    <div class="sp-row" id="row-s6"><span class="sr-status" id="st-s6">○</span><span class="sr-nb">1.6</span><span class="sr-ttl">Reliable Networks</span></div>
+    <div class="sp-row" id="row-s7"><span class="sr-status" id="st-s7">○</span><span class="sr-nb">1.7</span><span class="sr-ttl">Network Trends</span></div>
+    <div class="sp-row" id="row-s8"><span class="sr-status" id="st-s8">○</span><span class="sr-nb">1.8</span><span class="sr-ttl">Network Security</span></div>
+    <div class="sp-row" id="row-s9"><span class="sr-status" id="st-s9">○</span><span class="sr-nb">1.9</span><span class="sr-ttl">The IT Professional</span></div>
+    <div class="sp-row" id="row-s10"><span class="sr-status" id="st-s10">○</span><span class="sr-nb">🎯</span><span class="sr-ttl">Common Exam Traps — Module 1</span></div>
+  </div>
+</div>
+
+<div class="toc">
+  <div class="toch open" onclick="this.classList.toggle('open');document.getElementById('tocb').classList.toggle('open')">
+    📋 Table of Contents — Tap to expand <span class="arr">▼</span>
+  </div>
+  <div class="tocb open" id="tocb">
+    <div class="tocg">1.1 — Networks Affect our Lives</div>
+    <a href="javascript:void(0)" onclick="goTo('s1')"><span class="n">1.1.1</span> Networks Connect Us</a>
+    <a href="javascript:void(0)" onclick="goTo('s1')"><span class="n">1.1.3</span> No Boundaries — The Internet's Impact</a>
+    <div class="tocg">1.2 — Network Components</div>
+    <a href="javascript:void(0)" onclick="goTo('s2')"><span class="n">1.2.1</span> Host Roles — Servers and Clients</a>
+    <a href="javascript:void(0)" onclick="goTo('s2')"><span class="n">1.2.2</span> Peer-to-Peer Networks — Pros and Cons</a>
+    <a href="javascript:void(0)" onclick="goTo('s2')"><span class="n">1.2.3</span> End Devices</a>
+    <a href="javascript:void(0)" onclick="goTo('s2')"><span class="n">1.2.4</span> Intermediary Devices and Functions</a>
+    <a href="javascript:void(0)" onclick="goTo('s2')"><span class="n">1.2.5</span> Network Media — Copper, Fiber, Wireless</a>
+    <div class="tocg">1.3 — Representations and Topologies</div>
+    <a href="javascript:void(0)" onclick="goTo('s3')"><span class="n">1.3.1</span> Network Representations — NIC, Port, Interface</a>
+    <a href="javascript:void(0)" onclick="goTo('s3')"><span class="n">1.3.2</span> Physical vs Logical Topology Diagrams</a>
+    <div class="tocg">1.4 — Common Types of Networks</div>
+    <a href="javascript:void(0)" onclick="goTo('s4')"><span class="n">1.4.1</span> Networks of Many Sizes</a>
+    <a href="javascript:void(0)" onclick="goTo('s4')"><span class="n">1.4.2</span> LAN vs WAN</a>
+    <a href="javascript:void(0)" onclick="goTo('s4')"><span class="n">1.4.3</span> The Internet — IETF, ICANN, IAB</a>
+    <a href="javascript:void(0)" onclick="goTo('s4')"><span class="n">1.4.4</span> Intranets and Extranets</a>
+    <div class="tocg">1.5 — Internet Connections</div>
+    <a href="javascript:void(0)" onclick="goTo('s5')"><span class="n">1.5.2</span> Home and Small Office Connections</a>
+    <a href="javascript:void(0)" onclick="goTo('s5')"><span class="n">1.5.3</span> Business Internet Connections</a>
+    <a href="javascript:void(0)" onclick="goTo('s5')"><span class="n">1.5.4</span> Converging Networks</a>
+    <div class="tocg">1.6 — Reliable Networks</div>
+    <a href="javascript:void(0)" onclick="goTo('s6')"><span class="n">1.6.1</span> Four Architecture Requirements</a>
+    <a href="javascript:void(0)" onclick="goTo('s6')"><span class="n">1.6.2</span> Fault Tolerance — Redundancy and Packet Switching</a>
+    <a href="javascript:void(0)" onclick="goTo('s6')"><span class="n">1.6.3</span> Scalability</a>
+    <a href="javascript:void(0)" onclick="goTo('s6')"><span class="n">1.6.4</span> Quality of Service (QoS)</a>
+    <a href="javascript:void(0)" onclick="goTo('s6')"><span class="n">1.6.5</span> Network Security — CIA Triad</a>
+    <div class="tocg">1.7 — Network Trends</div>
+    <a href="javascript:void(0)" onclick="goTo('s7')"><span class="n">1.7.2</span> BYOD · Collaboration · Video · Cloud</a>
+    <a href="javascript:void(0)" onclick="goTo('s7')"><span class="n">1.7.7</span> Smart Home · Powerline · WISP</a>
+    <div class="tocg">1.8 — Network Security</div>
+    <a href="javascript:void(0)" onclick="goTo('s8')"><span class="n">1.8.1</span> Security Threats — External and Internal</a>
+    <a href="javascript:void(0)" onclick="goTo('s8')"><span class="n">1.8.2</span> Security Solutions — Home and Corporate</a>
+    <div class="tocg">1.9 — The IT Professional</div>
+    <a href="javascript:void(0)" onclick="goTo('s9')"><span class="n">1.9.1</span> CCNA Certification</a>
+    <div class="tocg">Reference</div>
+    <a href="javascript:void(0)" onclick="goTo('s10')"><span class="n">🎯</span> Common Exam Traps</a>
+  </div>
+</div>
+
+<div class="wrap">
+
+<!-- 1.1 NETWORKS AFFECT OUR LIVES -->
+
+
+<div class="sec" id="s-pt-1-0">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">1.0</span><span class="ttl">Packet Tracer — Getting Started</span></span><button class="sec-check" id="sch-s-pt-1-0" onclick="event.stopPropagation();toggleSection('s-pt-1-0',this)">○ Mark done</button>
+</div>
+<div class="sb">
+  <div style="padding:14px 16px;background:#0d1117;border:1px solid #30363d;border-left:3px solid #1f6feb;border-radius:6px">
+    <div style="font-size:.72em;font-weight:800;text-transform:uppercase;letter-spacing:.8px;color:#1f6feb;margin-bottom:10px">&#x1F4E6; Packet Tracer Activities</div>
+    <div style="font-size:.82em;color:#6e7681;margin-bottom:10px">Open these activities in Cisco Packet Tracer via your NetAcad course. Find them by activity number in Module 1.</div>
+      <div style="display:flex;align-items:baseline;gap:10px;padding:6px 0;border-bottom:1px solid #21262d"><span style="font-family:monospace;font-size:.85em;color:#79c0ff;white-space:nowrap;flex-shrink:0;min-width:52px">1.0.5</span><span style="font-size:.88em;color:#c9d1d9">Logical and Physical Mode Exploration</span></div>
+    <div style="margin-top:12px;font-size:.78em;color:#6e7681">&#x1F4DA; Full list: <a href="https://itexamanswers.net/ccna-1-v7-exam-answers-introduction-to-networks-v7-0-itn.html" target="_blank" rel="noopener" style="color:#58a6ff;word-break:break-all">itexamanswers.net/ccna-1-v7-exam-answers-introduction-to-networks-v7-0-itn.html</a></div>
+  </div>
+</div>
+</div>
+<div class="sec" id="s1">
+<div class="sh open" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">1.1</span><span class="ttl">Networks Affect our Lives</span></span><button class="sec-check" id="sch-s1" onclick="event.stopPropagation();toggleSection('s1',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb open">
+  <div class="sub">
+  <h3><span class="sn">1.1.1</span> Networks Connect Us</h3>
+  <p>Communication ranks just below food, water, and shelter among human essentials. Through networks, we are more connected than ever before — people share ideas instantly across oceans, news travels worldwide in seconds, and friends play games across continents.</p>
+  </div>
+  <div class="sub">
+  <h3><span class="sn">1.1.3</span> No Boundaries</h3>
+  <p>Networking advancements are among the most significant changes in the world today, reducing the relevance of national borders, geographic distances, and physical limitations. The internet has transformed social, commercial, political, and personal interactions — enabling global communities independent of location or time zone.</p>
+  <p>The cloud lets us store documents and access them from anywhere, on any device — on a train, in a park, or on a mountaintop.</p>
+  </div>
+</div></div>
+
+<!-- 1.2 NETWORK COMPONENTS -->
+<div class="sec" id="s2">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">1.2</span><span class="ttl">Network Components</span></span><button class="sec-check" id="sch-s2" onclick="event.stopPropagation();toggleSection('s2',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb">
+  <div class="sub">
+  <h3><span class="sn">1.2.1</span> Host Roles — Servers and Clients</h3>
+  <p>All computers connected to a network that <strong>participate directly in network communication</strong> are classified as <strong>hosts</strong> (also called <strong>end devices</strong>). Hosts are assigned an <strong>IP address</strong> — a number that identifies the host <em>and</em> the network to which it is attached.</p>
+  <div class="tw"><table>
+    <tr><th>Role</th><th>Description</th><th>Examples</th></tr>
+    <tr><td><strong>Server</strong></td><td>Computer with software that provides services (web pages, email, files) to other end devices. Each service requires separate server software. One server can serve many clients simultaneously.</td><td>Web server, email server, file server</td></tr>
+    <tr><td><strong>Client</strong></td><td>A type of host; has software for requesting and displaying information obtained from a server.</td><td>Web browser (Chrome, Firefox), email client (Outlook)</td></tr>
+  </table></div>
+  <h4>Common Server Types</h4>
+  <div class="tw"><table>
+    <tr><th>Server Type</th><th>Server Software</th><th>Client Software</th></tr>
+    <tr><td><strong>Email</strong></td><td>Email server software</td><td>Microsoft Outlook, Thunderbird</td></tr>
+    <tr><td><strong>Web</strong></td><td>Web server software</td><td>Chrome, Firefox, Edge</td></tr>
+    <tr><td><strong>File</strong></td><td>File server software</td><td>Windows File Explorer, Finder</td></tr>
+  </table></div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">1.2.2</span> Peer-to-Peer Networks</h3>
+  <p>When one computer acts as both server <em>and</em> client simultaneously, it forms a <strong>peer-to-peer (P2P) network</strong>. Common in small businesses and homes.</p>
+  <div class="p2p-grid">
+    <div class="p2p-card pros">
+      <div class="pc-title">✅ P2P Advantages</div>
+      <ul>
+        <li>Easy to set up</li>
+        <li>Less complex</li>
+        <li>Lower cost — no dedicated servers or network devices required</li>
+        <li>Suitable for simple tasks: file sharing, printer sharing</li>
+      </ul>
+    </div>
+    <div class="p2p-card cons">
+      <div class="pc-title">❌ P2P Disadvantages</div>
+      <ul>
+        <li>No centralized administration</li>
+        <li>Not as secure</li>
+        <li>Not scalable</li>
+        <li>Devices acting as both client and server → slower performance</li>
+      </ul>
+    </div>
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">1.2.3</span> End Devices</h3>
+  <p>An end device is either the <strong>source or destination</strong> of a message transmitted over the network. Each end device has an address to distinguish it from others. Data flows from the source end device toward the destination end device.</p>
+  <div class="ca info"><span class="ic">💡</span><div>End devices are what users interact with directly — PCs, laptops, tablets, smartphones, IP phones, printers, servers. They are the starting and ending points of all network communication.</div></div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">1.2.4</span> Intermediary Devices</h3>
+  <p>Intermediary devices connect end devices to the network and connect multiple networks to form an <strong>internetwork</strong>. They use the destination address + network topology information to determine the path for messages.</p>
+  <p><strong>Functions of intermediary devices:</strong></p>
+  <ul>
+    <li>Regenerate and retransmit communication signals</li>
+    <li>Maintain information about pathways through the network and internetwork</li>
+    <li>Notify other devices of errors and communication failures</li>
+    <li>Direct data along <strong>alternate pathways when a link fails</strong></li>
+    <li>Classify and direct messages according to priorities (QoS)</li>
+    <li>Permit or deny the flow of data based on security settings</li>
+  </ul>
+  <div class="ca info"><span class="ic">💡</span><div><strong>Examples:</strong> Switches, routers, wireless access points, firewalls, multilayer switches.<br><strong>Note:</strong> A legacy Ethernet hub (multiport repeater) performs only the most basic function — regenerating and retransmitting signals. All intermediary devices perform at least this function.</div></div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">1.2.5</span> Network Media — Three Types</h3>
+  <p>Network media provides the channel over which messages travel from source to destination.</p>
+  <div class="media-grid">
+    <div class="media-card copper"><span class="mc-icon">🔌</span><div><div class="mc-name">Metal Wires (Copper)</div>Data encoded as <strong>electrical impulses</strong>. Examples: UTP (Unshielded Twisted Pair), coaxial cable.</div></div>
+    <div class="media-card fiber"><span class="mc-icon">💡</span><div><div class="mc-name">Glass or Plastic Fibers (Fiber-Optic)</div>Data encoded as <strong>pulses of light</strong>. Examples: single-mode and multimode fiber. High bandwidth, long distances.</div></div>
+    <div class="media-card wireless"><span class="mc-icon">📡</span><div><div class="mc-name">Wireless Transmission</div>Data encoded via <strong>modulation of electromagnetic waves</strong>. Examples: Wi-Fi, cellular, satellite. No cables required.</div></div>
+  </div>
+  <h4>Criteria for Choosing Network Media</h4>
+  <ul>
+    <li>Maximum distance the media can successfully carry a signal</li>
+    <li>Environment in which the media will be installed (indoor/outdoor, hazardous)</li>
+    <li>Amount of data and speed required</li>
+    <li>Cost of media and installation</li>
+  </ul>
+  </div>
+
+</div></div>
+
+<!-- 1.3 REPRESENTATIONS AND TOPOLOGIES -->
+<div class="sec" id="s3">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">1.3</span><span class="ttl">Network Representations and Topologies</span></span><button class="sec-check" id="sch-s3" onclick="event.stopPropagation();toggleSection('s3',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb">
+  <div class="sub">
+  <h3><span class="sn">1.3.1</span> Network Representations</h3>
+  <p>Network diagrams use standardized symbols to represent devices and connections — creating a <strong>topology diagram</strong>.</p>
+  <div class="tw"><table>
+    <tr><th>Term</th><th>Definition</th></tr>
+    <tr><td><strong>NIC (Network Interface Card)</strong></td><td>Physically connects the end device to the network</td></tr>
+    <tr><td><strong>Physical Port</strong></td><td>Connector or outlet on a networking device where media connects to an end device or another networking device</td></tr>
+    <tr><td><strong>Interface</strong></td><td>Specialized ports on a networking device that connect to individual networks. Ports on a router are called <em>network interfaces</em> because routers connect networks.</td></tr>
+  </table></div>
+  <div class="ca info"><span class="ic">💡</span><div>The terms <strong>"port"</strong> and <strong>"interface"</strong> are often used interchangeably. However, technically: a port is a physical connector; an interface is a logical or physical connection on a networking device.</div></div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">1.3.2</span> Physical vs Logical Topology Diagrams</h3>
+  <div class="tw"><table>
+    <tr><th>Type</th><th>Shows</th><th>Used For</th></tr>
+    <tr><td><strong>Physical Topology</strong></td><td>Physical location of intermediary devices and cable installation. Rooms, floors, rack locations, cable runs.</td><td>Physical layer troubleshooting, installation planning, facilities management</td></tr>
+    <tr><td><strong>Logical Topology</strong></td><td>Devices, ports, and the addressing scheme of the network. IP addresses, VLANs, media type, how data flows.</td><td>Understanding data flow, network design, IP addressing documentation</td></tr>
+  </table></div>
+  <div class="ca tip"><span class="ic">✅</span><div>Topology diagrams are <strong>mandatory documentation</strong> for anyone working with a network. They provide a visual map that allows administrators to understand, troubleshoot, and modify the network without physically inspecting every device.</div></div>
+  </div>
+
+</div></div>
+
+<!-- 1.4 COMMON TYPES OF NETWORKS -->
+<div class="sec" id="s4">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">1.4</span><span class="ttl">Common Types of Networks</span></span><button class="sec-check" id="sch-s4" onclick="event.stopPropagation();toggleSection('s4',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb">
+  <div class="sub">
+  <h3><span class="sn">1.4.1</span> Networks of Many Sizes</h3>
+  <div class="size-grid">
+    <div class="size-row home"><div class="sr-label">🏠 Home Network</div><div>Connects a few computers to each other and to the internet. Shares resources (printers, files, music) among local end devices.</div></div>
+    <div class="size-row soho"><div class="sr-label">🏢 SOHO</div><div>Small Office/Home Office — connects home or remote office to a corporate network, or provides access to centralized shared resources. Enables remote work.</div></div>
+    <div class="size-row corp"><div class="sr-label">🏭 Medium/Large</div><div>Corporations and schools — multiple locations with hundreds or thousands of interconnected hosts. Provides email, messaging, storage, and collaboration.</div></div>
+    <div class="size-row inet"><div class="sr-label">🌍 Internet</div><div>Network of networks — the largest network in existence. Connects hundreds of millions of computers worldwide.</div></div>
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">1.4.2</span> LAN vs WAN</h3>
+  <div class="tw"><table>
+    <tr><th>Feature</th><th>LAN (Local Area Network)</th><th>WAN (Wide Area Network)</th></tr>
+    <tr><td><strong>Area covered</strong></td><td>Small geographical area — home, school, office, campus</td><td>Wide geographical area — cities, states, countries, continents</td></tr>
+    <tr><td><strong>Administration</strong></td><td>Usually single organization or individual</td><td>Usually multiple service providers (SPs or ISPs)</td></tr>
+    <tr><td><strong>Speed</strong></td><td>High-speed bandwidth internally</td><td>Typically slower links between LANs</td></tr>
+    <tr><td><strong>Access control</strong></td><td>Security and access control enforced at network level by the org</td><td>Managed by SP; org has limited control over WAN infrastructure</td></tr>
+  </table></div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">1.4.3</span> The Internet</h3>
+  <p>The internet is a <strong>worldwide collection of interconnected networks</strong> (internetworks). Not owned by any individual or group. LANs use WAN services to interconnect; WANs interconnect with each other to form the global internet.</p>
+  <p><strong>Key internet organizations:</strong></p>
+  <ul>
+    <li><strong>IETF</strong> (Internet Engineering Task Force) — develops and maintains internet standards and protocols</li>
+    <li><strong>ICANN</strong> (Internet Corporation for Assigned Names and Numbers) — manages domain names and IP address allocation</li>
+    <li><strong>IAB</strong> (Internet Architecture Board) — provides architectural oversight of internet development</li>
+  </ul>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">1.4.4</span> Intranets and Extranets</h3>
+  <div class="tw"><table>
+    <tr><th>Term</th><th>Definition</th><th>Who Has Access</th><th>Example</th></tr>
+    <tr><td><strong>Intranet</strong></td><td>Private connection of LANs and WANs belonging to an organization</td><td>Members, employees, authorized users only</td><td>Company's internal HR portal</td></tr>
+    <tr><td><strong>Extranet</strong></td><td>Secure access provided to individuals outside the organization who need access to its data</td><td>Partners, contractors, suppliers, doctors</td><td>Supplier access to order system; hospital booking system for doctors</td></tr>
+    <tr><td><strong>Internet</strong></td><td>Global public network of networks</td><td>Anyone</td><td>The World Wide Web</td></tr>
+  </table></div>
+  </div>
+
+</div></div>
+
+<!-- 1.5 INTERNET CONNECTIONS -->
+<div class="sec" id="s5">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">1.5</span><span class="ttl">Internet Connections</span></span><button class="sec-check" id="sch-s5" onclick="event.stopPropagation();toggleSection('s5',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb">
+  <div class="sub">
+  <h3><span class="sn">1.5.2</span> Home and Small Office Connections</h3>
+  <div class="conn-grid">
+    <div class="conn-row cable"><div class="cr-name">Cable</div><div>Offered by cable TV providers. Uses the same cable as cable TV. High bandwidth, high availability, always-on.</div></div>
+    <div class="conn-row dsl"><div class="cr-name">DSL</div><div>Digital Subscriber Line — runs over telephone line. Always-on. Homes use <strong>ADSL</strong> (Asymmetric) — download faster than upload.</div></div>
+    <div class="conn-row cell"><div class="cr-name">Cellular</div><div>Uses cell phone network. Available wherever there is a cellular signal. Speed limited by phone capability and cell tower.</div></div>
+    <div class="conn-row sat"><div class="cr-name">Satellite</div><div>Available in areas without cable/DSL. Requires <strong>clear line of sight</strong> to the satellite. Higher latency.</div></div>
+    <div class="conn-row dial"><div class="cr-name">Dial-up</div><div>Inexpensive. Uses any phone line and a modem. Very low bandwidth. Suitable only for mobile access while traveling.</div></div>
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">1.5.3</span> Business Internet Connections</h3>
+  <div class="conn-grid">
+    <div class="conn-row lease"><div class="cr-name">Dedicated Leased Line</div><div>Reserved private circuit from service provider. Connects geographically separated offices. Paid monthly or yearly. Private voice and/or data networking.</div></div>
+    <div class="conn-row metro"><div class="cr-name">Metro Ethernet</div><div>Also called Ethernet WAN. Extends LAN technology into the WAN. Familiar technology, scalable bandwidth.</div></div>
+    <div class="conn-row dsl"><div class="cr-name">Business DSL</div><div>Higher-grade DSL. Popular option: <strong>SDSL</strong> (Symmetric) — equal upload and download speeds (unlike home ADSL).</div></div>
+    <div class="conn-row sat"><div class="cr-name">Satellite</div><div>Backup or primary option when wired solutions are not available.</div></div>
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">1.5.4</span> The Converging Network</h3>
+  <div class="tw"><table>
+    <tr><th>Traditional (30 years ago)</th><th>Modern Converged Network</th></tr>
+    <tr><td>Separate physical networks for data, telephone, and video. Each used different technologies, rules, and standards. Multiple services required multiple networks.</td><td>One network infrastructure carries data, voice, and video simultaneously. Uses one set of rules, agreements, and implementation standards. All services on one network.</td></tr>
+  </table></div>
+  </div>
+
+  <!-- PT INLINE -->
+  <div style="margin:20px 0 6px;padding:14px 16px;background:#0d1117;border:1px solid #30363d;border-left:3px solid #1f6feb;border-radius:6px">
+    <div style="font-size:.72em;font-weight:800;text-transform:uppercase;letter-spacing:.8px;color:#1f6feb;margin-bottom:10px">&#x1F4E6; Packet Tracer Activities</div>
+  <div style="display:flex;align-items:baseline;gap:10px;padding:6px 0;border-bottom:1px solid #21262d"><span style="font-family:monospace;font-size:.85em;color:#79c0ff;white-space:nowrap;flex-shrink:0;min-width:52px">1.5.7</span><span style="font-size:.88em;color:#c9d1d9">Network Representation</span></div>
+    <div style="margin-top:10px;font-size:.78em;color:#6e7681">Full list: <a href="https://itexamanswers.net/ccna-1-v7-exam-answers-introduction-to-networks-v7-0-itn.html" target="_blank" rel="noopener" style="color:#58a6ff;word-break:break-all">itexamanswers.net/ccna-1-v7-exam-answers-introduction-to-networks-v7-0-itn.html</a></div>
+  </div>
+
+</div></div>
+
+<!-- 1.6 RELIABLE NETWORKS -->
+<div class="sec" id="s6">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">1.6</span><span class="ttl">Reliable Networks</span></span><button class="sec-check" id="sch-s6" onclick="event.stopPropagation();toggleSection('s6',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb">
+  <div class="sub">
+  <h3><span class="sn">1.6.1</span> Four Architecture Requirements</h3>
+  <div class="arch-grid">
+    <div class="arch-card fault">
+      <div class="ac-name">🔄 Fault Tolerance</div>
+      <p>Limits the number of affected devices during a failure. Built to allow quick recovery. Depends on multiple paths between source and destination.</p>
+    </div>
+    <div class="arch-card scale">
+      <div class="ac-name">📈 Scalability</div>
+      <p>Expands quickly to support new users and applications without degrading performance for existing users. Achieved by following accepted standards and protocols.</p>
+    </div>
+    <div class="arch-card qos">
+      <div class="ac-name">⚡ Quality of Service (QoS)</div>
+      <p>Manages congestion and ensures reliable delivery of content to all users. Prioritizes time-sensitive traffic (voice, video) over data during congestion.</p>
+    </div>
+    <div class="arch-card sec">
+      <div class="ac-name">🔒 Network Security</div>
+      <p>Protects both the network infrastructure and the information it carries. Addresses confidentiality, integrity, and availability.</p>
+    </div>
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">1.6.2</span> Fault Tolerance — Redundancy and Packet Switching</h3>
+  <p>Fault tolerant networks depend on <strong>multiple paths</strong> between source and destination — known as <strong>redundancy</strong>.</p>
+  <p><strong>Packet switching</strong> is the primary mechanism for providing redundancy:</p>
+  <ul>
+    <li>A message (email, video) is broken into multiple <strong>packets</strong> — each containing source and destination address information</li>
+    <li>Each packet may take a <strong>different path</strong> through the network</li>
+    <li>Routers dynamically choose paths based on <strong>current network conditions</strong></li>
+    <li>If one link fails, packets are rerouted automatically — the user is unaware</li>
+  </ul>
+  <div class="ca info"><span class="ic">💡</span><div>This is fundamentally different from <strong>circuit switching</strong> (traditional phone networks), which establishes a dedicated path before communication begins. If that path fails, the call drops. Packet switching avoids this single point of failure.</div></div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">1.6.3</span> Scalability</h3>
+  <p>A scalable network expands quickly without degrading performance for current users. Networks are scalable because designers follow <strong>accepted standards and protocols</strong> — vendors can improve products without redesigning the underlying rules. New users and devices can join the network using the same standards.</p>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">1.6.4</span> Quality of Service (QoS)</h3>
+  <ul>
+    <li><strong>Bandwidth</strong> = measured in bits per second (bps) — number of bits transmissible in one second</li>
+    <li><strong>Congestion</strong> = when demand for bandwidth exceeds the amount available → devices queue packets in memory until resources are free</li>
+    <li><strong>QoS policy</strong> = router manages flow of data and voice traffic — giving <strong>priority to voice/video</strong> during congestion so calls don't break up</li>
+  </ul>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">1.6.5</span> Network Security — CIA Triad</h3>
+  <p>Two types of network security concerns:</p>
+  <ul>
+    <li><strong>Network infrastructure security</strong> — physically securing devices; preventing unauthorized access to management software</li>
+    <li><strong>Information security</strong> — protecting data in transit and data stored on network devices</li>
+  </ul>
+  <div class="cia-grid">
+    <div class="cia-card conf">
+      <div class="ci-icon">🔐</div>
+      <div class="ci-name">Confidentiality</div>
+      <p>Only intended and authorized recipients can access and read data</p>
+    </div>
+    <div class="cia-card intg">
+      <div class="ci-icon">✅</div>
+      <div class="ci-name">Integrity</div>
+      <p>Information has not been altered in transmission from origin to destination</p>
+    </div>
+    <div class="cia-card avai">
+      <div class="ci-icon">⏰</div>
+      <div class="ci-name">Availability</div>
+      <p>Timely and reliable access to data services for authorized users</p>
+    </div>
+  </div>
+  </div>
+
+</div></div>
+
+<!-- 1.7 NETWORK TRENDS -->
+<div class="sec" id="s7">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">1.7</span><span class="ttl">Network Trends</span></span><button class="sec-check" id="sch-s7" onclick="event.stopPropagation();toggleSection('s7',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb">
+  <div class="sub">
+  <h3><span class="sn">1.7.1–1.7.6</span> Four Major Networking Trends</h3>
+  <div class="trend-grid">
+    <div class="trend-card byod">
+      <div class="tc-name">📱 BYOD — Bring Your Own Device</div>
+      <strong>BYOD = any device, with any ownership, used anywhere.</strong> Enables end users to use personal tools (laptops, tablets, smartphones, e-readers) to access business or campus networks. Devices may be company-owned, personally-owned, or both. Increases productivity but expands the security threat surface.
+    </div>
+    <div class="trend-card collab">
+      <div class="tc-name">🤝 Online Collaboration</div>
+      Collaboration = working with others on a joint project. Tools like <strong>Cisco Webex Teams</strong> provide instant messaging, image/video/link sharing, and persistent team history. Critical for both business competitiveness and education. Enables teamwork regardless of physical location.
+    </div>
+    <div class="trend-card video">
+      <div class="tc-name">🎥 Video Communications</div>
+      Video is critical for communication, collaboration, and entertainment. Video calls reach anyone with an internet connection regardless of location. Increasingly essential as organizations extend across geographic and cultural boundaries.
+    </div>
+    <div class="trend-card cloud">
+      <div class="tc-name">☁️ Cloud Computing</div>
+      Store files and run applications over the internet. For businesses: extends IT capability without investing in new infrastructure, training, or software licensing. Depends on <strong>data centers</strong>. Cloud providers store data in <strong>distributed data centers</strong> in multiple locations for security, reliability, and fault tolerance.
+    </div>
+  </div>
+  <h4>Four Cloud Types</h4>
+  <div class="tw"><table>
+    <tr><th>Type</th><th>Who Can Use It</th><th>Notes</th></tr>
+    <tr><td><strong>Public</strong></td><td>General population</td><td>Free or pay-per-use; uses the internet</td></tr>
+    <tr><td><strong>Private</strong></td><td>Specific organization (e.g., government)</td><td>Can be on org's own network; expensive to build</td></tr>
+    <tr><td><strong>Hybrid</strong></td><td>Mixed (part private, part public)</td><td>Two or more clouds connected as single architecture; degrees of access based on rights</td></tr>
+    <tr><td><strong>Community</strong></td><td>Specific community with shared needs</td><td>Shared compliance requirements (e.g., HIPAA for healthcare)</td></tr>
+  </table></div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">1.7.7–1.7.9</span> Smart Home, Powerline, and Wireless Broadband</h3>
+  <div class="trend-grid">
+    <div class="trend-card smart">
+      <div class="tc-name">🏠 Smart Home Technology</div>
+      Integrates everyday appliances that connect to each other and can be controlled remotely via smartphone. Examples: smart ovens checking your calendar, smart lighting, climate control, security systems. Updated and managed through the cloud.
+    </div>
+    <div class="trend-card power">
+      <div class="tc-name">🔌 Powerline Networking</div>
+      Uses <strong>existing electrical wiring</strong> to connect devices to the LAN. Sends data on certain frequencies over the same wires that carry electricity. Standard powerline adapters plug into any electrical outlet — no new data cables needed. <strong>Not a substitute for dedicated data cabling</strong>, but useful when wireless can't reach all areas.
+    </div>
+    <div class="trend-card wisp">
+      <div class="tc-name">📡 WISP and Wireless Broadband</div>
+      <strong>WISP (Wireless Internet Service Provider):</strong> Connects subscribers wirelessly to a hotspot or access point using WLAN-type technologies. More common in rural areas without DSL or cable. Subscriber installs antenna on roof pointing at an elevated transmitter.<br><br>
+      <strong>Wireless broadband:</strong> Uses cellular technology. An antenna installed outside the home provides wireless or wired connectivity inside. Competing with DSL and cable in many areas.
+    </div>
+  </div>
+  </div>
+
+</div></div>
+
+<!-- 1.8 NETWORK SECURITY -->
+<div class="sec" id="s8">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">1.8</span><span class="ttl">Network Security</span></span><button class="sec-check" id="sch-s8" onclick="event.stopPropagation();toggleSection('s8',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb">
+  <div class="sub">
+  <h3><span class="sn">1.8.1</span> Security Threats — External and Internal</h3>
+  <h4>Common External Threats</h4>
+  <div class="threat-grid">
+    <div class="threat-row"><div class="tr-name">Viruses, Worms, Trojans</div><div>Malicious software or code running on a user device. Spread through email, downloads, or exploits.</div></div>
+    <div class="threat-row"><div class="tr-name">Spyware and Adware</div><div>Secretly installed software that collects information about the user without their knowledge.</div></div>
+    <div class="threat-row"><div class="tr-name">Zero-Day Attacks</div><div>Also called zero-hour attacks — occur the <strong>first day a vulnerability becomes known</strong>. No patch available yet.</div></div>
+    <div class="threat-row"><div class="tr-name">Threat Actor Attacks</div><div>A malicious person directly attacks user devices or network resources.</div></div>
+    <div class="threat-row"><div class="tr-name">Denial of Service (DoS)</div><div>Slows or crashes applications and processes on a network device. Overwhelms resources.</div></div>
+    <div class="threat-row"><div class="tr-name">Data Interception and Theft</div><div>Captures private information from an organization's network (man-in-the-middle).</div></div>
+    <div class="threat-row"><div class="tr-name">Identity Theft</div><div>Steals login credentials of a user to access private data as if they were that user.</div></div>
+  </div>
+  <div class="ca danger"><span class="ic">🚨</span><div><strong>Internal threats are equally important.</strong> Most common data breaches happen because of internal network users — lost or stolen devices, accidental employee misuse, and malicious employees. BYOD strategies make corporate data much more vulnerable. Security policy must address BOTH external AND internal threats.</div></div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">1.8.2</span> Security Solutions</h3>
+  <p>No single solution protects against all threats. Security must be implemented in <strong>multiple layers</strong>.</p>
+  <div class="sol-grid">
+    <div class="sol-card home">
+      <div class="sc-title">🏠 Home / Small Office — Basic Security</div>
+      <ul>
+        <li><strong>Antivirus and antispyware</strong> — protect end devices from malicious software</li>
+        <li><strong>Firewall filtering</strong> — blocks unauthorized access; may be host-based (on device) or on home router</li>
+      </ul>
+    </div>
+    <div class="sol-card corp">
+      <div class="sc-title">🏢 Corporate / Large Network — Advanced Security</div>
+      <ul>
+        <li><strong>Antivirus and antispyware</strong> (same as home)</li>
+        <li><strong>Firewall filtering</strong> (same as home)</li>
+        <li><strong>Dedicated firewall systems</strong> — filter large traffic volumes with more granularity</li>
+        <li><strong>Access control lists (ACL)</strong> — filter access and forwarding based on IP addresses and applications</li>
+        <li><strong>Intrusion prevention systems (IPS)</strong> — identify fast-spreading threats including zero-day attacks</li>
+        <li><strong>Virtual private networks (VPN)</strong> — provide secure remote access for remote workers</li>
+      </ul>
+    </div>
+  </div>
+  </div>
+
+</div></div>
+
+<!-- 1.9 THE IT PROFESSIONAL -->
+<div class="sec" id="s9">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">1.9</span><span class="ttl">The IT Professional</span></span><button class="sec-check" id="sch-s9" onclick="event.stopPropagation();toggleSection('s9',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb">
+  <div class="sub">
+  <h3><span class="sn">1.9.1</span> CCNA Certification</h3>
+  <p>The <strong>Cisco Certified Network Associate (CCNA)</strong> certification demonstrates foundational technology knowledge and ensures professionals stay relevant for next-generation technology adoption.</p>
+  <ul>
+    <li>Covers: IP foundation, security, wireless, virtualization, automation, and network programmability</li>
+    <li>Three courses + one exam</li>
+    <li><strong>No prerequisites</strong> required to start</li>
+    <li>Continuing education credits available for recertification</li>
+  </ul>
+  <p><strong>Additional Cisco certification tracks:</strong></p>
+  <ul>
+    <li><strong>DevNet certifications</strong> — validate software development skills (associate, specialist, professional)</li>
+    <li><strong>Specialist certifications</strong> — validate skills for specific job roles (e.g., Cisco Enterprise Advanced Infrastructure Specialist)</li>
+  </ul>
+  <div class="ca tip"><span class="ic">✅</span><div>Find networking jobs at <strong>netacad.com</strong> → Careers → Employment opportunities (Talent Bridge Matching Engine). Also search: Indeed, Glassdoor, Monster using terms like "network administrator," "network architect," "Cisco CCNA."</div></div>
+  </div>
+</div></div>
+
+<!-- 1.10 EXAM TRAPS -->
+
+
+  <!-- PT MASTER LINK -->
+  <div style="margin:18px 0 6px;padding:12px 14px;background:#0d1117;border:1px solid #30363d;border-left:3px solid #1f6feb;border-radius:6px">
+    <div style="font-size:.7em;font-weight:800;text-transform:uppercase;letter-spacing:.8px;color:#1f6feb;margin-bottom:6px">&#x1F4E6; All Packet Tracer Activities — CCNA 1</div>
+    <div style="font-size:.84em;color:#c9d1d9;margin-bottom:4px">Complete list of all CCNA 1 Packet Tracer activities with instructions:</div>
+    <a href="https://itexamanswers.net/ccna-1-v7-exam-answers-introduction-to-networks-v7-0-itn.html" target="_blank" rel="noopener" style="font-size:.78em;color:#58a6ff;word-break:break-all">https://itexamanswers.net/ccna-1-v7-exam-answers-introduction-to-networks-v7-0-itn.html</a>
+  </div>
+
+<div class="sec" id="s10">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">🎯</span><span class="ttl">Common Exam Traps — Module 1</span></span><button class="sec-check" id="sch-s10" onclick="event.stopPropagation();toggleSection('s10',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb">
+
+  <div class="ca danger"><span class="ic">❌</span><div><strong>Trap 1: Hosts = end devices = devices assigned an IP address that participate directly in network communication.</strong><br>Not all devices on a network are hosts. Switches, routers, and access points are intermediary devices, not hosts (though they do have management IP addresses for administration). Hosts are the source or destination of network communication.</div></div>
+
+  <div class="ca danger"><span class="ic">❌</span><div><strong>Trap 2: Intermediary devices ≠ end devices.</strong><br>Intermediary devices (switches, routers, firewalls, WAPs) connect end devices to the network and connect networks together. End devices (PCs, phones, printers, servers) are the source or destination of data. Students often confuse these two categories on matching questions.</div></div>
+
+  <div class="ca danger"><span class="ic">❌</span><div><strong>Trap 3: P2P = one computer acts as both server AND client. Advantages include easy setup and low cost. Disadvantages include no centralized admin, not scalable, not secure.</strong><br>P2P is suitable for small/home networks but fails at scale. Don't confuse P2P (network type) with BitTorrent (P2P application) — the exam asks about P2P network architecture.</div></div>
+
+  <div class="ca danger"><span class="ic">❌</span><div><strong>Trap 4: Three media types — copper (electrical), fiber-optic (light), wireless (electromagnetic waves).</strong><br>Know the signal type for each. Fiber = pulses of light (not electrical). Wireless = modulated electromagnetic waves (not light, not electrical). Copper = electrical impulses. This mapping is directly tested.</div></div>
+
+  <div class="ca danger"><span class="ic">❌</span><div><strong>Trap 5: Physical topology = location and cables. Logical topology = addressing, ports, and data flow.</strong><br>Physical shows where devices are physically located and how they are cabled. Logical shows IP addresses, VLANs, media type, and how data flows logically. Both are mandatory documentation. Don't mix them up on matching questions.</div></div>
+
+  <div class="ca danger"><span class="ic">❌</span><div><strong>Trap 6: LAN = small area, single admin, high speed. WAN = wide area, multiple SPs, slower links between LANs.</strong><br>LAN is typically one organization. WAN spans cities/countries and involves multiple service providers. The internet is technically an internetwork (network of networks) — not just a WAN. SOHO connects to the internet via an ISP, which provides WAN connectivity.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 7: Intranet = private internal (employees only). Extranet = controlled external access. Internet = public.</strong><br>Intranet is NOT the internet — it is a private network using internet technologies (TCP/IP) but restricted to internal users. Extranet gives select outsiders (suppliers, contractors, doctors) controlled access to some internal resources. Know all three distinctly.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 8: Home DSL = ADSL (asymmetric — download faster). Business DSL = SDSL (symmetric — equal speeds).</strong><br>ADSL for consumers: download is faster than upload. SDSL for businesses: upload and download are the same speed. Cable also provides high bandwidth but uses cable TV infrastructure. Satellite requires clear line of sight.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 9: Four reliable network requirements — Fault Tolerance, Scalability, QoS, Security.</strong><br>These four are tested together as a group. Fault tolerance = redundancy via packet switching (not circuit switching). Scalability = standards and protocols. QoS = managing congestion, prioritizing voice/video. Security = CIA triad.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 10: Packet switching = redundancy for fault tolerance. Circuit switching = single path = single point of failure.</strong><br>In packet switching, messages are broken into packets; each takes potentially a different path; if a link fails, packets reroute automatically. In circuit switching (old phone networks), a dedicated path is established before communication — if it fails, the call drops.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 11: CIA triad — Confidentiality (authorized access only), Integrity (no alteration in transit), Availability (timely access).</strong><br>Integrity ≠ confidentiality. Integrity means the data wasn't changed; confidentiality means only authorized people can read it. Availability means authorized users can access data when they need it. All three are required for effective information security.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 12: Zero-day attacks occur the FIRST day a vulnerability becomes known — no patch exists yet.</strong><br>Also called zero-hour attacks. These are particularly dangerous because there is no fix available. IPS (Intrusion Prevention Systems) help detect and stop zero-day attacks. The name refers to zero days of warning for defenders.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 13: Internal threats are as common as external threats — often MORE common.</strong><br>The module explicitly states most data breaches come from internal users. Lost devices, accidental misuse, and malicious employees are all internal threats. BYOD expands the internal threat surface. Security policy must address BOTH directions, not just external attackers.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 14: BYOD = any device, any ownership, used anywhere — it's a policy/concept, not a technology.</strong><br>BYOD gives freedom to employees and students to use personal devices on corporate/campus networks. The network challenge is securing corporate data on devices the organization doesn't own or control. It increases productivity but requires robust security policies.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 15: Powerline networking uses electrical wiring — not a substitute for dedicated data cabling.</strong><br>Sends data at certain frequencies over the electrical wiring already in walls. No new cables needed — plug adapters into outlets. Useful when wireless can't reach all areas. But it is NOT equivalent to dedicated Ethernet cabling for reliability and speed.</div></div>
+
+  <div class="ca tip"><span class="ic">✅</span><div><strong>Module 1 quick-reference summary:</strong><br><br>
+  <strong>Hosts/End devices:</strong> Assigned IP address · Participate directly in network communication · Servers provide services · Clients request services<br>
+  <strong>P2P:</strong> One device = both server and client · Easy/cheap · Not secure/scalable/centrally managed<br>
+  <strong>Intermediary devices:</strong> Switches · Routers · WAPs · Firewalls · Connect end devices + networks<br>
+  <strong>Media:</strong> Copper=electrical · Fiber=light · Wireless=electromagnetic waves<br>
+  <strong>Topology:</strong> Physical=location/cables · Logical=addresses/ports/data flow<br>
+  <strong>Network sizes:</strong> Home → SOHO → Medium/Large → Internet (network of networks)<br>
+  <strong>LAN:</strong> Small area · Single admin · High speed · <strong>WAN:</strong> Wide area · Multiple SPs · Slower<br>
+  <strong>Intranet</strong> (internal only) · <strong>Extranet</strong> (controlled external) · <strong>Internet</strong> (public)<br>
+  <strong>Home connections:</strong> Cable · DSL (ADSL=asymmetric) · Cellular · Satellite · Dial-up<br>
+  <strong>Business connections:</strong> Dedicated leased line · Metro Ethernet · Business DSL (SDSL=symmetric) · Satellite<br>
+  <strong>Converged network:</strong> Data + voice + video on ONE infrastructure with same rules<br>
+  <strong>4 architecture requirements:</strong> Fault Tolerance · Scalability · QoS · Security<br>
+  <strong>Fault tolerance:</strong> Redundancy via packet switching (not circuit switching)<br>
+  <strong>QoS:</strong> Prioritizes voice/video over data during congestion · Bandwidth=bps<br>
+  <strong>CIA triad:</strong> Confidentiality (authorized access) · Integrity (no alteration) · Availability (timely access)<br>
+  <strong>Trends:</strong> BYOD (any device, any ownership) · Collaboration (Webex) · Video · Cloud (Public/Private/Hybrid/Community)<br>
+  <strong>Powerline:</strong> Data over electrical wiring · Not substitute for dedicated cabling<br>
+  <strong>WISP:</strong> Wireless ISP · Rural areas · Antenna on roof<br>
+  <strong>External threats:</strong> Viruses · Worms · Trojans · Spyware · Zero-day · DoS · Data theft · Identity theft<br>
+  <strong>Internal threats:</strong> Lost devices · Accidental misuse · Malicious employees · BYOD<br>
+  <strong>Home security:</strong> Antivirus/antispyware + Firewall<br>
+  <strong>Corp security:</strong> Above + Dedicated firewalls + ACLs + IPS + VPN</div></div>
+
+</div></div>
+
+</div>
+<div class="ft">CCNA 1 ITN v7.02 — Module 1: Networking Today v2.2<br>Based on Cisco NetAcad curriculum · Study guide for personal use</div>
+<button class="tb-btn" id="topb" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+<div class="mod-nav">
+  <a class="mn-hub" href="index.html">🏠 Hub</a>
+  <div class="mn-divider"></div>
+  <span class="mn-prev" style="opacity:.3">✦</span>
+  <span class="mn-label">M1 of 17 — First</span>
+  <a class="mn-next" href="ccna1_module2_basic_switch_end_device_config_v2.2.html">›</a>
+</div>
+<script>
+var MOD_KEY="ccna1-module1-networking-today";
+var SECS=["s-pt-1-0","s1","s2","s3","s4","s5","s6","s7","s8","s9","s10"];
+var checked={};
+function loadState(){
+  try{var s=localStorage.getItem(MOD_KEY);if(s)checked=JSON.parse(s);}catch(e){}
+  SECS.forEach(function(id){
+    var pill=document.getElementById('pill-'+id);
+    var row=document.getElementById('row-'+id);
+    var st=document.getElementById('st-'+id);
+    var sch=document.getElementById('sch-'+id);
+    if(checked[id]){
+      if(pill){pill.classList.add('checked');pill.querySelector('.pill-check').textContent='✓';}
+      if(row)row.classList.add('done');
+      if(st)st.textContent='✓';
+      if(sch){sch.classList.add('checked');sch.textContent='✓ Done';}
+    } else {
+      if(pill){pill.classList.remove('checked');pill.querySelector('.pill-check').textContent='○';}
+      if(row)row.classList.remove('done');
+      if(st)st.textContent='○';
+      if(sch){sch.classList.remove('checked');sch.textContent='○ Mark done';}
+    }
+  });
+}
+function toggleSection(id,btn){checked[id]=!checked[id];try{localStorage.setItem(MOD_KEY,JSON.stringify(checked));}catch(e){}loadState();}
+function toggleStudyPanel(){
+  var hdr=document.getElementById('sp-hdr');
+  var body=document.getElementById('sp-body');
+  var arr=document.getElementById('sp-arr');
+  hdr.classList.toggle('open');body.classList.toggle('open');
+  if(arr)arr.textContent=body.classList.contains('open')?'▲':'▼';
+}
+function goTo(id){var el=document.getElementById(id);if(!el)return;var h=el.querySelector('.sh'),b=el.querySelector('.sb');if(h&&b&&!b.classList.contains('open')){h.classList.add('open');b.classList.add('open');}setTimeout(function(){window.scrollTo({top:el.getBoundingClientRect().top+window.pageYOffset-60,behavior:'smooth'});},50);}
+function setFs(size,btn){document.documentElement.style.setProperty('--base-fs',size);document.querySelectorAll('.fs-btn').forEach(function(b){b.classList.remove('active');});btn.classList.add('active');try{localStorage.setItem('ccna-fs',size);}catch(e){}}
+(function(){try{var s=localStorage.getItem('ccna-fs');if(s){document.documentElement.style.setProperty('--base-fs',s);document.querySelectorAll('.fs-btn').forEach(function(b){b.classList.remove('active');if((b.textContent==='S'&&s==='14px')||(b.textContent==='M'&&s==='16px')||(b.textContent==='L'&&s==='18px')||(b.textContent==='XL'&&s==='20px'))b.classList.add('active');});}}catch(e){}loadState();})();
+function copyCode(btn){var pre=btn.closest('.cw').querySelector('pre');navigator.clipboard.writeText(pre.innerText||pre.textContent).then(function(){btn.textContent='Copied!';setTimeout(function(){btn.textContent='Copy';},1500);});}
+</script>
+<script src="../../site-config.js"></script>
+</body>
+</html>

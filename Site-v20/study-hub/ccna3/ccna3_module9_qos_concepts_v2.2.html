@@ -1,0 +1,903 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=2.0">
+<title>CCNA 3 Module 9: QoS Concepts v2.2</title>
+<style>
+:root{
+  --blue:#1ba0d7;--dark:#005073;--green:#6cc24a;
+  --qos:#14532d;--qosd:#86efac;--qos2:#052e16;
+  --bg:#f4f6f8;--card:#fff;--text:#1a1a2e;--muted:#5a6a7a;
+  --cbg:#0d1117;--ctxt:#c9d1d9;--r:12px;--sh:0 2px 12px rgba(0,0,0,.08);
+  --base-fs:16px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);font-size:var(--base-fs);line-height:1.7}
+
+.bc{background:#0d1117;padding:8px 16px;display:flex;align-items:center;flex-wrap:wrap;gap:4px;font-size:.75em;overflow-x:auto;white-space:nowrap;-webkit-overflow-scrolling:touch;border-bottom:1px solid #21262d}
+.bc a{color:#8b949e;text-decoration:none;font-weight:600;flex-shrink:0}
+.bc a:active{color:#c9d1d9}
+.bc .sep{color:#6e7681;flex-shrink:0}
+.bc .cur{color:var(--qosd);font-weight:700;flex-shrink:0;overflow:hidden;text-overflow:ellipsis;max-width:180px}
+
+.fs-bar{position:sticky;top:0;z-index:200;background:#1a1a2e;display:flex;align-items:center;justify-content:flex-end;padding:6px 14px;gap:6px;box-shadow:0 2px 8px rgba(0,0,0,.3)}
+.fs-label{color:#8b949e;font-size:.72em;font-weight:700;letter-spacing:.5px;text-transform:uppercase;margin-right:4px}
+.fs-btn{background:#30363d;color:#c9d1d9;border:2px solid transparent;border-radius:6px;padding:4px 12px;font-size:.75em;font-weight:700;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:all .2s;line-height:1.4}
+.fs-btn:active,.fs-btn.active{background:var(--qos);color:#fff;border-color:var(--qosd)}
+
+.hdr{background:linear-gradient(135deg,#020f07,var(--qos2),var(--qos));color:#fff;padding:32px 20px 24px;text-align:center}
+.hdr .badge{display:inline-block;background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.4);border-radius:20px;padding:4px 14px;font-size:.81em;margin-bottom:12px}
+.hdr h1{font-size:1.625em;font-weight:700;margin-bottom:6px}
+.hdr p{font-size:.94em;opacity:.85}
+.hdr .obj{display:inline-block;background:rgba(255,255,255,.15);border-radius:8px;padding:7px 16px;margin-top:12px;font-size:.875em;font-style:italic}
+
+.pb-wrap{background:var(--card);padding:14px 16px;margin:16px 16px 0;border-radius:var(--r);box-shadow:var(--sh)}
+.pb-lbl{font-size:.81em;color:var(--muted);margin-bottom:6px;font-weight:600}
+.pb-track{background:#e0e7ef;border-radius:10px;height:8px;overflow:hidden}
+.pb-fill{background:linear-gradient(90deg,var(--qos),var(--qosd));height:100%;border-radius:10px;width:0;transition:width 1s ease}
+
+.toc{background:var(--card);margin:16px;border-radius:var(--r);box-shadow:var(--sh);overflow:hidden}
+.toch{background:var(--qos);color:#fff;padding:14px 18px;font-weight:700;font-size:.94em;display:flex;justify-content:space-between;align-items:center;cursor:pointer;user-select:none}
+.toch .arr{transition:transform .3s}
+.toch.open .arr{transform:rotate(180deg)}
+.tocb{display:none;padding:10px 0}
+.tocb.open{display:block}
+.tocg{font-size:.69em;font-weight:800;letter-spacing:.8px;color:var(--qos);text-transform:uppercase;padding:8px 20px 2px}
+.tocb a{display:block;padding:9px 20px 9px 28px;color:var(--text);text-decoration:none;font-size:.875em;border-left:3px solid transparent;transition:all .2s}
+.tocb a:hover,.tocb a:active{background:#f0fdf4;border-left-color:var(--qosd)}
+.tocb a .n{display:inline-block;background:var(--qos);color:#fff;border-radius:5px;padding:1px 8px;font-size:.75em;font-weight:700;margin-right:8px}
+
+.wrap{padding:0 16px 100px}
+
+.sec{background:var(--card);border-radius:var(--r);box-shadow:var(--sh);margin-bottom:16px;overflow:hidden}
+.sh{background:linear-gradient(90deg,#020f07,var(--qos));color:#fff;padding:16px 18px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;user-select:none;-webkit-tap-highlight-color:transparent}
+.sh .ttl{font-weight:700;font-size:1em}
+.sh .nb{background:rgba(255,255,255,.25);border-radius:6px;padding:3px 10px;font-size:.81em;font-weight:700;margin-right:10px;white-space:nowrap}
+.sh .ch{font-size:1.125em;transition:transform .3s}
+.sh.open .ch{transform:rotate(180deg)}
+.sb{display:none;padding:18px}
+.sb.open{display:block}
+
+.sub{margin-bottom:24px}
+.sub:last-child{margin-bottom:0}
+.sub h3{font-size:.94em;font-weight:700;color:var(--qos);margin-bottom:10px;padding-bottom:6px;border-bottom:2px solid #f0fdf4;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.sub h3 .sn{background:var(--qos);color:#fff;border-radius:5px;padding:2px 8px;font-size:.75em;white-space:nowrap}
+.sub h4{font-size:.875em;font-weight:700;color:var(--qos);margin:14px 0 6px}
+.sub p{margin-bottom:10px;font-size:.94em}
+.sub ul,.sub ol{padding-left:20px;margin:8px 0;font-size:.94em}
+.sub li{margin-bottom:5px}
+
+.ca{border-radius:8px;padding:12px 14px;margin:12px 0;font-size:.875em;line-height:1.6;display:flex;gap:10px;align-items:flex-start}
+.ca .ic{font-size:1.125em;flex-shrink:0;margin-top:1px}
+.ca.warn  {background:#fff3cd;border-left:4px solid #b38600;color:#3d2c00}
+.ca.tip   {background:#d4edda;border-left:4px solid #28a745;color:#0d3318}
+.ca.danger{background:#f8d7da;border-left:4px solid #dc3545;color:#3d0010}
+.ca.info  {background:#f0fdf4;border-left:4px solid var(--qos);color:#052e16}
+
+.et{background:linear-gradient(135deg,#1a1a2e,#020f07);color:#fff;border-radius:10px;padding:14px 16px;margin:14px 0;font-size:.875em;line-height:1.6}
+.et .lbl{font-size:.69em;font-weight:800;letter-spacing:1px;color:var(--qosd);margin-bottom:6px}
+.et ul{padding-left:18px;margin-top:6px}
+.et li{margin-bottom:4px}
+
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:12px 0;border-radius:8px}
+table{width:100%;border-collapse:collapse;font-size:.875em}
+th{background:var(--qos);color:#fff;padding:10px 12px;text-align:left;font-weight:700;font-size:.81em}
+td{padding:9px 12px;border-bottom:1px solid #e8ecf0;vertical-align:top;color:#1a1a2e}
+tr:nth-child(even) td{background:#f0fdf4;color:#052e16}
+tr:last-child td{border-bottom:none}
+p code,li code,td code,.ca code{background:#f0fdf4;color:#052e16;border-radius:4px;padding:1px 5px;font-size:.81em;font-family:'Courier New',monospace;font-weight:600}
+
+/* Traffic type cards */
+.traffic-grid{display:grid;gap:12px;margin:12px 0}
+.traffic-card{border-radius:10px;overflow:hidden}
+.traffic-card .tc-hdr{padding:10px 14px;font-size:.875em;font-weight:800;color:#fff;display:flex;align-items:center;justify-content:space-between}
+.traffic-card.voice .tc-hdr{background:#1a3a5c}
+.traffic-card.video .tc-hdr{background:#7b2d8b}
+.traffic-card.data  .tc-hdr{background:#5c3d00}
+.traffic-card .tc-body{padding:12px 14px;font-size:.81em;line-height:1.7;background:#f9fafb}
+.traffic-card .tc-reqs{display:grid;grid-template-columns:repeat(2,1fr);gap:6px;margin-top:8px}
+.traffic-card .tc-req{border-radius:6px;padding:6px 10px;text-align:center}
+.traffic-card.voice .tc-req{background:#e0f2fe;color:#1a3a5c}
+.traffic-card.video .tc-req{background:#f3e8ff;color:#5b21b6}
+.traffic-card.data  .tc-req{background:#fffbeb;color:#78350f}
+.traffic-card .tc-req .rval{font-weight:800;font-size:.875em;display:block}
+.traffic-card .tc-req .rlbl{font-size:.69em;color:var(--muted);font-weight:600;display:block}
+
+/* Queuing algorithm cards */
+.queue-grid{display:grid;gap:10px;margin:12px 0}
+.queue-card{border-radius:10px;overflow:hidden}
+.queue-card .qc-hdr{padding:9px 14px;font-size:.875em;font-weight:800;color:#fff;display:flex;align-items:center;gap:8px}
+.queue-card.fifo .qc-hdr{background:#374151}
+.queue-card.wfq  .qc-hdr{background:#1a3a5c}
+.queue-card.cbwfq.qc-hdr,.queue-card.cbwfq>.qc-hdr{background:var(--qos)}
+.queue-card.llq  .qc-hdr{background:#7c1e1e}
+.queue-card .qc-body{padding:11px 14px;font-size:.81em;line-height:1.7;background:#f9fafb}
+.queue-card .qc-body ul{padding-left:16px}
+.queue-card .qc-body li{margin-bottom:3px}
+.queue-card .qc-tag{font-size:.69em;font-weight:700;padding:2px 8px;border-radius:4px;color:#fff;margin-left:auto}
+.queue-card.fifo .qc-tag{background:#374151}
+.queue-card.wfq  .qc-tag{background:#1a3a5c}
+.queue-card.cbwfq .qc-tag{background:var(--qos)}
+.queue-card.llq  .qc-tag{background:#7c1e1e}
+
+/* QoS model cards */
+.model-grid{display:grid;gap:10px;margin:12px 0}
+.model-card{border-radius:10px;padding:13px 14px;border-left:5px solid}
+.model-card.be   {border-left-color:#374151;background:#f9fafb}
+.model-card.intserv{border-left-color:#1a3a5c;background:#e0f2fe}
+.model-card.diffserv{border-left-color:var(--qos);background:#f0fdf4}
+.model-card .mc-name{font-weight:800;font-size:.875em;margin-bottom:4px}
+.model-card.be    .mc-name{color:#374151}
+.model-card.intserv .mc-name{color:#1a3a5c}
+.model-card.diffserv .mc-name{color:var(--qos)}
+.model-card p{font-size:.81em;color:#1a1a2e;line-height:1.6;margin:0}
+
+/* Delay table dark box */
+.delay-box{background:#0d1117;border:2px solid var(--qosd);border-radius:10px;padding:14px;margin:12px 0}
+.db-title{font-size:.75em;font-weight:800;letter-spacing:.8px;color:var(--qosd);text-transform:uppercase;margin-bottom:10px}
+.db-row{display:flex;gap:10px;align-items:flex-start;padding:7px 0;border-bottom:1px solid #21262d;font-size:.81em;color:#c9d1d9;line-height:1.6}
+.db-row:last-child{border-bottom:none}
+.db-name{font-weight:800;color:var(--qosd);min-width:120px;flex-shrink:0;font-size:.875em}
+.db-type{font-size:.69em;font-weight:700;padding:2px 7px;border-radius:4px;color:#fff;flex-shrink:0;margin-top:2px}
+.db-type.fix{background:#1a3a5c}
+.db-type.var{background:#7c1e1e}
+
+/* CoS values table */
+.cos-grid{display:grid;gap:6px;margin:12px 0}
+.cos-row{display:flex;align-items:center;gap:10px;padding:8px 12px;border-radius:8px;font-size:.81em}
+.cos-row.v5{background:#e0f2fe;border-left:4px solid #1a3a5c}
+.cos-row.v4{background:#f3e8ff;border-left:4px solid #7b2d8b}
+.cos-row.v3{background:#fff8f0;border-left:4px solid #c87800}
+.cos-row.v2{background:#f0fdf4;border-left:4px solid var(--qos)}
+.cos-row.v1,.cos-row.v0{background:#f9fafb;border-left:4px solid #374151}
+.cos-row.res{background:#fff5f5;border-left:4px solid #dc3545}
+.cos-val{font-family:'Courier New',monospace;font-weight:900;font-size:1.125em;min-width:24px;text-align:center;flex-shrink:0}
+.cos-bin{font-family:'Courier New',monospace;font-size:.75em;color:var(--muted);min-width:40px;flex-shrink:0}
+.cos-desc{font-weight:600;flex:1;color:#1a1a2e}
+
+/* DSCP categories */
+.dscp-grid{display:grid;gap:8px;margin:12px 0}
+.dscp-card{border-radius:8px;padding:11px 14px;font-size:.81em;border-left:4px solid}
+.dscp-card.be{border-left-color:#374151;background:#f9fafb}
+.dscp-card.ef{border-left-color:#1a3a5c;background:#e0f2fe}
+.dscp-card.af{border-left-color:var(--qos);background:#f0fdf4}
+.dscp-card .dc-hdr{font-weight:800;font-size:.875em;margin-bottom:4px;display:flex;align-items:center;gap:8px}
+.dscp-card.be .dc-hdr{color:#374151}
+.dscp-card.ef .dc-hdr{color:#1a3a5c}
+.dscp-card.af .dc-hdr{color:var(--qos)}
+.dscp-card .dc-val{font-family:'Courier New',monospace;font-weight:900;font-size:.875em;padding:2px 8px;border-radius:4px;color:#fff}
+.dscp-card.be .dc-val{background:#374151}
+.dscp-card.ef .dc-val{background:#1a3a5c}
+.dscp-card.af .dc-val{background:var(--qos)}
+
+/* Shaping vs Policing */
+.sp-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:12px 0}
+@media(max-width:480px){.sp-grid{grid-template-columns:1fr}}
+.sp-card{border-radius:10px;overflow:hidden}
+.sp-card .sc-hdr{padding:9px 12px;font-size:.81em;font-weight:800;color:#fff;text-align:center}
+.sp-card.shape .sc-hdr{background:var(--qos)}
+.sp-card.police .sc-hdr{background:#7c1e1e}
+.sp-card .sc-body{padding:12px;font-size:.81em;color:#1a1a2e;line-height:1.7;background:#f9fafb}
+.sp-card .sc-body ul{padding-left:16px}
+.sp-card .sc-body li{margin-bottom:4px}
+
+/* QoS tools three-column */
+.tools-grid{display:grid;gap:8px;margin:12px 0}
+.tool-row{display:flex;gap:10px;align-items:flex-start;padding:10px 12px;border-radius:8px;font-size:.81em;line-height:1.6;border-left:4px solid}
+.tool-row.cm{background:#f0fdf4;border-left-color:var(--qos)}
+.tool-row.ca{background:#e0f2fe;border-left-color:#1a3a5c}
+.tool-row.cg{background:#f3e8ff;border-left-color:#7b2d8b}
+.tool-row .tr-name{font-weight:800;min-width:130px;flex-shrink:0;color:#1a1a2e;line-height:1.5}
+.tool-row .tr-desc{color:#374151;line-height:1.6}
+
+/* CS bits mapping */
+.cs-grid{display:grid;gap:5px;margin:12px 0}
+.cs-row{display:grid;grid-template-columns:60px 80px 60px 80px 80px;gap:6px;align-items:center;font-size:.75em}
+.cs-hdr{font-weight:800;color:var(--muted);font-size:.69em;text-transform:uppercase}
+.cs-row .cv{font-family:'Courier New',monospace;font-weight:700;padding:4px 8px;border-radius:4px;text-align:center}
+@media(max-width:440px){.cs-grid{overflow-x:auto}}
+
+/* WRED visual */
+.wred-box{background:#0d1117;border:2px solid #f87171;border-radius:10px;padding:14px;margin:12px 0}
+.wb-title{font-size:.75em;font-weight:800;letter-spacing:.8px;color:#f87171;text-transform:uppercase;margin-bottom:10px}
+.wb-row{display:flex;gap:10px;align-items:flex-start;padding:7px 0;border-bottom:1px solid #21262d;font-size:.81em;color:#c9d1d9;line-height:1.6}
+.wb-row:last-child{border-bottom:none}
+.wb-zone{font-weight:800;min-width:120px;flex-shrink:0;font-size:.875em}
+.wb-zone.green{color:#4ade80}
+.wb-zone.yellow{color:#fbbf24}
+.wb-zone.red{color:#f87171}
+
+.tb-btn{position:fixed;bottom:80px;right:16px;background:var(--qos);color:#fff;border:none;border-radius:50%;width:44px;height:44px;font-size:1.25em;box-shadow:0 4px 14px rgba(0,0,0,.25);cursor:pointer;display:none;align-items:center;justify-content:center;z-index:100}
+.tb-btn.show{display:flex}
+.ft{text-align:center;padding:24px 16px;color:var(--muted);font-size:.81em}
+
+.mod-nav{position:fixed;bottom:0;left:0;right:0;z-index:300;background:#1a1a2e;border-top:1px solid #30363d;display:flex;align-items:center;height:52px;padding:0 8px;gap:6px}
+.mn-hub{background:var(--blue);color:#fff;border:none;border-radius:8px;padding:6px 12px;font-size:.75em;font-weight:700;cursor:pointer;text-decoration:none;display:flex;align-items:center;gap:4px;white-space:nowrap;-webkit-tap-highlight-color:transparent;flex-shrink:0}
+.mn-hub:active{opacity:.8}
+.mn-divider{width:1px;height:28px;background:#30363d;flex-shrink:0}
+.mn-label{flex:1;text-align:center;font-size:.69em;color:#8b949e;font-weight:600;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding:0 4px}
+.mn-prev,.mn-next{background:#30363d;color:#c9d1d9;border:none;border-radius:8px;padding:6px 10px;font-size:.875em;font-weight:700;cursor:pointer;text-decoration:none;display:flex;align-items:center;-webkit-tap-highlight-color:transparent;flex-shrink:0}
+.mn-prev:active,.mn-next:active{background:var(--qos);color:#fff}
+/* Study progress panel */
+.sp-wrap{background:var(--card);margin:16px 16px 0;border-radius:var(--r);box-shadow:var(--sh);overflow:hidden}
+.sp-hdr{background:var(--nt);color:#fff;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;user-select:none;-webkit-tap-highlight-color:transparent;gap:10px}
+.sp-hdr .sp-title{font-weight:700;font-size:.875em;flex-shrink:0}
+.sp-hdr .sp-arr{transition:transform .3s;flex-shrink:0}
+.sp-hdr.open .sp-arr{transform:rotate(180deg)}
+.sp-body{display:none;padding:12px 14px}
+.sp-body.open{display:block}
+.sp-row{display:flex;align-items:center;gap:10px;padding:6px 4px;border-bottom:1px solid #f0f4f8;font-size:.81em}
+.sp-row:last-child{border-bottom:none}
+.sp-row .sr-status{font-size:1em;flex-shrink:0;width:20px;text-align:center}
+.sp-row .sr-nb{font-weight:800;color:var(--nt);min-width:36px;flex-shrink:0;font-size:.875em}
+.sp-row .sr-ttl{color:var(--text);flex:1}
+.sp-row.done .sr-ttl{color:var(--muted);text-decoration:line-through}
+.sc-pills{display:flex;align-items:center;gap:4px;overflow-x:auto;-webkit-overflow-scrolling:touch;flex:1;padding:0 4px}
+.sc-pill{background:#30363d;color:#8b949e;border:2px solid transparent;border-radius:6px;padding:3px 8px;font-size:.72em;font-weight:700;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:all .15s;white-space:nowrap;flex-shrink:0;line-height:1.4;display:flex;align-items:center;gap:3px}
+.sc-pill.checked{background:var(--nt);color:#fff;border-color:var(--ntd)}
+.sc-pill .pill-check{font-size:.875em}
+
+/* v2.1 — In-section check button */
+.sh{position:relative}
+.sec-check{position:absolute;right:40px;top:50%;transform:translateY(-50%);background:rgba(255,255,255,.15);border:2px solid rgba(255,255,255,.4);border-radius:6px;padding:2px 10px;font-size:.72em;font-weight:800;color:#fff;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:all .2s;white-space:nowrap;z-index:10;line-height:1.5}
+.sec-check.checked{background:var(--ntd);border-color:var(--ntd);color:#052e1e}
+.sec-check:active{opacity:.75}
+/* Sections panel + tick colours (these pages never defined --nt/--ntd, so the panel header was invisible) */
+:root{--nt:var(--qos);--ntd:#4ade80}
+</style>
+</head>
+<body>
+
+<nav class="bc">
+  <a href="../../index.html">🏠 Home</a>
+  <span class="sep">›</span>
+  <a href="index.html">CCNA 3 — ENSA</a>
+  <span class="sep">›</span>
+  <span class="cur">M9: QoS Concepts</span>
+</nav>
+
+<div class="fs-bar">
+  <div class="sc-pills" id="sc-pills">
+  <button class="sc-pill" id="pill-s1" onclick="toggleSection('s1',this)"><span class="pill-check">○</span>9.1</button>
+  <button class="sc-pill" id="pill-s2" onclick="toggleSection('s2',this)"><span class="pill-check">○</span>9.2</button>
+  <button class="sc-pill" id="pill-s3" onclick="toggleSection('s3',this)"><span class="pill-check">○</span>9.3</button>
+  <button class="sc-pill" id="pill-s4" onclick="toggleSection('s4',this)"><span class="pill-check">○</span>9.4</button>
+  <button class="sc-pill" id="pill-s5" onclick="toggleSection('s5',this)"><span class="pill-check">○</span>9.5</button>
+  <button class="sc-pill" id="pill-s6" onclick="toggleSection('s6',this)"><span class="pill-check">○</span>🎯</button>
+  </div>
+  <span class="fs-label" style="flex-shrink:0;margin-left:6px">Size</span>
+  <button class="fs-btn" onclick="setFs('14px',this)">S</button>
+  <button class="fs-btn active" onclick="setFs('16px',this)">M</button>
+  <button class="fs-btn" onclick="setFs('18px',this)">L</button>
+  <button class="fs-btn" onclick="setFs('20px',this)">XL</button>
+</div>
+
+<div class="hdr">
+  <div class="badge">CCNA 3 — ENSA v7.02</div>
+  <h1>📶 Module 9: QoS Concepts</h1>
+  <p>Enterprise Networking, Security &amp; Automation · NetAcad Study Guide</p>
+  <div class="obj">Module Objective: Explain how networking devices implement QoS</div>
+</div>
+
+<div class="sp-wrap">
+  <div class="sp-hdr" id="sp-hdr" onclick="toggleStudyPanel()">
+    <span class="sp-title">📚 Sections</span>
+    <span class="sp-arr" id="sp-arr">▼</span>
+  </div>
+  <div class="sp-body" id="sp-body">
+    <div class="sp-row" id="row-s1"><span class="sr-status" id="st-s1">○</span><span class="sr-nb">9.1</span><span class="sr-ttl">Network Transmission Quality</span></div>
+    <div class="sp-row" id="row-s2"><span class="sr-status" id="st-s2">○</span><span class="sr-nb">9.2</span><span class="sr-ttl">Traffic Characteristics</span></div>
+    <div class="sp-row" id="row-s3"><span class="sr-status" id="st-s3">○</span><span class="sr-nb">9.3</span><span class="sr-ttl">Queuing Algorithms</span></div>
+    <div class="sp-row" id="row-s4"><span class="sr-status" id="st-s4">○</span><span class="sr-nb">9.4</span><span class="sr-ttl">QoS Models</span></div>
+    <div class="sp-row" id="row-s5"><span class="sr-status" id="st-s5">○</span><span class="sr-nb">9.5</span><span class="sr-ttl">QoS Implementation Techniques</span></div>
+    <div class="sp-row" id="row-s6"><span class="sr-status" id="st-s6">○</span><span class="sr-nb">🎯</span><span class="sr-ttl">Common Exam Traps — Module 9</span></div>
+  </div>
+</div>
+
+<div class="toc">
+  <div class="toch open" onclick="this.classList.toggle('open');document.getElementById('tocb').classList.toggle('open')">
+    📋 Table of Contents — Tap to expand <span class="arr">▼</span>
+  </div>
+  <div class="tocb open" id="tocb">
+    <div class="tocg">9.1 — Network Transmission Quality</div>
+    <a href="javascript:void(0)" onclick="goTo('s1')"><span class="n">9.1.2</span> Prioritizing Traffic — When QoS Activates</a>
+    <a href="javascript:void(0)" onclick="goTo('s1')"><span class="n">9.1.3</span> Bandwidth, Congestion, Delay, and Jitter</a>
+    <a href="javascript:void(0)" onclick="goTo('s1')"><span class="n">9.1.4</span> Packet Loss — VoIP Playout Buffer</a>
+    <div class="tocg">9.2 — Traffic Characteristics</div>
+    <a href="javascript:void(0)" onclick="goTo('s2')"><span class="n">9.2.3</span> Voice Requirements</a>
+    <a href="javascript:void(0)" onclick="goTo('s2')"><span class="n">9.2.4</span> Video Requirements</a>
+    <a href="javascript:void(0)" onclick="goTo('s2')"><span class="n">9.2.5</span> Data Requirements</a>
+    <div class="tocg">9.3 — Queuing Algorithms</div>
+    <a href="javascript:void(0)" onclick="goTo('s3')"><span class="n">9.3.3</span> FIFO</a>
+    <a href="javascript:void(0)" onclick="goTo('s3')"><span class="n">9.3.4</span> WFQ — Weighted Fair Queuing</a>
+    <a href="javascript:void(0)" onclick="goTo('s3')"><span class="n">9.3.5</span> CBWFQ — Class-Based WFQ</a>
+    <a href="javascript:void(0)" onclick="goTo('s3')"><span class="n">9.3.6</span> LLQ — Low Latency Queuing</a>
+    <div class="tocg">9.4 — QoS Models</div>
+    <a href="javascript:void(0)" onclick="goTo('s4')"><span class="n">9.4.3</span> Best Effort</a>
+    <a href="javascript:void(0)" onclick="goTo('s4')"><span class="n">9.4.4</span> IntServ — Integrated Services</a>
+    <a href="javascript:void(0)" onclick="goTo('s4')"><span class="n">9.4.5</span> DiffServ — Differentiated Services</a>
+    <div class="tocg">9.5 — QoS Implementation Techniques</div>
+    <a href="javascript:void(0)" onclick="goTo('s5')"><span class="n">9.5.2</span> Avoiding Packet Loss</a>
+    <a href="javascript:void(0)" onclick="goTo('s5')"><span class="n">9.5.3</span> Three Categories of QoS Tools</a>
+    <a href="javascript:void(0)" onclick="goTo('s5')"><span class="n">9.5.4</span> Classification and Marking</a>
+    <a href="javascript:void(0)" onclick="goTo('s5')"><span class="n">9.5.5</span> Layer 2 Marking — CoS (802.1p)</a>
+    <a href="javascript:void(0)" onclick="goTo('s5')"><span class="n">9.5.6</span> Layer 3 Marking — DSCP</a>
+    <a href="javascript:void(0)" onclick="goTo('s5')"><span class="n">9.5.8</span> DSCP Values — BE, EF, AF</a>
+    <a href="javascript:void(0)" onclick="goTo('s5')"><span class="n">9.5.9</span> Class Selector Bits — CoS ↔ DSCP Mapping</a>
+    <a href="javascript:void(0)" onclick="goTo('s5')"><span class="n">9.5.10</span> Trust Boundaries</a>
+    <a href="javascript:void(0)" onclick="goTo('s5')"><span class="n">9.5.11</span> Congestion Avoidance — WRED</a>
+    <a href="javascript:void(0)" onclick="goTo('s5')"><span class="n">9.5.12</span> Shaping vs Policing</a>
+    <a href="javascript:void(0)" onclick="goTo('s5')"><span class="n">9.5.13</span> QoS Policy Guidelines</a>
+    <div class="tocg">Reference</div>
+    <a href="javascript:void(0)" onclick="goTo('s6')"><span class="n">🎯</span> Common Exam Traps</a>
+  </div>
+</div>
+
+<div class="wrap">
+
+<!-- ══════════ 9.1 NETWORK TRANSMISSION QUALITY ══════════ -->
+<div class="sec" id="s1">
+<div class="sh open" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">9.1</span><span class="ttl">Network Transmission Quality</span></span><button class="sec-check" id="sch-s1" onclick="event.stopPropagation();toggleSection('s1',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb open">
+
+  <div class="sub">
+  <h3><span class="sn">9.1.2</span> Prioritizing Traffic — When QoS Activates</h3>
+  <div class="ca danger">
+    <span class="ic">🚨</span>
+    <div><strong>A device implements QoS only when it is experiencing congestion.</strong> If the link is not congested, QoS mechanisms are dormant — all traffic flows freely regardless of classification.</div>
+  </div>
+  <p>Without QoS, all packets are processed in arrival order. During congestion, voice and video packets are dropped as often as email — no differentiation.</p>
+  <p><strong>Why congestion occurs:</strong></p>
+  <ul>
+    <li>Multiple high-speed input lines funnel into a single slower output interface</li>
+    <li>Large data packets block smaller, time-sensitive packets in a single queue</li>
+    <li>Traffic bursts (e.g., large FTP downloads) consume all available bandwidth</li>
+  </ul>
+  <div class="ca info">
+    <span class="ic">💡</span>
+    <div>QoS solution: classify traffic into <strong>multiple priority queues</strong> so time-sensitive traffic (voice, video) is transmitted before bulk data during congestion.</div>
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">9.1.3</span> Bandwidth, Congestion, Delay, and Jitter</h3>
+  <p><strong>Jitter</strong> = variation in the delay between received packets. Packets sent at even intervals arrive with varying gaps due to congestion, improper queuing, or config errors. Both delay and jitter must be controlled for real-time traffic.</p>
+
+  <div class="delay-box">
+    <div class="db-title">⏱ Sources of Delay</div>
+    <div class="db-row"><div class="db-name">Code delay</div><div class="db-type fix">Fixed</div><div>Time to compress data at source before transmitting to the first switch</div></div>
+    <div class="db-row"><div class="db-name">Packetization</div><div class="db-type fix">Fixed</div><div>Time to encapsulate a packet with all necessary header information</div></div>
+    <div class="db-row"><div class="db-name">Queuing delay</div><div class="db-type var">Variable</div><div>Time a frame/packet waits to be transmitted — increases under congestion</div></div>
+    <div class="db-row"><div class="db-name">Serialization</div><div class="db-type fix">Fixed</div><div>Time to transmit a frame onto the physical wire</div></div>
+    <div class="db-row"><div class="db-name">Propagation</div><div class="db-type var">Variable</div><div>Time for the frame to travel between source and destination (speed of light in medium)</div></div>
+    <div class="db-row"><div class="db-name">De-jitter</div><div class="db-type fix">Fixed</div><div>Time to buffer a flow of packets and send them out in evenly spaced intervals</div></div>
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">9.1.4</span> Packet Loss — VoIP Playout Buffer</h3>
+  <p>VoIP uses <strong>RTP (Real-Time Protocol)</strong> over UDP. When packets arrive with jitter, the <strong>playout delay buffer</strong> compensates:</p>
+  <ul>
+    <li>Buffers incoming audio packets → plays them out at a steady, even rate</li>
+    <li>If jitter exceeds the buffer range → out-of-range packets are <strong>discarded</strong> → audible dropouts</li>
+    <li>The <strong>DSP (Digital Signal Processor)</strong> can interpolate (fill in) for small losses — users don't notice</li>
+    <li>When jitter exceeds what DSP can compensate → audio problems become audible</li>
+  </ul>
+  <div class="ca tip">
+    <span class="ic">✅</span>
+    <div>In a properly designed network, voice packet loss should be <strong>near zero</strong>. QoS mechanisms guarantee bandwidth and give priority to voice traffic — achieving zero packet loss for voice calls.</div>
+  </div>
+  </div>
+
+</div></div>
+
+<!-- ══════════ 9.2 TRAFFIC CHARACTERISTICS ══════════ -->
+<div class="sec" id="s2">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">9.2</span><span class="ttl">Traffic Characteristics</span></span><button class="sec-check" id="sch-s2" onclick="event.stopPropagation();toggleSection('s2',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb">
+
+  <div class="sub">
+  <h3><span class="sn">9.2.3–9.2.5</span> Voice, Video, and Data Requirements</h3>
+  <div class="traffic-grid">
+
+    <div class="traffic-card voice">
+      <div class="tc-hdr">🎙️ Voice <span style="font-size:.75em;opacity:.8">UDP/RTP · ports 16384–32767</span></div>
+      <div class="tc-body">
+        <strong>Characteristics:</strong> Smooth · Benign · Drop-sensitive · Delay-sensitive · No retransmission<br>
+        <strong>Packet pattern:</strong> Every 20 ms · ~200 bytes per packet · Very predictable
+        <div class="tc-reqs">
+          <div class="tc-req"><span class="rval">≤ 150 ms</span><span class="rlbl">Latency (one-way)</span></div>
+          <div class="tc-req"><span class="rval">≤ 30 ms</span><span class="rlbl">Jitter</span></div>
+          <div class="tc-req"><span class="rval">≤ 1%</span><span class="rlbl">Packet loss</span></div>
+          <div class="tc-req"><span class="rval">30–128 Kbps</span><span class="rlbl">Bandwidth</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="traffic-card video">
+      <div class="tc-hdr">📹 Video <span style="font-size:.75em;opacity:.8">UDP · RTSP port 554</span></div>
+      <div class="tc-body">
+        <strong>Characteristics:</strong> Bursty · Greedy · Drop-sensitive · Delay-sensitive · No retransmission<br>
+        <strong>Packet pattern:</strong> Every 33 ms · Variable size (still frames = small; action = large)
+        <div class="tc-reqs">
+          <div class="tc-req"><span class="rval">≤ 200–400 ms</span><span class="rlbl">Latency (one-way)</span></div>
+          <div class="tc-req"><span class="rval">≤ 30–50 ms</span><span class="rlbl">Jitter</span></div>
+          <div class="tc-req"><span class="rval">≤ 0.1–1%</span><span class="rlbl">Packet loss</span></div>
+          <div class="tc-req"><span class="rval">384 Kbps–20+ Mbps</span><span class="rlbl">Bandwidth</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="traffic-card data">
+      <div class="tc-hdr">💾 Data <span style="font-size:.75em;opacity:.8">TCP — retransmits on loss</span></div>
+      <div class="tc-body">
+        <strong>Characteristics:</strong> Smooth or bursty · Benign or greedy · Drop-insensitive · Delay-insensitive<br>
+        <strong>Note:</strong> FTP will consume all available bandwidth when downloading large files
+        <div class="tc-reqs">
+          <div class="tc-req"><span class="rval">Interactive + Critical</span><span class="rlbl">→ Highest data priority; 1–2s response target</span></div>
+          <div class="tc-req"><span class="rval">Non-interactive + Non-critical</span><span class="rlbl">→ Leftover bandwidth only</span></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+  <div class="et">
+    <div class="lbl">🎯 VOICE vs VIDEO — KEY DIFFERENCES FOR EXAM</div>
+    Voice: <strong>predictable and smooth</strong> — same packet size every 20 ms. Video: <strong>bursty and variable</strong> — packet size varies every 33 ms with content.<br>
+    Voice latency limit = <strong>150 ms</strong>. Video latency limit = <strong>200–400 ms</strong>. Both use UDP — neither retransmits lost packets.<br>
+    Voice needs the <strong>highest priority</strong> — CoS 5, DSCP EF (46). Video uses CoS 4.
+  </div>
+  </div>
+
+</div></div>
+
+<!-- ══════════ 9.3 QUEUING ALGORITHMS ══════════ -->
+<div class="sec" id="s3">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">9.3</span><span class="ttl">Queuing Algorithms</span></span><button class="sec-check" id="sch-s3" onclick="event.stopPropagation();toggleSection('s3',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb">
+
+  <div class="sub">
+  <h3><span class="sn">9.3.2–9.3.6</span> Four Queuing Algorithms</h3>
+  <p>Queuing is a <strong>congestion management</strong> tool — buffers, prioritizes, and reorders packets before transmission. QoS policy activates only during congestion.</p>
+
+  <div class="queue-grid">
+    <div class="queue-card fifo">
+      <div class="qc-hdr">📥 FIFO — First In, First Out <span class="qc-tag">Default (most interfaces)</span></div>
+      <div class="qc-body">
+        <ul>
+          <li>No priority classes — all packets treated identically</li>
+          <li>Transmitted in exact order of arrival</li>
+          <li><strong>Default on all interfaces except serial at E1 and below</strong> (those use WFQ)</li>
+          <li>Fastest queuing method — minimal overhead</li>
+          <li>Effective for large, low-congestion links</li>
+          <li>❌ Time-sensitive traffic dropped as often as bulk data during congestion</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="queue-card wfq">
+      <div class="qc-hdr">⚖️ WFQ — Weighted Fair Queuing <span class="qc-tag">Default ≤E1 serial</span></div>
+      <div class="qc-body">
+        <ul>
+          <li><strong>Automated</strong> — no user-defined classes needed</li>
+          <li>Classifies traffic into <strong>flows/conversations</strong> based on: src/dst IP, MAC, port, protocol, ToS</li>
+          <li>Applies weights — low-bandwidth interactive traffic (Telnet, voice) gets priority</li>
+          <li>Multiple FTP flows share remaining bandwidth proportionally</li>
+          <li><strong>Default on serial interfaces at E1 (2.048 Mbps) and below</strong></li>
+          <li>❌ Does NOT support tunneling or encryption (modifies header fields WFQ needs)</li>
+          <li>❌ Less precise than CBWFQ — no user control over class bandwidth allocation</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="queue-card cbwfq" style="border-radius:10px;overflow:hidden">
+      <div class="qc-hdr" style="background:var(--qos);padding:9px 14px;font-size:.875em;font-weight:800;color:#fff;display:flex;align-items:center;gap:8px">🗂️ CBWFQ — Class-Based WFQ <span class="qc-tag" style="margin-left:auto">User-defined classes</span></div>
+      <div class="qc-body">
+        <ul>
+          <li>Extends WFQ with <strong>user-defined traffic classes</strong></li>
+          <li>Classes defined using: protocols, ACLs, input interfaces</li>
+          <li>Each class gets its own <strong>dedicated FIFO queue</strong></li>
+          <li>Each class assigned: guaranteed bandwidth, weight, queue limit (max packets)</li>
+          <li>When queue limit exceeded → <strong>tail drop</strong> (default) — drops from tail equally for all; no class distinction</li>
+          <li>✅ Precise bandwidth allocation per class</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="queue-card llq">
+      <div class="qc-hdr">🚨 LLQ — Low Latency Queuing <span class="qc-tag">Voice networks</span></div>
+      <div class="qc-body">
+        <ul>
+          <li>Adds a <strong>strict priority queue (PQ) to CBWFQ</strong></li>
+          <li>Strict PQ traffic (voice) is sent <strong>first</strong> — before all other queues, every time</li>
+          <li>Dramatically reduces jitter for voice conversations</li>
+          <li><strong>Cisco recommends only voice</strong> in the strict priority queue</li>
+          <li>Without LLQ: CBWFQ serves all classes by weight — no strict guarantee for voice → jitter</li>
+          <li>✅ Best algorithm for mixed voice + data networks</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="tw"><table>
+    <tr><th>Algorithm</th><th>Classes</th><th>Priority</th><th>Best for</th></tr>
+    <tr><td><strong>FIFO</strong></td><td>None — all equal</td><td>None</td><td>Large, low-congestion links</td></tr>
+    <tr><td><strong>WFQ</strong></td><td>Auto (per flow)</td><td>Weighted by flow</td><td>General auto-QoS; no user config needed</td></tr>
+    <tr><td><strong>CBWFQ</strong></td><td>User-defined</td><td>Guaranteed BW per class</td><td>Custom QoS policies with defined classes</td></tr>
+    <tr><td><strong>LLQ</strong></td><td>User-defined + strict PQ</td><td>Strict PQ + guaranteed BW</td><td>Networks with voice + data traffic</td></tr>
+  </table></div>
+  </div>
+
+</div></div>
+
+<!-- ══════════ 9.4 QoS MODELS ══════════ -->
+<div class="sec" id="s4">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">9.4</span><span class="ttl">QoS Models</span></span><button class="sec-check" id="sch-s4" onclick="event.stopPropagation();toggleSection('s4',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb">
+
+  <div class="sub">
+  <h3><span class="sn">9.4.2–9.4.5</span> Three QoS Models</h3>
+  <div class="model-grid">
+    <div class="model-card be">
+      <div class="mc-name">📮 Best Effort</div>
+      <p>No QoS — all packets treated identically. Most scalable; no special mechanisms needed. No delivery guarantees; no preferential treatment; critical and casual traffic treated identically. Appropriate when QoS is not required.</p>
+    </div>
+    <div class="model-card intserv">
+      <div class="mc-name">📡 IntServ — Integrated Services</div>
+      <p><strong>"Hard QoS"</strong> — guarantees bandwidth, delay, and packet loss end-to-end for individual flows (microflows). Uses <strong>RSVP (Resource Reservation Protocol)</strong> to signal QoS requirements along every device in the path. Each router maintains per-flow state. If reservation fails anywhere → application does not send. Explicit end-to-end admission control. ❌ Resource-intensive; not scalable to internet-scale; flow-based approach breaks down with large numbers of flows.</p>
+    </div>
+    <div class="model-card diffserv">
+      <div class="mc-name">🌐 DiffServ — Differentiated Services ← Modern Standard</div>
+      <p><strong>"Soft QoS"</strong> — scalable, hop-by-hop QoS. Classifies traffic into <strong>aggregates (classes)</strong>, not individual flows. No per-flow state on routers; no end-to-end signaling. Network devices apply defined QoS policy per class on every hop. Provides "almost guaranteed" QoS while remaining cost-effective and scalable. ❌ No absolute guarantee; requires coordinated mechanisms across all devices.</p>
+    </div>
+  </div>
+  <div class="et">
+    <div class="lbl">🎯 MODEL COMPARISON — EXAM KEY</div>
+    <strong>Best Effort:</strong> No QoS · most scalable · no guarantees · no config needed<br>
+    <strong>IntServ:</strong> Hard QoS · RSVP signaling · per-flow state on every router · guaranteed but not scalable<br>
+    <strong>DiffServ:</strong> Soft QoS · hop-by-hop · aggregate classes · scalable · <strong>modern standard</strong><br><br>
+    Modern networks primarily use <strong>DiffServ</strong>. IntServ/RSVP sometimes co-deployed for delay/jitter-sensitive traffic.
+  </div>
+  </div>
+
+</div></div>
+
+<!-- ══════════ 9.5 QoS IMPLEMENTATION TECHNIQUES ══════════ -->
+<div class="sec" id="s5">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">9.5</span><span class="ttl">QoS Implementation Techniques</span></span><button class="sec-check" id="sch-s5" onclick="event.stopPropagation();toggleSection('s5',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb">
+
+  <div class="sub">
+  <h3><span class="sn">9.5.2</span> Avoiding Packet Loss</h3>
+  <p>Three approaches to prevent drops for sensitive applications:</p>
+  <ul>
+    <li><strong>Increase link capacity</strong> — ease or eliminate congestion at bottleneck points</li>
+    <li><strong>Guarantee bandwidth + increase buffer</strong> — WFQ, CBWFQ, and LLQ guarantee bandwidth and provide priority forwarding to fragile flows</li>
+    <li><strong>Drop lower-priority traffic early</strong> — WRED drops lower-priority packets before congestion peaks, preserving capacity for sensitive traffic</li>
+  </ul>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">9.5.3</span> Three Categories of QoS Tools</h3>
+  <div class="tools-grid">
+    <div class="tool-row cm">
+      <div class="tr-name">Classification &amp; Marking</div>
+      <div class="tr-desc">Analyze flows to identify traffic class. Mark packets with QoS value in header. Must classify before any policy can be applied. Tools: ACLs, class maps, NBAR (Layers 4–7).</div>
+    </div>
+    <div class="tool-row ca">
+      <div class="tr-name">Congestion Avoidance</div>
+      <div class="tr-desc">Monitor queue depth; selectively drop/delay/remark packets <em>before</em> congestion peaks. Primary tool: <strong>WRED</strong> — randomly drops lower-priority packets before tail drop occurs.</div>
+    </div>
+    <div class="tool-row cg">
+      <div class="tr-name">Congestion Management</div>
+      <div class="tr-desc">Queue and schedule packets when traffic exceeds available resources. Tools: <strong>CBWFQ and LLQ</strong>. Typically applied on egress.</div>
+    </div>
+  </div>
+  <div class="ca info">
+    <span class="ic">💡</span>
+    <div><strong>QoS sequence:</strong> Ingress packets → <strong>Classify and Mark</strong> → <strong>Allocate resources (congestion avoidance)</strong> → <strong>Queue</strong> → <strong>Shape/Police on egress</strong>.<br>
+    Classification and marking: ingress or egress. Queuing and shaping: typically egress only.</div>
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">9.5.4</span> Classification and Marking</h3>
+  <p><strong>Classification</strong> = determine which traffic class a packet belongs to. Must happen before QoS policy can be applied.</p>
+  <p><strong>Marking</strong> = add a QoS value to the packet header. Downstream devices read this value and apply matching policy.</p>
+  <div class="ca warn">
+    <span class="ic">⚠️</span>
+    <div><strong>Mark as close to the source as possible.</strong> This establishes the trust boundary — the point where QoS markings are accepted as valid. Marking further downstream means intermediate devices may not classify correctly.</div>
+  </div>
+  <div class="tw"><table>
+    <tr><th>Technology</th><th>Layer</th><th>Marking Field</th><th>Bits</th></tr>
+    <tr><td>Ethernet (802.1Q/802.1p)</td><td>2</td><td>Class of Service (CoS)</td><td>3</td></tr>
+    <tr><td>802.11 (Wi-Fi)</td><td>2</td><td>Wi-Fi Traffic Identifier (TID)</td><td>3</td></tr>
+    <tr><td>MPLS</td><td>2</td><td>Experimental (EXP)</td><td>3</td></tr>
+    <tr><td>IPv4 / IPv6</td><td>3</td><td>IP Precedence (IPP) — legacy</td><td>3</td></tr>
+    <tr><td>IPv4 / IPv6</td><td>3</td><td>Differentiated Services Code Point (DSCP)</td><td>6</td></tr>
+  </table></div>
+  <div class="ca info">
+    <span class="ic">💡</span>
+    <div><strong>Layer 2 vs Layer 3 marking:</strong> Layer 2 (CoS) is the only option for non-IP-aware switches and non-IP traffic — but CoS is stripped when leaving an Ethernet segment. Layer 3 (DSCP) carries QoS info <strong>end-to-end</strong> across all routers.</div>
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">9.5.5</span> Layer 2 Marking — CoS (802.1p)</h3>
+  <p>The <strong>802.1Q</strong> VLAN tag adds a <strong>Tag Control Information (TCI)</strong> field to the Ethernet frame. The first <strong>3 bits</strong> of TCI = <strong>PRI (Priority) field = CoS</strong>. Three bits = <strong>8 priority levels (0–7)</strong>.</p>
+  <div class="cos-grid">
+    <div class="cos-row res"><div class="cos-val" style="color:#dc3545">7</div><div class="cos-bin">111</div><div class="cos-desc">Reserved</div></div>
+    <div class="cos-row res"><div class="cos-val" style="color:#dc3545">6</div><div class="cos-bin">110</div><div class="cos-desc">Reserved</div></div>
+    <div class="cos-row v5"><div class="cos-val" style="color:#1a3a5c">5</div><div class="cos-bin">101</div><div class="cos-desc">Voice Bearer — highest active priority 🎙️</div></div>
+    <div class="cos-row v4"><div class="cos-val" style="color:#7b2d8b">4</div><div class="cos-bin">100</div><div class="cos-desc">Videoconferencing 📹</div></div>
+    <div class="cos-row v3"><div class="cos-val" style="color:#c87800">3</div><div class="cos-bin">011</div><div class="cos-desc">Call Signaling ☎️</div></div>
+    <div class="cos-row v2"><div class="cos-val" style="color:var(--qos)">2</div><div class="cos-bin">010</div><div class="cos-desc">High-Priority Data</div></div>
+    <div class="cos-row v1"><div class="cos-val" style="color:#374151">1</div><div class="cos-bin">001</div><div class="cos-desc">Medium-Priority Data</div></div>
+    <div class="cos-row v0"><div class="cos-val" style="color:#374151">0</div><div class="cos-bin">000</div><div class="cos-desc">Best-Effort Data (default)</div></div>
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">9.5.6–9.5.7</span> Layer 3 Marking — DSCP</h3>
+  <p>IPv4 <strong>Type of Service (ToS)</strong> / IPv6 <strong>Traffic Class</strong> — 8 bits total in the IP header:</p>
+  <ul>
+    <li><strong>Original (RFC 791):</strong> IP Precedence (IPP) — 3 bits → only 8 values → not enough granularity</li>
+    <li><strong>Current (RFC 2474):</strong> DSCP — <strong>6 bits → 64 possible classes</strong></li>
+    <li>Remaining 2 bits = <strong>ECN (Explicit Congestion Notification)</strong> — ECN-aware routers mark packets instead of dropping them</li>
+  </ul>
+  <div class="ca tip">
+    <span class="ic">✅</span>
+    <div>DSCP is in the IP header — it survives routing across multiple networks. Layer 2 CoS is stripped at each Layer 3 boundary. For end-to-end QoS, <strong>DSCP is the correct marking field</strong>.</div>
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">9.5.8</span> DSCP Values — BE, EF, and AF</h3>
+  <div class="dscp-grid">
+    <div class="dscp-card be">
+      <div class="dc-hdr">Best Effort (BE / DF) <span class="dc-val">DSCP 0</span></div>
+      Default for all IP packets. No QoS. Packets dropped first during congestion. No plan implemented.
+    </div>
+    <div class="dscp-card ef">
+      <div class="dc-hdr">Expedited Forwarding (EF) <span class="dc-val">DSCP 46</span></div>
+      Binary <code>101110</code>. Low-loss, low-latency, low-jitter forwarding. First 3 bits (101) map to CoS 5 — voice. <strong>Cisco recommends EF only for voice traffic.</strong>
+    </div>
+    <div class="dscp-card af">
+      <div class="dc-hdr">Assured Forwarding (AF) <span class="dc-val">AFxy</span></div>
+      4 classes × 3 drop preferences = <strong>12 AF values</strong>.<br>
+      <strong>x</strong> = class (1–4; Class 4 = best queue, Class 1 = worst)<br>
+      <strong>y</strong> = drop preference (1 = low drop, 2 = medium, 3 = high drop)<br>
+      Example: <strong>AF32</strong> = class 3, medium drop → binary 011 10 0 → <strong>DSCP 28</strong>
+    </div>
+  </div>
+  <div class="ca info">
+    <span class="ic">💡</span>
+    <div><strong>AF drop preference rule:</strong> Lower number = less likely to be dropped. AF11 = low drop. AF13 = high drop. When congestion avoidance kicks in, AF packets with higher drop preference are dropped first.</div>
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">9.5.9</span> Class Selector Bits — CoS ↔ DSCP Mapping</h3>
+  <p>The <strong>first 3 bits</strong> of the DSCP field are called the <strong>Class Selector (CS) bits</strong>. They map directly to CoS (802.1p) and IP Precedence for backward compatibility:</p>
+  <div class="tw"><table>
+    <tr><th>CoS</th><th>CoS Binary</th><th>Class Selector</th><th>CS Binary</th><th>DSCP Decimal</th></tr>
+    <tr><td>0</td><td>000</td><td>CS0 / DF</td><td>000 000</td><td><strong>0</strong></td></tr>
+    <tr><td>1</td><td>001</td><td>CS1</td><td>001 000</td><td><strong>8</strong></td></tr>
+    <tr><td>2</td><td>010</td><td>CS2</td><td>010 000</td><td><strong>16</strong></td></tr>
+    <tr><td>3</td><td>011</td><td>CS3</td><td>011 000</td><td><strong>24</strong></td></tr>
+    <tr><td>4</td><td>100</td><td>CS4</td><td>100 000</td><td><strong>32</strong></td></tr>
+    <tr><td>5</td><td>101</td><td>CS5</td><td>101 000</td><td><strong>40</strong></td></tr>
+    <tr><td>6</td><td>110</td><td>CS6</td><td>110 000</td><td><strong>48</strong></td></tr>
+    <tr><td>7</td><td>111</td><td>CS7</td><td>111 000</td><td><strong>56</strong></td></tr>
+  </table></div>
+  <div class="ca warn">
+    <span class="ic">⚠️</span>
+    <div>CS values increment by <strong>8</strong> in DSCP decimal (0, 8, 16, 24, 32, 40, 48, 56). This is because the last 3 DSCP bits (drop preference bits) are all 0 for Class Selectors. EF (DSCP 46) sits between CS5 (40) and CS6 (48).</div>
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">9.5.10</span> Trust Boundaries</h3>
+  <p>Traffic should be <strong>classified and marked as close to the source as technically and administratively feasible</strong> — this establishes the trust boundary.</p>
+  <div class="tw"><table>
+    <tr><th>Level</th><th>Trust Boundary Location</th><th>Examples</th></tr>
+    <tr><td><strong>Level 1 (Best)</strong></td><td>Trusted endpoints mark their own traffic</td><td>IP phones, wireless APs, video gateways — they know their own traffic type</td></tr>
+    <tr><td><strong>Level 2</strong></td><td>Access Layer 2 switch marks traffic</td><td>Switch re-marks frames from PCs and other untrusted endpoints</td></tr>
+    <tr><td><strong>Level 3</strong></td><td>Layer 3 switch or router marks traffic</td><td>Used when endpoint trust is not feasible at Layer 2</td></tr>
+  </table></div>
+  <div class="ca danger">
+    <span class="ic">🚨</span>
+    <div><strong>PCs are untrusted endpoints.</strong> A PC can mark its own packets with any DSCP value — including high-priority values it shouldn't have. The network administrator must re-mark (override) PC-generated markings at the first trusted device (access switch or router).</div>
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">9.5.11</span> Congestion Avoidance — WRED</h3>
+  <p><strong>WRED (Weighted Random Early Detection)</strong> monitors average queue depth and selectively drops packets before the queue fills completely, triggering TCP's congestion control mechanism:</p>
+  <div class="wred-box">
+    <div class="wb-title">📊 WRED Queue Depth Zones</div>
+    <div class="wb-row"><div class="wb-zone green">Below min threshold</div><div>No drops — queue has available capacity; all packets forwarded normally</div></div>
+    <div class="wb-row"><div class="wb-zone yellow">Min → Max threshold</div><div>Small percentage of <strong>lower-priority packets randomly dropped</strong> — triggers TCP window reduction before full congestion; higher-priority packets protected</div></div>
+    <div class="wb-row"><div class="wb-zone red">Above max threshold</div><div><strong>All packets dropped</strong> (tail drop) — queue fully saturated</div></div>
+  </div>
+  <div class="ca warn">
+    <span class="ic">⚠️</span>
+    <div><strong>WRED does not work for UDP traffic.</strong> UDP has no congestion control — randomly dropping UDP packets doesn't cause the sender to reduce its rate (there's no TCP window to shrink). For UDP-based voice/video, use queuing (LLQ) and compression instead.</div>
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">9.5.12</span> Traffic Shaping vs Traffic Policing</h3>
+  <div class="sp-grid">
+    <div class="sp-card shape">
+      <div class="sc-hdr">📤 Traffic Shaping — Egress</div>
+      <div class="sc-body">
+        <ul>
+          <li>Applied to <strong>outbound (egress)</strong> traffic</li>
+          <li>Excess packets <strong>queued</strong> and scheduled for later transmission</li>
+          <li>Result: <strong>smooth, controlled output rate</strong></li>
+          <li>Requires queue + sufficient memory for buffering delayed packets</li>
+          <li>Uses CBWFQ or LLQ to schedule the shape queue</li>
+          <li>Smooths burst traffic — no packets dropped if buffer available</li>
+        </ul>
+      </div>
+    </div>
+    <div class="sp-card police">
+      <div class="sc-hdr">📥 Traffic Policing — Ingress</div>
+      <div class="sc-body">
+        <ul>
+          <li>Applied to <strong>inbound (ingress)</strong> traffic</li>
+          <li>Excess traffic <strong>immediately dropped or remarked</strong></li>
+          <li>No queue — no buffering; enforcement is instant</li>
+          <li>Used by SPs to enforce <strong>CIR (Customer Information Rate)</strong></li>
+          <li>SP may allow bursting over CIR if network not congested</li>
+          <li>Abrupt — packets exceeding the rate are simply discarded</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="et">
+    <div class="lbl">🎯 SHAPING vs POLICING — EXAM DISTINCTION</div>
+    <strong>Shaping</strong> = EGRESS · queues excess packets · smooth output · needs buffer memory<br>
+    <strong>Policing</strong> = INGRESS · drops excess immediately · no buffer · used by ISPs for CIR enforcement<br><br>
+    Shaping is gentler — it delays excess traffic. Policing is aggressive — it discards excess traffic.
+  </div>
+  </div>
+
+  <div class="sub">
+  <h3><span class="sn">9.5.13</span> QoS Policy Guidelines</h3>
+  <p>QoS policy must consider the <strong>full path from source to destination</strong>. One misconfigured device can break the entire QoS policy:</p>
+  <ol>
+    <li><strong>Enable queuing at every device</strong> in the path between source and destination</li>
+    <li><strong>Classify and mark traffic as close to the source as possible</strong> — establish the trust boundary early</li>
+    <li><strong>Shape and police traffic flows as close to their sources as possible</strong></li>
+  </ol>
+  </div>
+
+</div></div>
+
+<!-- ══════════ 9.6 EXAM TRAPS ══════════ -->
+<div class="sec" id="s6">
+<div class="sh" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+  <span><span class="nb">🎯</span><span class="ttl">Common Exam Traps — Module 9</span></span><button class="sec-check" id="sch-s6" onclick="event.stopPropagation();toggleSection('s6',this)">○ Mark done</button><span class="ch">▾</span>
+</div>
+<div class="sb">
+
+  <div class="ca danger"><span class="ic">❌</span><div><strong>Trap 1: QoS only activates during congestion.</strong><br>A router implements QoS mechanisms only when experiencing congestion. No congestion = no QoS action, even if policies are fully configured. A device implements QoS only when it is experiencing some type of congestion.</div></div>
+
+  <div class="ca danger"><span class="ic">❌</span><div><strong>Trap 2: Voice requirements — ≤150ms latency, ≤30ms jitter, ≤1% loss.</strong><br>Video is more tolerant: ≤200–400ms latency, ≤50ms jitter, ≤1% loss. Both use UDP — neither retransmits lost packets. Voice = predictable, smooth, 20ms intervals. Video = bursty, variable, 33ms intervals. These numbers are directly tested.</div></div>
+
+  <div class="ca danger"><span class="ic">❌</span><div><strong>Trap 3: FIFO is default on most interfaces; WFQ is default on serial interfaces at E1 and below.</strong><br>E1 = 2.048 Mbps. Any serial interface at or below this rate defaults to WFQ, not FIFO. All other interfaces default to FIFO. This is a frequently tested fact.</div></div>
+
+  <div class="ca danger"><span class="ic">❌</span><div><strong>Trap 4: LLQ = CBWFQ + strict priority queue — it's not a separate algorithm.</strong><br>LLQ adds a strict priority queue to CBWFQ. Cisco recommends only voice traffic in the LLQ priority queue. Without LLQ, CBWFQ serves all classes fairly by weight — no strict priority exists, causing jitter for voice.</div></div>
+
+  <div class="ca danger"><span class="ic">❌</span><div><strong>Trap 5: DiffServ is scalable (hop-by-hop, no signaling). IntServ is not scalable (RSVP, per-flow state).</strong><br>DiffServ = soft QoS, aggregate classes, modern standard. IntServ = hard QoS, RSVP signaling on every device, per-flow state maintained everywhere — excellent guarantee but collapses at internet scale.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 6: DSCP = 6 bits → 64 classes. CoS = 3 bits → 8 levels. IPP = 3 bits → 8 levels.</strong><br>DSCP (RFC 2474) supersedes IPP (RFC 791). The first 3 bits of DSCP = Class Selector bits = map directly to CoS and IPP for backward compatibility. Class Selectors increment by 8 in DSCP decimal (CS1=8, CS2=16, CS3=24...).</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 7: EF (Expedited Forwarding) = DSCP 46 = CoS 5 = voice.</strong><br>Binary 101110 = decimal 46. First 3 bits (101) = CS5 = CoS 5. Cisco recommends EF only for voice traffic. EF = low-loss, low-latency, low-jitter forwarding class.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 8: AF drop preference — lower number = less likely dropped.</strong><br>AF11 = class 1, low drop. AF13 = class 1, high drop. AF43 = class 4, high drop. During congestion avoidance, higher drop preference (y=3) packets are dropped first. Class 4 is the best class; class 1 is the worst.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 9: Layer 3 DSCP carries QoS end-to-end. Layer 2 CoS does not.</strong><br>CoS lives in the 802.1Q tag — stripped at every Layer 3 boundary. DSCP lives in the IP header — persists across all routers. For enterprise-wide QoS, mark at Layer 3 (DSCP). Layer 2 CoS is fine within a single Ethernet segment.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 10: Trust boundary = where you trust incoming QoS markings.</strong><br>Mark as close to the source as possible. IP phones are trusted endpoints — their CoS 5 / DSCP EF markings are accepted. PCs are untrusted — a PC can self-mark with EF to get priority; the access switch must remark/override this.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 11: Shaping = egress, queues excess. Policing = ingress, drops excess.</strong><br>Shaping smooths traffic by buffering excess packets and scheduling them later — needs memory. Policing enforces a rate by immediately dropping anything above the limit — no buffer needed. ISPs use policing to enforce CIR.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 12: WRED works for TCP, not UDP.</strong><br>WRED randomly drops TCP packets to trigger window reduction — preventing queue overflow. UDP has no congestion control mechanism; randomly dropping UDP packets has no effect on the sender's rate. Use LLQ queuing for UDP voice/video protection.</div></div>
+
+  <div class="ca warn"><span class="ic">⚠️</span><div><strong>Trap 13: CBWFQ tail drop treats all classes equally — it does NOT differentiate.</strong><br>Tail drop simply discards any packet arriving at a full queue — regardless of class or priority. This is why WRED is used: WRED can selectively drop lower-priority packets before the queue fills, protecting higher-priority traffic.</div></div>
+
+  <div class="ca tip"><span class="ic">✅</span><div><strong>Module 9 quick-reference summary:</strong><br><br>
+  <strong>QoS activates:</strong> Only during congestion — never when link is idle<br>
+  <strong>Voice:</strong> ≤150ms delay · ≤30ms jitter · ≤1% loss · 30–128 Kbps · UDP · smooth/predictable<br>
+  <strong>Video:</strong> ≤400ms delay · ≤50ms jitter · ≤1% loss · 384Kbps–20Mbps · UDP · bursty/variable<br>
+  <strong>Data:</strong> TCP retransmits · delay/drop insensitive · FTP is greedy<br>
+  <strong>FIFO:</strong> No classes · default on most interfaces<br>
+  <strong>WFQ:</strong> Auto flows · default on serial ≤E1 (2.048Mbps) · no tunneling/encryption support<br>
+  <strong>CBWFQ:</strong> User-defined classes · guaranteed BW · tail drop when full<br>
+  <strong>LLQ:</strong> CBWFQ + strict PQ for voice · best for mixed voice+data<br>
+  <strong>Best Effort:</strong> No QoS · most scalable<br>
+  <strong>IntServ:</strong> Hard QoS · RSVP · per-flow state · not scalable<br>
+  <strong>DiffServ:</strong> Soft QoS · hop-by-hop · aggregate classes · modern standard<br>
+  <strong>CoS:</strong> 3 bits · 8 levels · Layer 2 · 802.1p in 802.1Q TCI · CoS 5 = voice<br>
+  <strong>DSCP:</strong> 6 bits · 64 classes · Layer 3 · end-to-end · supersedes IPP<br>
+  <strong>DSCP categories:</strong> BE=0 · EF=46 (voice only) · AFxy (4 classes × 3 drop prefs)<br>
+  <strong>CS bits:</strong> First 3 DSCP bits = CS · map to CoS · CS1=8, CS2=16...CS7=56<br>
+  <strong>Trust boundary:</strong> Mark close to source · IP phones = trusted · PCs = untrusted<br>
+  <strong>WRED:</strong> Congestion avoidance · random early drop · TCP only · not UDP<br>
+  <strong>Shaping:</strong> Egress · queues excess · smooths output<br>
+  <strong>Policing:</strong> Ingress · drops excess · enforces CIR · used by ISPs</div></div>
+
+</div></div>
+
+</div><!-- end .wrap -->
+
+<div class="ft">
+  CCNA 3 ENSA v7.02 — Module 9: QoS Concepts v2.2<br>
+  Based on Cisco NetAcad curriculum · Study guide for personal use
+</div>
+
+<button class="tb-btn" id="topb" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+
+<div class="mod-nav">
+  <a class="mn-hub" href="index.html">🏠 Hub</a>
+  <div class="mn-divider"></div>
+  <a class="mn-prev" href="ccna3_module8_vpn_ipsec_concepts_v2.2.html">‹</a>
+  <span class="mn-label">M9 of 14</span>
+  <a class="mn-next" href="ccna3_module10_network_management_v2.2.html">›</a>
+</div>
+
+<script>
+var MOD_KEY="ccna3-module9-qos-concepts";
+var SECS=["s1","s2","s3","s4","s5","s6"];
+var checked={};
+function loadState(){
+  try{var s=localStorage.getItem(MOD_KEY);if(s)checked=JSON.parse(s);}catch(e){}
+  SECS.forEach(function(id){
+    var pill=document.getElementById('pill-'+id);
+    var row=document.getElementById('row-'+id);
+    var st=document.getElementById('st-'+id);
+    var sch=document.getElementById('sch-'+id);
+    if(checked[id]){
+      if(pill){pill.classList.add('checked');pill.querySelector('.pill-check').textContent='✓';}
+      if(row)row.classList.add('done');
+      if(st)st.textContent='✓';
+      if(sch){sch.classList.add('checked');sch.textContent='✓ Done';}
+    } else {
+      if(pill){pill.classList.remove('checked');pill.querySelector('.pill-check').textContent='○';}
+      if(row)row.classList.remove('done');
+      if(st)st.textContent='○';
+      if(sch){sch.classList.remove('checked');sch.textContent='○ Mark done';}
+    }
+  });
+}
+function toggleSection(id,btn){checked[id]=!checked[id];try{localStorage.setItem(MOD_KEY,JSON.stringify(checked));}catch(e){}loadState();}
+function toggleStudyPanel(){
+  var hdr=document.getElementById('sp-hdr');
+  var body=document.getElementById('sp-body');
+  var arr=document.getElementById('sp-arr');
+  hdr.classList.toggle('open');body.classList.toggle('open');
+  if(arr)arr.textContent=body.classList.contains('open')?'▲':'▼';
+}
+function goTo(id){var el=document.getElementById(id);if(!el)return;var h=el.querySelector('.sh,.section-header'),b=el.querySelector('.sb,.section-body');if(h&&b&&!b.classList.contains('open')){h.classList.add('open');b.classList.add('open');}setTimeout(function(){window.scrollTo({top:el.getBoundingClientRect().top+window.pageYOffset-60,behavior:'smooth'});},50);}
+function setFs(size,btn){document.documentElement.style.setProperty('--base-fs',size);document.querySelectorAll('.fs-btn').forEach(function(b){b.classList.remove('active');});btn.classList.add('active');try{localStorage.setItem('ccna-fs',size);}catch(e){}}
+(function(){try{var s=localStorage.getItem('ccna-fs');if(s){document.documentElement.style.setProperty('--base-fs',s);document.querySelectorAll('.fs-btn').forEach(function(b){b.classList.remove('active');if((b.textContent==='S'&&s==='14px')||(b.textContent==='M'&&s==='16px')||(b.textContent==='L'&&s==='18px')||(b.textContent==='XL'&&s==='20px'))b.classList.add('active');});}}catch(e){}loadState();})();
+function copyCode(b){var t=b.closest('.cw').querySelector('pre').innerText;if(navigator.clipboard){navigator.clipboard.writeText(t).then(function(){b.textContent='Copied!';setTimeout(function(){b.textContent='Copy';},1500);}).catch(function(){fb(t,b);});}else{fb(t,b);}}
+function fb(t,b){var a=document.createElement('textarea');a.value=t;a.style.position='fixed';a.style.opacity='0';document.body.appendChild(a);a.focus();a.select();document.execCommand('copy');document.body.removeChild(a);b.textContent='Copied!';setTimeout(function(){b.textContent='Copy';},1500);}
+</script>
+<script src="../../site-config.js"></script>
+</body>
+</html>
