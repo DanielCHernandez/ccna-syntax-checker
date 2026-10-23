@@ -1,0 +1,4 @@
+# Shell scripts must keep Mac/Linux line endings (\n only). Without this, a
+# fresh checkout with core.autocrlf=true adds \r to every line and the
+# script fails (e.g. Site-v20/update-cli-engine.sh: "set: -: invalid option").
+*.sh text eol=lf
