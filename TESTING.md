@@ -15,6 +15,54 @@ shouldn't need to ask for this again.
 
 ---
 
+## v1.42.0 — PC Command Prompt (ipconfig/ping/ssh), new Home Lab 16.4.6, iPad instruction-size fix
+
+Open `Syn-Checker v1.42.0/terminal-v1.42.0.html` (or the main GitHub link once pushed).
+
+1. **On the iPad:** open v1.42.0, Guided Practice, set Text size to
+   "Huge" — confirm the step's instruction text (and the "STEP 1 OF 13"
+   label) grow as large as the terminal text. Try "Largest" too.
+2. Home Labs → "16.4.6 — Configure Secure Passwords and SSH" — confirm
+   the device buttons are PCA, RTA, SW1 and no task starts checked.
+3. Click PCA → **Command Prompt** tab → `ipconfig` — compare against
+   your own Packet Tracer screenshot (same layout, FE80::204:9AFF:FE64:227D).
+4. `ipconfig 172.16.1.10 255.255.255.0 172.16.1.1` (prints nothing),
+   then `ping 172.16.1.1` — 4 × "Request timed out." (RTA isn't set up).
+5. Click RTA: `enable`, `configure terminal`, `hostname RTA`,
+   `interface g0/0`, `ip address 172.16.1.1 255.255.255.0`, `no
+   shutdown`, `end`. Back on PCA: `ping 172.16.1.1` — 4 replies, TTL=255.
+6. On RTA: `ping 172.16.1.10` — "Type escape sequence to abort." and !!!!!.
+7. On RTA in config mode: `security passwords min-length 10`, then
+   `enable secret short` — the "Password too short" error. Then finish
+   RTA's settings (the task hints have every command), including
+   `crypto key generate rsa general-keys modulus 1024`, `line vty 0 4`,
+   `exec-timeout 6`, and save. Check `show running-config` shows
+   `exec-timeout 6 0` first under `line vty 0 4` and the `sl_def_acl`
+   list.
+8. PCA's Command Prompt: `ssh -l jony 172.16.1.1` — type a wrong
+   password 3 times (the password stays hidden as you type), confirm it
+   matches your Packet Tracer screenshot. Then again with the right
+   password → `RTA>`; try `show ip interface brief`, `enable` (asks for
+   the enable secret), `exit` → "[Connection to 172.16.1.1 closed by
+   foreign host]". The PCA SSH task should check off.
+9. Click RTA itself — confirm its own terminal is where you left it
+   (the SSH session didn't change its prompt).
+10. On SW1: `interface range fastethernet 0/2-24, gigabitethernet 0/2`
+    → prompt `SW1(config-if-range)#`; `shutdown` → one
+    "administratively down" message per port. Finish SW1's tasks.
+11. Shut down SW1's F0/1 (PCA's port) and ping RTA from PCA — it should
+    fail; the "unused ports" task should un-check. `no shutdown` fixes both.
+12. Home Labs → 10.3.5: on PC4's Command Prompt `ping 192.168.10.10`
+    fails (wrong gateway); fix PC1's IP and PC4's gateway (IP
+    Configuration tab), then PC1 → `ping 192.168.11.11` works with TTL=127.
+13. Home Labs → 10.3: on R1, `show ip interface brief` — exactly 5
+    interfaces (G0/0, G0/1, S0/0/0, S0/0/1, Vlan1), not 7.
+14. Regression: spot-check a few Syntax Checker exercises end to end,
+    including Course 1 · 16.4 and Course 2 · 1.1 (new RSA output) and
+    2.8 Verify Connectivity (new ping output).
+
+---
+
 ## Site v20 — Study Hub + Simple Syntax Checker + CLI Engine combined
 
 Open http://127.0.0.1:8720/ (local server, while it's running) or
