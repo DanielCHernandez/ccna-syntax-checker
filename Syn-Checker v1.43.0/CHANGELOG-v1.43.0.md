@@ -7030,7 +7030,10 @@ ignore clicks). Per direction: a hint can hold a password the student
 set by following it (R4Xe3, itexamanswers.net, …) and needs again later
 (enable, SSH login) — once the task ticked off, there was no way to look
 it up. The task still shows as done (only its title is struck through;
-the hint text stays readable). Applies to every Home Lab.
+the hint text stays readable). Applies to every Home Lab. Every task
+also now shows a small amber arrow on the right — "▸" when its hint is
+hidden, "▾" when it's showing (hover: "Show hint"/"Hide hint") — so it's
+obvious each task has a hint to open (per direction).
 
 **Still waiting (backlog D):** listing access lists after the interfaces
 in running-config — needs a capture of where real IOS puts numbered
@@ -7072,6 +7075,9 @@ end, "^" in all three terminals, hashed secret, no `no shutdown`).
    "Set an encrypted privileged EXEC password"), then click the ticked
    task — its hint (`enable secret C4aJa`) appears, readable; click
    again to hide it.
+10. In any Home Lab, every task has an amber "▸" on its right; clicking
+    a task turns it to "▾" and shows the hint, clicking again turns it
+    back to "▸".
 
 **Explicitly deferred:** backlog D (above); v1.42.0's "Unverified" list.
 

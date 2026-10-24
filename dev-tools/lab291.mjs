@@ -54,11 +54,13 @@ const rowOf = `[...document.querySelectorAll('#ptTaskList .pt-task-item')].find(
 await ev(`${rowOf}.click()`);
 const hint = await ev(`(function(){const r=${rowOf};const h=r.querySelector('.pt-task-hint');return {done:r.classList.contains('done'),text:h?h.textContent:null,deco:h?getComputedStyle(h).textDecorationLine:null}})()`);
 ok(hint.done && hint.text === 'enable secret C4aJa' && hint.deco === 'none', 'completed task still shows its hint (enable secret C4aJa), not struck through');
+ok((await ev(`${rowOf}.querySelector('.pt-task-toggle').textContent`)) === '▾', 'open hint shows ▾');
 await send('Emulation.setDeviceMetricsOverride', { width: 1180, height: 900, deviceScaleFactor: 1, mobile: false });
 await ev(`${rowOf}.scrollIntoView({block:'center'})`); await sleep(200);
 { const sh = await send('Page.captureScreenshot', { format: 'png' }); (await import('node:fs')).writeFileSync(PROFILE + '-done-hint.png', Buffer.from(sh.result.data, 'base64')); }
 await ev(`${rowOf}.click()`);
 ok((await ev(`!${rowOf}.querySelector('.pt-task-hint')`)), 'clicking the completed task again hides the hint');
+ok((await ev(`[...document.querySelectorAll('#ptTaskList .pt-task-toggle')].every(t=>t.textContent==='▸')`)), 'every task shows ▸ when its hint is hidden');
 // cutting the switch-to-switch link breaks Student-1 -> Student-2
 await cli('Class-A', ['configure terminal', 'interface fa0/1', 'shutdown', 'end']);
 await pc('Student-1', ['ping 128.107.20.30']);

@@ -46,6 +46,9 @@ Open `Syn-Checker v1.43.0/terminal-v1.43.0.html` from Finder (or the main link o
    "Set an encrypted privileged EXEC password"), then click the ticked
    task — its hint (`enable secret C4aJa`) appears, readable; click
    again to hide it.
+10. In any Home Lab, every task has an amber "▸" on its right; clicking
+    a task turns it to "▾" and shows the hint, clicking again turns it
+    back to "▸".
 
 ---
 
