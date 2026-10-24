@@ -49,6 +49,16 @@ const out = await ev(`pcConsoleFor('Student-1').lines.join('\\n')`);
 ok(out.includes('Reply from 128.107.20.10: bytes=32 time<1ms TTL=255') && out.includes('Reply from 128.107.20.15: bytes=32 time<1ms TTL=255') && out.includes('Reply from 128.107.20.30: bytes=32 time<1ms TTL=128'),
   'Student-1 pings both switches (TTL 255) and Student-2 (TTL 128) across the Fa0/1-Fa0/2 link');
 ok((await done()).every(x => x.startsWith('x')), 'ALL 2.9.1 tasks done');
+// v1.43.0: a COMPLETED task's hint can still be shown/hidden (passwords!)
+const rowOf = `[...document.querySelectorAll('#ptTaskList .pt-task-item')].find(r=>r.textContent.includes('Set an encrypted privileged EXEC password'))`;
+await ev(`${rowOf}.click()`);
+const hint = await ev(`(function(){const r=${rowOf};const h=r.querySelector('.pt-task-hint');return {done:r.classList.contains('done'),text:h?h.textContent:null,deco:h?getComputedStyle(h).textDecorationLine:null}})()`);
+ok(hint.done && hint.text === 'enable secret C4aJa' && hint.deco === 'none', 'completed task still shows its hint (enable secret C4aJa), not struck through');
+await send('Emulation.setDeviceMetricsOverride', { width: 1180, height: 900, deviceScaleFactor: 1, mobile: false });
+await ev(`${rowOf}.scrollIntoView({block:'center'})`); await sleep(200);
+{ const sh = await send('Page.captureScreenshot', { format: 'png' }); (await import('node:fs')).writeFileSync(PROFILE + '-done-hint.png', Buffer.from(sh.result.data, 'base64')); }
+await ev(`${rowOf}.click()`);
+ok((await ev(`!${rowOf}.querySelector('.pt-task-hint')`)), 'clicking the completed task again hides the hint');
 // cutting the switch-to-switch link breaks Student-1 -> Student-2
 await cli('Class-A', ['configure terminal', 'interface fa0/1', 'shutdown', 'end']);
 await pc('Student-1', ['ping 128.107.20.30']);

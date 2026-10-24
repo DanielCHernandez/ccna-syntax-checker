@@ -10693,20 +10693,22 @@ function renderPtTasks() {
         '<div class="pt-task-label"><span class="pt-task-device-tag">' + task.device + '</span>' + task.summary + '</div>' +
         (isExpanded ? '<div class="pt-task-hint">' + task.hint + '</div>' : '') +
       '</div>';
-    // Clicking a task (that isn't done yet) toggles its hint — per
-    // direction, this is a deliberate "try to recall it yourself
-    // first" design: the hint is collapsed by default so a student
-    // isn't handed the answer before attempting it, but it's one
-    // click away for anyone who's stuck or new to the material.
-    // Completed tasks don't need a hint anymore, so clicking them
-    // does nothing.
-    if (!isDone) {
-      row.style.cursor = "pointer";
-      row.addEventListener("click", function () {
-        ptExpandedTasks[task.id] = !ptExpandedTasks[task.id];
-        renderPtTasks();
-      });
-    }
+    // Clicking a task toggles its hint — per direction, this is a
+    // deliberate "try to recall it yourself first" design: the hint is
+    // collapsed by default so a student isn't handed the answer before
+    // attempting it, but it's one click away for anyone who's stuck or
+    // new to the material.
+    // v1.43.0: COMPLETED tasks can be toggled too (they used to ignore
+    // clicks). Per direction: a hint can hold a password the student set
+    // by following it (R4Xe3, itexamanswers.net, ...) and needs again
+    // later (enable, SSH) — once the task ticked off, there was no way
+    // to look it up. The task still shows as done; only its title is
+    // struck through, never the hint text.
+    row.style.cursor = "pointer";
+    row.addEventListener("click", function () {
+      ptExpandedTasks[task.id] = !ptExpandedTasks[task.id];
+      renderPtTasks();
+    });
     ptTaskList.appendChild(row);
   }
 }

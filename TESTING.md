@@ -42,6 +42,10 @@ Open `Syn-Checker v1.43.0/terminal-v1.43.0.html` from Finder (or the main link o
 8. Regression: one Guided Practice exercise end to end; Home Lab
    16.4.6 still works (SSH in, then type a bad command — the "^" lines
    up under it in the PC prompt).
+9. In any Home Lab, finish a task that sets a password (e.g. 2.9.1's
+   "Set an encrypted privileged EXEC password"), then click the ticked
+   task — its hint (`enable secret C4aJa`) appears, readable; click
+   again to hide it.
 
 ---
 
