@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>CCNA CLI Engine — v1.42.1</title>
+<title>CCNA CLI Engine — v1.42.2</title>
 <style>
   :root {
     --bg: #0c0f0a;
@@ -562,7 +562,7 @@
 <body>
 <div class="wrap">
   <header>
-    <h1>CCNA CLI Engine — v1.42.1</h1>
+    <h1>CCNA CLI Engine — v1.42.2</h1>
     <p>Type commands as you would on a real device — Tab completes partial words. Type <span class="hint">?commands</span> to see exact syntax for this version.</p>
   </header>
 
@@ -998,7 +998,7 @@ copy running-config startup-config</pre>
        cannot be selected.
    ============================================================ */
 
-const IOS_ENGINE_VERSION = "1.42.1";
+const IOS_ENGINE_VERSION = "1.42.2";
 
 /* ---------------------------------------------------------
    1. DEVICE STATE
@@ -7516,7 +7516,33 @@ function createExerciseRun(exerciseId) {
   return { exerciseId: exerciseId, stepIndex: 0, attemptCount: 0, complete: false };
 }
 
-function checkExerciseStep(run, rawLine) {
+// v1.42.2: the full form of a command, for comparing what was typed
+// against what a Guided Practice step expects — so any spelling real
+// IOS treats as the SAME command counts (per direction: the point is
+// practice on a real CLI). Uses the engine's own rules: interface
+// shorthand and spacing ("g0/0/0", "gi 0/0/0" -> GigabitEthernet0/0/0)
+// and keyword abbreviations ("conf t", "sh ip int br", "copy run
+// start"), resolved against the device's CURRENT mode, exactly as the
+// engine would when running it. Anything IOS would reject as ambiguous
+// ("con t") or that names something different (g0/0/1 vs g0/0/0) still
+// doesn't match. The same transformation is applied to both sides, so
+// it can only make equivalent spellings match — never two different
+// commands.
+function canonicalCommand(device, line) {
+  let w = String(line).trim().replace(/\s+/g, " ");
+  w = w.replace(/\b([A-Za-z][A-Za-z-]*) (\d+(?:\/\d+)+(?:\.\d+)?)\b/g, function (m, type, num) {
+    // Join "GigabitEthernet 0/0/0" -> "GigabitEthernet0/0/0" whenever the
+    // result is a real interface type (full name or shorthand alike).
+    const n = normalizeInterfaceName(type + num);
+    return INTERFACE_TYPES.some(function (t) { return n.indexOf(t) === 0; }) ? n : m;
+  });
+  w = w.split(" ").map(function (t) { return /^[A-Za-z-]+\d/.test(t) ? normalizeInterfaceName(t) : t; }).join(" ");
+  const r = resolveAbbreviations(device, w);
+  if (r && r.ok && r.resolvedLine) w = r.resolvedLine;
+  return w.toLowerCase();
+}
+
+function checkExerciseStep(run, rawLine, device) {
   const exercise = getExercise(run.exerciseId);
   if (!exercise) return { valid: false, error: "Unknown exercise." };
   if (run.complete) return { valid: false, error: "Exercise already complete." };
@@ -7525,7 +7551,14 @@ function checkExerciseStep(run, rawLine) {
   const trimmed = rawLine.trim().toLowerCase();
   const expected = step.expected.trim().toLowerCase();
 
-  if (trimmed === expected) {
+  // v1.42.2: exact text still counts as before; with the device passed
+  // in, so does any equivalent spelling (see canonicalCommand). Not
+  // while the device is answering a prompt (copy/erase/reload filename
+  // or confirm questions) — those answers aren't commands.
+  const equivalent = !!device && !device.pendingPrompt && trimmed.length > 0 &&
+    canonicalCommand(device, rawLine) === canonicalCommand(device, step.expected);
+
+  if (trimmed === expected || equivalent) {
     run.stepIndex += 1;
     run.attemptCount = 0;
     if (run.stepIndex >= exercise.steps.length) {
@@ -7756,7 +7789,7 @@ function handleSubmit() {
         if (result.text) appendLine(result.text, "line-output");
         refreshInstructionBar();
       } else {
-        const check = checkExerciseStep(exerciseRun, raw);
+        const check = checkExerciseStep(exerciseRun, raw, device);
         if (check.correct) {
           // Also run it through the real engine so device state updates
           // exactly as if this were typed in free practice. The text
@@ -7811,7 +7844,8 @@ function handleSubmit() {
           // rejected by the engine (wrong mode) and "enable" keeps
           // getting rejected by the text checker (wrong step), a real
           // dead end found in testing.
-          if (raw.trim().toLowerCase() === "enable" && device.mode === "user_exec") {
+          // v1.42.2: any abbreviation IOS accepts ("en", "ena"...) counts too.
+          if (device.mode === "user_exec" && canonicalCommand(device, raw) === "enable") {
             const escapeResult = executeLine(device, raw);
             // v1.35.0: no message on a successful mode change — just let
             // the prompt itself (Switch> -> Switch#) show it, matching

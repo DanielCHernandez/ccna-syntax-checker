@@ -15,6 +15,28 @@ shouldn't need to ask for this again.
 
 ---
 
+## v1.42.2 — Guided Practice accepts abbreviations and interface shorthand
+
+Open the main link (https://danielchernandez.github.io/ccna-syntax-checker/) or, before it's pushed, `Syn-Checker v1.42.2/terminal-v1.42.2.html` from Finder.
+
+1. Guided Practice → Course 1 · 12.6. Type it all the short way: `en`,
+   `conf t`, `ipv6 unicast-routing`, `int g0/0/0`, `ipv6 add
+   2001:db8:acad:1::1/64`, `ipv6 add fe80::1:1 link-local`, `no shut`,
+   `int g0/0/1`, … `end`, `sh ipv6 int br` — every step accepted,
+   "Completed." at the end.
+2. In any exercise, type a wrong port in shorthand (e.g. `int g0/0/1`
+   when the step wants 0/0/0) — still "Not quite".
+3. `con t` when the step wants `configure terminal` — still rejected
+   (ambiguous, like real IOS).
+4. Course 2 · 4.2 (router-on-a-stick): `int g0/0/0.10` for the
+   subinterface step — accepted.
+5. Any exercise with a `copy running-config startup-config` step:
+   `copy run start` accepted, then press Enter at the filename question.
+6. Regression: complete one exercise typing the full commands exactly
+   as shown — still accepted as before.
+
+---
+
 ## v1.42.1 — Fixes from testing v1.42.0: per-device terminal history, global commands from sub-modes, copyable blank lines
 
 Open the main link (https://danielchernandez.github.io/ccna-syntax-checker/) or `Syn-Checker v1.42.1/terminal-v1.42.1.html`.

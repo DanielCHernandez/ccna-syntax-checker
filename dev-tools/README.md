@@ -17,3 +17,7 @@ app; nothing here is loaded by any page.
 - `lab1646.mjs <chrome-profile-dir> <screenshot-dir> <url>` — plays
   Home Lab 16.4.6 end to end through the real UI (plus 10.3 / 10.3.5
   checks): 34 checks against the real Packet Tracer captures.
+- `abbrev-test.js <ios-engine-vX.js>` — (v1.42.2) Guided Practice
+  equivalence: every exercise's exact commands accepted, common
+  shorthand rewrites (conf t, int g0/0/0, sh, shut, run/start...)
+  accepted, and "one number changed" wrong answers rejected.
