@@ -47,6 +47,8 @@ await cli('RTA', ['end', 'ping 172.16.1.10', 'configure terminal', 'service pass
 txt = await termText();
 ok(txt.includes('Type escape sequence to abort.') && txt.includes('!!!!!') && txt.includes('round-trip min/avg/max = 0/0/0 ms'), 'RTA pings PCA through the lab model (!!!!!, 0/0/0)');
 ok(txt.includes('% Password too short - must be at least 10 characters. Password not configured.'), 'short enable secret rejected with captured message');
+// v1.42.1: RTA's terminal text survives a trip to PCA and back
+ok(txt.includes('hostname RTA') && txt.includes('ip address 172.16.1.1 255.255.255.0'), "RTA's earlier commands are still in its terminal after switching to PCA and back");
 await cli('RTA', ['enable secret itexamanswers', 'no ip domain-lookup', 'ip domain-name CCNA.com', 'username jony secret itexamanswers.net',
   'crypto key generate rsa general-keys modulus 1024', 'login block-for 180 attempts 4 within 120', 'line vty 0 4', 'transport input ssh', 'login local', 'exec-timeout 6', 'end', 'copy running-config startup-config', '']);
 await shot('1646-rta');
@@ -71,6 +73,9 @@ await pc('PCA', ['exit']);
 txt = await pcText();
 ok(txt.endsWith('RTA#exit\n\n[Connection to 172.16.1.1 closed by foreign host]'), 'exit closes session exactly as captured');
 await shot('1646-pca-ssh');
+// v1.42.1: copying the PC prompt gives truly empty blank lines (no stray space)
+const copied = await ev(`(function(){const r=document.createRange();r.selectNodeContents(document.getElementById('ptPcTerminal'));const s=getSelection();s.removeAllRanges();s.addRange(r);const t=s.toString();s.removeAllRanges();return t})()`);
+ok(copied.includes('\n\nPassword: \n% Login invalid\n\n\nPassword: ') && !/\n[ \u00a0]+\n/.test(copied), 'copied PC prompt text has truly empty blank lines');
 await pc('PCA', ['ssh-l jony 172.16.1.1']);
 ok((await pcText()).endsWith('C:\\>ssh-l jony 172.16.1.1\nInvalid Command.\n'), 'typo gives Invalid Command. + blank line');
 ok((await done()).includes('x pca_ssh'), 'SSH task done');
@@ -103,6 +108,9 @@ await cli('R1', ['enable', 'configure terminal', 'interface g0/0', 'ip address 1
 txt = await termText();
 const rows = txt.split('\n').filter(l => /^(GigabitEthernet|Serial|Vlan)/.test(l));
 ok(rows.length === 5 && rows[0].startsWith('GigabitEthernet0/0 '), '10.3 R1 lists exactly 5 interfaces (G0/0 first): ' + rows.length);
+// v1.42.1: a global command typed inside interface mode steps out to (config)# and runs
+await cli('R1', ['configure terminal', 'interface g0/1', 'ip domain-name CCNA.com']);
+ok((await ev(`ptPromptLabel.textContent`)) === 'R1(config)#' && (await ev(`ptDevices.R1.domainName`)) === 'CCNA.com', 'ip domain-name from (config-if)# applies and returns to (config)#');
 
 // ---------- 10.3.5: PC ping teaches the lab ----------
 await openLab('c1_pt_10.3.5_troubleshoot_default_gateway');

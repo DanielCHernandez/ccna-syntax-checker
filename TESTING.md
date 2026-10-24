@@ -15,20 +15,45 @@ shouldn't need to ask for this again.
 
 ---
 
+## v1.42.1 — Fixes from testing v1.42.0: per-device terminal history, global commands from sub-modes, copyable blank lines
+
+Open the main link (https://danielchernandez.github.io/ccna-syntax-checker/) or `Syn-Checker v1.42.1/terminal-v1.42.1.html`.
+
+1. Home Labs → 16.4.6. Click RTA: `enable`, `configure terminal`,
+   `hostname RTA`. Click PCA, then RTA again — RTA's terminal should
+   still show those commands (and its prompt is still `RTA(config)#`).
+   Do the same with SW1 — each device keeps its own text.
+2. Click "Reset lab (all devices)" — every device's terminal starts
+   fresh again.
+3. On RTA: `interface g0/0`, then (still at `RTA(config-if)#`)
+   `ip domain-name CCNA.com` — no error; the prompt changes to
+   `RTA(config)#`. Then `crypto key generate rsa general-keys modulus
+   1024` works straight away.
+4. On RTA: `interface g0/0`, then `show ip interface brief` — still
+   rejected, and the prompt stays `RTA(config-if)#` (real IOS needs
+   `end` or `do` for that).
+5. PCA → Command Prompt → `ping 172.16.1.1`; select the output with the
+   mouse, copy, paste into TextEdit — the blank lines should be truly
+   empty (put the cursor on one: nothing to delete but the line itself).
+6. Regression: complete one Guided Practice exercise end to end (any),
+   and confirm the main link opens v1.42.1.
+
+---
+
 ## v1.42.0 — PC Command Prompt (ipconfig/ping/ssh), new Home Lab 16.4.6, iPad instruction-size fix
 
 Open the main link (https://danielchernandez.github.io/ccna-syntax-checker/)
 or `Syn-Checker v1.42.0/terminal-v1.42.0.html`.
 
-**Found during testing so far (to be fixed together in v1.42.1):**
-- ❌ Switching to another device and back clears a router/switch's
+**Found during testing (all fixed in v1.42.1 — see above):**
+- ✅ (fixed in v1.42.1) Switching to another device and back clears a router/switch's
   terminal text (its settings are kept). The PC Command Prompt keeps
   its text. Fix: every device keeps its own scrollback until "Reset lab".
-- ❌ A global command typed while still inside a sub-mode (e.g.
+- ✅ (fixed in v1.42.1) A global command typed while still inside a sub-mode (e.g.
   `ip domain-name …` at `RTA(config-if)#`) is rejected with "% Command
   not available in this mode"; real IOS steps out to `(config)#` and
   runs it. Fix: behave like real IOS.
-- ❌ Blank lines copied from the PC Command Prompt contain a space
+- ✅ (fixed in v1.42.1) Blank lines copied from the PC Command Prompt contain a space
   instead of being empty. Fix: copy as truly empty lines.
 - ✅ Not a bug: "% Please define a domain-name first." — correct when
   `ip domain-name` hasn't been set yet (the old step 7 wording made that

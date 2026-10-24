@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>CCNA CLI Engine — v1.42.0</title>
+<title>CCNA CLI Engine — v1.42.1</title>
 <style>
   :root {
     --bg: #0c0f0a;
@@ -562,7 +562,7 @@
 <body>
 <div class="wrap">
   <header>
-    <h1>CCNA CLI Engine — v1.42.0</h1>
+    <h1>CCNA CLI Engine — v1.42.1</h1>
     <p>Type commands as you would on a real device — Tab completes partial words. Type <span class="hint">?commands</span> to see exact syntax for this version.</p>
   </header>
 
@@ -998,7 +998,7 @@ copy running-config startup-config</pre>
        cannot be selected.
    ============================================================ */
 
-const IOS_ENGINE_VERSION = "1.42.0";
+const IOS_ENGINE_VERSION = "1.42.1";
 
 /* ---------------------------------------------------------
    1. DEVICE STATE
@@ -6308,7 +6308,42 @@ function executeLine(device, rawLine) {
   return executeLineSingle(device, rawLine);
 }
 
+// v1.42.1: real IOS lets you type a GLOBAL configuration command from
+// inside a configuration sub-mode (interface, line, VLAN, DHCP pool,
+// router, named ACL): it quietly steps back out to (config)# and runs
+// it there — e.g. "ip domain-name CCNA.com" typed at RTA(config-if)#.
+// This engine used to reject that with "% Command not available in this
+// mode", which isn't real IOS output and left the setting silently
+// unapplied (found while testing v1.42.0's lab 16.4.6). Now: if a
+// command is rejected ONLY because of the sub-mode, it's retried at
+// global config; if it works there, the device stays in (config)#. If
+// it doesn't work there either (e.g. a "show" command, which real IOS
+// also refuses in config mode without "do"), nothing changes and the
+// original rejection is returned.
+const CONFIG_SUBMODES = ["interface_config", "line_config", "vlan_config", "dhcp_pool_config",
+  "ipv6_dhcp_pool_config", "router_config", "ext_nacl_config"];
+const SUBMODE_CONTEXT_KEYS = ["currentInterface", "currentInterfaceRange", "currentLine", "currentVlan",
+  "currentDhcpPool", "currentIpv6DhcpPool", "currentExtAcl"];
+
 function executeLineSingle(device, rawLine) {
+  const result = executeLineParsed(device, rawLine);
+  const modeRejected = !!result.error && result.error.indexOf("% Command not available in this mode") === 0;
+  if (!modeRejected || CONFIG_SUBMODES.indexOf(device.mode) === -1 || device.pendingPrompt) return result;
+  const saved = { mode: device.mode };
+  SUBMODE_CONTEXT_KEYS.forEach(function (k) { saved[k] = device[k]; device[k] = null; });
+  device.mode = "global_config";
+  const retry = executeLineParsed(device, rawLine);
+  const stillRejected = !!retry.error && (retry.error.indexOf("% Command not available in this mode") === 0 ||
+    retry.error.indexOf("% Invalid input detected") === 0);
+  if (stillRejected) {
+    device.mode = saved.mode;
+    SUBMODE_CONTEXT_KEYS.forEach(function (k) { device[k] = saved[k]; });
+    return result;
+  }
+  return retry;
+}
+
+function executeLineParsed(device, rawLine) {
   const pipeIndex = rawLine.indexOf("|");
   if (pipeIndex === -1) {
     return executeLineInner(device, rawLine);
@@ -9537,6 +9572,7 @@ const PT_EXERCISES = [
 let ptExerciseId = null;
 let ptDevices = {};       // deviceId -> Device object, persists independently per exercise
 let ptActiveDeviceId = null;
+let ptTerminalSaved = {}; // v1.42.1: deviceId -> that router/switch's terminal contents while another device is shown
 let ptCommandHistory = {}; // deviceId -> array, separate history per device
 // v1.37.0 bug fix: this array was declared and initialized per device but
 // nothing ever pushed to it, and there was no Arrow-key listener at all —
@@ -9590,6 +9626,7 @@ function startPtExercise(id) {
   ptHistoryDraft = "";
   ptExpandedTasks = {};
   ptPcConsoles = {};
+  ptTerminalSaved = {};
   for (let i = 0; i < ex.devices.length; i++) {
     const d = ex.devices[i];
     // v1.37.0 bug fix: this used to always seed the device's starting
@@ -9834,15 +9871,26 @@ function renderPtDeviceButtons() {
     btn.textContent = d.label;
     btn.className = d.id === ptActiveDeviceId ? "active" : "";
     btn.addEventListener("click", function () {
+      // v1.42.1: each router/switch keeps its OWN terminal text, like
+      // Packet Tracer — reported in testing: switching to PCA and back
+      // wiped RTA's window (its config was kept, only the text was lost),
+      // while the PC Command Prompt already kept its own. The shared
+      // terminal's contents are parked per device on the way out and
+      // put back on the way in; "Reset lab" clears them all.
+      const prevEntry = ptActiveDeviceEntry();
+      if (prevEntry && prevEntry.deviceType !== "pc") ptTerminalSaved[prevEntry.id] = ptTerminalEl.innerHTML;
       ptActiveDeviceId = d.id;
       ptHistoryIndex = null;
       ptHistoryDraft = "";
       renderPtDeviceButtons();
-      // v1.39.0: a PC has no terminal session to switch into — skip the
-      // CLI-only "--- Switched to ---" message and focus() for those.
       if (d.deviceType !== "pc") {
-        ptTerminalEl.innerHTML = "";
-        ptAppendLine("--- Switched to " + d.label + " --- (this device's own session continues below)", "line-output");
+        if (ptTerminalSaved[d.id] !== undefined) {
+          ptTerminalEl.innerHTML = ptTerminalSaved[d.id];
+          ptTerminalEl.scrollTop = ptTerminalEl.scrollHeight;
+        } else {
+          ptTerminalEl.innerHTML = "";
+          ptAppendLine("--- " + d.label + " ---", "line-output");
+        }
       }
       refreshPtActivePanel();
       if (d.deviceType !== "pc") ptInputEl.focus();
@@ -9981,8 +10029,14 @@ function renderPcConsole() {
   ptPcTerminal.innerHTML = "";
   for (let i = 0; i < con.lines.length; i++) {
     const div = document.createElement("div");
+    // v1.42.1: a blank line holds a line break (<br>), not a hidden
+    // space — so copying the prompt's text gives real empty lines,
+    // exactly like Packet Tracer (testing found copied blank lines came
+    // out as " "; a completely empty row would be dropped from the copy
+    // altogether, which is worse).
     div.className = "line-output";
-    div.textContent = con.lines[i] === "" ? "\u00a0" : con.lines[i];
+    if (con.lines[i] === "") div.appendChild(document.createElement("br"));
+    else div.textContent = con.lines[i];
     ptPcTerminal.appendChild(div);
   }
   ptPcTerminal.scrollTop = ptPcTerminal.scrollHeight;
