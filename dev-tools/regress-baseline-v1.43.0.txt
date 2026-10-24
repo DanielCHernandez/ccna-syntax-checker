@@ -1,0 +1,955 @@
+### c1_syn_2.2_navigate_ios_modes
+Switch> enable
+Switch# disable
+Switch> enable
+Switch# configure terminal
+Switch(config)# exit
+%SYS-5-CONFIG_I: Configured from console by console
+Switch# configure terminal
+Switch(config)# line console 0
+Switch(config-line)# exit
+Switch(config)# line vty 0 15
+Switch(config-line)# exit
+Switch(config)# interface vlan 1
+Switch(config-if)# line console 0
+Switch(config-line)# end
+%SYS-5-CONFIG_I: Configured from console by console
+### c1_syn_2.4_basic_device_configuration
+Switch# configure terminal
+Switch(config)# hostname Sw-Floor-1
+Sw-Floor-1(config)# line console 0
+Sw-Floor-1(config-line)# password cisco
+Sw-Floor-1(config-line)# login
+Sw-Floor-1(config-line)# exit
+Sw-Floor-1(config)# enable secret class
+Sw-Floor-1(config)# line vty 0 15
+Sw-Floor-1(config-line)# password cisco
+Sw-Floor-1(config-line)# login
+Sw-Floor-1(config-line)# exit
+Sw-Floor-1(config)# service password-encryption
+Sw-Floor-1(config)# banner motd #Warning! Authorized access only!#
+### c1_syn_2.5_save_configurations
+Router> enable
+Router# show running-config
+Building configuration...
+Current configuration : 206 bytes
+hostname Router
+!
+!
+interface GigabitEthernet0/0/0
+ shutdown
+!
+interface GigabitEthernet0/0/1
+ shutdown
+!
+interface Serial0/0/0
+ shutdown
+!
+interface Serial0/0/1
+ shutdown
+!
+interface Vlan1
+ shutdown
+!
+end
+Router# show startup-config
+startup-config is not present
+Router# copy running-config startup-config
+Destination filename [startup-config]? 
+Router# 
+Building configuration...
+[OK]
+Router# show startup-config
+Building configuration...
+Current configuration : 206 bytes
+hostname Router
+!
+!
+interface GigabitEthernet0/0/0
+ shutdown
+!
+interface GigabitEthernet0/0/1
+ shutdown
+!
+interface Serial0/0/0
+ shutdown
+!
+interface Serial0/0/1
+ shutdown
+!
+interface Vlan1
+ shutdown
+!
+end
+Router# erase startup-config
+Erasing the nvram filesystem will remove all configuration files!
+Continue? [confirm]
+Router# 
+[OK]
+Erase of nvram: complete
+Router# reload
+Proceed with reload? [confirm]
+Router# no
+
+System Bootstrap...
+Router console is now available
+
+Press RETURN to get started.
+Router> 
+### c1_syn_2.7_configure_ip_addressing
+Switch# configure terminal
+Switch(config)# interface vlan 1
+Switch(config-if)# ip address 192.168.1.20 255.255.255.0
+Switch(config-if)# no shutdown
+%LINK-5-CHANGED: Interface Vlan1, changed state to up
+### c1_syn_2.8_verify_connectivity
+Switch# configure terminal
+Switch(config)# interface vlan 1
+Switch(config-if)# ip address 192.168.1.20 255.255.255.0
+Switch(config-if)# no shutdown
+%LINK-5-CHANGED: Interface Vlan1, changed state to up
+Switch(config-if)# end
+%SYS-5-CONFIG_I: Configured from console by console
+Switch# show ip interface brief
+Interface              IP-Address      OK? Method Status                Protocol
+FastEthernet0/1        unassigned      YES unset  up                    up
+FastEthernet0/2        unassigned      YES unset  up                    up
+FastEthernet0/3        unassigned      YES unset  up                    up
+FastEthernet0/4        unassigned      YES unset  up                    up
+FastEthernet0/5        unassigned      YES unset  up                    up
+FastEthernet0/6        unassigned      YES unset  up                    up
+FastEthernet0/7        unassigned      YES unset  up                    up
+FastEthernet0/8        unassigned      YES unset  up                    up
+FastEthernet0/9        unassigned      YES unset  up                    up
+FastEthernet0/10       unassigned      YES unset  up                    up
+FastEthernet0/11       unassigned      YES unset  up                    up
+FastEthernet0/12       unassigned      YES unset  up                    up
+FastEthernet0/13       unassigned      YES unset  up                    up
+FastEthernet0/14       unassigned      YES unset  up                    up
+FastEthernet0/15       unassigned      YES unset  up                    up
+FastEthernet0/16       unassigned      YES unset  up                    up
+FastEthernet0/17       unassigned      YES unset  up                    up
+FastEthernet0/18       unassigned      YES unset  up                    up
+FastEthernet0/19       unassigned      YES unset  up                    up
+FastEthernet0/20       unassigned      YES unset  up                    up
+FastEthernet0/21       unassigned      YES unset  up                    up
+FastEthernet0/22       unassigned      YES unset  up                    up
+FastEthernet0/23       unassigned      YES unset  up                    up
+FastEthernet0/24       unassigned      YES unset  up                    up
+GigabitEthernet0/1     unassigned      YES unset  up                    up
+GigabitEthernet0/2     unassigned      YES unset  up                    up
+Vlan1                  192.168.1.20    YES manual up                    up
+Switch# ping 192.168.1.1
+
+Type escape sequence to abort.
+Sending 5, 100-byte ICMP Echos to 192.168.1.1, timeout is 2 seconds:
+!!!!!
+Success rate is 100 percent (5/5), round-trip min/avg/max = 0/0/0 ms
+### c1_syn_10.1_configure_initial_router_settings
+Router> enable
+Router# configure terminal
+Router(config)# hostname R1
+R1(config)# no ip domain-lookup
+R1(config)# enable secret class
+R1(config)# line console 0
+R1(config-line)# password cisco
+R1(config-line)# login
+R1(config-line)# logging synchronous
+R1(config-line)# exec-timeout 0 0
+R1(config-line)# exit
+R1(config)# line vty 0 4
+R1(config-line)# password cisco
+R1(config-line)# login
+R1(config-line)# logging synchronous
+R1(config-line)# exec-timeout 0 0
+R1(config-line)# exit
+R1(config)# service password-encryption
+R1(config)# banner motd #Authorized Access Only!#
+R1(config)# end
+%SYS-5-CONFIG_I: Configured from console by console
+R1# copy running-config startup-config
+Destination filename [startup-config]? 
+R1# 
+Building configuration...
+[OK]
+### c1_syn_10.2_configure_router_interfaces
+Router# configure terminal
+Router(config)# interface GigabitEthernet 0/0/0
+Router(config-if)# ip address 192.168.10.1 255.255.255.0
+Router(config-if)# description Link to LAN 1
+Router(config-if)# no shutdown
+%LINK-5-CHANGED: Interface GigabitEthernet0/0/0, changed state to up
+%LINEPROTO-5-UPDOWN: Line protocol on Interface GigabitEthernet0/0/0, changed state to up
+Router(config-if)# interface GigabitEthernet 0/0/1
+Router(config-if)# ip address 192.168.11.1 255.255.255.0
+Router(config-if)# description Link to LAN 2
+Router(config-if)# no shutdown
+%LINK-5-CHANGED: Interface GigabitEthernet0/0/1, changed state to up
+%LINEPROTO-5-UPDOWN: Line protocol on Interface GigabitEthernet0/0/1, changed state to up
+Router(config-if)# end
+%SYS-5-CONFIG_I: Configured from console by console
+Router# show ip interface brief
+Interface              IP-Address      OK? Method Status                Protocol
+GigabitEthernet0/0/0   192.168.10.1    YES manual up                    up
+GigabitEthernet0/0/1   192.168.11.1    YES manual up                    up
+Serial0/0/0            unassigned      YES unset  administratively down down
+Serial0/0/1            unassigned      YES unset  administratively down down
+Vlan1                  unassigned      YES unset  administratively down down
+### c1_syn_12.6_configure_ipv6_addressing
+Router# configure terminal
+Router(config)# ipv6 unicast-routing
+Router(config)# interface GigabitEthernet 0/0/0
+Router(config-if)# ipv6 address 2001:db8:acad:1::1/64
+Router(config-if)# ipv6 address fe80::1:1 link-local
+Router(config-if)# no shutdown
+%LINK-5-CHANGED: Interface GigabitEthernet0/0/0, changed state to up
+%LINEPROTO-5-UPDOWN: Line protocol on Interface GigabitEthernet0/0/0, changed state to up
+Router(config-if)# interface GigabitEthernet 0/0/1
+Router(config-if)# ipv6 address 2001:db8:acad:2::1/64
+Router(config-if)# ipv6 address fe80::2:1 link-local
+Router(config-if)# no shutdown
+%LINK-5-CHANGED: Interface GigabitEthernet0/0/1, changed state to up
+%LINEPROTO-5-UPDOWN: Line protocol on Interface GigabitEthernet0/0/1, changed state to up
+Router(config-if)# end
+%SYS-5-CONFIG_I: Configured from console by console
+Router# show ipv6 interface brief
+GigabitEthernet0/0/0       [up/up]
+    FE80::1:1
+    2001:DB8:ACAD:1::1
+GigabitEthernet0/0/1       [up/up]
+    FE80::2:1
+    2001:DB8:ACAD:2::1
+Serial0/0/0                [administratively down/down]
+    unassigned
+Serial0/0/1                [administratively down/down]
+    unassigned
+Vlan1                      [administratively down/down]
+    unassigned
+### c1_syn_16.4_configure_secure_passwords_and_ssh
+Router# configure terminal
+Router(config)# security passwords min-length 10
+Router(config)# enable secret class12345
+Router(config)# ip domain-name cisco.com
+Router(config)# username admin secret cisco12345
+Router(config)# crypto key generate rsa modulus 1024
+The name for the keys will be: Router.cisco.com
+
+% The key modulus size is 1024 bits
+% Generating 1024 bit RSA keys, keys will be non-exportable...[OK]
+*Feb 28 21:23:26.651: %SSH-5-ENABLED: SSH 1.99 has been enabled
+Router(config)# ip ssh version 2
+Router(config)# line vty 0 4
+Router(config-line)# login local
+Router(config-line)# transport input ssh
+Router(config-line)# end
+%SYS-5-CONFIG_I: Configured from console by console
+Router# copy running-config startup-config
+Destination filename [startup-config]? 
+Router# 
+Building configuration...
+[OK]
+### c1_syn_17.5_verify_directly_connected_networks
+Router# configure terminal
+Router(config)# interface GigabitEthernet 0/0/0
+Router(config-if)# ip address 192.168.10.1 255.255.255.0
+Router(config-if)# description Link to LAN 1
+Router(config-if)# no shutdown
+%LINK-5-CHANGED: Interface GigabitEthernet0/0/0, changed state to up
+%LINEPROTO-5-UPDOWN: Line protocol on Interface GigabitEthernet0/0/0, changed state to up
+Router(config-if)# interface GigabitEthernet 0/0/1
+Router(config-if)# ip address 192.168.11.1 255.255.255.0
+Router(config-if)# description Link to LAN 2
+Router(config-if)# no shutdown
+%LINK-5-CHANGED: Interface GigabitEthernet0/0/1, changed state to up
+%LINEPROTO-5-UPDOWN: Line protocol on Interface GigabitEthernet0/0/1, changed state to up
+Router(config-if)# end
+%SYS-5-CONFIG_I: Configured from console by console
+Router# show ip interface brief
+Interface              IP-Address      OK? Method Status                Protocol
+GigabitEthernet0/0/0   192.168.10.1    YES manual up                    up
+GigabitEthernet0/0/1   192.168.11.1    YES manual up                    up
+Serial0/0/0            unassigned      YES unset  administratively down down
+Serial0/0/1            unassigned      YES unset  administratively down down
+Vlan1                  unassigned      YES unset  administratively down down
+Router# show interfaces GigabitEthernet 0/0/0
+GigabitEthernet0/0/0 is up, line protocol is up (connected)
+  Hardware is CN Gigabit Ethernet, address is 0030.f276.cc68 (bia 0030.f276.cc68)
+  Description: Link to LAN 1
+  Internet address is 192.168.10.1/24
+  MTU 1500 bytes, BW 1000000 Kbit, DLY 10 usec,
+     reliability 255/255, txload 1/255, rxload 1/255
+  Encapsulation ARPA, loopback not set
+  Keepalive set (10 sec)
+  Full-duplex, 100Mb/s, media type is RJ45
+  output flow-control is unsupported, input flow-control is unsupported
+  ARP type: ARPA, ARP Timeout 04:00:00, 
+  Last input never, output never, output hang never
+  Last clearing of "show interface" counters never
+  Input queue: 0/75/0 (size/max/drops); Total output drops: 0
+  Queueing strategy: fifo
+  Output queue :0/40 (size/max)
+  5 minute input rate 0 bits/sec, 0 packets/sec
+  5 minute output rate 0 bits/sec, 0 packets/sec
+     0 packets input, 0 bytes, 0 no buffer
+     Received 0 broadcasts, 0 runts, 0 giants, 0 throttles
+     0 input errors, 0 CRC, 0 frame, 0 overrun, 0 ignored, 0 abort
+     0 packets output, 0 bytes, 0 underruns
+     0 output errors, 0 collisions, 0 interface resets
+     0 unknown protocol drops
+Router# show ip route
+Codes: L - local, C - connected, S - static, R - RIP, M - mobile, B - BGP
+       D - EIGRP, EX - EIGRP external, O - OSPF, IA - OSPF inter area
+       N1 - OSPF NSSA external type 1, N2 - OSPF NSSA external type 2
+       E1 - OSPF external type 1, E2 - OSPF external type 2, E - EGP
+       i - IS-IS, L1 - IS-IS level-1, L2 - IS-IS level-2, ia - IS-IS inter area
+       * - candidate default, U - per-user static route, o - ODR
+       P - periodic downloaded static route
+
+Gateway of last resort is not set
+
+     192.168.10.0/24 is variably subnetted, 2 subnets, 2 masks
+C       192.168.10.0/24 is directly connected, GigabitEthernet0/0/0
+L       192.168.10.1/32 is directly connected, GigabitEthernet0/0/0
+     192.168.11.0/24 is variably subnetted, 2 subnets, 2 masks
+C       192.168.11.0/24 is directly connected, GigabitEthernet0/0/1
+L       192.168.11.1/32 is directly connected, GigabitEthernet0/0/1
+Router# show running-config
+Building configuration...
+Current configuration : 318 bytes
+hostname Router
+!
+!
+interface GigabitEthernet0/0/0
+ description Link to LAN 1
+ ip address 192.168.10.1 255.255.255.0
+!
+interface GigabitEthernet0/0/1
+ description Link to LAN 2
+ ip address 192.168.11.1 255.255.255.0
+!
+interface Serial0/0/0
+ shutdown
+!
+interface Serial0/0/1
+ shutdown
+!
+interface Vlan1
+ shutdown
+!
+end
+### c2_syn_1.1_configure_ssh_on_a_switch
+Switch# configure terminal
+Switch(config)# ip domain-name cisco.com
+Switch(config)# username admin secret ccna
+Switch(config)# crypto key generate rsa modulus 1024
+The name for the keys will be: Switch.cisco.com
+
+% The key modulus size is 1024 bits
+% Generating 1024 bit RSA keys, keys will be non-exportable...[OK]
+*Feb 28 21:23:26.651: %SSH-5-ENABLED: SSH 1.99 has been enabled
+Switch(config)# ip ssh version 2
+Switch(config)# line vty 0 15
+Switch(config-line)# login local
+Switch(config-line)# transport input ssh
+Switch(config-line)# end
+%SYS-5-CONFIG_I: Configured from console by console
+Switch# show ip ssh
+SSH Enabled - version 2.0
+Authentication timeout: 120 secs; Authentication retries: 3
+Minimum expected Diffie Hellman key size : 1024 bits
+### c2_syn_1.2_configure_router_interfaces
+Router# configure terminal
+Router(config)# interface GigabitEthernet 0/0/0
+Router(config-if)# ip address 10.0.0.1 255.255.255.0
+Router(config-if)# description Link to S1
+Router(config-if)# no shutdown
+%LINK-5-CHANGED: Interface GigabitEthernet0/0/0, changed state to up
+%LINEPROTO-5-UPDOWN: Line protocol on Interface GigabitEthernet0/0/0, changed state to up
+Router(config-if)# interface GigabitEthernet 0/0/1
+Router(config-if)# ip address 10.0.1.1 255.255.255.0
+Router(config-if)# description Link to S2
+Router(config-if)# no shutdown
+%LINK-5-CHANGED: Interface GigabitEthernet0/0/1, changed state to up
+%LINEPROTO-5-UPDOWN: Line protocol on Interface GigabitEthernet0/0/1, changed state to up
+Router(config-if)# end
+%SYS-5-CONFIG_I: Configured from console by console
+Router# show ip interface brief
+Interface              IP-Address      OK? Method Status                Protocol
+GigabitEthernet0/0/0   10.0.0.1        YES manual up                    up
+GigabitEthernet0/0/1   10.0.1.1        YES manual up                    up
+Serial0/0/0            unassigned      YES unset  administratively down down
+Serial0/0/1            unassigned      YES unset  administratively down down
+Vlan1                  unassigned      YES unset  administratively down down
+### c2_syn_1.3_secure_remote_access_switch
+Switch# configure terminal
+Switch(config)# login block-for 120 attempts 3 within 60
+Switch(config)# security passwords min-length 8
+Switch(config)# enable secret class12345
+Switch(config)# ip domain-name ccna-lab.com
+Switch(config)# username netadmin privilege 15 secret Cisco_CCNA7
+Switch(config)# crypto key generate rsa modulus 1024
+The name for the keys will be: Switch.ccna-lab.com
+
+% The key modulus size is 1024 bits
+% Generating 1024 bit RSA keys, keys will be non-exportable...[OK]
+*Feb 28 21:23:26.651: %SSH-5-ENABLED: SSH 1.99 has been enabled
+Switch(config)# ip ssh version 2
+Switch(config)# ip ssh time-out 90
+Switch(config)# ip ssh authentication-retries 2
+Switch(config)# line vty 0 15
+Switch(config-line)# login local
+Switch(config-line)# transport input ssh
+Switch(config-line)# exec-timeout 5 0
+Switch(config-line)# end
+%SYS-5-CONFIG_I: Configured from console by console
+### c2_syn_3.2_configure_vlans
+Switch# configure terminal
+Switch(config)# vlan 10
+%LINK-5-CHANGED: Interface Vlan10, changed state to up
+Switch(config-vlan)# name Faculty
+Switch(config-vlan)# vlan 20
+%LINK-5-CHANGED: Interface Vlan20, changed state to up
+Switch(config-vlan)# name Students
+Switch(config-vlan)# vlan 30
+%LINK-5-CHANGED: Interface Vlan30, changed state to up
+Switch(config-vlan)# name Guest
+Switch(config-vlan)# exit
+Switch(config)# interface FastEthernet 0/6
+Switch(config-if)# switchport mode access
+Switch(config-if)# switchport access vlan 10
+%LINEPROTO-5-UPDOWN: Line protocol on Interface Vlan10, changed state to up
+Switch(config-if)# interface FastEthernet 0/11
+Switch(config-if)# switchport mode access
+Switch(config-if)# switchport access vlan 20
+%LINEPROTO-5-UPDOWN: Line protocol on Interface Vlan20, changed state to up
+Switch(config-if)# end
+%SYS-5-CONFIG_I: Configured from console by console
+Switch# show vlan brief
+VLAN Name                             Status    Ports
+---- -------------------------------- --------- -------------------------------
+1    default                          active    
+10   Faculty                          active    Fa0/6
+20   Students                         active    Fa0/11
+30   Guest                            active    
+1002 fddi-default                     active    
+1003 token-ring-default               active    
+1004 fddinet-default                  active    
+1005 trnet-default                    active    
+### c2_syn_3.3_configure_trunk_links
+Switch# configure terminal
+Switch(config)# vlan 10
+%LINK-5-CHANGED: Interface Vlan10, changed state to up
+Switch(config-vlan)# name Faculty
+Switch(config-vlan)# vlan 20
+%LINK-5-CHANGED: Interface Vlan20, changed state to up
+Switch(config-vlan)# name Students
+Switch(config-vlan)# vlan 30
+%LINK-5-CHANGED: Interface Vlan30, changed state to up
+Switch(config-vlan)# name Guest
+Switch(config-vlan)# vlan 99
+%LINK-5-CHANGED: Interface Vlan99, changed state to up
+Switch(config-vlan)# name Management
+Switch(config-vlan)# end
+%SYS-5-CONFIG_I: Configured from console by console
+Switch# show vlan brief
+VLAN Name                             Status    Ports
+---- -------------------------------- --------- -------------------------------
+1    default                          active    
+10   Faculty                          active    
+20   Students                         active    
+30   Guest                            active    
+99   Management                       active    
+1002 fddi-default                     active    
+1003 token-ring-default               active    
+1004 fddinet-default                  active    
+1005 trnet-default                    active    
+Switch# configure terminal
+Switch(config)# interface FastEthernet 0/1
+Switch(config-if)# switchport mode trunk
+%LINEPROTO-5-UPDOWN: Line protocol on Interface FastEthernet0/1, changed state to down
+%LINEPROTO-5-UPDOWN: Line protocol on Interface FastEthernet0/1, changed state to up
+Switch(config-if)# switchport trunk native vlan 99
+Switch(config-if)# switchport trunk allowed vlan 10,20,30,99
+Switch(config-if)# end
+%SYS-5-CONFIG_I: Configured from console by console
+Switch# show interfaces FastEthernet 0/1 trunk
+Port      Mode         Encapsulation  Status        Native vlan
+Fa0/1     on           802.1q         trunking      99
+
+Port      Vlans allowed on trunk
+Fa0/1     10,20,30,99
+
+Port      Vlans in spanning tree forwarding state and not pruned
+Fa0/1     10,20,30,99
+### c2_syn_4.2_router_on_a_stick
+Router# configure terminal
+Router(config)# interface GigabitEthernet 0/0/0.10
+Router(config-if)# encapsulation dot1Q 10
+Router(config-if)# ip address 172.17.10.1 255.255.255.0
+Router(config-if)# interface GigabitEthernet 0/0/0.20
+Router(config-if)# encapsulation dot1Q 20
+Router(config-if)# ip address 172.17.20.1 255.255.255.0
+Router(config-if)# interface GigabitEthernet 0/0/0.99
+Router(config-if)# encapsulation dot1Q 99 native
+Router(config-if)# ip address 172.17.99.1 255.255.255.0
+Router(config-if)# interface GigabitEthernet 0/0/0
+Router(config-if)# no shutdown
+%LINK-5-CHANGED: Interface GigabitEthernet0/0/0, changed state to up
+%LINEPROTO-5-UPDOWN: Line protocol on Interface GigabitEthernet0/0/0, changed state to up
+%LINK-3-UPDOWN: Interface GigabitEthernet0/0/0.10, changed state to down
+%LINEPROTO-5-UPDOWN: Line protocol on Interface GigabitEthernet0/0/0.10, changed state to up
+%LINK-3-UPDOWN: Interface GigabitEthernet0/0/0.20, changed state to down
+%LINEPROTO-5-UPDOWN: Line protocol on Interface GigabitEthernet0/0/0.20, changed state to up
+%LINK-3-UPDOWN: Interface GigabitEthernet0/0/0.99, changed state to down
+%LINEPROTO-5-UPDOWN: Line protocol on Interface GigabitEthernet0/0/0.99, changed state to up
+Router(config-if)# end
+%SYS-5-CONFIG_I: Configured from console by console
+Router# show ip interface brief
+Interface              IP-Address      OK? Method Status                Protocol
+GigabitEthernet0/0/0   unassigned      YES unset  up                    up
+GigabitEthernet0/0/1   unassigned      YES unset  administratively down down
+Serial0/0/0            unassigned      YES unset  administratively down down
+Serial0/0/1            unassigned      YES unset  administratively down down
+Vlan1                  unassigned      YES unset  administratively down down
+GigabitEthernet0/0/0.10 172.17.10.1     YES manual up                    up
+GigabitEthernet0/0/0.20 172.17.20.1     YES manual up                    up
+GigabitEthernet0/0/0.99 172.17.99.1     YES manual up                    up
+### c2_syn_7.1_configure_dhcpv4
+Router# configure terminal
+Router(config)# ip dhcp excluded-address 192.168.10.1 192.168.10.9
+Router(config)# ip dhcp pool LAN-POOL-1
+Router(dhcp-config)# network 192.168.10.0 255.255.255.0
+Router(dhcp-config)# default-router 192.168.10.1
+Router(dhcp-config)# dns-server 192.168.10.1
+Router(dhcp-config)# domain-name ccna-lab.com
+Router(dhcp-config)# end
+%SYS-5-CONFIG_I: Configured from console by console
+Router# show ip dhcp pool
+Pool LAN-POOL-1 :
+ Utilization mark (high/low)    : 100 / 0
+ Subnet size (first/next)       : 0 / 0 
+ Total addresses                : 254
+ Leased addresses               : 0
+ Excluded addresses             : 9
+ Pending event                  : none
+
+ 1 subnet is currently in the pool
+ Current index        IP address range                    Leased/Excluded/Total
+ 192.168.10.1         192.168.10.1     - 192.168.10.254    0    / 9     / 254
+### c2_syn_7.2_configure_dhcp_relay
+Router# configure terminal
+Router(config)# interface GigabitEthernet 0/0/0
+Router(config-if)# ip address 192.168.10.1 255.255.255.0
+Router(config-if)# no shutdown
+%LINK-5-CHANGED: Interface GigabitEthernet0/0/0, changed state to up
+%LINEPROTO-5-UPDOWN: Line protocol on Interface GigabitEthernet0/0/0, changed state to up
+Router(config-if)# ip helper-address 192.168.11.5
+Router(config-if)# end
+%SYS-5-CONFIG_I: Configured from console by console
+Router# show ip interface GigabitEthernet 0/0/0
+GigabitEthernet0/0/0 is up, line protocol is up (connected)
+  Internet address is 192.168.10.1/24
+  Broadcast address is 255.255.255.255
+  Address determined by setup command
+  MTU is 1500 bytes
+  Helper address is 192.168.11.5
+  Directed broadcast forwarding is disabled
+  Outgoing access list is not set
+  Inbound  access list is not set
+  Proxy ARP is enabled
+  Security level is default
+  Split horizon is enabled
+  ICMP redirects are always sent
+  ICMP unreachables are always sent
+  ICMP mask replies are never sent
+  IP fast switching is disabled
+  IP fast switching on the same interface is disabled
+  IP Flow switching is disabled
+  IP Fast switching turbo vector
+  IP multicast fast switching is disabled
+  IP multicast distributed fast switching is disabled
+  Router Discovery is disabled
+  IP output packet accounting is disabled
+  IP access violation accounting is disabled
+  TCP/IP header compression is disabled
+  RTP/IP header compression is disabled
+  Probe proxy name replies are disabled
+  Policy routing is disabled
+  Network address translation is disabled
+  BGP Policy Mapping is disabled
+  Input features: MCI Check
+  WCCP Redirect outbound is disabled
+  WCCP Redirect inbound is disabled
+  WCCP Redirect exclude is disabled
+### c2_syn_8.2_configure_stateless_dhcpv6
+Router# configure terminal
+Router(config)# ipv6 unicast-routing
+Router(config)# ipv6 dhcp pool R1-STATELESS
+Router(config-dhcpv6)# dns-server 2001:db8:acad::254
+Router(config-dhcpv6)# domain-name stateless.com
+Router(config-dhcpv6)# exit
+Router(config)# interface GigabitEthernet 0/0/0
+Router(config-if)# ipv6 address 2001:db8:acad:1::1/64
+Router(config-if)# ipv6 nd other-config-flag
+Router(config-if)# ipv6 dhcp server R1-STATELESS
+Router(config-if)# end
+%SYS-5-CONFIG_I: Configured from console by console
+### c2_syn_8.3_configure_stateful_dhcpv6
+Router# configure terminal
+Router(config)# ipv6 unicast-routing
+Router(config)# ipv6 dhcp pool R1-STATEFUL
+Router(config-dhcpv6)# address prefix 2001:db8:acad:1::/64
+Router(config-dhcpv6)# dns-server 2001:4860:4860::8888
+Router(config-dhcpv6)# domain-name stateful.com
+Router(config-dhcpv6)# exit
+Router(config)# interface GigabitEthernet 0/0/0
+Router(config-if)# ipv6 address 2001:db8:acad:1::1/64
+Router(config-if)# ipv6 nd managed-config-flag
+Router(config-if)# ipv6 dhcp server R1-STATEFUL
+Router(config-if)# end
+%SYS-5-CONFIG_I: Configured from console by console
+### c2_syn_11.1_configure_port_security
+Switch# configure terminal
+Switch(config)# interface FastEthernet 0/1
+Switch(config-if)# switchport mode access
+Switch(config-if)# switchport port-security
+Switch(config-if)# switchport port-security maximum 2
+Switch(config-if)# switchport port-security violation restrict
+Switch(config-if)# switchport port-security mac-address sticky
+Switch(config-if)# end
+%SYS-5-CONFIG_I: Configured from console by console
+Switch# show port-security interface FastEthernet 0/1
+Port Security              : Enabled
+Port Status                : Secure-up
+Violation Mode             : Restrict
+Aging Time                 : 0 mins
+Aging Type                 : Absolute
+SecureStatic Address Aging : Disabled
+Maximum MAC Addresses      : 2
+Total MAC Addresses        : 0
+Configured MAC Addresses   : 0
+Sticky MAC Addresses       : 0
+Last Source Address:Vlan   : 0000.0000.0000:0
+Security Violation Count   : 0
+### c2_syn_14.3_basic_router_config_review
+Router> enable
+Router# configure terminal
+Router(config)# hostname R1
+R1(config)# no ip domain-lookup
+R1(config)# enable secret class
+R1(config)# service password-encryption
+R1(config)# banner motd #Authorized Access Only#
+R1(config)# interface GigabitEthernet 0/0/0
+R1(config-if)# ip address 209.165.200.225 255.255.255.252
+R1(config-if)# description Link to ISP
+R1(config-if)# no shutdown
+%LINK-5-CHANGED: Interface GigabitEthernet0/0/0, changed state to up
+%LINEPROTO-5-UPDOWN: Line protocol on Interface GigabitEthernet0/0/0, changed state to up
+R1(config-if)# end
+%SYS-5-CONFIG_I: Configured from console by console
+R1# copy running-config startup-config
+Destination filename [startup-config]? 
+### c2_syn_15.4_configure_ip_static_routes
+Router# configure terminal
+Router(config)# ip route 172.16.1.0 255.255.255.0 172.16.2.2
+Router(config)# ip route 192.168.1.0 255.255.255.0 172.16.2.2
+Router(config)# ip route 0.0.0.0 0.0.0.0 172.16.2.2
+Router(config)# end
+%SYS-5-CONFIG_I: Configured from console by console
+Router# show ip route
+Codes: L - local, C - connected, S - static, R - RIP, M - mobile, B - BGP
+       D - EIGRP, EX - EIGRP external, O - OSPF, IA - OSPF inter area
+       N1 - OSPF NSSA external type 1, N2 - OSPF NSSA external type 2
+       E1 - OSPF external type 1, E2 - OSPF external type 2, E - EGP
+       i - IS-IS, L1 - IS-IS level-1, L2 - IS-IS level-2, ia - IS-IS inter area
+       * - candidate default, U - per-user static route, o - ODR
+       P - periodic downloaded static route
+
+Gateway of last resort is 172.16.2.2 to network 0.0.0.0
+
+S*    0.0.0.0/0 [1/0] via 172.16.2.2
+     172.16.0.0/24 is subnetted, 1 subnets
+S       172.16.1.0/24 [1/0] via 172.16.2.2
+     192.168.1.0/24 is subnetted, 1 subnets
+S       192.168.1.0/24 [1/0] via 172.16.2.2
+### c2_syn_16.2_configure_floating_static_routes
+Router# configure terminal
+Router(config)# ip route 0.0.0.0 0.0.0.0 172.16.2.2
+Router(config)# ip route 0.0.0.0 0.0.0.0 10.10.10.2 5
+Router(config)# ip route 192.168.10.0 255.255.255.0 172.16.2.2
+Router(config)# ip route 192.168.10.0 255.255.255.0 10.10.10.2 5
+Router(config)# end
+%SYS-5-CONFIG_I: Configured from console by console
+Router# show ip route
+Codes: L - local, C - connected, S - static, R - RIP, M - mobile, B - BGP
+       D - EIGRP, EX - EIGRP external, O - OSPF, IA - OSPF inter area
+       N1 - OSPF NSSA external type 1, N2 - OSPF NSSA external type 2
+       E1 - OSPF external type 1, E2 - OSPF external type 2, E - EGP
+       i - IS-IS, L1 - IS-IS level-1, L2 - IS-IS level-2, ia - IS-IS inter area
+       * - candidate default, U - per-user static route, o - ODR
+       P - periodic downloaded static route
+
+Gateway of last resort is 172.16.2.2 to network 0.0.0.0
+
+S*    0.0.0.0/0 [1/0] via 172.16.2.2
+     192.168.10.0/24 is subnetted, 1 subnets
+S       192.168.10.0/24 [1/0] via 172.16.2.2
+### c3_syn_2.1_ospfv2_point_to_point
+Router# configure terminal
+Router(config)# router ospf 10
+Router(config-router)# router-id 1.1.1.1
+Router(config-router)# network 10.10.1.0 0.0.0.255 area 0
+Router(config-router)# network 10.10.2.0 0.0.0.255 area 0
+Router(config-router)# network 1.1.1.1 0.0.0.0 area 0
+Router(config-router)# passive-interface GigabitEthernet 0/0/0
+Router(config-router)# end
+%SYS-5-CONFIG_I: Configured from console by console
+Router# show ip ospf neighbor
+
+Neighbor ID     Pri   State           Dead Time   Address         Interface
+Router# show ip route ospf
+Codes: O - OSPF
+
+### c3_syn_2.3_ospfv2_multiaccess
+Router# configure terminal
+Router(config)# interface GigabitEthernet 0/0/0
+Router(config-if)# ip ospf priority 255
+Router(config-if)# exit
+Router(config)# router ospf 10
+Router(config-router)# router-id 1.1.1.1
+Router(config-router)# network 192.168.1.0 0.0.0.255 area 0
+Router(config-router)# network 1.1.1.1 0.0.0.0 area 0
+Router(config-router)# end
+%SYS-5-CONFIG_I: Configured from console by console
+Router# show ip ospf interface GigabitEthernet 0/0/0
+Gig0/0/0 is up, line protocol is up
+  OSPF not enabled on this interface
+### c3_syn_2.4_modify_ospfv2
+Router# configure terminal
+Router(config)# interface GigabitEthernet 0/0/0
+Router(config-if)# ip ospf hello-interval 5
+Router(config-if)# ip ospf dead-interval 20
+Router(config-if)# ip ospf message-digest-key 1 md5 OSPF_Key
+Router(config-if)# ip ospf authentication message-digest
+Router(config-if)# exit
+Router(config)# router ospf 10
+Router(config-router)# auto-cost reference-bandwidth 1000
+Router(config-router)# end
+%SYS-5-CONFIG_I: Configured from console by console
+### c3_syn_2.6_verify_ospfv2
+Router# show ip ospf
+Routing Process "ospf 10" with ID 1.1.1.1
+ Start time: 00:01:00.000, Time elapsed: 00:05:00.000
+ Supports only single TOS(TOS0) routes
+ Number of areas in this router is 1. 1 normal 0 stub 0 nssa
+Router# show ip ospf neighbor
+
+Neighbor ID     Pri   State           Dead Time   Address         Interface
+Router# show ip ospf interface GigabitEthernet 0/0/0
+Gig0/0/0 is up, line protocol is up
+  OSPF not enabled on this interface
+Router# show ip route ospf
+Codes: O - OSPF
+
+Router# show ip route
+Codes: L - local, C - connected, S - static, R - RIP, M - mobile, B - BGP
+       D - EIGRP, EX - EIGRP external, O - OSPF, IA - OSPF inter area
+       N1 - OSPF NSSA external type 1, N2 - OSPF NSSA external type 2
+       E1 - OSPF external type 1, E2 - OSPF external type 2, E - EGP
+       i - IS-IS, L1 - IS-IS level-1, L2 - IS-IS level-2, ia - IS-IS inter area
+       * - candidate default, U - per-user static route, o - ODR
+       P - periodic downloaded static route
+
+Gateway of last resort is not set
+### c3_syn_5.2_standard_acls
+Router# configure terminal
+Router(config)# access-list 1 permit host 192.168.10.10
+Router(config)# access-list 1 permit 192.168.20.0 0.0.0.255
+Router(config)# interface GigabitEthernet 0/0/0
+Router(config-if)# ip access-group 1 in
+Router(config-if)# end
+%SYS-5-CONFIG_I: Configured from console by console
+Router# show access-lists
+Standard IP access list 1
+    10 permit host 192.168.10.10
+    20 permit 192.168.20.0 0.0.0.255
+Router# show ip interface GigabitEthernet 0/0/0
+GigabitEthernet0/0/0 is administratively down, line protocol is down (disabled)
+  Internet protocol processing disabled
+  MTU is 1500 bytes
+  Helper address is not set
+  Directed broadcast forwarding is disabled
+  Outgoing access list is not set
+  Inbound  access list is 1
+  Proxy ARP is enabled
+  Security level is default
+  Split horizon is enabled
+  ICMP redirects are always sent
+  ICMP unreachables are always sent
+  ICMP mask replies are never sent
+  IP fast switching is disabled
+  IP fast switching on the same interface is disabled
+  IP Flow switching is disabled
+  IP Fast switching turbo vector
+  IP multicast fast switching is disabled
+  IP multicast distributed fast switching is disabled
+  Router Discovery is disabled
+  IP output packet accounting is disabled
+  IP access violation accounting is disabled
+  TCP/IP header compression is disabled
+  RTP/IP header compression is disabled
+  Probe proxy name replies are disabled
+  Policy routing is disabled
+  Network address translation is disabled
+  BGP Policy Mapping is disabled
+  Input features: MCI Check
+  WCCP Redirect outbound is disabled
+  WCCP Redirect inbound is disabled
+  WCCP Redirect exclude is disabled
+### c3_syn_5.4_extended_acls
+Router# configure terminal
+Router(config)# ip access-list extended SURFING
+Router(config-ext-nacl)# permit tcp 192.168.10.0 0.0.0.255 any eq 80
+Router(config-ext-nacl)# permit tcp 192.168.10.0 0.0.0.255 any eq 443
+Router(config-ext-nacl)# exit
+Router(config)# ip access-list extended BROWSING
+Router(config-ext-nacl)# permit tcp any 192.168.10.0 0.0.0.255 established
+Router(config-ext-nacl)# exit
+Router(config)# interface GigabitEthernet 0/0/0
+Router(config-if)# ip access-group SURFING in
+Router(config-if)# ip access-group BROWSING out
+Router(config-if)# end
+%SYS-5-CONFIG_I: Configured from console by console
+### c3_syn_6.4_static_nat
+Router# configure terminal
+Router(config)# ip nat inside source static 192.168.1.5 209.165.200.225
+Router(config)# interface GigabitEthernet 0/0/0
+Router(config-if)# ip nat inside
+Router(config-if)# interface GigabitEthernet 0/0/1
+Router(config-if)# ip nat outside
+Router(config-if)# end
+%SYS-5-CONFIG_I: Configured from console by console
+Router# show ip nat translations
+Pro  Inside global     Inside local       Outside local      Outside global
+---  209.165.200.225   192.168.1.5        ---                ---
+### c3_syn_6.5_dynamic_nat
+Router# configure terminal
+Router(config)# ip nat pool NAT-POOL1 209.165.200.226 209.165.200.240 netmask 255.255.255.224
+Router(config)# access-list 1 permit 192.168.0.0 0.0.255.255
+Router(config)# ip nat inside source list 1 pool NAT-POOL1
+Router(config)# interface GigabitEthernet 0/0/0
+Router(config-if)# ip nat inside
+Router(config-if)# interface GigabitEthernet 0/0/1
+Router(config-if)# ip nat outside
+Router(config-if)# end
+%SYS-5-CONFIG_I: Configured from console by console
+Router# show ip nat statistics
+Total translations: 0 (0 static, 0 dynamic, 0 extended)
+Outside Interfaces: GigabitEthernet0/0/1
+Inside Interfaces: GigabitEthernet0/0/0
+Hits: 0  Misses: 0
+Expired translations: 0
+Dynamic mappings:
+-- Inside Source
+[Id: 1] access-list 1 pool NAT-POOL1 refcount 0
+ pool NAT-POOL1: netmask 255.255.255.224
+        start 209.165.200.226 end 209.165.200.240
+        total addresses 15, allocated 0 (0%), misses 0
+### c3_syn_6.6a_pat_address_pool
+Router# configure terminal
+Router(config)# ip nat pool NAT-POOL2 209.165.200.226 209.165.200.228 netmask 255.255.255.252
+Router(config)# access-list 1 permit 192.168.0.0 0.0.255.255
+Router(config)# ip nat inside source list 1 pool NAT-POOL2 overload
+Router(config)# interface GigabitEthernet 0/0/0
+Router(config-if)# ip nat inside
+Router(config-if)# interface GigabitEthernet 0/0/1
+Router(config-if)# ip nat outside
+Router(config-if)# end
+%SYS-5-CONFIG_I: Configured from console by console
+### c3_syn_6.6b_pat_single_address
+Router# configure terminal
+Router(config)# access-list 1 permit 192.168.0.0 0.0.255.255
+Router(config)# ip nat inside source list 1 interface GigabitEthernet 0/0/1 overload
+Router(config)# interface GigabitEthernet 0/0/0
+Router(config-if)# ip nat inside
+Router(config-if)# interface GigabitEthernet 0/0/1
+Router(config-if)# ip nat outside
+Router(config-if)# end
+%SYS-5-CONFIG_I: Configured from console by console
+Router# show ip nat translations
+Pro  Inside global     Inside local       Outside local      Outside global
+### c3_syn_10.1_cdp_and_lldp
+Router# configure terminal
+Router(config)# cdp run
+Router(config)# lldp run
+Router(config)# interface GigabitEthernet 0/0/0
+Router(config-if)# lldp transmit
+Router(config-if)# lldp receive
+Router(config-if)# end
+%SYS-5-CONFIG_I: Configured from console by console
+Router# show cdp neighbors
+Capability Codes: R - Router, T - Trans Bridge, B - Source Route Bridge
+                  S - Switch, H - Host, I - IGMP, r - Repeater, P - Phone
+Device ID    Local Intrfce   Holdtme    Capability   Platform    Port ID
+Router# show lldp neighbors
+Capability codes:
+    (R) Router, (B) Bridge, (T) Telephone, (C) DOCSIS Cable Device
+    (W) WLAN Access Point, (P) Repeater, (S) Station, (O) Other
+Device ID           Local Intf     Hold-time  Capability      Port ID
+
+Total entries displayed: 0
+### c3_syn_10.2_configure_ntp
+Router# configure terminal
+Router(config)# ntp master 1
+Router(config)# end
+%SYS-5-CONFIG_I: Configured from console by console
+Router# show ntp status
+Clock is synchronized, stratum 1, reference is .LOCL.
+nominal freq is 250.0000 Hz, actual freq is 250.0000 Hz, precision is 2**10
+ntpuptime is 0 (sec), resolution is 4000
+Router# configure terminal
+Router(config)# ntp server 10.1.1.1
+Router(config)# end
+%SYS-5-CONFIG_I: Configured from console by console
+Router# show ntp associations
+  address         ref clock       st  when  poll reach  delay  offset   disp
+*~10.1.1.1        .LOCL.          1    10    64   377    1.00    0.000   0.12
+ * sys.peer, # selected, + candidate, - outlyer, x falseticker
+### c3_syn_10.3_configure_snmpv2c
+Router# configure terminal
+Router(config)# snmp-server community cisco ro
+Router(config)# snmp-server community cisco123 rw
+Router(config)# snmp-server location Cisco NetAcad
+Router(config)# snmp-server contact Admin
+Router(config)# snmp-server host 192.168.1.100 version 2c cisco
+Router(config)# snmp-server enable traps
+Router(config)# end
+%SYS-5-CONFIG_I: Configured from console by console
+Router# show snmp community
+Community name: cisco
+Community Index: cisco
+Security Name: cisco
+storage-type: nonvolatile    active
+
+Community name: cisco123
+Community Index: cisco123
+Security Name: cisco123
+storage-type: nonvolatile    active
+### c3_syn_10.4_configure_syslog
+Router# configure terminal
+Router(config)# logging host 192.168.1.100
+Router(config)# logging trap informational
+Router(config)# logging source-interface Loopback 0
+Router(config)# service timestamps log datetime msec
+Router(config)# end
+%SYS-5-CONFIG_I: Configured from console by console
+Router# show logging
+Syslog logging: enabled (0 messages dropped, 0 flushes, 0 overruns)
+    Console logging: level debugging, 28 messages logged
+    Monitor logging: level debugging, 0 messages logged
+    Buffer logging:  level debugging, 28 messages logged
+    Logging Exception size (4096 bytes)
+    Trap logging: level informational, 30 message lines logged
+        Logging to 192.168.1.100  (udp port 514, audit disabled,
+              link up), 30 message lines logged
+Log Buffer (4096 bytes):

@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>CCNA CLI Engine — v1.42.2</title>
+<title>CCNA CLI Engine — v1.43.0</title>
 <style>
   :root {
     --bg: #0c0f0a;
@@ -562,7 +562,7 @@
 <body>
 <div class="wrap">
   <header>
-    <h1>CCNA CLI Engine — v1.42.2</h1>
+    <h1>CCNA CLI Engine — v1.43.0</h1>
     <p>Type commands as you would on a real device — Tab completes partial words. Type <span class="hint">?commands</span> to see exact syntax for this version.</p>
   </header>
 
@@ -998,7 +998,7 @@ copy running-config startup-config</pre>
        cannot be selected.
    ============================================================ */
 
-const IOS_ENGINE_VERSION = "1.42.2";
+const IOS_ENGINE_VERSION = "1.43.0";
 
 /* ---------------------------------------------------------
    1. DEVICE STATE
@@ -2977,6 +2977,27 @@ const COMMANDS = [
 // Cisco type-7 encryption (that's a reversible XOR cipher) — we don't
 // need cryptographic accuracy here, just the visual effect students see
 // in show running-config: an unreadable string instead of plaintext.
+// v1.43.0: real IOS ALWAYS stores "enable secret" and "username ...
+// secret" as a one-way MD5 hash, shown as "5 $1$<salt>$<hash>" — with or
+// without service password-encryption (verified against a real capture:
+// "enable secret 5 $1$mERr$BtwPcSaOohH2Kf0DFoO7X0"). This produces the
+// same shape from the password: same password -> same text every time.
+// It can't match Packet Tracer's own value (real IOS picks a random
+// salt), and it isn't real MD5 — only the format is meant to match.
+function secretHash(pw) {
+  const chars = "./0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+  let h = 2166136261 >>> 0;
+  function next() {
+    h ^= h << 13; h >>>= 0; h ^= h >>> 17; h ^= h << 5; h >>>= 0;
+    return chars.charAt(h % 64);
+  }
+  for (let i = 0; i < pw.length; i++) h = Math.imul(h ^ pw.charCodeAt(i), 16777619) >>> 0;
+  let salt = "", body = "";
+  for (let i = 0; i < 4; i++) salt += next();
+  for (let i = 0; i < 22; i++) body += next();
+  return "$1$" + salt + "$" + body;
+}
+
 function obfuscatePassword(pw) {
   let out = "";
   for (let i = 0; i < pw.length; i++) {
@@ -3160,8 +3181,7 @@ function renderConfigText(source) {
     bodyLines.push("!");
   }
   if (source.enableSecret) {
-    const shown = source.servicePasswordEncryption ? obfuscatePassword(source.enableSecret) : source.enableSecret;
-    bodyLines.push("enable secret 5 " + shown);
+    bodyLines.push("enable secret 5 " + secretHash(source.enableSecret)); // v1.43.0: always hashed, like real IOS
   }
   if (source.enablePassword) {
     // Real IOS only shows "enable password" with a "7 " prefix (type-7
@@ -3281,9 +3301,8 @@ function renderConfigText(source) {
     const uname = userNames[i];
     const userEntry = source.users[uname];
     const secret = userEntry.secret;
-    const shown = source.servicePasswordEncryption ? obfuscatePassword(secret) : secret;
     const privilegePart = (userEntry.privilege !== null && userEntry.privilege !== undefined) ? "privilege " + userEntry.privilege + " " : "";
-    bodyLines.push("username " + uname + " " + privilegePart + "secret " + (source.servicePasswordEncryption ? "5 " : "") + shown);
+    bodyLines.push("username " + uname + " " + privilegePart + "secret 5 " + secretHash(secret)); // v1.43.0: always hashed, like real IOS
   }
   if (userNames.length > 0) bodyLines.push("!");
   if (source.sshVersion) {
@@ -3380,8 +3399,12 @@ function renderConfigText(source) {
         bodyLines.push(" switchport port-security mac-address sticky " + iface.portSecurityStickyMacs[m]);
       }
     }
-    if (!isSubinterfaceName(name)) {
-      bodyLines.push(iface.shutdown ? " shutdown" : " no shutdown");
+    // v1.43.0: real IOS only shows "shutdown" for a port that's off —
+    // an active port has no line at all (verified against a real 1941
+    // capture: GigabitEthernet0/0, up, shows no shutdown line). This
+    // engine used to print " no shutdown" for every active port.
+    if (!isSubinterfaceName(name) && iface.shutdown) {
+      bodyLines.push(" shutdown");
     }
     bodyLines.push("!");
   }
@@ -6275,7 +6298,75 @@ function parseInterfaceRange(device, spec) {
   return names.length ? names : null;
 }
 
+// v1.43.0: real IOS answers unrecognized input by pointing at the first
+// word it couldn't make sense of — verified against a real capture
+// (a 1941, "show ip interface brief" typed in config mode):
+//   Router(config)#show ip interface brief
+//                  ^
+//   % Invalid input detected at '^' marker.
+// That's also what real IOS prints for a command that exists but isn't
+// valid in the current mode (show at (config)#), which this engine used
+// to report as "% Command not available in this mode (...)" — not real
+// IOS output. Returns the character position in rawLine of the first
+// word that can't continue ANY command valid in the current mode; if
+// every word fits (e.g. a bad value in the right place), the last word.
+function invalidInputCaretIndex(device, rawLine) {
+  const re = /\S+/g;
+  const words = [];
+  let m;
+  while ((m = re.exec(rawLine))) words.push({ text: m[0], at: m.index });
+  // "GigabitEthernet 0/0/0" is ONE interface-name argument, as the
+  // engine itself treats it.
+  for (let i = 0; i + 1 < words.length; i++) {
+    if (/^[A-Za-z-]+$/.test(words[i].text) && /^\d+(\/\d+)+/.test(words[i + 1].text)) {
+      const joined = normalizeInterfaceName(words[i].text + words[i + 1].text);
+      if (INTERFACE_TYPES.some(function (t) { return joined.indexOf(t) === 0; })) {
+        words.splice(i, 2, { text: words[i].text + words[i + 1].text, at: words[i].at });
+      }
+    }
+  }
+  if (!words.length) return 0;
+  const isArg = function (t) { return t.charAt(0) === "<" && t.charAt(t.length - 1) === ">"; };
+  const alts = function (t) { return t.toLowerCase().split("|"); };
+  const resolved = [];
+  for (let k = 0; k < words.length; k++) {
+    const typed = words[k].text.toLowerCase();
+    const literalHits = new Set();
+    let fits = false;
+    for (let c = 0; c < COMMANDS.length; c++) {
+      const cmd = COMMANDS[c];
+      if (cmd.modes.indexOf(device.mode) === -1 || cmd.tokens.length <= k) continue;
+      let prior = true;
+      for (let j = 0; j < k; j++) {
+        if (!isArg(cmd.tokens[j]) && alts(cmd.tokens[j]).indexOf(resolved[j]) === -1) { prior = false; break; }
+      }
+      if (!prior) continue;
+      const here = cmd.tokens[k];
+      if (isArg(here)) { fits = true; continue; }
+      alts(here).forEach(function (a) { if (a.indexOf(typed) === 0) { fits = true; literalHits.add(a); } });
+    }
+    if (!fits) return words[k].at;
+    resolved.push(literalHits.size === 1 ? Array.from(literalHits)[0] : typed);
+  }
+  return words[words.length - 1].at;
+}
+
 function executeLine(device, rawLine) {
+  const result = executeLineRanged(device, rawLine);
+  if (!result.error) return result;
+  const modeError = result.error.indexOf("% Command not available in this mode") === 0;
+  if (modeError || result.error === "% Invalid input detected") {
+    // caretIndex: where (in rawLine) the terminal should draw the "^".
+    // modeError: kept as a flag so callers can still tell "right command,
+    // wrong mode" apart (Guided Practice uses it to suggest "enable").
+    result.caretIndex = invalidInputCaretIndex(device, rawLine);
+    result.modeError = modeError;
+    result.error = "% Invalid input detected at '^' marker.";
+  }
+  return result;
+}
+
+function executeLineRanged(device, rawLine) {
   // v1.42.0: inside "interface range" mode, a command applies to every
   // interface in the range, one after another — exactly as if it had
   // been typed under each "interface X" separately. If the command
@@ -7633,6 +7724,15 @@ let practiceMode = "guided"; // "guided" | "free"
 let currentExerciseId = "c1_syn_2.2_navigate_ios_modes";
 let exerciseRun = createExerciseRun(currentExerciseId);
 
+// v1.43.0: print an engine error; if it carries a caret position, first
+// draw the "^" under the offending word of the line just echoed
+// (echoColumn = where the typed text starts on that echoed line), then
+// a blank line after the message, as real IOS does.
+function errorLines(result, echoColumn) {
+  if (result.caretIndex === undefined) return [result.error];
+  return [" ".repeat(echoColumn + result.caretIndex) + "^", result.error, ""];
+}
+
 function appendLine(text, cls) {
   const div = document.createElement("div");
   div.className = cls || "line-output";
@@ -7785,7 +7885,7 @@ function handleSubmit() {
         // (which rely on their own scripted exercise steps already
         // matching the expected prompt answers) are completely untouched.
         const result = executeLine(device, raw);
-        if (result.error) appendLine(result.error, "line-error");
+        if (result.error) errorLines(result, promptBefore.length + 1).forEach(function (l) { appendLine(l, "line-error"); });
         if (result.text) appendLine(result.text, "line-output");
         refreshInstructionBar();
       } else {
@@ -7807,7 +7907,7 @@ function handleSubmit() {
             exerciseRun.stepIndex -= 1;
             exerciseRun.attemptCount += 1;
             exerciseRun.complete = false; // in case this was the final step
-            appendLine(result.error, "line-error");
+            errorLines(result, promptBefore.length + 1).forEach(function (l) { appendLine(l, "line-error"); });
             // v1.35.0: give an actionable way out instead of just
             // pointing at the error. This specifically fixes a real
             // dead end found in testing: a student starting an
@@ -7816,7 +7916,7 @@ function handleSubmit() {
             // to actually type, since "enable" isn't the expected
             // text for that step and repeating the correct-but-
             // rejected command just fails again forever.
-            if (result.error.indexOf("not available in this mode") !== -1 && device.mode === "user_exec") {
+            if (result.modeError && device.mode === "user_exec") {
               appendLine("Your device is in user EXEC mode (prompt ends with >). Type enable to reach privileged EXEC mode, then try this step again.", "line-feedback-hint");
             } else {
               appendLine("(That command is correct for this step, but couldn't run right now — see the error above.)", "line-feedback-bare");
@@ -7854,8 +7954,21 @@ function handleSubmit() {
             // prompt when an enable secret/password is configured) —
             // this branch used to discard the result outright, which
             // would have left a password challenge invisible here.
-            if (escapeResult.error) appendLine(escapeResult.error, "line-error");
+            if (escapeResult.error) errorLines(escapeResult, promptBefore.length + 1).forEach(function (l) { appendLine(l, "line-error"); });
             if (escapeResult.text) appendLine(escapeResult.text, "line-output");
+          } else if (device.mode === "user_exec" && !device.pendingPrompt && (function () {
+            // v1.43.0: a shortcut like "conf t" can't be expanded at
+            // Router> (configure doesn't exist in user EXEC), so it used
+            // to get a plain "Not quite" even when it IS this step's
+            // command. If it matches once in privileged EXEC, give the
+            // same "type enable first" hint the full command gets.
+            const step = exercise.steps[exerciseRun.stepIndex];
+            device.mode = "priv_exec";
+            const same = canonicalCommand(device, raw) === canonicalCommand(device, step.expected);
+            device.mode = "user_exec";
+            return same;
+          })()) {
+            appendLine("Your device is in user EXEC mode (prompt ends with >). Type enable to reach privileged EXEC mode, then try this step again.", "line-feedback-hint");
           } else {
             const fb = check.feedback;
             const cls = fb.level === "bare" ? "line-feedback-bare" :
@@ -7868,7 +7981,7 @@ function handleSubmit() {
     } else {
       // Free practice — no grading, straight to the engine.
       const result = executeLine(device, raw);
-      if (result.error) appendLine(result.error, "line-error");
+      if (result.error) errorLines(result, promptBefore.length + 1).forEach(function (l) { appendLine(l, "line-error"); });
       if (result.text) appendLine(result.text, "line-output");
     }
   } catch (e) {
@@ -9058,6 +9171,160 @@ const PT_EXERCISES = [
     ]
   },
   {
+    // v1.43.0. Source: the real ITExamAnswers.net instructor page
+    // (https://itexamanswers.net/2-9-1-packet-tracer-basic-switch-and-end-device-configuration-instructions-answer.html)
+    // for the requirements, addressing and answer-key values; cabling
+    // from the user's screenshot of the real activity (Class-A Fa0/1 to
+    // Class-B Fa0/2; the PCs' switch ports aren't labeled in it, so
+    // those cables are unlabeled here too). Skipped, per this project's
+    // rule: "use console connections to access each switch" (cabling).
+    // Passwords: any password counts (hints show the lab's values); the
+    // banner must be the lab's exact text.
+    id: "c1_pt_2.9.1_basic_switch_end_device",
+    label: "Course 1 · PacketTr · 2.9.1 — Basic Switch and End Device Configuration",
+    devices: [
+      { id: "Class-A", label: "Class-A", deviceType: "switch", initialHostname: "Switch" },
+      { id: "Class-B", label: "Class-B", deviceType: "switch", initialHostname: "Switch" },
+      { id: "Student-1", label: "Student-1", deviceType: "pc" },
+      { id: "Student-2", label: "Student-2", deviceType: "pc" }
+    ],
+    addressingTable: [
+      { device: "Class-A", iface: "VLAN 1", ip: "128.107.20.10", mask: "255.255.255.0", gateway: "N/A" },
+      { device: "Class-B", iface: "VLAN 1", ip: "128.107.20.15", mask: "255.255.255.0", gateway: "N/A" },
+      { device: "Student-1", iface: "NIC", ip: "128.107.20.25", mask: "255.255.255.0", gateway: "N/A" },
+      { device: "Student-2", iface: "NIC", ip: "128.107.20.30", mask: "255.255.255.0", gateway: "N/A" }
+    ],
+    topology: {
+      nodes: [
+        { id: "Class-A", type: "switch", row: 0, col: 0 },
+        { id: "Class-B", type: "switch", row: 0, col: 1 },
+        { id: "Student-1", type: "pc", row: 1, col: 0 },
+        { id: "Student-2", type: "pc", row: 1, col: 1 }
+      ],
+      connections: [
+        { from: "Class-A", fromIface: "F0/1", to: "Class-B", toIface: "F0/2", kind: "lan" },
+        { from: "Student-1", to: "Class-A", kind: "lan" },
+        { from: "Class-B", to: "Student-2", kind: "lan" }
+      ]
+    },
+    tasks: [
+      {
+        id: "class-a_hostname", device: "Class-A",
+        summary: "Name the switch Class-A",
+        hint: "From global configuration mode: hostname Class-A",
+        check: function (d) { return d.hostname === "Class-A"; }
+      },
+      {
+        id: "class-a_console", device: "Class-A",
+        summary: "Console line: set a password and require login",
+        hint: "line console 0, then password R4Xe3, then login",
+        check: function (d) { const l = d.lines["console 0"]; return !!l && !!l.password && !!l.login; }
+      },
+      {
+        id: "class-a_vty", device: "Class-A",
+        summary: "VTY lines 0-15: set a password and require login",
+        hint: "line vty 0 15, then password R4Xe3, then login",
+        check: function (d) { const l = d.lines["vty 0 15"]; return !!l && !!l.password && !!l.login; }
+      },
+      {
+        id: "class-a_secret", device: "Class-A",
+        summary: "Set an encrypted privileged EXEC password",
+        hint: "enable secret C4aJa",
+        check: function (d) { return !!d.enableSecret; }
+      },
+      {
+        id: "class-a_encrypt", device: "Class-A",
+        summary: "Encrypt all cleartext passwords",
+        hint: "service password-encryption",
+        check: function (d) { return !!d.servicePasswordEncryption; }
+      },
+      {
+        id: "class-a_banner", device: "Class-A",
+        summary: "Add the MOTD banner: Unauthorized access to this device is prohibited!",
+        hint: "banner motd #Unauthorized access to this device is prohibited!#",
+        check: function (d) { return (d.bannerMotd || "").trim().toLowerCase() === "unauthorized access to this device is prohibited!"; }
+      },
+      {
+        id: "class-a_vlan1", device: "Class-A",
+        summary: "Configure and activate VLAN 1 (see addressing table)",
+        hint: "interface vlan 1, then ip address 128.107.20.10 255.255.255.0, then no shutdown",
+        check: function (d) { const i = d.interfaces["Vlan1"]; return !!i && i.ip === "128.107.20.10" && i.mask === "255.255.255.0" && !i.shutdown; }
+      },
+      {
+        id: "class-a_save", device: "Class-A",
+        summary: "Save the running configuration to NVRAM",
+        hint: "copy running-config startup-config, then press Enter to accept the default filename.",
+        check: function (d) { return d.startupConfig !== null; }
+      },
+      {
+        id: "class-b_hostname", device: "Class-B",
+        summary: "Name the switch Class-B",
+        hint: "From global configuration mode: hostname Class-B",
+        check: function (d) { return d.hostname === "Class-B"; }
+      },
+      {
+        id: "class-b_console", device: "Class-B",
+        summary: "Console line: set a password and require login",
+        hint: "line console 0, then password R4Xe3, then login",
+        check: function (d) { const l = d.lines["console 0"]; return !!l && !!l.password && !!l.login; }
+      },
+      {
+        id: "class-b_vty", device: "Class-B",
+        summary: "VTY lines 0-15: set a password and require login",
+        hint: "line vty 0 15, then password R4Xe3, then login",
+        check: function (d) { const l = d.lines["vty 0 15"]; return !!l && !!l.password && !!l.login; }
+      },
+      {
+        id: "class-b_secret", device: "Class-B",
+        summary: "Set an encrypted privileged EXEC password",
+        hint: "enable secret C4aJa",
+        check: function (d) { return !!d.enableSecret; }
+      },
+      {
+        id: "class-b_encrypt", device: "Class-B",
+        summary: "Encrypt all cleartext passwords",
+        hint: "service password-encryption",
+        check: function (d) { return !!d.servicePasswordEncryption; }
+      },
+      {
+        id: "class-b_banner", device: "Class-B",
+        summary: "Add the MOTD banner: Unauthorized access to this device is prohibited!",
+        hint: "banner motd #Unauthorized access to this device is prohibited!#",
+        check: function (d) { return (d.bannerMotd || "").trim().toLowerCase() === "unauthorized access to this device is prohibited!"; }
+      },
+      {
+        id: "class-b_vlan1", device: "Class-B",
+        summary: "Configure and activate VLAN 1 (see addressing table)",
+        hint: "interface vlan 1, then ip address 128.107.20.15 255.255.255.0, then no shutdown",
+        check: function (d) { const i = d.interfaces["Vlan1"]; return !!i && i.ip === "128.107.20.15" && i.mask === "255.255.255.0" && !i.shutdown; }
+      },
+      {
+        id: "class-b_save", device: "Class-B",
+        summary: "Save the running configuration to NVRAM",
+        hint: "copy running-config startup-config, then press Enter to accept the default filename.",
+        check: function (d) { return d.startupConfig !== null; }
+      },
+      {
+        id: "student-1_ip", device: "Student-1",
+        summary: "Configure Student-1's IP address and subnet mask",
+        hint: "IP Configuration tab: 128.107.20.25 / 255.255.255.0 (or Command Prompt: ipconfig 128.107.20.25 255.255.255.0)",
+        check: function (pc) { return pc.ip === "128.107.20.25" && pc.mask === "255.255.255.0"; }
+      },
+      {
+        id: "student-2_ip", device: "Student-2",
+        summary: "Configure Student-2's IP address and subnet mask",
+        hint: "IP Configuration tab: 128.107.20.30 / 255.255.255.0 (or Command Prompt: ipconfig 128.107.20.30 255.255.255.0)",
+        check: function (pc) { return pc.ip === "128.107.20.30" && pc.mask === "255.255.255.0"; }
+      },
+      {
+        id: "verify_ping", device: "Student-1",
+        summary: "Verify: ping Student-2 (128.107.20.30) from Student-1",
+        hint: "Student-1's Command Prompt tab: ping 128.107.20.30 — it should get 4 replies once both PCs are addressed.",
+        check: function (pc) { return !!pc.pingOk["128.107.20.30"]; }
+      }
+    ]
+  },
+  {
     // v1.37.0. Source: verified against the real ITExamAnswers.net
     // instructor-copy page for 10.1.4 (https://itexamanswers.net/
     // 10-1-4-packet-tracer-configure-initial-router-settings-answers.html).
@@ -9696,7 +9963,10 @@ function startPtExercise(id) {
         gateway: d.initialGateway !== undefined ? d.initialGateway : null,
         // v1.42.0: set true the first time an SSH login from this PC
         // succeeds (lab 16.4.6's "test SSH from PCA" task).
-        sshSucceeded: false
+        sshSucceeded: false,
+        // v1.43.0: address -> true once a ping from this PC's Command
+        // Prompt got replies (lab 2.9.1's "verify connectivity" task).
+        pingOk: {}
       };
     } else {
       // v1.42.0: d.model picks a non-default device model (e.g. the
@@ -10212,6 +10482,7 @@ function pcPingText(pcId, target) {
   const net = buildLabNet();
   const src = net.hosts.find(function (h) { return h.node === pcId; });
   const r = src ? labPing(net, src, target) : { ok: false };
+  if (r.ok) { ptDevices[pcId].pingOk[target] = true; renderPtTasks(); }
   const lines = ["", "Pinging " + target + " with 32 bytes of data:", ""];
   for (let i = 0; i < 4; i++) {
     lines.push(r.ok ? "Reply from " + target + ": bytes=32 time<1ms TTL=" + r.ttl : "Request timed out.");
@@ -10304,7 +10575,8 @@ function pcSshCommand(con, raw) {
     // enable): that prompt is already on screen and the answer isn't
     // echoed, so nothing is printed here.
     if (dev.pendingPrompt) return handlePendingPrompt(dev, raw);
-    pcPrint(con, getPrompt(dev) + raw.replace(/\s+$/, ""));
+    const echoPrompt = getPrompt(dev);
+    pcPrint(con, echoPrompt + raw.replace(/\s+$/, ""));
     const t = raw.trim();
     const atExec = dev.mode === "user_exec" || dev.mode === "priv_exec";
     if (atExec && /^(exi|exit|lo|log|logo|logou|logout|q|qu|qui|quit)$/i.test(t)) return { close: true };
@@ -10313,10 +10585,12 @@ function pcSshCommand(con, raw) {
     if (dev.mode === "user_exec" && /^en(a(b(l(e)?)?)?)?$/i.test(t) && !dev.enableSecret && !dev.enablePassword) {
       return { text: null, error: "% No password set" };
     }
-    return t ? executeLine(dev, raw) : { text: null, error: null };
+    const r = t ? executeLine(dev, raw) : { text: null, error: null };
+    r.echoColumn = echoPrompt.length; // the PC prompt echoes "RTA>cmd" with no space
+    return r;
   });
   if (result.close) { pcPrint(con, ""); pcCloseSsh(con); return; }
-  if (result.error) pcPrint(con, result.error);
+  if (result.error) errorLines(result, result.echoColumn || 0).forEach(function (l) { pcPrint(con, l); });
   if (result.text) {
     // Config changes made over SSH are logged against the VTY session,
     // not the console. UNVERIFIED wording, modeled on real IOS.
@@ -10467,11 +10741,11 @@ function handlePtSubmit() {
       // new enable-password challenge returns "% Bad secrets" as an error
       // on a wrong attempt, which would otherwise be silently swallowed
       // here in Home Labs mode specifically.
-      if (result.error) ptAppendLine(result.error, "line-error");
+      if (result.error) errorLines(result, promptBefore.length + 1).forEach(function (l) { ptAppendLine(l, "line-error"); });
       if (result.text) ptAppendLine(result.text, "line-output");
     } else {
       const result = executeLine(device, raw);
-      if (result.error) ptAppendLine(result.error, "line-error");
+      if (result.error) errorLines(result, promptBefore.length + 1).forEach(function (l) { ptAppendLine(l, "line-error"); });
       if (result.text) ptAppendLine(result.text, "line-output");
     }
   } catch (e) {

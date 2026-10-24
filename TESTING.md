@@ -15,6 +15,36 @@ shouldn't need to ask for this again.
 
 ---
 
+## v1.43.0 — New Home Lab 2.9.1; "^" error marker; real running-config details
+
+Open `Syn-Checker v1.43.0/terminal-v1.43.0.html` from Finder (or the main link once pushed).
+
+1. Free Practice: `enable`, `configure terminal`, `show ip interface
+   brief` — a "^" under the "s" of show, then "% Invalid input detected
+   at '^' marker." (compare with your RTA screenshot from v1.42.0).
+2. Type a misspelled word, e.g. `show ip interfase brief` — "^" under
+   "interfase".
+3. Home Labs → "2.9.1 — Basic Switch and End Device Configuration":
+   device buttons Class-A, Class-B, Student-1, Student-2; no task
+   checked. Configure Class-A and Class-B with the task hints (or the
+   lab's own script), set both PCs' IPs.
+4. On Class-A, `show running-config`: `enable secret 5 $1$...`
+   (scrambled), and `interface Vlan1` shows its IP with no `no
+   shutdown` line under it.
+5. Student-1's Command Prompt: `ping 128.107.20.10`, `ping
+   128.107.20.15`, `ping 128.107.20.30` — all reply (switches TTL=255,
+   Student-2 TTL=128); every task checked.
+6. On Class-A: `configure terminal`, `interface fa0/1`, `shutdown` —
+   Student-1 can no longer reach Student-2. `no shutdown` restores it.
+7. Guided Practice, any exercise starting at `configure terminal`: at
+   `Router>` type `conf t` — you get "Type enable to reach privileged
+   EXEC mode…" instead of "Not quite".
+8. Regression: one Guided Practice exercise end to end; Home Lab
+   16.4.6 still works (SSH in, then type a bad command — the "^" lines
+   up under it in the PC prompt).
+
+---
+
 ## v1.42.2 — Guided Practice accepts abbreviations and interface shorthand
 
 Open the main link (https://danielchernandez.github.io/ccna-syntax-checker/) or, before it's pushed, `Syn-Checker v1.42.2/terminal-v1.42.2.html` from Finder.
