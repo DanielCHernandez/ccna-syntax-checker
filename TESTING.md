@@ -15,6 +15,33 @@ shouldn't need to ask for this again.
 
 ---
 
+## v1.43.1 — Access lists now appear after the interfaces in show running-config
+
+Open the main link (https://danielchernandez.github.io/ccna-syntax-checker/) once pushed, or `Syn-Checker v1.43.1/terminal-v1.43.1.html`.
+
+1. Free Practice: `enable`, `configure terminal`, then
+   `access-list 1 permit host 192.168.10.10`,
+   `access-list 1 permit 192.168.20.0 0.0.0.255`,
+   `ip access-list extended SURFING`,
+   `permit tcp 192.168.10.0 0.0.0.255 any eq 80`,
+   `permit tcp 192.168.10.0 0.0.0.255 any eq 443`, `exit`,
+   `interface g0/0/0`, `ip access-group 1 in`, `no shutdown`, `end`.
+2. `show running-config` — the `interface ...` blocks come FIRST; the
+   two `access-list 1 ...` lines come after the last interface (`Vlan1`),
+   then `ip access-list extended SURFING` right below them with its two
+   entries indented — the first one ending `eq www`, not `eq 80`. Compare
+   with the capture in `captures-v1.43.1.md`.
+3. `ip access-group 1 in` appears under `interface GigabitEthernet0/0/0`.
+4. `copy running-config startup-config`, then `show startup-config` —
+   same order there.
+5. Regression: Home Lab 16.4.6 — after the RTA steps, `show
+   running-config` shows `ip access-list extended sl_def_acl` AFTER the
+   interfaces (it used to be above them), and the lab still completes.
+6. Regression: Course 3 · 5.2 Standard ACLs and 5.4 Extended ACLs both
+   complete end to end; `show access-lists` looks the same as before.
+
+---
+
 ## v1.43.0 — New Home Lab 2.9.1; "^" error marker; real running-config details
 
 Open `Syn-Checker v1.43.0/terminal-v1.43.0.html` from Finder (or the main link once pushed).

@@ -1,5 +1,5 @@
 import { spawn } from 'node:child_process';
-const chrome=spawn('/Applications/Google Chrome.app/Contents/MacOS/Google Chrome',['--headless=new','--remote-debugging-port=9341',`--user-data-dir=${process.argv[2]}`,'about:blank'],{stdio:'ignore'});
+const chrome=spawn(process.env.CHROME || (process.platform === 'win32' ? 'C:/Program Files/Google/Chrome/Application/chrome.exe' : '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'),['--headless=new','--remote-debugging-port=9341',`--user-data-dir=${process.argv[2]}`,'about:blank'],{stdio:'ignore'});
 const sleep=ms=>new Promise(r=>setTimeout(r,ms)); let t;
 for(let i=0;i<50;i++){try{t=await(await fetch('http://127.0.0.1:9341/json')).json();break}catch{await sleep(200)}}
 const ws=new WebSocket(t.find(x=>x.type==='page').webSocketDebuggerUrl); await new Promise(r=>ws.onopen=r);

@@ -23,3 +23,15 @@ app; nothing here is loaded by any page.
   accepted, and "one number changed" wrong answers rejected.
 - `lab291.mjs <chrome-profile-dir> <url>` — (v1.43.0) Home Lab 2.9.1 end
   to end, plus the "^" error marker in all three terminals.
+- `acl-order.js <ios-engine-vX.js>` — (v1.43.1) replays the real ISR4321
+  ACL capture (`Syn-Checker v1.43.1/captures-v1.43.1.md`): access lists
+  after the interfaces, numbered before named, `eq www`. 9 checks.
+
+On Windows: install Node.js LTS (`winget install OpenJS.NodeJS.LTS`), pass
+ABSOLUTE paths to the `.js` engine files (a relative path is resolved
+from `dev-tools/`), and compare baselines with `diff --strip-trailing-cr`
+(a Windows checkout gives the baseline CRLF line endings). The browser
+tests look for Chrome in its Windows location; set `CHROME` to another
+Chromium browser's path to use that instead — e.g. on a PC where policy
+blocks Chrome's remote debugging ("Not allowed"):
+`CHROME="C:/Program Files (x86)/Microsoft/Edge/Application/msedge.exe"`.

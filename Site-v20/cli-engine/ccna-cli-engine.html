@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>CCNA CLI Engine — v1.43.0</title>
+<title>CCNA CLI Engine — v1.43.1</title>
 <style>
   :root {
     --bg: #0c0f0a;
@@ -569,7 +569,7 @@
 <body>
 <div class="wrap">
   <header>
-    <h1>CCNA CLI Engine — v1.43.0</h1>
+    <h1>CCNA CLI Engine — v1.43.1</h1>
     <p>Type commands as you would on a real device — Tab completes partial words. Type <span class="hint">?commands</span> to see exact syntax for this version.</p>
   </header>
 
@@ -1005,7 +1005,7 @@ copy running-config startup-config</pre>
        cannot be selected.
    ============================================================ */
 
-const IOS_ENGINE_VERSION = "1.43.0";
+const IOS_ENGINE_VERSION = "1.43.1";
 
 /* ---------------------------------------------------------
    1. DEVICE STATE
@@ -3226,43 +3226,8 @@ function renderConfigText(source) {
     bodyLines.push("ip default-gateway " + source.ipDefaultGateway);
     bodyLines.push("!");
   }
-  // Access lists — defined before interfaces (which reference them),
-  // matching the natural "define then use" order real IOS configs
-  // follow. Standard (numbered) ACLs render as flat "access-list <n>
-  // ..." lines; extended (named) ACLs render as "ip access-list
-  // extended <name>" followed by INDENTED entries — matching each
-  // type's own real config-mode syntax, not a single shared format.
-  if (source.accessLists) {
-    const aclNames = Object.keys(source.accessLists);
-    for (let i = 0; i < aclNames.length; i++) {
-      const name = aclNames[i];
-      const acl = source.accessLists[name];
-      if (acl.type === "extended") {
-        bodyLines.push("ip access-list extended " + name);
-        for (let e = 0; e < acl.entries.length; e++) {
-          bodyLines.push(" " + renderAclEntry(acl.entries[e]));
-        }
-      } else {
-        for (let e = 0; e < acl.entries.length; e++) {
-          bodyLines.push("access-list " + name + " " + renderAclEntry(acl.entries[e]));
-        }
-      }
-    }
-    if (aclNames.length > 0 && !source.loginBlockFor) bodyLines.push("!");
-  }
-  // v1.42.0: "login block-for" makes IOS create its own quiet-mode ACL,
-  // which then shows up in running-config — verified against a real
-  // capture (RTA, lab 16.4.6). Shown with the other access lists here;
-  // in that capture real IOS lists access lists AFTER the interfaces,
-  // a placement difference this engine has for every ACL (backlog).
-  if (source.loginBlockFor) {
-    bodyLines.push("ip access-list extended sl_def_acl");
-    bodyLines.push(" deny tcp any any eq telnet");
-    bodyLines.push(" deny tcp any any eq www");
-    bodyLines.push(" deny tcp any any eq 22");
-    bodyLines.push(" permit tcp any any eq 22");
-    bodyLines.push("!");
-  }
+  // (Access lists used to be rendered here, before the interfaces —
+  // v1.43.1 moved them after the interfaces/static routes; see below.)
   // DHCP config — verified against a real capture: excluded-address
   // lines come first, each pool follows with network/default-router/
   // dns-server/domain-name in that exact order, positioned right
@@ -3478,6 +3443,51 @@ function renderConfigText(source) {
       const adPart = r.adminDistance !== 1 ? " " + r.adminDistance : "";
       bodyLines.push("ip route " + r.network + " " + r.mask + " " + r.nextHop + adPart);
     }
+    bodyLines.push("!");
+  }
+  // Access lists — v1.43.1: real IOS lists them AFTER the interfaces,
+  // below "ip classless"/"ip flow-export version 9" (boilerplate this
+  // engine doesn't render) — verified against a real ISR4321 capture
+  // (numbered ACL 1 + named extended SURFING) and the v1.42.0 1941
+  // capture (sl_def_acl). They used to be printed before the
+  // interfaces. In the 4321 capture the numbered ACL's lines came
+  // first, directly followed (no "!") by the named ACL; JS object key
+  // order already puts numeric keys ("1", "10") before names. That
+  // capture created the numbered ACL first, so whether IOS also puts
+  // numbered first when a named ACL was created earlier is not
+  // independently confirmed. Placement relative to "ip route" lines
+  // comes from the real order "ip classless / ip route / ip
+  // flow-export / access lists" (no single capture had both).
+  // Standard (numbered) ACLs render as flat "access-list <n> ..."
+  // lines; extended (named) ACLs as "ip access-list extended <name>"
+  // followed by INDENTED entries — each type's own config-mode syntax.
+  if (source.accessLists) {
+    const aclNames = Object.keys(source.accessLists);
+    for (let i = 0; i < aclNames.length; i++) {
+      const name = aclNames[i];
+      const acl = source.accessLists[name];
+      if (acl.type === "extended") {
+        bodyLines.push("ip access-list extended " + name);
+        for (let e = 0; e < acl.entries.length; e++) {
+          bodyLines.push(" " + renderAclEntry(acl.entries[e]));
+        }
+      } else {
+        for (let e = 0; e < acl.entries.length; e++) {
+          bodyLines.push("access-list " + name + " " + renderAclEntry(acl.entries[e]));
+        }
+      }
+    }
+    if (aclNames.length > 0 && !source.loginBlockFor) bodyLines.push("!");
+  }
+  // v1.42.0: "login block-for" makes IOS create its own quiet-mode ACL,
+  // which then shows up in running-config — verified against a real
+  // capture (RTA, lab 16.4.6), in this same after-the-interfaces spot.
+  if (source.loginBlockFor) {
+    bodyLines.push("ip access-list extended sl_def_acl");
+    bodyLines.push(" deny tcp any any eq telnet");
+    bodyLines.push(" deny tcp any any eq www");
+    bodyLines.push(" deny tcp any any eq 22");
+    bodyLines.push(" permit tcp any any eq 22");
     bodyLines.push("!");
   }
   // NTP config — real IOS convention places "ntp master"/"ntp
