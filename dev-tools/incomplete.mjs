@@ -63,6 +63,11 @@ L = await lines('ptTerminalEl');
 got = tail(L, expected.length + 1);
 ok(JSON.stringify(got) === JSON.stringify(expected), 'Home Labs RTA: capture replayed line for line' + (JSON.stringify(got) === JSON.stringify(expected) ? '' : '\n   got: ' + JSON.stringify(got)));
 
+// ---- v1.43.2 (per direction): "Exercise reset" names the exercise
+await ev(`document.getElementById('btnGuided').click();moduleSelectEl.value='c3_syn_5.2_standard_acls';moduleSelectEl.dispatchEvent(new Event('change'));resetExerciseBtn.click()`);
+L = await lines('terminalEl');
+ok(L[L.length - 1] === 'Exercise reset: Course 3 · SyntxChk · 5.2 — Configure Numbered Standard ACLs', 'Reset exercise names it: ' + L[L.length - 1]);
+
 ok(errs.length === 0, 'no page errors: ' + JSON.stringify(errs));
 console.log(results.join('\n'));
 console.log(results.length + ' checks, ' + results.filter(r => r.startsWith('FAIL')).length + ' failed');

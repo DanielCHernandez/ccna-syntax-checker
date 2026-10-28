@@ -53,6 +53,10 @@ Open the main link (https://danielchernandez.github.io/ccna-syntax-checker/) onc
 10. Still "Invalid input": at `Router(config-if)#`, `ip address
     999.1.1.1` — "^" under `999.1.1.1`; and in a fresh Free Practice
     (`Router>`), `configure terminal` — "^" under it, message, blank line.
+11. Guided Practice: pick any exercise (e.g. Course 3 · 5.2), click
+    **Reset exercise** — the terminal says `Exercise reset: Course 3 ·
+    SyntxChk · 5.2 — Configure Numbered Standard ACLs` (the same name as
+    in the dropdown), not just "Exercise reset."
 
 ---
 

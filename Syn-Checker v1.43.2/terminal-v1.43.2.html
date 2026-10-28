@@ -8306,7 +8306,8 @@ moduleSelectEl.addEventListener("change", function () {
 resetExerciseBtn.addEventListener("click", function () {
   exerciseRun = createExerciseRun(currentExerciseId);
   refreshInstructionBar();
-  appendLine("Exercise reset.", "line-output");
+  // v1.43.2: name the exercise, same wording as the dropdown (per direction)
+  appendLine("Exercise reset: " + getExercise(currentExerciseId).moduleLabel, "line-output");
   inputEl.focus();
 });
 

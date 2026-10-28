@@ -33,7 +33,7 @@ app; nothing here is loaded by any page.
 - `incomplete.mjs <chrome-profile-dir> <url>` — (v1.43.2) replays the real
   ISR4331 capture (`captures-v1.43.2.md`) through the real UI, Free
   Practice and a Home Labs device: "% Incomplete command." with no "^"
-  and no blank line. 6 checks.
+  and no blank line; also the "Exercise reset: <name>" message. 7 checks.
 
 On Windows: install Node.js LTS (`winget install OpenJS.NodeJS.LTS`), pass
 ABSOLUTE paths to the `.js` engine files (a relative path is resolved

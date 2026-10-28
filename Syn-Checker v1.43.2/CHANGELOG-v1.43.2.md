@@ -7231,6 +7231,12 @@ with the "^" under `999.1.1.1`. A command valid only in another mode
 (`configure terminal` at `Router>`) is still invalid input, so Guided
 Practice's "type enable first" hint still works.
 
+**Changed — "Exercise reset" names the exercise** (per direction).
+Clicking Reset exercise in Guided Practice used to print just "Exercise
+reset."; it now prints the exercise's full name, the same wording as the
+exercise dropdown — e.g. `Exercise reset: Course 3 · SyntxChk · 5.2 —
+Configure Numbered Standard ACLs`.
+
 **Not fixed — needs a capture first (from v1.43.1's testing, all older
 than v1.43.1):**
 - Answering the save question ("Destination filename
@@ -7280,9 +7286,10 @@ new baseline `dev-tools/regress-baseline-v1.43.2.txt`. New
 ` no ip address` now sits between `interface GigabitEthernet0/0/0` and
 ` ip access-group 1 in`, exactly as in the capture). `abbrev-test.js`:
 all exact commands, 177 shorthand forms accepted, 0 wrong answers
-accepted. Browser (Edge, headless): new `incomplete.mjs` 6/6 (the
+accepted. Browser (Edge, headless): new `incomplete.mjs` 7/7 (the
 capture replayed line for line in Free Practice and a Home Labs
-device, plus the wildcard "^" and Tab in the page); `labsmoke.mjs` all
+device, plus the wildcard "^", Tab, and the Reset exercise message in
+the page); `labsmoke.mjs` all
 Home Labs load, no page errors; `lab1646.mjs` 37/37; `lab291.mjs` 16/16.
 
 **Test commands for this version:**
@@ -7320,6 +7327,10 @@ Home Labs load, no page errors; `lab1646.mjs` 37/37; `lab291.mjs` 16/16.
 10. Still "Invalid input": at `Router(config-if)#`, `ip address
     999.1.1.1` — "^" under `999.1.1.1`; and in a fresh Free Practice
     (`Router>`), `configure terminal` — "^" under it, message, blank line.
+11. Guided Practice: pick any exercise (e.g. Course 3 · 5.2), click
+    **Reset exercise** — the terminal says `Exercise reset: Course 3 ·
+    SyntxChk · 5.2 — Configure Numbered Standard ACLs` (the same name as
+    in the dropdown), not just "Exercise reset."
 
 **Explicitly deferred:** the "Not fixed — needs a capture first" list
 above; v1.42.0's "Unverified" list; v1.43.1's remaining backlog (the
