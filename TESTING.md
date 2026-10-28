@@ -15,6 +15,37 @@ shouldn't need to ask for this again.
 
 ---
 
+## v1.44.0 — New Home Lab 16.5.1 (Secure Network Devices); ISR4321 router model
+
+Open the main link (https://danielchernandez.github.io/ccna-syntax-checker/) once pushed, or `Syn-Checker v1.44.0/terminal-v1.44.0.html`.
+
+1. Home Labs → "16.5.1 — Secure Network Devices". Device buttons: RTR-A,
+   SW-1, PC, Laptop, Remote PC. No task is ticked.
+2. RTR-A: `enable`, `show ip interface brief` — G0/0/0 192.168.1.1 and
+   G0/0/1 192.168.2.1 already up/up; no Serial ports, just those two
+   and Vlan1.
+3. PC → Command Prompt: `ping 192.168.1.254` — times out (SW-1 has no
+   address yet).
+4. Do RTR-A's tasks using the hints (click a task to see its hint).
+   Along the way, after `security passwords min-length 10`, try
+   `enable secret short` — it's refused as too short. Every RTR-A task
+   should tick, including the 7-minute timeout one (it needs
+   `exec-timeout 7 0` under BOTH `line console 0` and `line vty 0 4`).
+5. Do SW-1's tasks. The unused-ports hint is one long `interface range`
+   line — after `shutdown`, only F0/2, F0/10 and G0/1 stay up.
+6. Ping `192.168.1.254` from PC, Laptop and Remote PC — all three reply;
+   Remote PC's replies show TTL=254. All 25 tasks ticked.
+7. On SW-1, shut `interface fastethernet 0/2` — PC's ping fails and the
+   unused-ports task un-ticks. `no shutdown` brings both back.
+8. Optional: PC → Command Prompt: `ssh -l NETadmin 192.168.1.1`,
+   password `LogAdmin!9` — you get the `RTR-A>` prompt. `exit` to leave.
+9. Click Reset — every task un-ticks, and RTR-A's two ports are still
+   pre-addressed.
+10. Regression: Home Lab 16.4.6 and 2.9.1 still load and work; one
+    Guided Practice exercise end to end.
+
+---
+
 ## v1.43.2 — "% Incomplete command."; " no ip address" in running-config; "^" under a bad wildcard; Tab after permit/deny
 
 Open the main link (https://danielchernandez.github.io/ccna-syntax-checker/) once pushed, or `Syn-Checker v1.43.2/terminal-v1.43.2.html`.

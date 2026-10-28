@@ -34,6 +34,9 @@ app; nothing here is loaded by any page.
   ISR4331 capture (`captures-v1.43.2.md`) through the real UI, Free
   Practice and a Home Labs device: "% Incomplete command." with no "^"
   and no blank line; also the "Exercise reset: <name>" message. 7 checks.
+- `lab1651.mjs <chrome-profile-dir> <url>` — (v1.44.0) Home Lab 16.5.1 end to
+  end through the real UI with every task's hint, plus port-shutdown,
+  SSH and reset checks. 22 checks.
 
 On Windows: install Node.js LTS (`winget install OpenJS.NodeJS.LTS`), pass
 ABSOLUTE paths to the `.js` engine files (a relative path is resolved
