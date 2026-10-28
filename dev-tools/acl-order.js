@@ -19,7 +19,9 @@ check(at('ip access-list extended SURFING') === at('access-list 1 permit 192.168
 check(at(' permit tcp 192.168.10.0 0.0.0.255 any eq www') === at('ip access-list extended SURFING') + 1, 'port 80 shown as "eq www"');
 check(at(' permit tcp 192.168.10.0 0.0.0.255 any eq 443') === at('ip access-list extended SURFING') + 2, 'port 443 stays "eq 443"');
 check(lines[at(' permit tcp 192.168.10.0 0.0.0.255 any eq 443') + 1] === '!', '"!" after the last ACL');
-check(at(' ip access-group 1 in') === at('interface GigabitEthernet0/0/0') + 1, 'ip access-group under GigabitEthernet0/0/0');
+// v1.43.2: " no ip address" first, then the access-group — as in the capture
+check(at(' ip access-group 1 in') === at('interface GigabitEthernet0/0/0') + 2 &&
+  lines[at('interface GigabitEthernet0/0/0') + 1] === ' no ip address', 'ip access-group under GigabitEthernet0/0/0, after " no ip address"');
 // login block-for's own ACL and a static route: ACLs after the ip route lines
 for (const c of ['configure terminal', 'login block-for 180 attempts 4 within 120', 'ip route 0.0.0.0 0.0.0.0 10.0.0.2', 'end']) E.executeLine(d, c);
 const l2 = E.executeLine(d, 'show running-config').text.split('\n');

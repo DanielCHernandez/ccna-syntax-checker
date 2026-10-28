@@ -15,6 +15,37 @@ shouldn't need to ask for this again.
 
 ---
 
+## v1.43.2 — " no ip address" in running-config; "^" under a bad wildcard; Tab after permit/deny
+
+Open the main link (https://danielchernandez.github.io/ccna-syntax-checker/) once pushed, or `Syn-Checker v1.43.2/terminal-v1.43.2.html`.
+
+1. Free Practice: `enable`, `show running-config` — every interface
+   (G0/0/0, G0/0/1, Serial0/0/0, Serial0/0/1, Vlan1) shows ` no ip
+   address` then ` shutdown`. Compare with the 4321 capture in
+   `Syn-Checker v1.43.1/captures-v1.43.1.md`.
+2. `configure terminal`, `interface g0/0/0`, `ip address 192.168.1.1
+   255.255.255.0`, `end`, `show running-config` — G0/0/0 now shows the
+   `ip address` line and NO ` no ip address` line; the others still do.
+3. `configure terminal`, `access-list 1 permit 192.168.20.0 0.0.0255`
+   (note the missing dot) — the "^" sits under `0.0.0255`, not under
+   `192.168.20.0`. Then the correct `access-list 1 permit 192.168.20.0
+   0.0.0.255` is accepted.
+4. Tab: type `access-list 1 permit ho` and press Tab — it completes to
+   `access-list 1 permit host`. Finish it with `192.168.10.10`.
+5. Tab: `ip access-list extended TEST`, then type `permit t` and press
+   Tab — it completes to `permit tcp`. Clear the line, type `deny u` +
+   Tab — `deny udp`.
+6. Home Labs → 16.4.6 → SW1: `enable`, `show running-config` — the
+   FastEthernet/GigabitEthernet ports have NO ` no ip address` line;
+   `interface Vlan1` does. After giving Vlan1 its address (the task
+   hint), Vlan1 shows ` ip address 172.16.1.2 255.255.255.0` instead.
+7. Same lab, RTA: `show running-config` — G0/1 and the Serial ports
+   show ` no ip address`; G0/0 shows its address.
+8. Regression: Course 1 · 2.5 Save Configurations, and Course 3 · 5.2
+   Standard ACLs and 5.4 Extended ACLs — each completes end to end.
+
+---
+
 ## v1.43.1 — Access lists now appear after the interfaces in show running-config
 
 Open the main link (https://danielchernandez.github.io/ccna-syntax-checker/) once pushed, or `Syn-Checker v1.43.1/terminal-v1.43.1.html`.

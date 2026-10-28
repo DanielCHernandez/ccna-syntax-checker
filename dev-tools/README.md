@@ -26,6 +26,9 @@ app; nothing here is loaded by any page.
 - `acl-order.js <ios-engine-vX.js>` — (v1.43.1) replays the real ISR4321
   ACL capture (`Syn-Checker v1.43.1/captures-v1.43.1.md`): access lists
   after the interfaces, numbered before named, `eq www`. 9 checks.
+- `fixes-v1432.js <ios-engine-vX.js>` — (v1.43.2) " no ip address" lines
+  (router interfaces and switch Vlan1, never switch ports), "^" under a
+  bad wildcard, Tab after permit/deny and tcp/udp. 19 checks.
 
 On Windows: install Node.js LTS (`winget install OpenJS.NodeJS.LTS`), pass
 ABSOLUTE paths to the `.js` engine files (a relative path is resolved

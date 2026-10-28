@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>CCNA CLI Engine — v1.43.1</title>
+<title>CCNA CLI Engine — v1.43.2</title>
 <style>
   :root {
     --bg: #0c0f0a;
@@ -569,7 +569,7 @@
 <body>
 <div class="wrap">
   <header>
-    <h1>CCNA CLI Engine — v1.43.1</h1>
+    <h1>CCNA CLI Engine — v1.43.2</h1>
     <p>Type commands as you would on a real device — Tab completes partial words. Type <span class="hint">?commands</span> to see exact syntax for this version.</p>
   </header>
 
@@ -1005,7 +1005,7 @@ copy running-config startup-config</pre>
        cannot be selected.
    ============================================================ */
 
-const IOS_ENGINE_VERSION = "1.43.1";
+const IOS_ENGINE_VERSION = "1.43.2";
 
 /* ---------------------------------------------------------
    1. DEVICE STATE
@@ -2108,7 +2108,11 @@ const COMMANDS = [
     // Actual execution handled by the special case in executeLine()
     // (see "Special case: access-list ... permit|deny").
     id: "access_list_standard", modes: ["global_config"],
-    tokens: ["access-list", "<n>", "permit|deny", "host|network", "<wildcard>"],
+    // v1.43.2: "<network>" (an address), not the literal word "network" —
+    // real IOS has no such keyword, and the literal made the "^" for a
+    // bad wildcard land under the address instead (real capture,
+    // captures-v1.43.1.md).
+    tokens: ["access-list", "<n>", "permit|deny", "host|<network>", "<wildcard>"],
     help: "access-list <1-99> permit|deny host <ip>  OR  access-list <1-99> permit|deny <network> <wildcard>",
     description: "Add an entry to a numbered standard ACL, matching on source address only. Entries are numbered automatically (10, 20, 30...) in the order they're added.",
     handler: function () { return { text: null, error: null }; }
@@ -2846,7 +2850,7 @@ const COMMANDS = [
   {
     id: "show_startup_config", modes: ["priv_exec"], tokens: ["show", "startup-config"],
     help: "show startup-config", description: "Display the configuration saved in NVRAM.",
-    handler: function (device) { return { text: renderConfigText(device.startupConfig), error: null }; }
+    handler: function (device) { return { text: renderConfigText(device.startupConfig, device.deviceType), error: null }; }
   },
   {
     id: "copy_running_startup", modes: ["priv_exec"],
@@ -3160,7 +3164,7 @@ function applyConfigSnapshot(device, snapshot) {
 // Renders a config snapshot (or the live device, since it has the same
 // shape) as IOS-style config text. Used for both "show running-config"
 // (pass the device) and "show startup-config" (pass device.startupConfig).
-function renderConfigText(source) {
+function renderConfigText(source, deviceType) {
   if (source === null) {
     return "startup-config is not present";
   }
@@ -3303,7 +3307,15 @@ function renderConfigText(source) {
     if (iface.dot1qVlan !== null) {
       bodyLines.push(" encapsulation dot1Q " + iface.dot1qVlan + (iface.dot1qNative ? " native" : ""));
     }
-    if (iface.ip && iface.mask) bodyLines.push(" ip address " + iface.ip + " " + iface.mask);
+    if (iface.ip && iface.mask) {
+      bodyLines.push(" ip address " + iface.ip + " " + iface.mask);
+    } else if (deviceType !== "switch" || /^Vlan/i.test(name)) {
+      // v1.43.2: real IOS prints " no ip address" in the address line's
+      // place — verified in both the 1941 (v1.42.0) and ISR4321
+      // (v1.43.1) captures, on Gig/Serial/Vlan1 alike. Not on a switch's
+      // physical (layer 2) ports, which never carry an IP line.
+      bodyLines.push(" no ip address");
+    }
     // Real IOS order, verified against a real capture: "ip nat
     // inside"/"ip nat outside" appears immediately after "ip
     // address", before anything else on the interface.
@@ -3608,7 +3620,7 @@ function hasUnsavedChanges(device) {
 }
 
 function renderRunningConfig(device) {
-  return renderConfigText(device);
+  return renderConfigText(device, device.deviceType);
 }
 
 function padRow(cells, widths) {
@@ -5354,7 +5366,14 @@ function findCandidatesAt(device, priorTokens, completedTokenIndex, partial, inc
       const expected = cmd.tokens[j];
       if (expected === undefined) { priorMatches = false; break; }
       if (expected.startsWith("<") && expected.endsWith(">")) continue; // free arg, anything goes
-      if (expected.toLowerCase() !== priorTokens[j].toLowerCase()) { priorMatches = false; break; }
+      // v1.43.2: a pipe token ("permit|deny") matches any one of its
+      // words — before, the whole string was compared, so nothing after
+      // such a word ever completed ("access-list 1 permit ho" + Tab).
+      // An "<arg>" alternative ("host|<network>") accepts any value.
+      const expectedAlts = expected.toLowerCase().split("|");
+      const priorWord = priorTokens[j].toLowerCase();
+      if (expectedAlts.indexOf(priorWord) === -1 &&
+          !expectedAlts.some(function (a) { return a.charAt(0) === "<"; })) { priorMatches = false; break; }
     }
     if (!priorMatches) continue;
 
@@ -5373,6 +5392,7 @@ function findCandidatesAt(device, priorTokens, completedTokenIndex, partial, inc
     // and checking each alternative individually.
     const alternatives = tokenHere.indexOf("|") !== -1 ? tokenHere.split("|") : [tokenHere];
     for (let a = 0; a < alternatives.length; a++) {
+      if (alternatives[a].charAt(0) === "<") continue; // "<network>": a value, not a completable word
       if (alternatives[a].toLowerCase().startsWith(partial.toLowerCase())) {
         candidateSet.add(alternatives[a]);
       }
@@ -6355,12 +6375,16 @@ function invalidInputCaretIndex(device, rawLine) {
       if (cmd.modes.indexOf(device.mode) === -1 || cmd.tokens.length <= k) continue;
       let prior = true;
       for (let j = 0; j < k; j++) {
-        if (!isArg(cmd.tokens[j]) && alts(cmd.tokens[j]).indexOf(resolved[j]) === -1) { prior = false; break; }
+        if (!isArg(cmd.tokens[j]) && alts(cmd.tokens[j]).indexOf(resolved[j]) === -1 &&
+            !alts(cmd.tokens[j]).some(isArg)) { prior = false; break; }
       }
       if (!prior) continue;
       const here = cmd.tokens[k];
       if (isArg(here)) { fits = true; continue; }
-      alts(here).forEach(function (a) { if (a.indexOf(typed) === 0) { fits = true; literalHits.add(a); } });
+      alts(here).forEach(function (a) {
+        if (isArg(a)) fits = true; // "host|<network>": any value fits
+        else if (a.indexOf(typed) === 0) { fits = true; literalHits.add(a); }
+      });
     }
     if (!fits) return words[k].at;
     resolved.push(literalHits.size === 1 ? Array.from(literalHits)[0] : typed);
