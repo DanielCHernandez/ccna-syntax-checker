@@ -99,6 +99,15 @@ ok((await ev(`ptDevices['PC'].sshSucceeded === true && pcConsoleFor('PC').ssh !=
   'PC can SSH to RTR-A as NETadmin (password LogAdmin!9)');
 await pc('PC', ['exit']);
 
+// Topology: SW-2 (diagram-only, verified from the real activity) sits between RTR-A and Remote PC
+const topo = await ev(`(function(){ptTopologyBtn.click();return ptTopologySvgWrap.textContent})()`);
+ok(/SW-2/.test(topo) && /G0\/0\/1/.test(topo), 'topology diagram shows SW-2 and RTR-A G0/0/1');
+await send('Emulation.setDeviceMetricsOverride', { width: 1300, height: 1000, deviceScaleFactor: 1, mobile: false });
+await ev(`ptTopologyPanel.scrollIntoView()`); await sleep(300);
+{ const sh = await send('Page.captureScreenshot', { format: 'png' }); (await import('node:fs')).writeFileSync(PROFILE + '-topology.png', Buffer.from(sh.result.data, 'base64')); }
+await ev(`ptTopologyBtn.click()`);
+ok((await ev(`[...document.querySelectorAll('#ptDeviceButtons button')].some(b=>b.textContent==='SW-2')`)) === false, 'SW-2 has no device button (no tasks)');
+
 // Reset
 await ev(`ptResetBtn.click()`);
 ok((await done()).length === 0, 'reset: every task back to not done');

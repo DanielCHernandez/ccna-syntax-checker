@@ -9953,13 +9953,14 @@ const PT_EXERCISES = [
     // already addressed and up (as the answer page's notes say).
     // Skipped, per this project's rule: Step 1 ("document the
     // network" — filling in the table, which is given here).
-    // NOT verified against the real activity (no capture yet):
-    // - the router model: "G0/0/0" names suggest an ISR4321, so model
-    //   "router4321" (port list from the real blank-4321 capture);
-    // - the cabling: SW-1 Fa0/2 = PC, Fa0/10 = Laptop, Gi0/1 = RTR-A
-    //   come from the answer page's "ports in use" note; RTR-A G0/0/0
-    //   to SW-1 and Remote PC straight to G0/0/1 are inferred from the
-    //   addressing (the page's diagram isn't described in text).
+    // Cabling verified against the user's screenshot of the real
+    // activity: RTR-A Gig0/0/0 - SW-1 Gig0/1, SW-1 Fa0/2 - PC, SW-1
+    // Fa0/10 - Laptop, RTR-A Gig0/0/1 - SW-2 Gig0/1, SW-2 Fa0/1 -
+    // Remote PC. SW-2 isn't in the addressing table and has no tasks,
+    // so it's diagram-only (no device button), like 10.3.5's R1.
+    // NOT verified: the router model — "Gig0/0/0" names suggest an
+    // ISR4321, so model "router4321" (port list from the real
+    // blank-4321 capture).
     // Passwords: any value meeting the lab's rules is accepted (RTR-A
     // enforces its own min-length 10); hints show the answer key's.
     id: "c1_pt_16.5.1_secure_network_devices",
@@ -9986,16 +9987,19 @@ const PT_EXERCISES = [
       { device: "Remote PC", iface: "NIC", ip: "192.168.2.10", mask: "255.255.255.0", gateway: "192.168.2.1" }
     ],
     topology: {
+      colWidth: 150, // room for the port labels between RTR-A, SW-2 and Remote PC
       nodes: [
-        { id: "RTR-A", type: "router", row: 0, col: 1 },
+        { id: "RTR-A", type: "router", row: 0, col: 0 },
+        { id: "SW-2", type: "switch", row: 0, col: 1 },
+        { id: "RemotePC", label: "Remote PC", type: "pc", row: 0, col: 2 },
         { id: "SW-1", type: "switch", row: 1, col: 0 },
-        { id: "RemotePC", type: "pc", row: 1, col: 2 },
         { id: "PC", type: "pc", row: 2, col: 0 },
         { id: "Laptop", type: "pc", row: 2, col: 1 }
       ],
       connections: [
         { from: "RTR-A", fromIface: "G0/0/0", to: "SW-1", toIface: "G0/1", kind: "lan" },
-        { from: "RTR-A", fromIface: "G0/0/1", to: "RemotePC", kind: "lan" },
+        { from: "RTR-A", fromIface: "G0/0/1", to: "SW-2", toIface: "G0/1", kind: "lan" },
+        { from: "SW-2", fromIface: "F0/1", to: "RemotePC", kind: "lan" },
         { from: "SW-1", fromIface: "F0/2", to: "PC", kind: "lan" },
         { from: "SW-1", fromIface: "F0/10", to: "Laptop", kind: "lan" }
       ]
@@ -10357,15 +10361,46 @@ function ptTopoLinkStyle(kind) {
   return PT_TOPO_LINK_STYLES[kind] || { dash: "", color: "var(--border)", label: kind };
 }
 
-function ptTopoNodeCenter(node) {
+// v1.44.0: colW — a lab may widen its columns (topology.colWidth) so
+// port labels fit between side-by-side devices; default unchanged.
+function ptTopoNodeCenter(node, colW) {
+  const w = colW || PT_TOPO_COL_W;
   return {
-    x: node.col * PT_TOPO_COL_W + PT_TOPO_COL_W / 2,
+    x: node.col * w + w / 2,
     y: node.row * PT_TOPO_ROW_H + PT_TOPO_ROW_H / 2
   };
 }
 
-function ptTopoIfaceLabel(x, y, text) {
-  return '<text x="' + x + '" y="' + y + '" text-anchor="middle" ' +
+// v1.44.0: label for the port on box `p` of the line p-q, placed just
+// outside p's edge where the line leaves it. A side-by-side (horizontal)
+// line puts one end's label above the line and the other's below, so
+// the two can't collide in the gap; any other line puts the label to
+// the right of the line, below a box it leaves downward, above a box it
+// leaves upward. `placed` lists labels already drawn: one that would
+// land on another (e.g. 16.4.6's console cable runs along the same line
+// as RTA-SW1) moves one text line further from the box.
+function ptTopoEdgeLabel(p, q, text, isFrom, placed) {
+  const dx = q.x - p.x, dy = q.y - p.y;
+  let x, y, anchor, away;
+  if (dy === 0) {
+    const dir = dx > 0 ? 1 : -1;
+    x = p.x + dir * (PT_TOPO_NODE_W / 2 + 4); y = p.y + (isFrom ? -5 : 13);
+    anchor = dir > 0 ? "start" : "end"; away = isFrom ? -1 : 1;
+  } else {
+    const len = Math.sqrt(dx * dx + dy * dy), ux = dx / len, uy = dy / len;
+    const tx = ux === 0 ? Infinity : (PT_TOPO_NODE_W / 2 + 2) / Math.abs(ux);
+    const ty = (PT_TOPO_NODE_H / 2 + 2) / Math.abs(uy);
+    const t = Math.min(tx, ty);
+    x = p.x + ux * t + 4; y = p.y + uy * t + (uy > 0 ? 11 : -3);
+    anchor = "start"; away = uy > 0 ? 1 : -1;
+  }
+  while (placed.some(function (l) { return Math.abs(l.x - x) < 40 && Math.abs(l.y - y) < 10; })) y += away * 11;
+  placed.push({ x: x, y: y });
+  return ptTopoIfaceLabel(x, y, text, anchor);
+}
+
+function ptTopoIfaceLabel(x, y, text, anchor) {
+  return '<text x="' + x + '" y="' + y + '" text-anchor="' + (anchor || "middle") + '" ' +
     'style="fill:var(--dim);font-size:10px;font-family:inherit;">' + text + '</text>';
 }
 
@@ -10398,7 +10433,8 @@ function renderPtTopologyDiagram() {
     maxCol = Math.max(maxCol, topo.nodes[i].col);
     maxRow = Math.max(maxRow, topo.nodes[i].row);
   }
-  const width = (maxCol + 1) * PT_TOPO_COL_W;
+  const colW = topo.colWidth || PT_TOPO_COL_W;
+  const width = (maxCol + 1) * colW;
   const height = (maxRow + 1) * PT_TOPO_ROW_H;
 
   let svg = '<svg viewBox="0 0 ' + width + ' ' + height + '" width="100%" ' +
@@ -10406,35 +10442,36 @@ function renderPtTopologyDiagram() {
 
   // Connections drawn first so node boxes layer on top of the line ends.
   const kindsUsed = {};
+  const placedLabels = []; // v1.44.0: so two labels at one spot don't overprint
   for (let i = 0; i < topo.connections.length; i++) {
     const c = topo.connections[i];
     const a = nodeById[c.from], b = nodeById[c.to];
     // Defensive: a typo'd from/to in future lab data shouldn't blank out
     // the whole diagram, just skip that one connection.
     if (!a || !b) continue;
-    const pa = ptTopoNodeCenter(a), pb = ptTopoNodeCenter(b);
+    const pa = ptTopoNodeCenter(a, colW), pb = ptTopoNodeCenter(b, colW);
     const kind = c.kind || "lan";
     const style = ptTopoLinkStyle(kind);
     kindsUsed[kind] = true;
     svg += '<line x1="' + pa.x + '" y1="' + pa.y + '" x2="' + pb.x + '" y2="' + pb.y + '" ' +
       'style="stroke:' + style.color + ';stroke-width:2;' + (style.dash ? "stroke-dasharray:" + style.dash + ";" : "") + '" />';
-    if (c.fromIface) {
-      svg += ptTopoIfaceLabel(pa.x + (pb.x - pa.x) * 0.22, pa.y + (pb.y - pa.y) * 0.22, c.fromIface);
-    }
-    if (c.toIface) {
-      svg += ptTopoIfaceLabel(pa.x + (pb.x - pa.x) * 0.78, pa.y + (pb.y - pa.y) * 0.78, c.toIface);
-    }
+    // v1.44.0: each port label sits just outside its OWN box, where the
+    // line leaves it. Before, labels sat at fixed 22%/78% points along
+    // the line, which on short lines fell under the boxes and hid them
+    // (e.g. 2.9.1's F0/1-F0/2, 16.4.6's F0/1, 16.5.1's G0/0/0 and F0/2).
+    if (c.fromIface) svg += ptTopoEdgeLabel(pa, pb, c.fromIface, true, placedLabels);
+    if (c.toIface) svg += ptTopoEdgeLabel(pb, pa, c.toIface, false, placedLabels);
   }
 
   // Nodes on top of the lines.
   for (let i = 0; i < topo.nodes.length; i++) {
     const n = topo.nodes[i];
-    const p = ptTopoNodeCenter(n);
+    const p = ptTopoNodeCenter(n, colW);
     const x = p.x - PT_TOPO_NODE_W / 2, y = p.y - PT_TOPO_NODE_H / 2;
     svg += '<rect x="' + x + '" y="' + y + '" width="' + PT_TOPO_NODE_W + '" height="' + PT_TOPO_NODE_H + '" rx="4" ' +
       'style="fill:var(--terminal-bg);stroke:var(--accent);stroke-width:1.5;" />';
     svg += '<text x="' + p.x + '" y="' + (p.y - 2) + '" text-anchor="middle" ' +
-      'style="fill:var(--text);font-size:13px;font-family:inherit;">' + n.id + '</text>';
+      'style="fill:var(--text);font-size:13px;font-family:inherit;">' + (n.label || n.id) + '</text>'; // v1.44.0: optional display name
     svg += '<text x="' + p.x + '" y="' + (p.y + 13) + '" text-anchor="middle" ' +
       'style="fill:var(--dim);font-size:10px;text-transform:uppercase;letter-spacing:0.05em;font-family:inherit;">' + n.type + '</text>';
   }
