@@ -15,7 +15,7 @@ shouldn't need to ask for this again.
 
 ---
 
-## v1.43.2 — " no ip address" in running-config; "^" under a bad wildcard; Tab after permit/deny
+## v1.43.2 — "% Incomplete command."; " no ip address" in running-config; "^" under a bad wildcard; Tab after permit/deny
 
 Open the main link (https://danielchernandez.github.io/ccna-syntax-checker/) once pushed, or `Syn-Checker v1.43.2/terminal-v1.43.2.html`.
 
@@ -43,6 +43,16 @@ Open the main link (https://danielchernandez.github.io/ccna-syntax-checker/) onc
    show ` no ip address`; G0/0 shows its address.
 8. Regression: Course 1 · 2.5 Save Configurations, and Course 3 · 5.2
    Standard ACLs and 5.4 Extended ACLs — each completes end to end.
+9. "Incomplete" — Free Practice: `enable`, `configure terminal`, then
+   each of these on its own: `hostname`, `access-list 1 permit`, then
+   `interface g0/0/0`, `ip address`, `exit`, `ip access-list extended
+   TEST`, `permit tcp`. Each of `hostname`, `access-list 1 permit`,
+   `ip address` and `permit tcp` answers `% Incomplete command.` — no
+   "^" line and no blank line under it, the next prompt right after.
+   Compare with `Syn-Checker v1.43.2/captures-v1.43.2.md`.
+10. Still "Invalid input": at `Router(config-if)#`, `ip address
+    999.1.1.1` — "^" under `999.1.1.1`; and in a fresh Free Practice
+    (`Router>`), `configure terminal` — "^" under it, message, blank line.
 
 ---
 

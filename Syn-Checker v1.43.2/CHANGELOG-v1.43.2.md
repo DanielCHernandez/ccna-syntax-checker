@@ -7165,21 +7165,23 @@ they ran in Edge (same engine).
 
 ---
 
-## v1.43.2 — " no ip address" in running-config; "^" under a bad wildcard; Tab after permit/deny
+## v1.43.2 — "% Incomplete command."; " no ip address" in running-config; "^" under a bad wildcard; Tab after permit/deny
 
 **Date:** 2026-10-28
 
 **Files:**
 - `terminal-v1.43.2.html` — **this is the file to open.**
 - `ios-engine-v1.43.2.js` — dev-only reference copy, regenerated from the HTML.
+- `captures-v1.43.2.md` — the real ISR4331 capture the "Incomplete
+  command" fix is based on.
 
 v1.43.1 passed its testing (access lists after the interfaces in
 running-config and startup-config; Home Lab 16.4.6 fully completed;
 Course 3 5.2 and 5.4 completed).
 
 Bug-fix release: two items from v1.43.1's backlog that the real
-captures already settle, plus one Tab bug found while fixing them. No
-new capture needed.
+captures already settle, one Tab bug found while fixing them, and one
+found while testing them (settled by a new capture, taken the same day).
 
 **Fixed — ` no ip address` under an interface with no address.** Real
 IOS prints ` no ip address` where the `ip address` line would go — both
@@ -7212,6 +7214,23 @@ same `|` pattern fixed for the CURRENT word back in v1.35.0, but never
 for the earlier ones. Same fix also means `access-list 1 permit n` + Tab
 no longer completes to the fake word `network`.
 
+**Fixed — "% Incomplete command."** A command typed without all its
+parts (`hostname`, `ip address`, `access-list 1 permit`, `permit tcp`)
+got "% Invalid input detected at '^' marker." with a "^" under the last
+word. Found by the user while testing this version; the same in v1.43.1
+and every version since v1.43.0. A real ISR4331 capture
+(`captures-v1.43.2.md`) shows real IOS prints `% Incomplete command.` —
+with **no "^" line and no blank line after it**, unlike "Invalid
+input". Root cause: the engine only ever had the one "didn't match"
+error and never told "unfinished" apart from "wrong". Now the same
+word-by-word walk that places the "^" also notices when every word
+typed was fine but a command valid here needs more words, and then says
+"Incomplete" instead. An address slot only counts as "fine" when it
+holds a real address, so `ip address 999.1.1.1` is still invalid input,
+with the "^" under `999.1.1.1`. A command valid only in another mode
+(`configure terminal` at `Router>`) is still invalid input, so Guided
+Practice's "type enable first" hint still works.
+
 **Not fixed — needs a capture first (from v1.43.1's testing, all older
 than v1.43.1):**
 - Answering the save question ("Destination filename
@@ -7231,6 +7250,17 @@ than v1.43.1):**
   "Internet protocol processing disabled" and then the full detail
   list; real IOS probably stops after that line (matters for Course 3
   5.2's "Inbound access list is 1" step).
+- (Found while building the "Incomplete" fix.) `ip address 999.1.1.1
+  255.255.255.0` (bad address, mask given) answers with its own "%
+  Invalid IP address: 999.1.1.1", not real IOS output — real IOS
+  probably says "% Invalid input detected at '^' marker." under the bad
+  address.
+- `configure` alone at `Router#` now says "% Incomplete command."
+  (before: "Invalid input"). Real IOS most likely asks "Configuring from
+  terminal, memory, or network [terminal]?" instead — neither version
+  is right.
+- `banner motd` alone still says "Invalid input" — not covered by the
+  capture (banner has its own handling).
 
 **Unverified:** switch physical ports showing no ` no ip address` line
 — standard 2960 behavior, but none of our captures includes a switch's
@@ -7238,17 +7268,22 @@ running-config.
 
 **Known limitation (not changed):** the extended ACL entry's word list
 is approximate (real entries vary in length), so the "^" for a bad
-value inside a `permit tcp ...` line can still land on the wrong word.
+value inside a `permit tcp ...` line can still land on the wrong word
+(e.g. `permit tcp any any eq 80 extra` puts it under `80`), and
+`permit tcp any any eq` (port missing) says "Invalid input", not
+"Incomplete".
 
 **Verified:** 38 exercises all complete; vs v1.43.0 their output
 differs only by the new ` no ip address` lines (3 running-configs) —
 new baseline `dev-tools/regress-baseline-v1.43.2.txt`. New
-`dev-tools/fixes-v1432.js` 19/19. `acl-order.js` 9/9 (one check updated:
+`dev-tools/fixes-v1432.js` 31/31 (12 of them for "Incomplete"). `acl-order.js` 9/9 (one check updated:
 ` no ip address` now sits between `interface GigabitEthernet0/0/0` and
 ` ip access-group 1 in`, exactly as in the capture). `abbrev-test.js`:
 all exact commands, 177 shorthand forms accepted, 0 wrong answers
-accepted. Browser (Edge, headless): `labsmoke.mjs` all Home Labs load,
-no page errors; `lab1646.mjs` 37/37; `lab291.mjs` 16/16.
+accepted. Browser (Edge, headless): new `incomplete.mjs` 6/6 (the
+capture replayed line for line in Free Practice and a Home Labs
+device, plus the wildcard "^" and Tab in the page); `labsmoke.mjs` all
+Home Labs load, no page errors; `lab1646.mjs` 37/37; `lab291.mjs` 16/16.
 
 **Test commands for this version:**
 1. Free Practice: `enable`, `show running-config` — every interface
@@ -7275,6 +7310,16 @@ no page errors; `lab1646.mjs` 37/37; `lab291.mjs` 16/16.
    show ` no ip address`; G0/0 shows its address.
 8. Regression: Course 1 · 2.5 Save Configurations, and Course 3 · 5.2
    Standard ACLs and 5.4 Extended ACLs — each completes end to end.
+9. "Incomplete" — Free Practice: `enable`, `configure terminal`, then
+   each of these on its own: `hostname`, `access-list 1 permit`, then
+   `interface g0/0/0`, `ip address`, `exit`, `ip access-list extended
+   TEST`, `permit tcp`. Each of `hostname`, `access-list 1 permit`,
+   `ip address` and `permit tcp` answers `% Incomplete command.` — no
+   "^" line and no blank line under it, the next prompt right after.
+   Compare with `Syn-Checker v1.43.2/captures-v1.43.2.md`.
+10. Still "Invalid input": at `Router(config-if)#`, `ip address
+    999.1.1.1` — "^" under `999.1.1.1`; and in a fresh Free Practice
+    (`Router>`), `configure terminal` — "^" under it, message, blank line.
 
 **Explicitly deferred:** the "Not fixed — needs a capture first" list
 above; v1.42.0's "Unverified" list; v1.43.1's remaining backlog (the

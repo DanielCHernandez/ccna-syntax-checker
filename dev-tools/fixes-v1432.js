@@ -64,5 +64,29 @@ check(g.type === 'unique' && g.completedLine === 'permit tcp', 'Tab in (config-e
 g = t(c, 'deny u');
 check(g.type === 'unique' && g.completedLine === 'deny udp', 'Tab in (config-ext-nacl): "deny u" -> udp');
 
+// 4. "% Incomplete command." (real ISR4331 capture, captures-v1.43.2.md)
+const n = E.createDevice('Router', 'router');
+run(n, ['enable', 'configure terminal']);
+const inc = (cmd, what) => { const r = E.executeLine(n, cmd);
+  check(r.error === '% Incomplete command.' && r.caretIndex === undefined, what + ': "' + cmd + '" -> % Incomplete command. (no ^)'); };
+const inv = (cmd, word, what) => { const r = E.executeLine(n, cmd);
+  check(r.error === "% Invalid input detected at '^' marker." && r.caretIndex === cmd.indexOf(word), what + ': "' + cmd + '" -> invalid, ^ under ' + word); };
+inc('hostname', 'capture');
+inc('access-list 1 permit', 'capture');
+inc('access-list 1 permit host', 'missing address');
+inv('ip address 10.0.0.1 255.255.255.0', 'address', 'not a global command');
+run(n, ['interface g0/0/0']);
+inc('ip address', 'capture');
+inc('ip address 10.0.0.1', 'missing mask');
+inv('ip address 999.1.1.1', '999.1.1.1', 'bad address (mask missing) is invalid, not incomplete');
+inv('ip address 10.0.0.1 255.255.255.0 extra', 'extra', 'extra word is still invalid');
+check(!E.executeLine(n, 'ip address 10.0.0.1 255.255.255.0').error, 'complete ip address still accepted');
+run(n, ['exit', 'ip access-list extended TEST']);
+inc('permit tcp', 'capture');
+inc('deny udp', 'extended ACL');
+const u = E.createDevice('Router', 'router');
+const ur = E.executeLine(u, 'configure terminal');
+check(ur.modeError === true && ur.caretIndex === 0, 'user EXEC "configure terminal": still invalid with ^ and modeError (Guided "type enable" hint)');
+
 console.log((total - fail) + ' of ' + total + ' checks passed');
 process.exit(fail ? 1 : 0);

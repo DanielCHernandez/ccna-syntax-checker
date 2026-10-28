@@ -5367,7 +5367,19 @@ function parseInterfaceRange(device, spec) {
 // IOS output. Returns the character position in rawLine of the first
 // word that can't continue ANY command valid in the current mode; if
 // every word fits (e.g. a bad value in the right place), the last word.
-function invalidInputCaretIndex(device, rawLine) {
+//
+// v1.43.2: also reports `incomplete` — every word fits AND some command
+// valid here needs more words (e.g. "hostname", "ip address",
+// "access-list 1 permit", "permit tcp"). Real IOS answers that with
+// "% Incomplete command." (real ISR4331 capture, captures-v1.43.2.md).
+// An address slot (<ip>, <mask>, ...) only "fits" a real dotted-quad
+// address, so "ip address 999.1.1.1" is still invalid input (with the
+// "^" under 999.1.1.1), not incomplete.
+const ADDRESS_ARGS = ["<ip>", "<mask>", "<network>", "<wildcard>", "<start>", "<end>"];
+function isDottedQuad(t) {
+  return /^\d{1,3}(\.\d{1,3}){3}$/.test(t) && t.split(".").every(function (o) { return Number(o) <= 255; });
+}
+function analyzeInvalidInput(device, rawLine) {
   const re = /\S+/g;
   const words = [];
   let m;
@@ -5382,10 +5394,12 @@ function invalidInputCaretIndex(device, rawLine) {
       }
     }
   }
-  if (!words.length) return 0;
+  if (!words.length) return { caret: 0, incomplete: false };
   const isArg = function (t) { return t.charAt(0) === "<" && t.charAt(t.length - 1) === ">"; };
   const alts = function (t) { return t.toLowerCase().split("|"); };
+  const argFits = function (arg, word) { return ADDRESS_ARGS.indexOf(arg) === -1 || isDottedQuad(word); };
   const resolved = [];
+  let longerCommand = false;
   for (let k = 0; k < words.length; k++) {
     const typed = words[k].text.toLowerCase();
     const literalHits = new Set();
@@ -5400,16 +5414,20 @@ function invalidInputCaretIndex(device, rawLine) {
       }
       if (!prior) continue;
       const here = cmd.tokens[k];
-      if (isArg(here)) { fits = true; continue; }
-      alts(here).forEach(function (a) {
-        if (isArg(a)) fits = true; // "host|<network>": any value fits
-        else if (a.indexOf(typed) === 0) { fits = true; literalHits.add(a); }
+      let fitsHere = false;
+      if (isArg(here)) fitsHere = argFits(here, words[k].text);
+      else alts(here).forEach(function (a) {
+        if (isArg(a)) { if (argFits(a, words[k].text)) fitsHere = true; } // "host|<network>": any address fits
+        else if (a.indexOf(typed) === 0) { fitsHere = true; literalHits.add(a); }
       });
+      if (!fitsHere) continue;
+      fits = true;
+      if (k === words.length - 1 && cmd.tokens.length > words.length) longerCommand = true;
     }
-    if (!fits) return words[k].at;
+    if (!fits) return { caret: words[k].at, incomplete: false };
     resolved.push(literalHits.size === 1 ? Array.from(literalHits)[0] : typed);
   }
-  return words[words.length - 1].at;
+  return { caret: words[words.length - 1].at, incomplete: longerCommand };
 }
 
 function executeLine(device, rawLine) {
@@ -5420,9 +5438,15 @@ function executeLine(device, rawLine) {
     // caretIndex: where (in rawLine) the terminal should draw the "^".
     // modeError: kept as a flag so callers can still tell "right command,
     // wrong mode" apart (Guided Practice uses it to suggest "enable").
-    result.caretIndex = invalidInputCaretIndex(device, rawLine);
+    const analysis = analyzeInvalidInput(device, rawLine);
     result.modeError = modeError;
-    result.error = "% Invalid input detected at '^' marker.";
+    if (!modeError && analysis.incomplete) {
+      // v1.43.2: no "^" and no blank line after it — real capture.
+      result.error = "% Incomplete command.";
+    } else {
+      result.caretIndex = analysis.caret;
+      result.error = "% Invalid input detected at '^' marker.";
+    }
   }
   return result;
 }
