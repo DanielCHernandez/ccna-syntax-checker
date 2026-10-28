@@ -41,7 +41,14 @@ Open the main link (https://danielchernandez.github.io/ccna-syntax-checker/) onc
    password `LogAdmin!9` — you get the `RTR-A>` prompt. `exit` to leave.
 9. Click Reset — every task un-ticks, and RTR-A's two ports are still
    pre-addressed.
-10. Regression: Home Lab 16.4.6 and 2.9.1 still load and work; one
+10. Click **Show Topology**: RTR-A – SW-2 – Remote PC across the top
+    with port labels G0/0/1, G0/1, F0/1; SW-1 below RTR-A (G0/0/0 /
+    G0/1); PC and Laptop under SW-1 (F0/2, F0/10). Every label readable,
+    none hidden under a box.
+11. Diagrams in other labs: 2.9.1 now shows F0/1 / F0/2 between Class-A
+    and Class-B; 16.4.6 shows "G0/0" and "Console" stacked under RTA;
+    10.3 shows each router's G0/0 / G0/1 and "S0/0/0 (DCE)" clearly.
+12. Regression: Home Lab 16.4.6 and 2.9.1 still load and work; one
     Guided Practice exercise end to end.
 
 ---

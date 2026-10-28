@@ -36,7 +36,7 @@ app; nothing here is loaded by any page.
   and no blank line; also the "Exercise reset: <name>" message. 7 checks.
 - `lab1651.mjs <chrome-profile-dir> <url>` — (v1.44.0) Home Lab 16.5.1 end to
   end through the real UI with every task's hint, plus port-shutdown,
-  SSH and reset checks. 22 checks.
+  SSH, diagram (SW-2) and reset checks. 24 checks.
 
 On Windows: install Node.js LTS (`winget install OpenJS.NodeJS.LTS`), pass
 ABSOLUTE paths to the `.js` engine files (a relative path is resolved

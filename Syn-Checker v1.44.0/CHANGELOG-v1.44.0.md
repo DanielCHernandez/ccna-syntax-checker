@@ -7353,8 +7353,12 @@ new Course 1 plan (`HOME-LABS-PLAN.md` in the repo root, batch 1).
 (`c1_pt_16.5.1_secure_network_devices`), Module 16's wrap-up. Source:
 the real ITExamAnswers.net page
 (https://itexamanswers.net/16-5-1-packet-tracer-secure-network-devices-instructions-answer.html).
-Devices: router RTR-A, switch SW-1, and three PCs (PC, Laptop, Remote
-PC). 25 tasks:
+Devices: router RTR-A, switches SW-1 and SW-2, and three PCs (PC,
+Laptop, Remote PC). Cabling verified from your screenshot of the real
+activity: RTR-A G0/0/0 → SW-1 G0/1; SW-1 F0/2 → PC, F0/10 → Laptop;
+RTR-A G0/0/1 → SW-2 G0/1; SW-2 F0/1 → Remote PC. SW-2 isn't in the
+addressing table and has no tasks, so it's diagram-only (no device
+button) — it just passes traffic, like 10.3.5's R1. 25 tasks:
 - RTR-A (13): no DNS lookup, hostname, password minimum length 10,
   console password + login, 7-minute idle timeout on console AND VTY,
   enable secret, MOTD banner, password encryption, user `NETadmin`,
@@ -7382,14 +7386,23 @@ GigabitEthernet0/0/0, GigabitEthernet0/0/1 and Vlan1 — exactly what your
 real blank-4321 capture showed (`Syn-Checker v1.43.1/captures-v1.43.1.md`),
 no serial ports. The existing router models are unchanged.
 
-**Unverified (no capture of the real 16.5.1 activity yet):**
-- That RTR-A really is an ISR4321 — inferred from its G0/0/0-style
-  names.
-- The cabling: SW-1's F0/2 = PC, F0/10 = Laptop, G0/1 = RTR-A come from
-  the answer page's notes; RTR-A G0/0/0 → SW-1, and Remote PC plugged
-  straight into G0/0/1, are inferred from the addressing (the page's
-  diagram isn't described in text). If the real lab has a switch
-  between RTR-A and Remote PC, the lab still works the same way.
+**Fixed — port labels hidden in the topology diagrams.** Labels sat at
+fixed points 22% and 78% of the way along each line; on a short line
+those points fell UNDER the device boxes, hiding the label. Seen first
+in 16.5.1 (G0/0/0, F0/2, the whole SW-2 row), but it also hid labels in
+existing labs: 2.9.1's F0/1–F0/2 between Class-A and Class-B, 16.4.6's
+G0/0, 10.3/10.3.5's router ports, and clipped 10.3's "S0/0/0 (DCE)".
+Each label now sits just outside its own box where the line leaves it
+(side-by-side devices: one above the line, one below), and two labels
+that would land on the same spot are stacked (16.4.6's console cable
+runs along the same line as RTA–SW1, so "G0/0" and "Console" stack).
+All 9 labs' diagrams were checked by screenshot. A lab can also widen
+its diagram's columns (16.5.1 does, for its RTR-A – SW-2 – Remote PC
+row) and give a box a display name ("Remote PC").
+
+**Unverified (no capture of the real 16.5.1 activity yet):** that RTR-A
+really is an ISR4321 — inferred from its "Gig0/0/0"-style names (the
+screenshot confirms the 3-part names, not the model).
 
 **Backlog (found while building):**
 - `no ip default-gateway` isn't supported (the gateway stays set). Real
@@ -7401,11 +7414,13 @@ no serial ports. The existing router models are unchanged.
 **Verified:** 38 exercises identical to the v1.43.2 baseline (the only
 engine change is the new router model). `fixes-v1432.js` 31/31,
 `acl-order.js` 9/9, `abbrev-test.js` clean. Browser (Edge, headless):
-new `dev-tools/lab1651.mjs` 22/22 — plays the whole lab through the real
+new `dev-tools/lab1651.mjs` 24/24 — plays the whole lab through the real
 page with every task's hint (all 25 tasks tick; "enable secret short"
 refused; Remote PC reaches SW-1 with TTL 254; shutting F0/2 breaks the
 PC's ping and un-ticks the unused-ports task; SSH from PC as NETadmin
-works; reset clears everything and RTR-A starts pre-addressed again);
+works; SW-2 shows in the diagram with no device button; reset clears
+everything and RTR-A starts pre-addressed again; every lab's diagram
+screenshotted before/after the label fix);
 `labsmoke.mjs` all 9 Home Labs load with no page errors; `lab1646.mjs`
 37/37; `lab291.mjs` 16/16; `incomplete.mjs` 7/7.
 
@@ -7432,7 +7447,14 @@ works; reset clears everything and RTR-A starts pre-addressed again);
    password `LogAdmin!9` — you get the `RTR-A>` prompt. `exit` to leave.
 9. Click Reset — every task un-ticks, and RTR-A's two ports are still
    pre-addressed.
-10. Regression: Home Lab 16.4.6 and 2.9.1 still load and work; one
+10. Click **Show Topology**: RTR-A – SW-2 – Remote PC across the top
+    with port labels G0/0/1, G0/1, F0/1; SW-1 below RTR-A (G0/0/0 /
+    G0/1); PC and Laptop under SW-1 (F0/2, F0/10). Every label readable,
+    none hidden under a box.
+11. Diagrams in other labs: 2.9.1 now shows F0/1 / F0/2 between Class-A
+    and Class-B; 16.4.6 shows "G0/0" and "Console" stacked under RTA;
+    10.3 shows each router's G0/0 / G0/1 and "S0/0/0 (DCE)" clearly.
+12. Regression: Home Lab 16.4.6 and 2.9.1 still load and work; one
     Guided Practice exercise end to end.
 
 **Explicitly deferred:** the backlog above; v1.43.2's "Not fixed — needs
