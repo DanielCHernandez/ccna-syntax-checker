@@ -7,10 +7,12 @@ change.
 
 ## Status
 
-**Built (9):** 2.5, 2.7, 2.5+2.7 combined, 2.9.1, 10.1, 10.3, 10.3.5, 16.4.6,
-16.5.1 (v1.44.0).
+**Built (10):** 2.5, 2.7, 2.5+2.7 combined, 2.9.1, 10.1, 10.3, 10.3.5, 11.5.5
+(v1.45.0), 16.4.6, 16.5.1 (v1.44.0).
 
-**Next:** 11.5.5 (batch 2).
+**Next:** batch 3 (11.7.5, 11.9.3, 11.10.1). 11.5.5 was built in v1.45.0;
+its CustomerRouter captures (`show ip interface brief`, `show
+running-config`) and a topology screenshot are still to do.
 
 **Not portable (skipped):** every "Physical Mode" lab (cabling — this tool
 never simulates cabling); 1.0.5 and 1.5.x (exploring the Packet Tracer
@@ -43,7 +45,7 @@ together.
 - `show login` / `show run | section line` (verification only) not built —
   optional, would need a capture.
 
-### 2. [11.5.5 – Subnet an IPv4 Network](https://itexamanswers.net/11-5-5-packet-tracer-subnet-an-ipv4-network-instructions-answer.html)
+### 2. ✅ Built in v1.45.0 (captures pending) — [11.5.5 – Subnet an IPv4 Network](https://itexamanswers.net/11-5-5-packet-tracer-subnet-an-ipv4-network-instructions-answer.html)
 - CustomerRouter, 2 LAN switches, PC-A, PC-B; ISP side pre-set (diagram only).
 - Part 1 is paper subnetting (/26) — see decision 1.
 - Router needs Serial0/1/0.
@@ -97,6 +99,10 @@ together.
    questions sit in a panel with each answer hidden until clicked (like
    task hints); tasks check that the right addresses actually got
    configured. (Not "skip", which would give the subnetting away.)
-2. **Randomized labs** (10.4.3, 11.9.3, 11.10.1): Scenario 1 only, or all
-   three scenarios as separate labs?
-3. **17.7.6:** port just the PC/router faults, or leave it out?
+2. ✅ **Randomized labs** (10.4.3, 11.9.3, 11.10.1) — decided 2026-11-01:
+   build **all three** published scenarios (same steps, different
+   numbers — fresh numbers are what make repeating a subnetting lab
+   useful). Only the data differs per scenario.
+3. ✅ **17.7.6** — decided 2026-11-01: port **only the PC/router faults**;
+   leave out the web-browser and DNS parts (GUI — same skip rule as
+   cabling).

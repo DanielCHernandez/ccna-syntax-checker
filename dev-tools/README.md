@@ -46,3 +46,5 @@ tests look for Chrome in its Windows location; set `CHROME` to another
 Chromium browser's path to use that instead — e.g. on a PC where policy
 blocks Chrome's remote debugging ("Not allowed"):
 `CHROME="C:/Program Files (x86)/Microsoft/Edge/Application/msedge.exe"`.
+- `lab1155.mjs <chrome-profile-dir> <screenshot-dir> <url>` — (v1.45.0)
+  Home Lab 11.5.5 end to end: blank cells, Part 1 panel, tasks, pings.

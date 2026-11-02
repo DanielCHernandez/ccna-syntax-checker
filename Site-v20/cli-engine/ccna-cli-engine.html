@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>CCNA CLI Engine — v1.44.0</title>
+<title>CCNA CLI Engine — v1.45.0</title>
 <style>
   :root {
     --bg: #0c0f0a;
@@ -324,6 +324,13 @@
     flex: 1;
     min-width: 0;
   }
+  .pt-blank { color: var(--dim); letter-spacing: 1px; }
+  .pt-blank-note { margin-top: 8px; color: var(--amber-dim); font-size: 12px; }
+  .pt-part1-intro { color: var(--dim); font-size: 13px; line-height: 1.5; margin-bottom: 10px; }
+  .pt-part1-q { padding: 7px 0; border-bottom: 1px solid rgba(255,255,255,0.06); cursor: pointer; font-size: 13px; line-height: 1.45; }
+  .pt-part1-q:last-child { border-bottom: none; }
+  .pt-part1-qtext .pt-task-toggle { display: inline-block; width: 1.1em; }
+  .pt-part1-a { white-space: pre-wrap; }
   .pt-task-toggle {
     flex-shrink: 0;
     color: var(--amber);
@@ -569,7 +576,7 @@
 <body>
 <div class="wrap">
   <header>
-    <h1>CCNA CLI Engine — v1.44.0</h1>
+    <h1>CCNA CLI Engine — v1.45.0</h1>
     <p>Type commands as you would on a real device — Tab completes partial words. Type <span class="hint">?commands</span> to see exact syntax for this version.</p>
   </header>
 
@@ -911,6 +918,9 @@ copy running-config startup-config</pre>
     <div class="mode-toggle" id="ptDeviceButtons"></div>
   </div>
   <div class="numsys-card" id="ptAddressingTable" style="display:none;margin-bottom:14px;"></div>
+  <!-- v1.45.0: a lab's "paper" design part (e.g. 11.5.5's subnetting),
+       questions with answers hidden until clicked. -->
+  <div class="numsys-card" id="ptPart1" style="display:none;margin-bottom:14px;"></div>
   <div class="numsys-card" id="ptTopologyPanel" style="display:none;margin-bottom:14px;">
     <div class="chart-title">Topology Diagram</div>
     <div id="ptTopologySvgWrap"></div>
@@ -1005,7 +1015,7 @@ copy running-config startup-config</pre>
        cannot be selected.
    ============================================================ */
 
-const IOS_ENGINE_VERSION = "1.44.0";
+const IOS_ENGINE_VERSION = "1.45.0";
 
 /* ---------------------------------------------------------
    1. DEVICE STATE
@@ -1070,6 +1080,14 @@ const DEVICE_MODELS = {
   // GigabitEthernet0/0/0, GigabitEthernet0/0/1, Vlan1 — nothing else.
   router4321: {
     interfaces: ["GigabitEthernet0/0/0", "GigabitEthernet0/0/1", "Vlan1"]
+  },
+  // v1.45.0: a Cisco 1941 with its 2-port serial card in the SECOND
+  // expansion slot (so Serial0/1/0 and 0/1/1, not 0/0/x), for Home Lab
+  // 11.5.5's CustomerRouter, whose WAN link is S0/1/0. NOT YET VERIFIED:
+  // inferred from the lab's port names (G0/0, G0/1, S0/1/0) — to be
+  // checked against a real "show ip interface brief" capture.
+  router1941s1: {
+    interfaces: ["GigabitEthernet0/0", "GigabitEthernet0/1", "Serial0/1/0", "Serial0/1/1", "Vlan1"]
   },
   // Standard Cisco 2960-style access switch — 24 FastEthernet access
   // ports, 2 GigabitEthernet uplinks, plus the Vlan1 management SVI.
@@ -9758,6 +9776,182 @@ const PT_EXERCISES = [
     ]
   },
   {
+    // v1.45.0. Source: the real ITExamAnswers.net instructor page
+    // (https://itexamanswers.net/11-5-5-packet-tracer-subnet-an-ipv4-network-instructions-answer.html)
+    // for Part 1's questions/answers, the addressing rules, the
+    // configuration scripts and the ISP side's addressing.
+    // Per HOME-LABS-PLAN.md decision 1: the LAN-side addressing-table
+    // cells start BLANK (the student works them out — Part 1's answers
+    // are in a hidden-until-clicked panel), and the tasks check the
+    // addresses actually configured. The ISP side (ISPRouter, ISPSwitch,
+    // ISP Workstation, ISP Server) is pre-configured: diagram only.
+    // NOT YET VERIFIED (captures pending): CustomerRouter's model/port
+    // list (model "router1941s1": G0/0, G0/1, S0/1/0, S0/1/1); whether
+    // S0/1/0 already starts configured (the answer script configures it,
+    // so here it's a task); the switches' starting hostnames (taken as
+    // "LAN-A"/"LAN-B" — the scripts never set them); and the switch
+    // ports of every cable (none are named on the answer page).
+    id: "c1_pt_11.5.5_subnet_ipv4_network",
+    label: "Course 1 · PacketTr · 11.5.5 — Subnet an IPv4 Network",
+    devices: [
+      { id: "CustomerRouter", label: "CustomerRouter", deviceType: "router", model: "router1941s1", initialHostname: "Router" },
+      { id: "LAN-A", label: "LAN-A", deviceType: "switch" },
+      { id: "LAN-B", label: "LAN-B", deviceType: "switch" },
+      { id: "PC-A", label: "PC-A", deviceType: "pc" },
+      { id: "PC-B", label: "PC-B", deviceType: "pc" }
+    ],
+    addressingTable: [
+      { device: "CustomerRouter", iface: "G0/0", ip: "", mask: "", gateway: "N/A" },
+      { device: "CustomerRouter", iface: "G0/1", ip: "", mask: "", gateway: "N/A" },
+      { device: "CustomerRouter", iface: "S0/1/0", ip: "209.165.201.2", mask: "255.255.255.252", gateway: "N/A" },
+      { device: "LAN-A", iface: "VLAN 1", ip: "", mask: "", gateway: "" },
+      { device: "LAN-B", iface: "VLAN 1", ip: "", mask: "", gateway: "" },
+      { device: "PC-A", iface: "NIC", ip: "", mask: "", gateway: "" },
+      { device: "PC-B", iface: "NIC", ip: "", mask: "", gateway: "" },
+      { device: "ISPRouter", iface: "G0/0", ip: "209.165.200.225", mask: "255.255.255.224", gateway: "N/A" },
+      { device: "ISPRouter", iface: "S0/1/0", ip: "209.165.201.1", mask: "255.255.255.252", gateway: "N/A" },
+      { device: "ISPSwitch", iface: "VLAN 1", ip: "209.165.200.226", mask: "255.255.255.224", gateway: "209.165.200.225" },
+      { device: "ISP Workstation", node: "ISPWorkstation", iface: "NIC", ip: "209.165.200.235", mask: "255.255.255.224", gateway: "209.165.200.225" },
+      { device: "ISP Server", node: "ISPServer", iface: "NIC", ip: "209.165.200.240", mask: "255.255.255.224", gateway: "209.165.200.225" }
+    ],
+    part1: {
+      title: "Part 1 — Design an IPv4 Network Subnetting Scheme",
+      intro: "Subnet 192.168.0.0/24 into equal-size subnets: LAN-A needs at least 50 hosts, LAN-B at least 40, and two more subnets are needed for future expansion. Work out the answers and fill in the blank cells in the addressing table yourself — then click a question to check your answer.",
+      questions: [
+        { q: "How many host addresses are needed in the largest required subnet?", a: "50 (LAN-A)." },
+        { q: "What is the minimum number of subnets required?", a: "4 — the two LANs plus two for future expansion." },
+        { q: "Which subnet masks give at least 50 usable hosts per subnet?", a: "/25 (255.255.255.128, 126 hosts) and /26 (255.255.255.192, 62 hosts)." },
+        { q: "Which subnet masks give at least 4 subnets of 192.168.0.0/24?", a: "/26, /27, /28, /29 and /30." },
+        { q: "Which subnet mask meets both requirements?", a: "/26 — 255.255.255.192 (binary 11111111.11111111.11111111.11000000): 4 subnets of 62 usable hosts each." },
+        { q: "What are the four subnets?", a: "192.168.0.0/26\n192.168.0.64/26\n192.168.0.128/26\n192.168.0.192/26" },
+        { q: "LAN-A uses the FIRST subnet. Router G0/0 gets its first host address, the LAN-A switch the second, PC-A the last. What are they?", a: "Router G0/0: 192.168.0.1\nLAN-A switch (VLAN 1): 192.168.0.2, default gateway 192.168.0.1\nPC-A: 192.168.0.62, default gateway 192.168.0.1\nMask for all: 255.255.255.192" },
+        { q: "LAN-B uses the SECOND subnet, with the same rules (router first, switch second, PC last). What are they?", a: "Router G0/1: 192.168.0.65\nLAN-B switch (VLAN 1): 192.168.0.66, default gateway 192.168.0.65\nPC-B: 192.168.0.126, default gateway 192.168.0.65\nMask for all: 255.255.255.192" }
+      ]
+    },
+    topology: {
+      colWidth: 190, // room for the two S0/1/0 labels between the wide router boxes
+      nodes: [
+        { id: "LAN-A", type: "switch", row: 1, col: 0 },
+        { id: "PC-A", type: "pc", row: 2, col: 0 },
+        { id: "CustomerRouter", type: "router", row: 0, col: 1 },
+        { id: "LAN-B", type: "switch", row: 1, col: 1 },
+        { id: "PC-B", type: "pc", row: 2, col: 1 },
+        { id: "ISPRouter", type: "router", row: 0, col: 2 },
+        { id: "ISPSwitch", type: "switch", row: 1, col: 2 },
+        { id: "ISPWorkstation", label: "ISP Workstation", type: "pc", row: 2, col: 2 },
+        { id: "ISPServer", label: "ISP Server", type: "pc", row: 2, col: 3 }
+      ],
+      connections: [
+        { from: "CustomerRouter", fromIface: "G0/0", to: "LAN-A", kind: "lan" },
+        { from: "CustomerRouter", fromIface: "G0/1", to: "LAN-B", kind: "lan" },
+        { from: "CustomerRouter", fromIface: "S0/1/0", to: "ISPRouter", toIface: "S0/1/0", kind: "serial" },
+        { from: "LAN-A", to: "PC-A", kind: "lan" },
+        { from: "LAN-B", to: "PC-B", kind: "lan" },
+        { from: "ISPRouter", fromIface: "G0/0", to: "ISPSwitch", kind: "lan" },
+        { from: "ISPSwitch", to: "ISPWorkstation", kind: "lan" },
+        { from: "ISPSwitch", to: "ISPServer", kind: "lan" }
+      ]
+    },
+    tasks: [
+      {
+        id: "cr_secret", device: "CustomerRouter",
+        summary: "Set an encrypted privileged EXEC password",
+        hint: "enable secret Class123",
+        check: function (d) { return !!d.enableSecret; }
+      },
+      {
+        id: "cr_console", device: "CustomerRouter",
+        summary: "Console line: set a login password and require login",
+        hint: "line console 0, then password Cisco123, then login",
+        check: function (d) { const l = d.lines["console 0"]; return !!l && !!l.password && !!l.login; }
+      },
+      {
+        id: "cr_hostname", device: "CustomerRouter",
+        summary: "Name the router CustomerRouter",
+        hint: "hostname CustomerRouter",
+        check: function (d) { return d.hostname === "CustomerRouter"; }
+      },
+      {
+        id: "cr_g00", device: "CustomerRouter",
+        summary: "Configure and activate G0/0 for LAN-A (first host of the first subnet)",
+        hint: "interface g0/0, ip address 192.168.0.1 255.255.255.192, no shutdown",
+        check: function (d) { const i = d.interfaces["GigabitEthernet0/0"]; return !!i && i.ip === "192.168.0.1" && i.mask === "255.255.255.192" && !i.shutdown; }
+      },
+      {
+        id: "cr_g01", device: "CustomerRouter",
+        summary: "Configure and activate G0/1 for LAN-B (first host of the second subnet)",
+        hint: "interface g0/1, ip address 192.168.0.65 255.255.255.192, no shutdown",
+        check: function (d) { const i = d.interfaces["GigabitEthernet0/1"]; return !!i && i.ip === "192.168.0.65" && i.mask === "255.255.255.192" && !i.shutdown; }
+      },
+      {
+        id: "cr_s010", device: "CustomerRouter",
+        summary: "Configure and activate S0/1/0, the link to the ISP (see addressing table)",
+        hint: "interface s0/1/0, ip address 209.165.201.2 255.255.255.252, no shutdown",
+        check: function (d) { const i = d.interfaces["Serial0/1/0"]; return !!i && i.ip === "209.165.201.2" && i.mask === "255.255.255.252" && !i.shutdown; }
+      },
+      {
+        id: "cr_save", device: "CustomerRouter",
+        summary: "Save the running configuration to NVRAM",
+        hint: "copy running-config startup-config, then press Enter to accept the default filename.",
+        check: function (d) { return d.startupConfig !== null; }
+      },
+      {
+        id: "lana_vlan1", device: "LAN-A",
+        summary: "Configure and activate VLAN 1 (second host of LAN-A's subnet)",
+        hint: "interface vlan 1, ip address 192.168.0.2 255.255.255.192, no shutdown",
+        check: function (d) { const i = d.interfaces["Vlan1"]; return !!i && i.ip === "192.168.0.2" && i.mask === "255.255.255.192" && !i.shutdown; }
+      },
+      {
+        id: "lana_gw", device: "LAN-A",
+        summary: "Set the switch's default gateway",
+        hint: "ip default-gateway 192.168.0.1",
+        check: function (d) { return d.ipDefaultGateway === "192.168.0.1"; }
+      },
+      {
+        id: "lana_save", device: "LAN-A",
+        summary: "Save the running configuration to NVRAM",
+        hint: "copy running-config startup-config, then press Enter to accept the default filename.",
+        check: function (d) { return d.startupConfig !== null; }
+      },
+      {
+        id: "lanb_vlan1", device: "LAN-B",
+        summary: "Configure and activate VLAN 1 (second host of LAN-B's subnet)",
+        hint: "interface vlan 1, ip address 192.168.0.66 255.255.255.192, no shutdown",
+        check: function (d) { const i = d.interfaces["Vlan1"]; return !!i && i.ip === "192.168.0.66" && i.mask === "255.255.255.192" && !i.shutdown; }
+      },
+      {
+        id: "lanb_gw", device: "LAN-B",
+        summary: "Set the switch's default gateway",
+        hint: "ip default-gateway 192.168.0.65",
+        check: function (d) { return d.ipDefaultGateway === "192.168.0.65"; }
+      },
+      {
+        id: "lanb_save", device: "LAN-B",
+        summary: "Save the running configuration to NVRAM",
+        hint: "copy running-config startup-config, then press Enter to accept the default filename.",
+        check: function (d) { return d.startupConfig !== null; }
+      },
+      {
+        id: "pca_ip", device: "PC-A",
+        summary: "Configure PC-A (last host of LAN-A's subnet)",
+        hint: "192.168.0.62 / 255.255.255.192, gateway 192.168.0.1 (or Command Prompt: ipconfig 192.168.0.62 255.255.255.192 192.168.0.1)",
+        check: function (pc) { return pc.ip === "192.168.0.62" && pc.mask === "255.255.255.192" && pc.gateway === "192.168.0.1"; }
+      },
+      {
+        id: "pcb_ip", device: "PC-B",
+        summary: "Configure PC-B (last host of LAN-B's subnet)",
+        hint: "192.168.0.126 / 255.255.255.192, gateway 192.168.0.65 (or Command Prompt: ipconfig 192.168.0.126 255.255.255.192 192.168.0.65)",
+        check: function (pc) { return pc.ip === "192.168.0.126" && pc.mask === "255.255.255.192" && pc.gateway === "192.168.0.65"; }
+      },
+      {
+        id: "verify_ping", device: "PC-A",
+        summary: "Part 3 — verify: ping PC-B (192.168.0.126) from PC-A",
+        hint: "PC-A's Command Prompt tab: ping 192.168.0.126 — 4 replies once both LANs and the router are set up.",
+        check: function (pc) { return !!pc.pingOk["192.168.0.126"]; }
+      }
+    ]
+  },
+  {
     // v1.42.0. Source: the real ITExamAnswers.net instructor page
     // (https://itexamanswers.net/16-4-6-packet-tracer-configure-secure-passwords-and-ssh-instructions-answer.html)
     // for the steps, addressing and answer-key values, PLUS a real
@@ -10290,12 +10484,43 @@ function startPtExercise(id) {
   ptActiveDeviceId = ex.devices[0].id;
   renderPtDeviceButtons();
   renderPtAddressingTable();
+  ptPart1Open = {};
+  renderPtPart1();
   renderPtTopologyButton();
   ptTerminalEl.innerHTML = "";
   ptAppendLine("Lab loaded: " + ex.label, "line-output");
   ptAppendLine("Devices: " + ex.devices.map(function (d) { return d.label; }).join(", ") + " — click a device button to switch.", "line-output");
   refreshPtActivePanel();
   renderPtTasks();
+}
+
+// v1.45.0: Part 1 panel — a lab's design questions (ex.part1 = { title,
+// intro, questions: [{ q, a }] }), each answer hidden until clicked, the
+// same ▸/▾ pattern as the task hints. Per direction (HOME-LABS-PLAN.md,
+// decision 1): the answers are there to CHECK your work, not to read
+// first — the addressing table's LAN rows stay blank and the tasks check
+// the addresses you actually configure.
+let ptPart1Open = {}; // question index -> bool
+const ptPart1El = document.getElementById("ptPart1");
+function renderPtPart1() {
+  const ex = getPtExercise(ptExerciseId);
+  if (!ex.part1) { ptPart1El.innerHTML = ""; ptPart1El.style.display = "none"; return; }
+  let html = '<div class="chart-title">' + ex.part1.title + '</div>';
+  if (ex.part1.intro) html += '<div class="pt-part1-intro">' + ex.part1.intro + '</div>';
+  ex.part1.questions.forEach(function (item, i) {
+    const open = !!ptPart1Open[i];
+    html += '<div class="pt-part1-q" data-i="' + i + '"><div class="pt-part1-qtext"><span class="pt-task-toggle">' + (open ? "▾" : "▸") + '</span> ' + item.q + '</div>' +
+      (open ? '<div class="pt-task-hint pt-part1-a">' + item.a + '</div>' : '') + '</div>';
+  });
+  ptPart1El.innerHTML = html;
+  ptPart1El.style.display = "block";
+  ptPart1El.querySelectorAll(".pt-part1-q").forEach(function (el) {
+    el.addEventListener("click", function () {
+      const i = Number(el.getAttribute("data-i"));
+      ptPart1Open[i] = !ptPart1Open[i];
+      renderPtPart1();
+    });
+  });
 }
 
 function renderPtAddressingTable() {
@@ -10310,9 +10535,15 @@ function renderPtAddressingTable() {
   let html = '<table class="ref-table"><tr><th>Device</th><th>Interface</th><th>IP Address</th><th>Subnet Mask</th><th>Default Gateway</th></tr>';
   for (let i = 0; i < ex.addressingTable.length; i++) {
     const row = ex.addressingTable[i];
-    html += "<tr><td>" + row.device + "</td><td>" + row.iface + "</td><td>" + row.ip + "</td><td>" + row.mask + "</td><td>" + row.gateway + "</td></tr>";
+    // v1.45.0: an empty value is a fill-in blank, like the real lab's
+    // worksheet — the student works it out (e.g. 11.5.5's subnetting).
+    const cell = function (v) { return v === "" ? '<span class="pt-blank">______</span>' : v; };
+    html += "<tr><td>" + row.device + "</td><td>" + row.iface + "</td><td>" + cell(row.ip) + "</td><td>" + cell(row.mask) + "</td><td>" + cell(row.gateway) + "</td></tr>";
   }
   html += "</table>";
+  if (ex.addressingTable.some(function (r) { return r.ip === "" || r.mask === "" || r.gateway === ""; })) {
+    html += '<div class="pt-blank-note">Blank cells (______) are yours to work out — see Part 1 below.</div>';
+  }
   ptAddressingTableEl.innerHTML = html;
   ptAddressingTableEl.style.display = "block";
 }
@@ -10379,16 +10610,24 @@ function ptTopoNodeCenter(node, colW) {
 // leaves upward. `placed` lists labels already drawn: one that would
 // land on another (e.g. 16.4.6's console cable runs along the same line
 // as RTA-SW1) moves one text line further from the box.
-function ptTopoEdgeLabel(p, q, text, isFrom, placed) {
+// v1.45.0: a box is as wide as its name needs (13px monospace text,
+// ~8px per character), never narrower than before — 11.5.5's
+// "CustomerRouter" and "ISP Workstation" overflowed the fixed width.
+function ptTopoNodeWidth(n) {
+  return Math.max(PT_TOPO_NODE_W, String(n.label || n.id).length * 8 + 16);
+}
+
+function ptTopoEdgeLabel(p, q, text, isFrom, placed, halfW) {
+  if (halfW === undefined) halfW = PT_TOPO_NODE_W / 2;
   const dx = q.x - p.x, dy = q.y - p.y;
   let x, y, anchor, away;
   if (dy === 0) {
     const dir = dx > 0 ? 1 : -1;
-    x = p.x + dir * (PT_TOPO_NODE_W / 2 + 4); y = p.y + (isFrom ? -5 : 13);
+    x = p.x + dir * (halfW + 4); y = p.y + (isFrom ? -5 : 13);
     anchor = dir > 0 ? "start" : "end"; away = isFrom ? -1 : 1;
   } else {
     const len = Math.sqrt(dx * dx + dy * dy), ux = dx / len, uy = dy / len;
-    const tx = ux === 0 ? Infinity : (PT_TOPO_NODE_W / 2 + 2) / Math.abs(ux);
+    const tx = ux === 0 ? Infinity : (halfW + 2) / Math.abs(ux);
     const ty = (PT_TOPO_NODE_H / 2 + 2) / Math.abs(uy);
     const t = Math.min(tx, ty);
     x = p.x + ux * t + 4; y = p.y + uy * t + (uy > 0 ? 11 : -3);
@@ -10459,16 +10698,17 @@ function renderPtTopologyDiagram() {
     // line leaves it. Before, labels sat at fixed 22%/78% points along
     // the line, which on short lines fell under the boxes and hid them
     // (e.g. 2.9.1's F0/1-F0/2, 16.4.6's F0/1, 16.5.1's G0/0/0 and F0/2).
-    if (c.fromIface) svg += ptTopoEdgeLabel(pa, pb, c.fromIface, true, placedLabels);
-    if (c.toIface) svg += ptTopoEdgeLabel(pb, pa, c.toIface, false, placedLabels);
+    if (c.fromIface) svg += ptTopoEdgeLabel(pa, pb, c.fromIface, true, placedLabels, ptTopoNodeWidth(a) / 2);
+    if (c.toIface) svg += ptTopoEdgeLabel(pb, pa, c.toIface, false, placedLabels, ptTopoNodeWidth(b) / 2);
   }
 
   // Nodes on top of the lines.
   for (let i = 0; i < topo.nodes.length; i++) {
     const n = topo.nodes[i];
     const p = ptTopoNodeCenter(n, colW);
-    const x = p.x - PT_TOPO_NODE_W / 2, y = p.y - PT_TOPO_NODE_H / 2;
-    svg += '<rect x="' + x + '" y="' + y + '" width="' + PT_TOPO_NODE_W + '" height="' + PT_TOPO_NODE_H + '" rx="4" ' +
+    const w = ptTopoNodeWidth(n);
+    const x = p.x - w / 2, y = p.y - PT_TOPO_NODE_H / 2;
+    svg += '<rect x="' + x + '" y="' + y + '" width="' + w + '" height="' + PT_TOPO_NODE_H + '" rx="4" ' +
       'style="fill:var(--terminal-bg);stroke:var(--accent);stroke-width:1.5;" />';
     svg += '<text x="' + p.x + '" y="' + (p.y - 2) + '" text-anchor="middle" ' +
       'style="fill:var(--text);font-size:13px;font-family:inherit;">' + (n.label || n.id) + '</text>'; // v1.44.0: optional display name
@@ -10715,7 +10955,9 @@ function buildLabNet() {
       }
     } else {
       (ex.addressingTable || []).forEach(function (r) {
-        if (r.device !== id || !r.ip || r.ip === "N/A") return;
+        // v1.45.0: a row may name its diagram node separately ("node"),
+        // so the table can show a display name like "ISP Workstation".
+        if ((r.node || r.device) !== id || !r.ip || r.ip === "N/A") return;
         const kind = typeOf[id];
         hosts.push({
           node: id, kind: kind,

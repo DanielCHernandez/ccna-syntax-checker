@@ -15,6 +15,29 @@ shouldn't need to ask for this again.
 
 ---
 
+## v1.45.0 — New Home Lab 11.5.5 (Subnet an IPv4 Network) with a Part 1 subnetting panel
+
+Open `Syn-Checker v1.45.0/terminal-v1.45.0.html` from Finder (or the main link once pushed).
+
+1. Home Labs → "11.5.5 — Subnet an IPv4 Network": device buttons
+   CustomerRouter, LAN-A, LAN-B, PC-A, PC-B; no task checked.
+2. Addressing table: the LAN rows (router G0/0/G0/1, both switches, both
+   PCs) show "______" blanks; S0/1/0 and the ISP rows are filled in.
+3. Under it, "Part 1": 8 questions, answers hidden. Work them out
+   yourself first, then click one to check — click again to hide.
+4. Show Topology: every name fits in its box; the S0/1/0 labels sit
+   between the two routers.
+5. Configure everything from your own answers (task hints have the
+   commands). PC-A's Command Prompt: `ping 192.168.0.126` → 4 replies,
+   TTL=127. Every task checked.
+6. Give PC-B a wrong mask (e.g. 255.255.255.128) — its task un-checks.
+7. On CustomerRouter: `ping 209.165.201.1` → !!!!! (the ISP router over
+   the serial link).
+8. Regression: open 16.5.1 and 10.3.5 — their topology diagrams look as
+   before; one Guided Practice exercise end to end.
+
+---
+
 ## Site v20 update (2026-11-01) — text-size dropdown, Collapse button at the end of each section
 
 Open https://danielchernandez.github.io/ccna-syntax-checker/Site-v20/ once pushed (on the iPad too),
