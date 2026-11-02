@@ -15,6 +15,27 @@ shouldn't need to ask for this again.
 
 ---
 
+## Site v20 update (2026-11-01) — text-size dropdown, Collapse button at the end of each section
+
+Open https://danielchernandez.github.io/ccna-syntax-checker/Site-v20/ once pushed (on the iPad too),
+or `Site-v20/index.html` from Finder.
+
+1. Open any module page (e.g. CCNA 1 → Module 1). Top-right of the sticky
+   bar: a **Size** dropdown (Small, Medium, Large, Extra Large, XX-Large,
+   Huge, Giant) instead of the old S/M/L/XL buttons.
+2. Choose **Huge** — all the notes text grows. Reload: still Huge. Open a
+   different module and a course page: also Huge, and the dropdown says so.
+3. The CCNA 1 and CCNA 2 course pages now have the Size dropdown too.
+4. On a phone (or a narrow window) the dropdown still fits in the bar.
+5. Open a long section and scroll to its end: a small dashed-outline
+   **"▲ Collapse 1.2"** button (looks nothing like the green header bar).
+   Click it — the section closes and its header is brought to the top of
+   the screen, just under the bar.
+6. Try it in CCNA 2 Module 3 (built differently) — same behavior.
+7. Mark done still saves after a reload.
+
+---
+
 ## v1.44.0 — New Home Lab 16.5.1 (Secure Network Devices); ISR4321 router model
 
 Open the main link (https://danielchernandez.github.io/ccna-syntax-checker/) once pushed, or `Syn-Checker v1.44.0/terminal-v1.44.0.html`.

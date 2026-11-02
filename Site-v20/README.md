@@ -39,3 +39,12 @@ any host or straight from disk. If the notes go somewhere the engine
 isn't (e.g. notes on Netlify, engine on GitHub Pages), set
 `CLI_ENGINE_URL` in `site-config.js` to the engine's full URL. Every
 "Open CLI Engine" link on the landing page and the module pages follows it.
+
+## Notes-page features (2026-11-01)
+
+- **Text size:** a Size dropdown on every notes page (module and course
+  pages) — Small 14px through Giant 30px. The choice is shared by every
+  page (localStorage `ccna-fs`).
+- **Collapse button:** a "▲ Collapse x.y" button is added (by a small
+  script at the end of each module page) to the end of every section; it
+  closes the section and scrolls its header back to the top.

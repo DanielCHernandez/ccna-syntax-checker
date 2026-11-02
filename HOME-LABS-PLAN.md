@@ -91,8 +91,12 @@ together.
 
 ## Open decisions
 
-1. **Paper-design parts** (batches 2, 3, 7): read-only note with the answer
-   hidden until clicked, or skip?
+1. ✅ **Paper-design parts** (batches 2, 3, 7) — decided 2026-11-01:
+   the addressing table shows the LAN-side rows **blank**, like the real
+   lab, so the student has to work the addresses out; the lab's Part 1
+   questions sit in a panel with each answer hidden until clicked (like
+   task hints); tasks check that the right addresses actually got
+   configured. (Not "skip", which would give the subnetting away.)
 2. **Randomized labs** (10.4.3, 11.9.3, 11.10.1): Scenario 1 only, or all
    three scenarios as separate labs?
 3. **17.7.6:** port just the PC/router faults, or leave it out?

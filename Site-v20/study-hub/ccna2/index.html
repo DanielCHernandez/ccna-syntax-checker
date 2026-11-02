@@ -50,11 +50,18 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 
 
 .card .status{display:none}
+.fs-bar{position:sticky;top:0;z-index:200;background:#1a1a2e;display:flex;align-items:center;justify-content:flex-end;padding:6px 14px;gap:6px;box-shadow:0 2px 8px rgba(0,0,0,.3)}
+.fs-label{color:#8b949e;font-size:.72em;font-weight:700;letter-spacing:.5px;text-transform:uppercase;margin-right:4px}
+.fs-select{background:#30363d;color:#c9d1d9;border:2px solid #3fb950;border-radius:6px;padding:3px 6px;font-size:.75em;font-weight:700;font-family:inherit;cursor:pointer;flex-shrink:0;max-width:9.5em}
 </style>
 <style>.bc{background:#0d1117;padding:8px 16px;display:flex;align-items:center;flex-wrap:wrap;gap:4px;font-size:.75em;overflow-x:auto;white-space:nowrap;-webkit-overflow-scrolling:touch;border-bottom:1px solid #21262d}.bc a{color:#8b949e;text-decoration:none;font-weight:600;flex-shrink:0}.bc a:active{color:#c9d1d9}.bc .sep{color:#6e7681;flex-shrink:0}.bc .cur{color:#1ba0d7;font-weight:700;flex-shrink:0;overflow:hidden;text-overflow:ellipsis;max-width:180px}</style>
 </head>
 <body>
 <nav class="bc"><a href="../../index.html">🏠 Home</a><span class="sep">›</span><span class="cur">CCNA 2 — SRWE</span></nav>
+
+<div class="fs-bar">
+  <span class="fs-label">Text size</span> <select class="fs-select" aria-label="Text size" onchange="setFs(this.value)"><option value="14px">Small</option><option value="16px">Medium</option><option value="18px">Large</option><option value="20px">Extra Large</option><option value="23px">XX-Large</option><option value="26px">Huge</option><option value="30px">Giant</option></select>
+</div>
 
 <div class="hdr">
   <div class="logo">📚</div>
@@ -234,5 +241,12 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
   Keep all files in the same folder for navigation to work
 </div>
 
+<script>
+// Site v20: text size is a dropdown (more, larger sizes for tablets — per direction);
+// the choice is shared by every notes page via localStorage 'ccna-fs', as before.
+function syncFsSelect(){var v=getComputedStyle(document.documentElement).getPropertyValue('--base-fs').trim();document.querySelectorAll('.fs-select').forEach(function(sel){sel.value=v;});}
+function setFs(size){document.documentElement.style.setProperty('--base-fs',size);syncFsSelect();try{localStorage.setItem('ccna-fs',size);}catch(e){}}
+(function(){try{var s=localStorage.getItem('ccna-fs');if(s){document.documentElement.style.setProperty('--base-fs',s);}}catch(e){}syncFsSelect();})();
+</script>
 </body>
 </html>

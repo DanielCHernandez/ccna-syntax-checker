@@ -123,6 +123,9 @@ tr:last-child td{border-bottom:none}
 .sec-check:active{opacity:.75}
 /* Sections panel + tick colours (these pages never defined --nt/--ntd, so the panel header was invisible) */
 :root{--nt:var(--dark);--ntd:#4ade80}
+.fs-select{background:#30363d;color:#c9d1d9;border:2px solid #3fb950;border-radius:6px;padding:3px 6px;font-size:.75em;font-weight:700;font-family:inherit;cursor:pointer;flex-shrink:0;max-width:9.5em}
+.sec-collapse{display:block;margin:22px auto 6px;padding:6px 18px;background:transparent;border:1.5px dashed #8b949e;border-radius:999px;color:#5a6a7a;font-size:.78em;font-weight:700;font-family:inherit;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.sec-collapse:hover{border-style:solid;color:#1a1a2e}
 </style>
 <style>.bc{background:#0d1117;padding:8px 16px;display:flex;align-items:center;flex-wrap:wrap;gap:4px;font-size:.75em;overflow-x:auto;white-space:nowrap;-webkit-overflow-scrolling:touch;border-bottom:1px solid #21262d}.bc a{color:#8b949e;text-decoration:none;font-weight:600;flex-shrink:0}.bc a:active{color:#c9d1d9}.bc .sep{color:#6e7681;flex-shrink:0}.bc .cur{color:#1ba0d7;font-weight:700;flex-shrink:0}</style>
 </head>
@@ -142,11 +145,7 @@ tr:last-child td{border-bottom:none}
   <button class="sc-pill" id="pill-s6" onclick="toggleSection('s6',this)"><span class="pill-check">○</span>CMD</button>
   <button class="sc-pill" id="pill-s7" onclick="toggleSection('s7',this)"><span class="pill-check">○</span>🎯</button>
   </div>
-  <span class="fs-label" style="flex-shrink:0;margin-left:6px">Size</span>
-  <button class="fs-btn" onclick="setFs('14px',this)">S</button>
-  <button class="fs-btn active" onclick="setFs('16px',this)">M</button>
-  <button class="fs-btn" onclick="setFs('18px',this)">L</button>
-  <button class="fs-btn" onclick="setFs('20px',this)">XL</button>
+  <span class="fs-label" style="flex-shrink:0;margin-left:6px">Size</span> <select class="fs-select" aria-label="Text size" onchange="setFs(this.value)"><option value="14px">Small</option><option value="16px">Medium</option><option value="18px">Large</option><option value="20px">Extra Large</option><option value="23px">XX-Large</option><option value="26px">Huge</option><option value="30px">Giant</option></select>
 </div>
 
 <!-- HEADER -->
@@ -1300,8 +1299,11 @@ function toggleStudyPanel(){
   if(arr)arr.textContent=body.classList.contains('open')?'▲':'▼';
 }
 function goTo(id){var el=document.getElementById(id);if(!el)return;var h=el.querySelector('.sh,.section-header'),b=el.querySelector('.sb,.section-body');if(h&&b&&!b.classList.contains('open')){h.classList.add('open');b.classList.add('open');}setTimeout(function(){window.scrollTo({top:el.getBoundingClientRect().top+window.pageYOffset-60,behavior:'smooth'});},50);}
-function setFs(size,btn){document.documentElement.style.setProperty('--base-fs',size);document.querySelectorAll('.fs-btn').forEach(function(b){b.classList.remove('active');});btn.classList.add('active');try{localStorage.setItem('ccna-fs',size);}catch(e){}}
-(function(){try{var s=localStorage.getItem('ccna-fs');if(s){document.documentElement.style.setProperty('--base-fs',s);document.querySelectorAll('.fs-btn').forEach(function(b){b.classList.remove('active');if((b.textContent==='S'&&s==='14px')||(b.textContent==='M'&&s==='16px')||(b.textContent==='L'&&s==='18px')||(b.textContent==='XL'&&s==='20px'))b.classList.add('active');});}}catch(e){}loadState();})();
+// Site v20: text size is a dropdown (more, larger sizes for tablets — per direction);
+// the choice is shared by every notes page via localStorage 'ccna-fs', as before.
+function syncFsSelect(){var v=getComputedStyle(document.documentElement).getPropertyValue('--base-fs').trim();document.querySelectorAll('.fs-select').forEach(function(sel){sel.value=v;});}
+function setFs(size){document.documentElement.style.setProperty('--base-fs',size);syncFsSelect();try{localStorage.setItem('ccna-fs',size);}catch(e){}}
+(function(){try{var s=localStorage.getItem('ccna-fs');if(s){document.documentElement.style.setProperty('--base-fs',s);}}catch(e){}syncFsSelect();loadState();})();
 function copyCode(b){var t=b.closest('.cw').querySelector('pre').innerText;if(navigator.clipboard){navigator.clipboard.writeText(t).then(function(){b.textContent='Copied!';setTimeout(function(){b.textContent='Copy';},1500);}).catch(function(){fb(t,b);});}else{fb(t,b);}}
 function fb(t,b){var a=document.createElement('textarea');a.value=t;a.style.position='fixed';a.style.opacity='0';document.body.appendChild(a);a.focus();a.select();document.execCommand('copy');document.body.removeChild(a);b.textContent='Copied!';setTimeout(function(){b.textContent='Copy';},1500);}
 </script>
@@ -1316,5 +1318,25 @@ function fb(t,b){var a=document.createElement('textarea');a.value=t;a.style.posi
 </div>
 
 <script src="../../site-config.js"></script>
+<script>
+// Site v20: a "Collapse" button at the END of every section (per direction),
+// so a long section can be closed without scrolling back up to its header.
+// Deliberately looks unlike the header bar (small dashed outline, no color).
+// After closing, the page scrolls so that section's header sits just under
+// the sticky size bar — you stay where you were in the notes.
+function collapseSec(sec){
+  var h=sec.querySelector('.sh,.section-header'),b=sec.querySelector('.sb,.section-body');
+  if(h)h.classList.remove('open');if(b)b.classList.remove('open');
+  var bar=document.querySelector('.fs-bar');var off=(bar?bar.offsetHeight:0)+8;
+  window.scrollTo({top:sec.getBoundingClientRect().top+window.pageYOffset-off,behavior:'smooth'});
+}
+document.querySelectorAll('.sec > .sb, .section > .section-body').forEach(function(body){
+  var sec=body.parentElement;var nb=sec.querySelector('.nb,.num-badge');
+  var btn=document.createElement('button');btn.type='button';btn.className='sec-collapse';
+  btn.textContent='\u25B2 Collapse'+(nb&&nb.textContent.trim()?' '+nb.textContent.trim():' section');
+  btn.addEventListener('click',function(){collapseSec(sec);});
+  body.appendChild(btn);
+});
+</script>
 </body>
 </html>
