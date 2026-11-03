@@ -1,4 +1,4 @@
-# Site v20 — CCNA NetAcad Study Hub + Simple Syntax Checker + CLI Engine
+# Site v21 (folder still named Site-v20) — CCNA NetAcad Study Hub + Simple Syntax Checker + CLI Engine
 
 Built 2026-10-22 from `site_v19` (Dropbox: `CCNA Study/Claude-NetAcad/site_v19.zip`)
 plus the CLI Engine at v1.41.0. "Site v20" is the version of this combined
@@ -39,6 +39,17 @@ any host or straight from disk. If the notes go somewhere the engine
 isn't (e.g. notes on Netlify, engine on GitHub Pages), set
 `CLI_ENGINE_URL` in `site-config.js` to the engine's full URL. Every
 "Open CLI Engine" link on the landing page and the module pages follows it.
+
+## Version history
+
+- **Site v21 (2026-11-02):** larger text sizes for tablet reading — a
+  Size dropdown on every notes page (Small 14px … Extra Large 20px, plus
+  new XX-Large 23px, Huge 26px, Giant 30px), and a "▲ Collapse" button
+  at the end of every notes section. The folder and web address stay
+  `Site-v20/` on purpose, so existing links and Home Screen icons keep
+  working; the version shows in the landing page's footer.
+- **Site v20 (2026-10-22):** the combined site — Study Hub notes, the
+  simple Syntax Checker and the CLI Engine under one landing page.
 
 ## Notes-page features (2026-11-01)
 
